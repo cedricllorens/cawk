@@ -1,0 +1,32 @@
+#GAWK_PATH
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# purpose : this test check if a firewall block has been 
+# defined
+# ------------------------------------------------------------
+
+@include INCLUDE_PATH
+
+BEGIN {
+}
+
+BEGINFILE {
+	found = 0;
+}
+
+/^firewall {/ {
+        found = 1;
+	print_err("firewall_set.juniper-junos.gawk",$0,FNR,"high","pass");
+}
+
+ENDFILE {
+        if ( found == 0 ) {
+		print_err("firewall_set.juniper-junos","firewall block has not been detected",0,"high","error");
+	}
+}
+
+END {
+}

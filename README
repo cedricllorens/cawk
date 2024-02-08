@@ -1,0 +1,70 @@
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+# ------------------------------------------------------------
+cawk is Copyright (C) 2024 by Cedric Llorens
+
+# ------------------
+
+cawk objective is to provide to the community a complete list of tests allowing
+to check network configurations whatever the supplier. moreover, cawk is ONLY 
+based on two simple packages: 
+- gnu gmake
+- gawk these 
+
+these two packages are very powerful and the cawk project intend to ONLY use these two 
+packages. No other langage, no database, etc. keep things simple and understandable for 
+the whole. In summary, in gawk we trust :-)
+
+cawk project allows the community to easily add their own test and their configuration 
+associated to. cawk enforces high level of granularity to build a test.
+
+# ------------------
+
+cawk has the following directories:
+- common  : contain a <kind of library> (set of functions) including in the tests
+
+- tests   : a collection of individual tests *.template per supplier
+
+	- to allow portability, each tests refer to GENERIC_ID to be changed in each
+	environment aka:
+		- COMMON_PATH = to point out the common <kind of library>
+		- GAWK_PATH = to point out the right path for gawk 
+		(ref Makefile)
+	- to allow easy tests writting, each test may refer to GENERIC_ID aka:
+		- %BLOCK_JUNIPER% : space identation used for block hierarchy
+		(ref support/tests.sed)
+
+	a test has an initial <.template> suffix, once converted to be exe, the
+	test has the <.gawk> suffix
+
+	each supplier test (cisco-ios, etc) is divided into two part:
+		- repo : this is the cawk collection of tests (gmake check_repo to launch)
+		- run : only put tests that apply to your environment (gmake check_run to launch)
+
+- confs   : a collection of configurations per supplier
+
+- report  : assessment performed by the tests on the configurations
+
+- support : contains files helping for building cawk:
+	- tests.sed : used when building the tests making change on GENERIC_ID
+
+# ------------------
+
+cawk in gmake targets:
+	- gmake clean : clean all 
+	- gmake tests : build all tests
+	- gmake check_repo : assess the confs with <repo> tests
+	- gmake check_run : assess the confs with <run> tests
+	- gmake catalog : list the tests linked to <repo> or <run>
+
+# ------------------
+
+if someone intends to submit a test and a configuration associated to, if approved, 
+then the test  will added to the package and the name of author will be added to 
+the AUTHORS list.
+
+# ------------------
+
+enjoy in particating to cawk or to imply use cawk, 
+cedric llorens.

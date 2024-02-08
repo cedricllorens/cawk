@@ -1,0 +1,31 @@
+#GAWK_PATH
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# purpose : this test generates an error if a http statement is set
+# ------------------------------------------------------------
+
+@include INCLUDE_PATH
+
+BEGIN {
+}
+
+BEGINFILE {
+	found = 0;
+}
+
+/^(ip )?http(s)? / {
+        found = 1;
+	print_err("global_http_noset.cisco-ios.gawk",$0,FNR,"high","error");
+}
+
+ENDFILE {
+        if ( found == 0 ) {
+		print_err("global_http_notset.cisco-ios.gawk","http statement not set",0,"high","pass");
+	}
+}
+
+END {
+}
