@@ -1,0 +1,77 @@
+# Configuration de base
+config system global
+    set hostname MonFirewall
+    set admin-ssh-port 22
+end
+
+# Configuration des interfaces
+config system interface
+    edit "port1"
+        set vdom "root"
+        set ip 192.168.1.1 255.255.255.0
+        set allowaccess ping https ssh
+    next
+end
+
+# Configuration SSH
+config system admin
+    edit "admin"
+        set password votre_mot_de_passe
+        set accprofile super_admin
+    next
+end
+
+# Configuration des politiques de sécurité
+config firewall policy
+    edit 1
+        set srcintf "port1"
+        set dstintf "wan1"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+    next
+end
+
+# Configuration des services de sécurité (UTM)
+config firewall profile
+    edit "default"
+        set inspection-mode proxy-based
+        set profile-protocol-options default
+    next
+end
+
+# Configuration des règles NAT
+config firewall vip
+    edit 1
+        set extintf "wan1"
+        set extip 203.0.113.2
+        set mappedip 192.168.1.2
+        set portforward enable
+        set mappedport 22
+    next
+end
+
+# Configuration de l'inspection du trafic entrant
+config ips global
+    set status enable
+    set sensor-options default
+end
+
+# Configuration des journaux
+config log syslogd2
+    edit 1
+        set status enable
+        set facility local1
+    next
+end
+
+# Configuration SNMP
+config system snmp
+    set status enable
+    set contact "Nom de l'administrateur"
+    set location "Emplacement du pare-feu"
+    set allowaccess snmp
+end

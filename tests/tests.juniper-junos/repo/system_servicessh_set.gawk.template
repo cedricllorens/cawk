@@ -1,0 +1,49 @@
+#GAWK_PATH
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# purpose : this test check if the system/services block has 
+# setup ssh service
+# ------------------------------------------------------------
+
+@include INCLUDE_PATH
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_system = 0;
+	block_services = 0;
+	pass = 0;
+}
+
+/^system {/ {
+        block_system = 1;
+}
+
+/^%BLOCK_JUNIPER%services {/ && block_system == 1 {
+	block_services = 1;
+}
+
+/^%BLOCK_JUNIPER%%BLOCK_JUNIPER%ssh;/ && block_services == 1 {
+	print_err("system_servicessh.juniper-junos.gawk",$0,FNR,"high","pass");
+	pass = 1;
+	next_file;
+}
+
+/^    }$/ && block_services == 1 {
+	block_services = 0;
+}
+
+/^}$/ {
+	block_system = 0;
+}
+
+ENDFILE {
+	if ( !pass ) print_err("system_servicessh.juniper-junos.gawk","system/services must activate ssh service",0,"high","error");
+}
+
+END {
+}

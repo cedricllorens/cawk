@@ -1,0 +1,98 @@
+interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 192.168.1.1/24;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 10.0.0.1/32;
+            }
+        }
+    }
+}
+
+protocols {
+    ospf {
+        area 0.0.0.0 {
+            interface ge-0/0/0.0;
+            interface lo0.0;
+        }
+    }
+}
+
+routing-options {
+    static {
+        route 0.0.0.0/0 next-hop 192.168.1.254;
+    }
+}
+
+system {
+    host-name MonRouteur;
+    domain-name mondomaine.local;
+    services {
+        telnet;
+    }
+    login {
+        user MonUtilisateur {
+            uid 2001;
+            class super-user;
+            authentication {
+                plain-text-password;
+            }
+        }
+    }
+}
+
+irewall {
+    family inet {
+        filter trust-to-trust {
+            term allow-internal-traffic {
+                from {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    accept;
+                }
+            }
+        }
+        filter trust-to-untrust {
+            term allow-ssh {
+                from {
+                    source-address any;
+                    destination-address any;
+                    application junos-ssh;
+                }
+                then {
+                    accept;
+                }
+            }
+            term allow-icmp {
+                from {
+                    source-address any;
+                    destination-address any;
+                    application junos-ping;
+                }
+                then {
+                    accept;
+                }
+            }
+        }
+    }
+    interfaces {
+        ge-0/0/0.0 {
+            family inet {
+                filter {
+                    input trust-to-trust;
+                    output trust-to-trust;
+                }
+            }
+        }
+    }
+}
+
