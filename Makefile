@@ -6,7 +6,6 @@
 # ------------------------------------------------------------
 #
 # Makefile
-#
 # - gmake 		: print all the possible targets
 # - gmake clean 	: clean all 
 # - gmake tests_repo 	: build all <repo> tests
