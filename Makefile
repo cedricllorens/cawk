@@ -142,9 +142,11 @@ catalog:
 	@echo "cawk catalog done ----"
 
 git:
+	# --------
 	# regular update
 	#      git add .
-	#      git commit -m "Mettre son msg"
+	#      git commit -m "msg"
+	# --------
 	# push of a new version
-	#      git tag -a $(CAWK_RELEASE) -m "$(CAWK_RELEASE)"
-	#      git push https://github.com/cedricllorens/cawk.git $(CAWK_RELEASE)
+	#      git push https://github.com/cedricllorens/cawk.git master
+	# build a release directly at github level

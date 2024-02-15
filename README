@@ -23,6 +23,15 @@ i was using awk in the 1986 years !!).
 cawk project allows the community to easily add their own test and their configuration associated 
 to. cawk enforces a high level of granularity to allow everyone to build a test.
 
+# ----------------------
+# ---- cawk installation
+# ----------------------
+
+you may have to change the file support/tests.sed for finding the gawk path at your system level
+required for buidling tests:
+	-%SED_GAWK_PATH% = to point out the right path for gawk 
+	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
+
 # ---------------------
 # ---- cawk directories
 # ---------------------
