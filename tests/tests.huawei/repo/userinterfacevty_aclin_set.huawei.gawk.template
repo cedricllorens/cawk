@@ -1,19 +1,23 @@
-#GAWK_PATH
+#%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# purpose : this test generates an error if each user-interface vty has no acl outbound
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : this test generates an error if each user-interface vty has no acl inbound
 # ------------------------------------------------------------
 
-@include INCLUDE_PATH
+@include %SED_INCLUDE_PATH%
 
 # ----
 
 function acl_summary() {
-	if ( aclout == 0 ) {
-		print_err("user-interface_aclout_set.cisco-ios.gawk",userinterface" : acl outbound missing",userinterfacenovty,"high","error");
+	if ( aclin == 0 ) {
+		print_err("userinterfacevty_aclin_set.huawei.gawk",userinterface" : acl inbound missing",userinterfacenovty,"high","error");
 		pass = 0;
 	}
 }
@@ -32,13 +36,13 @@ BEGINFILE {
 	if ( block_vty == 1 ) acl_summary();
 	userinterface = $0;
 	userinterfacenovty = FNR;
-	aclout = 0;
+	aclin = 0;
         block_vty = 1;
 	next;
 }
 
-/^ acl .* outbound/ && block_vty == 1 {
-	aclout = 1;
+/^ acl .* inbound/ && block_vty == 1 {
+	aclin = 1;
 	next;
 }
 
@@ -48,7 +52,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("user-interface_aclout_set.cisco-ios.gawk","user-interface vty acl outbound are set",0,"high","pass");
+	if ( pass ) print_err("userinterfacevty_aclin_set.huawei.gawk","user-interface vty acl inbound are set",0,"high","pass");
 }
 
 END {

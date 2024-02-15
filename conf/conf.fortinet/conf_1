@@ -4,12 +4,7 @@ config system global
 end
 
 config system interface
-    edit "management"
-        set vdom "root"
-        set ip 10.168.1.1 255.255.255.0
-        set allowaccess ssh https
-    next
-    edit "managementport"
+    edit "port1"
         set vdom "root"
         set ip 10.168.1.1 255.255.255.0
         set allowaccess ping https ssh telnet
@@ -58,15 +53,18 @@ config ips global
     set sensor-options default
 end
 
-config log syslogd
+config log syslogd2
     edit 1
         set status enable
         set facility local1
     next
-    edit 2
-        set status disable
-        set facility local1
-    next
+end
+
+config system snmp
+    set status disable
+    set contact "Nom de l'administrateur"
+    set location "Emplacement du pare-feu"
+    set allowaccess snmp
 end
 
 config vpn ipsec phase1-interface
@@ -79,34 +77,6 @@ config vpn ipsec phase1-interface
         set remote-gw <remote_gateway_ip>
         set keylife 28800
         set psksecret <pre_shared_key>
-        set version v1
-    next
-end
-
-config system snmp community
-    edit 1
-        set name "public"
-        set status enable
-        set access write
-    next
-end
-
-config system snmp user
-    edit "private"
-        set authpassword <authentication_password>
-        set authmethod sha
-        set privpassword <privacy_password>
-        set privmethod aes128
-        set vdom <vdom_name>
-    next
-end
-
-config system snmp v3user
-    edit "user1"
-        set authpassword <authentication_password>
-        set authmethod sha
-        set privpassword <privacy_password>
-        set privmethod aes128
-        set vdom <vdom_name>
+        set version v2
     next
 end

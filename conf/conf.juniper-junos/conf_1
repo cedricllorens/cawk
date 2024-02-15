@@ -2,7 +2,7 @@ interfaces {
     ge-0/0/0 {
         unit 0 {
             family inet {
-                address 192.168.1.1/24;
+                address 10.168.1.1/24;
             }
         }
     }
@@ -26,7 +26,7 @@ protocols {
 
 routing-options {
     static {
-        route 0.0.0.0/0 next-hop 192.168.1.254;
+        route 0.0.0.0/0 next-hop 10.168.1.254;
     }
 }
 
@@ -35,6 +35,9 @@ system {
     domain-name mondomaine.local;
     services {
         telnet;
+        ftp {
+            cmd;
+        }
     }
     login {
         user MonUtilisateur {
