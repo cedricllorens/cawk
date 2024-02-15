@@ -8,7 +8,7 @@ hostname conf.test
 !
 ip http server
 !
-enable secret 5 A90yU2dikklkdNJnol
+enable secret 5 xxxxx
 !
 interface FastEthernet0
  no ip address
@@ -18,7 +18,7 @@ interface FastEthernet0
  no keepalive
 !
 interface GigabitEthernet0/0
- ip address 20.0.68.45 255.255.255.0
+ ip address 10.0.68.45 255.255.255.0
  ip access-group BLOCK_VIRU in
  no ip proxy-arp
 !
@@ -33,18 +33,16 @@ ip access-list extended BLOCK_VIRUS
  deny   77 any any
  permit ip any any
 !
-access-list 23 permit 10.0.168.143
-access-list 24 permit 10.0.168.133
+access-list 97 permit 10.0.168.143
+access-list 98 permit 10.0.168.133
 !
-snmp-server community esiea RW 43
-snmp-server community esiea RW
-snmp-server community esiea RO
-snmp-server community esiea RO 43
+snmp-server community cawk RO
+snmp-server community private RW
 !
 line con 0
- password 7 04876346151
+ password 7 xxxxxx
 line aux 0
- password 7 04876346151
+ password 7 xxxxxx
  transport input all
 line vty 0 3
  transport input telnet

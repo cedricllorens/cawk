@@ -4,67 +4,86 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
-# ------------------
+# -----------------
+# ---- introduction
+# -----------------
 
-cawk objective is to provide to the community a complete list of tests allowing
-to check network configurations whatever the supplier. moreover, cawk is ONLY 
-based on two simple packages: 
+cawk objective is to provide to the community a complete list of tests allowing to check 
+network configurations whatever the supplier. Moreover, cawk is ONLY based on two well-known
+packages: 
 - gnu gmake
 - gawk these 
 
-these two packages are very powerful and the cawk project intend to ONLY use these two 
-packages. No other langage, no database, etc. keep things simple and understandable for 
-the whole. In summary, in gawk we trust :-)
+These two packages are very powerful today and the cawk project intend to ONLY use these two 
+packages. No other langage, no database, no configure, etc. cawk try to keep things simple 
+and understandable for the whole. In summary, in gawk && gmake we trust :-) (perhaps because 
+i was using awk in the 1986 years !!).
 
-cawk project allows the community to easily add their own test and their configuration 
-associated to. cawk enforces high level of granularity to build a test.
+cawk project allows the community to easily add their own test and their configuration associated 
+to. cawk enforces a high level of granularity to allow everyone to build a test.
 
-# ------------------
+# ---------------------
+# ---- cawk directories
+# ---------------------
 
 cawk has the following directories:
-- common  : contain a <kind of library> (set of functions) including in the tests
 
-- tests   : a collection of individual tests *.template per supplier
+- common  : contain a <kind of library> (set of functions) including in the tests and others common
+useful scripts
 
-	- to allow portability, each tests refer to GENERIC_ID to be changed in each
-	environment aka:
-		- COMMON_PATH = to point out the common <kind of library>
-		- GAWK_PATH = to point out the right path for gawk 
-		(ref Makefile)
-	- to allow easy tests writting, each test may refer to GENERIC_ID aka:
-		- %BLOCK_JUNIPER% : space identation used for block hierarchy
-		(ref support/tests.sed)
+- tests   : a collection of individual tests *.template per supplier :
 
-	a test has an initial <.template> suffix, once converted to be exe, the
-	test has the <.gawk> suffix
+	- each supplier test (cisco-ios, etc) is divided into two part:
+		- repo : this is the cawk collection of tests 
+		(gmake tests_repo && check_repo to launch)
+		- run  : used to put tests (from repo) that apply to your environment 
+		(gmake tests_run && check_run to launch)
 
-	each supplier test (cisco-ios, etc) is divided into two part:
-		- repo : this is the cawk collection of tests (gmake check_repo to launch)
-		- run : only put tests that apply to your environment (gmake check_run to launch)
+	- a tests has <.template> suffix, but the test is converted to <.gawk> suffix thanks to
+	the file support/tests.sed. this change allows to write tests more easily && enforce env 
+	system portability, so each test refer to %SED_VAR% aka:
+
+		- %SED_BLOCK_JUNIPER% : space identation used for block hierarchy
+		- %SED_COMMON_PATH% = to point out the common <kind of library>
+		- %SED_GAWK_PATH% = to point out the right path for gawk 
+		etc.
+
+		these values can be changed thanks to the file support/tests.sed
 
 - confs   : a collection of configurations per supplier
 
-- report  : assessment performed by the tests on the configurations
+- report  : assessment reports (and summary), each report has a same format:
+	- name of the configuration
+	- name of the test
+	- error description
+	- line number where the error has been found in the configuration
+	- risklevel 
+	- <pass> or <error> states
 
 - support : contains files helping for building cawk:
-	- tests.sed : used when building the tests making change on GENERIC_ID
+	- tests.sed : used when building the tests in order to make change of the set %SED_VAR%
 
-# ------------------
+# -----------------------
+# ---- cawk gmake targets
+# -----------------------
 
 cawk in gmake targets:
-	- gmake clean : clean all 
-	- gmake tests : build all tests
-	- gmake check_repo : assess the confs with <repo> tests
-	- gmake check_run : assess the confs with <run> tests
-	- gmake catalog : list the tests linked to <repo> or <run>
+	- gmake clean 		: clean all 
+	- gmake tests_run 	: build all <repo> tests
+	- gmake tests_repo 	: build all <repo> tests
+	- gmake check_repo 	: assess the confs with <repo> tests
+	- gmake check_run 	: assess the confs with <run> tests
+	- gmake view		: view assessment reports (and summary)
+	- gmake catalog 	: list the tests linked to <repo> or <run>
 
-# ------------------
+	note : gmake clean check_repo view allows to launch a full <repo> assessment
 
-if someone intends to submit a test and a configuration associated to, if approved, 
-then the test  will added to the package and the name of author will be added to 
-the AUTHORS list.
+# -------------------
+# ---- cawk community
+# -------------------
 
-# ------------------
+if someone intends to submit a test and a configuration associated to, if approved, then the 
+test will added to the package and the name of author will be added to the AUTHORS list.
 
-enjoy in particating to cawk or to imply use cawk, 
+enjoy in particating to cawk or to simply use cawk, 
 cedric llorens.

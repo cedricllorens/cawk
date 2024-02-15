@@ -6,16 +6,17 @@ interface GigabitEthernet0/0/1
  port default vlan 10
 #
 interface Vlanif10
- ip address 192.168.1.1 255.255.255.0
+ ip address 10.168.1.1 255.255.255.0
 #
-ip route-static 0.0.0.0 0.0.0.0 203.0.113.1
+ip route-static 0.0.0.0 0.0.0.0 10.0.113.1
 #
-ssh server enable
 rsa local-key-pair create
 user-interface vty 0 4
  protocol inbound ssh
  acl 2000 inbound
- acl 3000 outbound
+ acl 7000 outbound
+#
+snmp-agent community write public
 #
 aaa
  local-user admin password irreversible-cipher votre_mot_de_passe
@@ -23,11 +24,15 @@ aaa
  local-user admin service-type ssh
 #
 acl number 3000
- rule 5 permit tcp source 192.168.1.0 0.0.0.255 destination any
+ rule 5 permit tcp source 10.168.1.0 0.0.0.255 destination any
+ rule 10 deny ip source any destination any
+#
+acl number 5000
+ rule 5 permit tcp source 10.168.1.0 0.0.0.255 destination any
  rule 10 deny ip source any destination any
 #
 interface Vlanif10
- packet-filter inbound acl 3000
+ packet-filter inbound acl 8000
 #
 ssh user admin
 interface GigabitEthernet0/0/1
