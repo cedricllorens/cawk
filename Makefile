@@ -148,5 +148,6 @@ git:
 	#      git commit -m "msg"
 	# --------
 	# push of a new version
-	#      git push https://github.com/cedricllorens/cawk.git master
+	#      	git push https://github.com/cedricllorens/cawk.git master
 	# build a release directly at github level
+	#	git pull https://github.com/cedricllorens/cawk.git master --rebase
