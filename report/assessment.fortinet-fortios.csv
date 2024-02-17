@@ -1,0 +1,16 @@
+conf/conf.fortinet-fortios/conf_1;interface_mgntforbidallow_noset.fortinet.gawk;mngt interface without forbidden protocols;0;high;pass
+conf/conf.fortinet-fortios/conf_0;interface_mgntforbidallow_noset.fortinet.gawk;edit "managementport" set allowaccess ping https ssh telnet;0;high;error
+conf/conf.fortinet-fortios/conf_1;interface_mgnt_noset.fortinet.gawk;no mgnt interface is set;0;high;error
+conf/conf.fortinet-fortios/conf_0;interface_mgnt_noset.fortinet.gawk;edit "management";7;high;pass
+conf/conf.fortinet-fortios/conf_0;interface_mgnt_noset.fortinet.gawk;edit "managementport";12;high;pass
+conf/conf.fortinet-fortios/conf_1;ipsec_ikev1_noset.fortinet.gawk;ikev1 is not set;0;high;pass
+conf/conf.fortinet-fortios/conf_0;ipsec_ikev1_noset.fortinet.gawk;set version v1;82;high;error
+conf/conf.fortinet-fortios/conf_1;snmp_v1v2forbidcommunity_notset.fortinet.gawk;snmp v1v2 communities are not forbiden;0;high;pass
+conf/conf.fortinet-fortios/conf_0;snmp_v1v2forbidcommunity_notset.fortinet.gawk;set name "public";88;high;error
+conf/conf.fortinet-fortios/conf_1;snmp_v1v2_notset.fortinet.gawk;snmp v1v2 is not set;0;high;pass
+conf/conf.fortinet-fortios/conf_0;snmp_v1v2_notset.fortinet.gawk;set name "public";88;high;error
+conf/conf.fortinet-fortios/conf_1;snmp_v1v2rw_notset.fortinet.gawk;snmp v1v2 is not set;0;high;pass
+conf/conf.fortinet-fortios/conf_0;snmp_v1v2rw_notset.fortinet.gawk;set access write;90;high;error
+conf/conf.fortinet-fortios/conf_1;syslogd_enable_noset.fortinet.gawk;edit 1 : syslogd is enable;58;high;pass
+conf/conf.fortinet-fortios/conf_0;syslogd_enable_noset.fortinet.gawk;edit 1 : syslogd is enable;63;high;pass
+conf/conf.fortinet-fortios/conf_0;syslogd_enable_noset.fortinet.gawk;edit 2 : syslogd is no enable;69;high;error

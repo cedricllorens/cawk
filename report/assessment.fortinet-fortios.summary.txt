@@ -1,0 +1,12 @@
+total number of files 2
+total number of tests 7
+	test syslogd_enable_noset.fortinet.gawk
+	test snmp_v1v2_notset.fortinet.gawk
+	test interface_mgntforbidallow_noset.fortinet.gawk
+	test snmp_v1v2forbidcommunity_notset.fortinet.gawk
+	test interface_mgnt_noset.fortinet.gawk
+	test snmp_v1v2rw_notset.fortinet.gawk
+	test ipsec_ikev1_noset.fortinet.gawk
+the number of pass 9 (56%)
+the number of error 7 (43%)
+total number of checks 14

@@ -1,0 +1,88 @@
+! Configuration du hostname
+configure system
+   hostname MonRouteur
+   exit
+
+! Configuration du nom de domaine
+configure system
+   domain mondomaine.com
+   exit
+
+! Configuration des mots de passe
+configure system security
+   admin admin-password MyAdminPassword
+   operator operator-password MyOperatorPassword
+   exit
+exit
+
+! Configuration des protocoles de routage (exemple: OSPF)
+configure router ospf
+   router-id 10.0.0.1
+   exit
+   area 0.0.0.0
+      interface "1/1/1"
+         passive
+         exit
+      exit
+   exit
+exit
+
+! Configuration de la politique de sécurité
+configure system security
+   access-profile "default" create
+      security-policy
+         default deny
+         exit
+      exit
+   exit
+exit
+
+! Configuration de l'interface de gestion
+configure system security
+   management-ssh
+      cipher aes-128
+      enable
+      max-sessions 5
+      protocol-version v2
+      exit
+   exit
+exit
+
+! Configuration SNMP
+configure snmp
+   community "public" {
+      authorization read-only
+      access-profile "default"
+      exit
+   }
+   trap-options {
+      source-address 10.0.0.1
+      community "public"
+      exit
+   }
+   exit
+exit
+
+! Configuration des filtres
+configure access-list extended "FiltreLAN"
+   rule 10 {
+      action permit
+      source {
+         address 10.0.0.0/8
+      }
+      exit
+   }
+   rule 20 {
+      action deny
+      source {
+         address any
+      }
+      exit
+   }
+   exit
+
+! Application des filtres sur une interface
+configure access-list context "FiltreLAN" ports "1/1/1" ingress
+   apply
+   exit
+exit

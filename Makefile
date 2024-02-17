@@ -35,30 +35,30 @@ TESTS_juniper-junos_RUN_PATH = tests/tests.juniper-junos/run
 TESTS_juniper-junos_REPO_TEMPLATE = $(wildcard $(TESTS_juniper-junos_REPO_PATH)/*.template)
 TESTS_juniper-junos_RUN_TEMPLATE = $(wildcard $(TESTS_juniper-junos_RUN_PATH)/*.template)
 
-CONFIGURATION_huawei_PATH = conf/conf.huawei
-TESTS_huawei_REPO_PATH = tests/tests.huawei/repo
-TESTS_huawei_RUN_PATH = tests/tests.huawei/run
-TESTS_huawei_REPO_TEMPLATE = $(wildcard $(TESTS_huawei_REPO_PATH)/*.template)
-TESTS_huawei_RUN_TEMPLATE = $(wildcard $(TESTS_huawei_RUN_PATH)/*.template)
+CONFIGURATION_huawei-vrp_PATH = conf/conf.huawei-vrp
+TESTS_huawei-vrp_REPO_PATH = tests/tests.huawei-vrp/repo
+TESTS_huawei-vrp_RUN_PATH = tests/tests.huawei-vrp/run
+TESTS_huawei-vrp_REPO_TEMPLATE = $(wildcard $(TESTS_huawei-vrp_REPO_PATH)/*.template)
+TESTS_huawei-vrp_RUN_TEMPLATE = $(wildcard $(TESTS_huawei-vrp_RUN_PATH)/*.template)
 
-CONFIGURATION_fortinet_PATH = conf/conf.fortinet
-TESTS_fortinet_REPO_PATH = tests/tests.fortinet/repo
-TESTS_fortinet_RUN_PATH = tests/tests.fortinet/run
-TESTS_fortinet_REPO_TEMPLATE = $(wildcard $(TESTS_fortinet_REPO_PATH)/*.template)
-TESTS_fortinet_RUN_TEMPLATE = $(wildcard $(TESTS_fortinet_RUN_PATH)/*.template)
+CONFIGURATION_fortinet-fortios_PATH = conf/conf.fortinet-fortios
+TESTS_fortinet-fortios_REPO_PATH = tests/tests.fortinet-fortios/repo
+TESTS_fortinet-fortios_RUN_PATH = tests/tests.fortinet-fortios/run
+TESTS_fortinet-fortios_REPO_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_REPO_PATH)/*.template)
+TESTS_fortinet-fortios_RUN_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_RUN_PATH)/*.template)
 
 TESTS_REPORT = report
 
-TESTS_SCOPE = cisco-ios juniper-junos huawei fortinet
+TESTS_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_juniper-junos_REPO_PATH) \
-		$(TESTS_huawei_REPO_PATH) \
-		$(TESTS_fortinet_REPO_PATH)
+		$(TESTS_huawei-vrp_REPO_PATH) \
+		$(TESTS_fortinet-fortios_REPO_PATH)
 TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_juniper-junos_RUN_PATH) \
-		$(TESTS_huawei_RUN_PATH) \
-		$(TESTS_fortinet_RUN_PATH)
+		$(TESTS_huawei-vrp_RUN_PATH) \
+		$(TESTS_fortinet-fortios_RUN_PATH)
 
 # --------------- TESTS BUILDING BY SED CHANGE
 
@@ -82,13 +82,13 @@ all:
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
 
-tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet_REPO_TEMPLATE:.gawk.template=.gawk)
+tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
 	@echo "cawk tests_repo done ----"
 
-tests_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet_RUN_TEMPLATE:.gawk.template=.gawk)
+tests_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk)
 	@echo "cawk tests_run done ----"
 
-check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet_REPO_TEMPLATE:.gawk.template=.gawk)
+check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
 	@$(foreach scope,$(TESTS_SCOPE),\
 		echo "Compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
@@ -99,7 +99,7 @@ check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_c
 	)
 	@echo "cawk check_repo done ----"
 
-check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet_RUN_TEMPLATE:.gawk.template=.gawk)
+check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk)
 	@$(foreach scope,$(TESTS_SCOPE),\
 		echo "Compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\

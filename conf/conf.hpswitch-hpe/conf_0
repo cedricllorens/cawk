@@ -1,0 +1,59 @@
+! Configuration du hostname
+sysname MonSwitch
+
+! Configuration de l'interface de gestion
+vlan 1
+   description "VLAN de gestion"
+   ip address 10.0.0.1 255.255.255.0
+   exit
+ip ssh server enable
+
+! Configuration des mots de passe
+local-user admin class manage
+   password cipher MonAdminPassword
+   service-type ssh
+   authorization-attribute level 3
+   exit
+local-user operator class manage
+   password cipher MonOperatorPassword
+   service-type ssh
+   authorization-attribute level 2
+   exit
+
+! Configuration des protocoles de routage (exemple: OSPF)
+ospf 1
+   area 0.0.0.0
+      network 10.0.0.1 0.0.0.0
+      exit
+   exit
+
+! Configuration de la politique de sécurité
+acl number 2000
+   rule 5 permit source 10.0.0.0 0.255.255.255
+   rule 10 deny
+   exit
+traffic classifier CLASS1 operator or
+   if-match acl 2000
+   exit
+traffic behavior BEHAVIOR1
+   permit
+   exit
+traffic policy POLICY1
+   classifier CLASS1 behavior BEHAVIOR1
+   exit
+qos policy POLICY1
+   classifier CLASS1 behavior BEHAVIOR1
+   exit
+interface vlan-interface 1
+   traffic-policy POLICY1 inbound
+   exit
+
+! Configuration SNMP
+snmp-agent
+   snmp-agent community read public
+   snmp-agent sys-info version v2c
+   snmp-agent trap enable
+   snmp-agent trap source Vlan-interface1
+   snmp-agent target-host trap address udp-domain 10.0.0.2 params securityname public v2c
+   exit
+

@@ -1,0 +1,87 @@
+configure snmp sysName "MonRouteur"
+
+configure vlan default
+   ipaddress 10.0.0.1 255.255.255.0
+   enable web http
+   enable web https
+   enable ssh
+   enable telnet
+exit
+
+configure account admin
+   encrypted-password "MonAdminPassword"
+exit
+configure account operator
+   encrypted-password "MonOperatorPassword"
+exit
+
+configure vlan VLAN-LAN
+   tag 1
+   ipaddress 192.168.1.1 255.255.255.0
+exit
+configure vlan VLAN-WAN
+   tag 2
+   ipaddress 203.0.113.1 255.255.255.0
+exit
+configure vlan VLAN-DMZ
+   tag 3
+   ipaddress 172.16.1.1 255.255.255.0
+exit
+
+configure ports 1/1/1-1/1/24
+   auto off
+   speed 1000
+   duplex full
+   tag vlan VLAN-LAN
+exit
+configure ports 1/2/1-1/2/24
+   auto off
+   speed 1000
+   duplex full
+   tag vlan VLAN-WAN
+exit
+configure ports 1/3/1-1/3/24
+   auto off
+   speed 1000
+   duplex full
+   tag vlan VLAN-DMZ
+exit
+
+configure ospf
+   router-id 10.0.0.1
+   area 0.0.0.0
+      authentication simple-password "MonPasswordOSPF"
+      interface "1/2/1"
+         passive
+         authentication simple-password "MonPasswordOSPF"
+      exit
+   exit
+exit
+
+configure bgp
+   as 65001
+   neighbor 203.0.113.2
+      remote-as 65002
+      authentication-key "MonPasswordBGP"
+   exit
+exit
+
+configure access-list FiltreLAN
+   permit ip 192.168.1.0/24 any log
+exit
+configure access-list DenyHTTP
+   deny tcp any any eq 80 log
+exit
+configure access-list AllowDNS
+   permit udp any any eq 53 log
+exit
+apply access-list DenyHTTP ingress "1/2/1"
+apply access-list AllowDNS ingress "1/2/1"
+
+configure snmp
+   syscontact "Administrateur réseau"
+   syslocation "Localisation du routeur"
+   add community "public" user "read-only"
+   add trap target-addr 10.0.0.2 params "public" version v2c
+exit
+

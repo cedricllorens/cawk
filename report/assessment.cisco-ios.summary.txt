@@ -1,0 +1,13 @@
+total number of files 2
+total number of tests 8
+	test linevty_aclout_set.cisco-ios.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-ios.gawk
+	test linevty_aclin_set.cisco-ios.gawk
+	test global_servicepassword_set.cisco-ios.gawk
+	test acl_defref_set.cisco-ios.gawk
+	test global_http_notset.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-ios.gawk
+	test snmp_v1v2rw_notset.cisco-ios.gawk
+the number of pass 8 (38%)
+the number of error 13 (61%)
+total number of checks 16

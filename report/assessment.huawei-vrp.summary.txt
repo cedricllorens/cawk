@@ -1,0 +1,12 @@
+total number of files 2
+total number of tests 7
+	test sshserver_enable_set.huawei.gawk
+	test userinterfacevty_aclout_set.huawei.gawk
+	test snmp_v1v2_notset.huawei.gawk
+	test acl_defref_set.huawei.gawk
+	test userinterfacevty_aclin_set.huawei.gawk
+	test snmp_v1v2rw_notset.huawei.gawk
+	test snmp_v1v2forbidcommunity_notset.huawei.gawk
+the number of pass 7 (38%)
+the number of error 11 (61%)
+total number of checks 14

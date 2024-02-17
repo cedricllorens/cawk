@@ -1,0 +1,54 @@
+! Configuration du hostname
+set deviceconfig system hostname MonPareFeu
+
+! Configuration de l'interface de gestion
+set deviceconfig system ip-address 10.0.0.1 netmask 255.255.255.0 default-gateway 10.0.0.254 dns-setting servers primary 8.8.8.8
+set deviceconfig system service disable telnet
+set deviceconfig system service enable ssh
+
+! Configuration des règles de sécurité
+set rulebase security rules FiltreLAN
+    set source any
+    set destination any
+    set application any
+    set service any
+    set action allow
+    set log-start yes
+    set log-end yes
+exit
+set rulebase security rules DenyHTTP
+    set source any
+    set destination any
+    set application default
+    set service application-default
+    set action deny
+    set log-start yes
+    set log-end yes
+exit
+set rulebase security rules AllowDNS
+    set source any
+    set destination any
+    set application dns
+    set service application-default
+    set action allow
+    set log-start yes
+    set log-end yes
+exit
+
+! Application des règles de filtrage avec Content-ID
+set shared content content-id shared-ctd
+set shared content content-id update
+set shared content content-id security-policy FiltreLAN
+set shared content content-id security-policy DenyHTTP
+set shared content content-id security-policy AllowDNS
+exit
+
+! Configuration SNMP
+set deviceconfig system snmp-setting contact "Administrateur réseau" location "Localisation du pare-feu"
+set deviceconfig system snmp-setting v2c enable
+set deviceconfig system snmp-setting v3 disable
+set deviceconfig system snmp-setting trap-community public
+set deviceconfig system snmp-setting trap-server 10.0.0.2 community public
+set deviceconfig system snmp-setting trap-server 10.0.0.2 version v2c
+exit
+
