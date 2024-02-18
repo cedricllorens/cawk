@@ -1,21 +1,14 @@
-! Configuration du hostname
 configure system
    hostname MonRouteur
-   exit
-
-! Configuration du nom de domaine
+exit
 configure system
    domain mondomaine.com
-   exit
-
-! Configuration des mots de passe
+exit
 configure system security
    admin admin-password MyAdminPassword
    operator operator-password MyOperatorPassword
    exit
 exit
-
-! Configuration des protocoles de routage (exemple: OSPF)
 configure router ospf
    router-id 10.0.0.1
    exit
@@ -26,8 +19,6 @@ configure router ospf
       exit
    exit
 exit
-
-! Configuration de la politique de sécurité
 configure system security
    access-profile "default" create
       security-policy
@@ -36,8 +27,6 @@ configure system security
       exit
    exit
 exit
-
-! Configuration de l'interface de gestion
 configure system security
    management-ssh
       cipher aes-128
@@ -47,8 +36,6 @@ configure system security
       exit
    exit
 exit
-
-! Configuration SNMP
 configure snmp
    community "public" {
       authorization read-only
@@ -62,8 +49,6 @@ configure snmp
    }
    exit
 exit
-
-! Configuration des filtres
 configure access-list extended "FiltreLAN"
    rule 10 {
       action permit
@@ -80,8 +65,7 @@ configure access-list extended "FiltreLAN"
       exit
    }
    exit
-
-! Application des filtres sur une interface
+exit
 configure access-list context "FiltreLAN" ports "1/1/1" ingress
    apply
    exit

@@ -22,7 +22,7 @@
 
 CAWK_RELEASE = v1.0.0
 
-# --------------- CAWK VARS
+# ---------------
 
 TESTS_COMMON_PATH = common
 TESTS_COMMON_TEMPLATE = $(wildcard $(TESTS_COMMON_PATH)/*.template)
@@ -51,18 +51,27 @@ TESTS_fortinet-fortios_RUN_PATH = tests/tests.fortinet-fortios/run
 TESTS_fortinet-fortios_REPO_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_REPO_PATH)/*.template)
 TESTS_fortinet-fortios_RUN_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_RUN_PATH)/*.template)
 
+CONFIGURATION_nokia-sros_PATH = conf/conf.nokia-sros
+TESTS_nokia-sros_REPO_PATH = tests/tests.nokia-sros/repo
+TESTS_nokia-sros_RUN_PATH = tests/tests.nokia-sros/run
+TESTS_nokia-sros_REPO_TEMPLATE = $(wildcard $(TESTS_nokia-sros_REPO_PATH)/*.template)
+TESTS_nokia-sros_RUN_TEMPLATE = $(wildcard $(TESTS_nokia-sros_RUN_PATH)/*.template)
+
 TESTS_REPORT = report
 
-SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios
+SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_juniper-junos_REPO_PATH) \
 		$(TESTS_huawei-vrp_REPO_PATH) \
-		$(TESTS_fortinet-fortios_REPO_PATH)
+		$(TESTS_fortinet-fortios_REPO_PATH) \
+		$(TESTS_nokia-sros_REPO_PATH)
+
 TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_juniper-junos_RUN_PATH) \
 		$(TESTS_huawei-vrp_RUN_PATH) \
-		$(TESTS_fortinet-fortios_RUN_PATH)
+		$(TESTS_fortinet-fortios_RUN_PATH) \
+		$(TESTS_nokia-sros_RUN_PATH)
 
 # --------------- TESTS BUILDING BY SED CHANGE
 
@@ -72,7 +81,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests view clean_report clean catalog git supplier check_supplier
+.phony: all check_repo check_run tests tests_target view clean_report clean catalog git supplier check_supplier
 
 all:
 	# ------------------------------------------------------------
@@ -107,15 +116,17 @@ supplier:
 
 # --------------------------------
 
-tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
+tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk)
+
+tests_repo: tests_target
 	@echo "cawk tests_repo done ----"
 
-tests_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk)
+tests_run: tests_target
 	@echo "cawk tests_run done ----"
 
 # --------------------------------
 
-check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) check_supplier
+check_repo: clean_report tests_target check_supplier
 	@echo "cawk check_repo start ----"
 ifeq ($(strip $(supplier)),)
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
@@ -136,7 +147,7 @@ else
 endif
 	@echo "cawk check_repo done ----"
 
-check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk) check_supplier
+check_run: clean_report tests_target check_supplier
 	@echo "cawk check_run start ----"
 ifeq ($(strip $(supplier)),)
 	@$(foreach scope,$(SUPPLIER_SCOPE),\

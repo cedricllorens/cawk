@@ -11,6 +11,9 @@ v1.1.0 (?):
 	  gmake check_repo supplier=cisco-ios (or juniper-junos, etc.)
 	  gmake check_run supplier=cisco-ios (or juniper-junos, etc.)
 	  gmake view supplier=cisco-ios (or juniper-junos, etc.)
+	Tests:
+	- Add tests in existing suppliers
+	- Add nokia-sros supplier
 
 v1.0.0 (february 2024): initial version
 	- basis tests covering cisco-ios, huawei, fortiner, juniper-junos
