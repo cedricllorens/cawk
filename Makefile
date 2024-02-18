@@ -13,6 +13,7 @@
 # - gmake check_repo 	: assess the confs with <repo> tests
 # - gmake check_run 	: assess the confs with <run> tests
 # - gmake view 		: view the assessment reports (and summary)
+#   or gmake view_cisco-ios, view_juniper-junos, view_huawei-vrp, etc.
 # - gmake catalog 	: build the tests description catalog
 # ------------------------------------------------------------
 
@@ -68,7 +69,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests view clean_report clean catalog git
+.phony: all check_repo check_run tests view clean_report clean catalog git view_cisco-ios view_juniper-junos view_huawei-vrp view_fortinet_fortios
 
 all:
 	# ------------------------------------------------------------
@@ -79,6 +80,7 @@ all:
 	# - gmake check_repo 	: assess the confs with <repo> tests
 	# - gmake check_run 	: assess the confs with <run> tests
 	# - gmake view		: view the reports and the summary
+	#   or gmake view_cisco-ios, view_juniper-junos, view_huawei-vrp, etc.
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
 
@@ -110,6 +112,8 @@ check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_ci
 	)
 	@echo "cawk check_run done ----"
 
+# --------------------------------
+
 view:
 	@$(foreach test,$(TESTS_SCOPE),\
 		echo "---- Assessment $(test) devices ----" ;\
@@ -118,6 +122,36 @@ view:
 		cat $(TESTS_REPORT)/assessment.$(test).summary.txt ;\
 	)
 	@echo "cawk view done ----"
+
+view_cisco-ios:
+	@echo "---- Assessment cisco-ios devices ----"
+	@cat $(TESTS_REPORT)/assessment.cisco-ios.csv
+	@echo "summary ----"
+	@cat $(TESTS_REPORT)/assessment.cisco-ios.summary.txt
+	@echo "cawk view done ----"
+
+view_juniper-junos:
+	@echo "---- Assessment juniper-junos devices ----"
+	@cat $(TESTS_REPORT)/assessment.juniper-junos.csv
+	@echo "summary ----"
+	@cat $(TESTS_REPORT)/assessment.juniper-junos.summary.txt
+	@echo "cawk view done ----"
+
+view_huawei-vrp:
+	echo "---- Assessment huawei-vrp devices ----"
+	cat $(TESTS_REPORT)/assessment.huawei-vrp.csv
+	echo "summary ----"
+	cat $(TESTS_REPORT)/assessment.huawei-vrp.summary.txt
+	@echo "cawk view done ----"
+
+view_fortinet-fortios:
+	echo "---- Assessment fortinet-fortios devices ----"
+	cat $(TESTS_REPORT)/assessment.fortinet-fortios.csv
+	echo "summary ----"
+	cat $(TESTS_REPORT)/assessment.fortinet-fortios.summary.txt
+	@echo "cawk view done ----"
+
+# --------------------------------
 
 clean: clean_report
 	@rm -f $(TESTS_COMMON_PATH)/*.gawk

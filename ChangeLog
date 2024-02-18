@@ -4,7 +4,10 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
-v1.0.0 : initial version
+v1.1.0 (?):
+	- add new suppliers for future tests and add os for each scope
+
+v1.0.0 (february 2024): initial version
 	- basis tests covering cisco-ios, huawei, fortiner, juniper-junos
 	- integrate a basic reporting
 	- fully automated by gmake
