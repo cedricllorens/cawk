@@ -12,7 +12,9 @@
 # - gmake tests_repo 	: build all <repo> tests
 # - gmake tests_run 	: build all <run> tests
 # - gmake check_repo 	: assess the confs with <repo> tests
+#   or gmake check_repo supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake check_run 	: assess the confs with <run> tests
+#   or gmake check_run supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake view 		: view the assessment reports (and summary)
 #   or gmake view supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake catalog 	: build the tests description catalog
@@ -51,7 +53,7 @@ TESTS_fortinet-fortios_RUN_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_RUN_PA
 
 TESTS_REPORT = report
 
-TESTS_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios
+SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_juniper-junos_REPO_PATH) \
@@ -70,7 +72,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests view clean_report clean catalog git supplier
+.phony: all check_repo check_run tests view clean_report clean catalog git supplier check_supplier
 
 all:
 	# ------------------------------------------------------------
@@ -80,16 +82,30 @@ all:
 	# - gmake tests_repo 	: build all <repo> tests
 	# - gmake tests_run 	: build all <run> tests
 	# - gmake check_repo 	: assess the confs with <repo> tests
+	#   or gmake check_repo supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake check_run 	: assess the confs with <run> tests
+	#   or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake view		: view the reports and the summary
 	#   or gmake view supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
 
+# --------------------------------
+
+check_supplier:
+ifneq ($(strip $(supplier)),)
+ifneq ($(findstring $(supplier),$(SUPPLIER_SCOPE)),$(supplier))
+	@$(error supplier : ($(supplier)) is not the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)))
+endif
+endif
+
 supplier:
-	@echo "the list of suppliers supported by cawk is:"
-	@echo $(TESTS_SCOPE)
+	@echo "cawk supplier start ----"
+	@echo "cawk --- the list of suppliers supported by cawk is:"
+	@echo $(SUPPLIER_SCOPE)
 	@echo "cawk supplier done ----"
+
+# --------------------------------
 
 tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
 	@echo "cawk tests_repo done ----"
@@ -97,52 +113,80 @@ tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO
 tests_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk)
 	@echo "cawk tests_run done ----"
 
-check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
-	@$(foreach scope,$(TESTS_SCOPE),\
-		echo "Compute $(scope) devices ----" ;\
+# --------------------------------
+
+check_repo: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) check_supplier
+	@echo "cawk check_repo start ----"
+ifeq ($(strip $(supplier)),)
+	@$(foreach scope,$(SUPPLIER_SCOPE),\
+		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(foreach test,$(TESTS_$(scope)_REPO_TEMPLATE:.gawk.template=.gawk),\
 			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		) \
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
+else
+	@echo "cawk ---- compute $(supplier) devices ----"
+	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
+	@$(foreach test,$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk),\
+		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
+	)
+	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
+endif
 	@echo "cawk check_repo done ----"
 
-check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk)
-	@$(foreach scope,$(TESTS_SCOPE),\
-		echo "Compute $(scope) devices ----" ;\
+check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk) check_supplier
+	@echo "cawk check_run start ----"
+ifeq ($(strip $(supplier)),)
+	@$(foreach scope,$(SUPPLIER_SCOPE),\
+		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(foreach test,$(TESTS_$(scope)_RUN_TEMPLATE:.gawk.template=.gawk),\
 			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv ;\
-		) \
+		)
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
+else
+	@echo "cawk ---- compute $(supplier) devices ----"
+	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
+	@$(foreach test,$(TESTS_$(supllier)_RUN_TEMPLATE:.gawk.template=.gawk),\
+		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
+	) \
+	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
+endif
 	@echo "cawk check_run done ----"
 
 # --------------------------------
 
-view:
+check_supplier:
+ifneq ($(findstring $(supplier),$(SUPPLIER_SCOPE)),$(supplier))
+	@$(error supplier : ($(supplier)) is not the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)))
+endif
+
+view: check_supplier
+	@echo "cawk view start ----"
 ifeq ($(strip $(supplier)),)
-	@$(foreach test,$(TESTS_SCOPE),\
+	@$(foreach test,$(SUPPLIER_SCOPE),\
 		echo "---- Assessment $(test) devices ----" ;\
 		cat $(TESTS_REPORT)/assessment.$(test).csv ;\
-		echo "summary ----" ;\
+		echo "---- summary ----" ;\
 		cat $(TESTS_REPORT)/assessment.$(test).summary.txt ;\
 	)
-	@echo "cawk view done ----"
 else
-	@echo "---- Assessment $(supplier) devices ----"
+	@echo "cawk ---- Assessment $(supplier) devices ----"
 	@cat $(TESTS_REPORT)/assessment.$(supplier).csv
-	@echo "summary ----"
+	@echo "cawk ---- summary ----"
 	@cat $(TESTS_REPORT)/assessment.$(supplier).summary.txt
-	@echo "cawk view done ----"
 endif
+	@echo "cawk view done ----"
 
 # --------------------------------
 
 clean: clean_report
-	@rm -f $(TESTS_COMMON_PATH)/*.gawk
-	@$(foreach scope,$(TESTS_SCOPE),\
+	@echo "cawk clean start ----"
+	rm -f $(TESTS_COMMON_PATH)/*.gawk
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		rm -f $(TESTS_$(scope)_REPO_PATH)/*.gawk $(TESTS_$(scope)_RUN_PATH)/*.gawk ;\
 	)
 	@echo "cawk clean done ----"
@@ -150,7 +194,10 @@ clean: clean_report
 clean_report:
 	@rm -f $(TESTS_REPORT)/*
 
+# --------------------------------
+
 catalog:
+	@echo "cawk start done ----"
 	@echo "---- Tests <repo> catalog ----"
 	@$(foreach id,$(TESTS_CATALOG),\
 		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
@@ -161,6 +208,8 @@ catalog:
 		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
 	)
 	@echo "cawk catalog done ----"
+
+# --------------------------------
 
 git:
 	# --------

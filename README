@@ -84,7 +84,9 @@ cawk in gmake targets:
 	- gmake tests_run 	: build all <repo> tests
 	- gmake tests_repo 	: build all <repo> tests
 	- gmake check_repo 	: assess the confs with <repo> tests
+	  or gmake check_repo supplier=cisco-ios (or juniper-junos, etc.)
 	- gmake check_run 	: assess the confs with <run> tests
+	  or gmake check_run supplier=cisco-ios (or juniper-junos, etc.)
 	- gmake view		: view assessment reports (and summary)
 	  or gmake view supplier=cisco-ios (or juniper-junos, etc.)
 	- gmake catalog 	: list the tests linked to <repo> or <run>

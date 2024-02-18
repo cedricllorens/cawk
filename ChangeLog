@@ -5,8 +5,11 @@
 cawk is Copyright (C) 2024 by Cedric Llorens
 
 v1.1.0 (?):
+	Makefile:
 	- add new suppliers for future tests and add os suffix for each scope
 	- add view per scope thanks to <supplier=> variable called with view target
+	  gmake check_repo supplier=cisco-ios (or juniper-junos, etc.)
+	  gmake check_run supplier=cisco-ios (or juniper-junos, etc.)
 	  gmake view supplier=cisco-ios (or juniper-junos, etc.)
 
 v1.0.0 (february 2024): initial version
