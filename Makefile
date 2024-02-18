@@ -6,14 +6,15 @@
 # ------------------------------------------------------------
 #
 # Makefile
-# - gmake 		: print all the possible targets
+# - gmake 		: provide information on cawk running
+# - gmake supplier 	: provide the suppliers covered by cawk
 # - gmake clean 	: clean all 
 # - gmake tests_repo 	: build all <repo> tests
 # - gmake tests_run 	: build all <run> tests
 # - gmake check_repo 	: assess the confs with <repo> tests
 # - gmake check_run 	: assess the confs with <run> tests
 # - gmake view 		: view the assessment reports (and summary)
-#   or gmake view_cisco-ios, view_juniper-junos, view_huawei-vrp, etc.
+#   or gmake view supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake catalog 	: build the tests description catalog
 # ------------------------------------------------------------
 
@@ -69,20 +70,26 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests view clean_report clean catalog git view_cisco-ios view_juniper-junos view_huawei-vrp view_fortinet_fortios
+.phony: all check_repo check_run tests view clean_report clean catalog git supplier
 
 all:
 	# ------------------------------------------------------------
-	# - gmake 		: print all the possible targets
+	# - gmake 		: provide information on cawk running
+	# - gmake supplier 	: provide the suppliers supported by cawk
 	# - gmake clean 	: clean all 
 	# - gmake tests_repo 	: build all <repo> tests
 	# - gmake tests_run 	: build all <run> tests
 	# - gmake check_repo 	: assess the confs with <repo> tests
 	# - gmake check_run 	: assess the confs with <run> tests
 	# - gmake view		: view the reports and the summary
-	#   or gmake view_cisco-ios, view_juniper-junos, view_huawei-vrp, etc.
+	#   or gmake view supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
+
+supplier:
+	@echo "the list of suppliers supported by cawk is:"
+	@echo $(TESTS_SCOPE)
+	@echo "cawk supplier done ----"
 
 tests_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk)
 	@echo "cawk tests_repo done ----"
@@ -115,6 +122,7 @@ check_run: clean_report $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_ci
 # --------------------------------
 
 view:
+ifeq ($(strip $(supplier)),)
 	@$(foreach test,$(TESTS_SCOPE),\
 		echo "---- Assessment $(test) devices ----" ;\
 		cat $(TESTS_REPORT)/assessment.$(test).csv ;\
@@ -122,34 +130,13 @@ view:
 		cat $(TESTS_REPORT)/assessment.$(test).summary.txt ;\
 	)
 	@echo "cawk view done ----"
-
-view_cisco-ios:
-	@echo "---- Assessment cisco-ios devices ----"
-	@cat $(TESTS_REPORT)/assessment.cisco-ios.csv
+else
+	@echo "---- Assessment $(supplier) devices ----"
+	@cat $(TESTS_REPORT)/assessment.$(supplier).csv
 	@echo "summary ----"
-	@cat $(TESTS_REPORT)/assessment.cisco-ios.summary.txt
+	@cat $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 	@echo "cawk view done ----"
-
-view_juniper-junos:
-	@echo "---- Assessment juniper-junos devices ----"
-	@cat $(TESTS_REPORT)/assessment.juniper-junos.csv
-	@echo "summary ----"
-	@cat $(TESTS_REPORT)/assessment.juniper-junos.summary.txt
-	@echo "cawk view done ----"
-
-view_huawei-vrp:
-	echo "---- Assessment huawei-vrp devices ----"
-	cat $(TESTS_REPORT)/assessment.huawei-vrp.csv
-	echo "summary ----"
-	cat $(TESTS_REPORT)/assessment.huawei-vrp.summary.txt
-	@echo "cawk view done ----"
-
-view_fortinet-fortios:
-	echo "---- Assessment fortinet-fortios devices ----"
-	cat $(TESTS_REPORT)/assessment.fortinet-fortios.csv
-	echo "summary ----"
-	cat $(TESTS_REPORT)/assessment.fortinet-fortios.summary.txt
-	@echo "cawk view done ----"
+endif
 
 # --------------------------------
 

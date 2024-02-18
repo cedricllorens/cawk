@@ -78,13 +78,15 @@ useful scripts
 # -----------------------
 
 cawk in gmake targets:
+	- gmake			: provide information on cawk running
+	- gmake supplier	: provides the suppliers supported by cawk
 	- gmake clean 		: clean all 
 	- gmake tests_run 	: build all <repo> tests
 	- gmake tests_repo 	: build all <repo> tests
 	- gmake check_repo 	: assess the confs with <repo> tests
 	- gmake check_run 	: assess the confs with <run> tests
 	- gmake view		: view assessment reports (and summary)
-	  or gmake view_cisco-ios, view_juniper-junos, view_huawei-vrp, etc.
+	  or gmake view supplier=cisco-ios (or juniper-junos, etc.)
 	- gmake catalog 	: list the tests linked to <repo> or <run>
 
 	note : gmake clean check_repo view allows to launch a full <repo> assessment
