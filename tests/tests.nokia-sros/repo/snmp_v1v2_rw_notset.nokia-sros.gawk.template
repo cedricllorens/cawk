@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if snmp v1v2 is set
+# purpose : this test generates an error if snmp v1v2 has write access
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -37,7 +37,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_NOKIA%{4}community/ && block_snmp == 1 {
+/^%SED_BK_NOKIA%{4}community/ && / rw/ && block_snmp == 1 {
 	print_err("snmp_v1v2_notset.nokia-sros.gawk",rm_blank_before($0),FNR,"high","error");
         pass = 0;
 	nextfile;
@@ -56,7 +56,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2_notset.nokia-sros.gawk","snmp v1v2 is not set",0,"high","pass");
+        if ( pass ) print_err("snmp_v1v2_notset.nokia-sros.gawk","snmp v1v2 has no write access",0,"high","pass");
 }
 
 END {

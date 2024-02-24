@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_FORTI%%SED_BK_FORTI%[ ]*set allowaccess / && /%SED_MGNT_BADPROTO%/ && block_edit == 1 {
+/^%SED_BK_FORTI%{2}[ ]*set allowaccess / && /%SED_MGNT_BADPROTO%/ && block_edit == 1 {
 	print_err("interface_mgntforbidallow_noset.fortinet.gawk",block_edit_str" "rm_blank_before($0),0,"high","error");
 	pass = 0;
 	next;

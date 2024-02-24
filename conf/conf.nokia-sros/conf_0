@@ -1,72 +1,20 @@
-configure system
-   hostname MonRouteur
-exit
-configure system
-   domain mondomaine.com
-exit
-configure system security
-   admin admin-password MyAdminPassword
-   operator operator-password MyOperatorPassword
-   exit
-exit
-configure router ospf
-   router-id 10.0.0.1
-   exit
-   area 0.0.0.0
-      interface "1/1/1"
-         passive
-         exit
-      exit
-   exit
-exit
-configure system security
-   access-profile "default" create
-      security-policy
-         default deny
-         exit
-      exit
-   exit
-exit
-configure system security
-   management-ssh
-      cipher aes-128
-      enable
-      max-sessions 5
-      protocol-version v2
-      exit
-   exit
-exit
-configure snmp
-   community "public" {
-      authorization read-only
-      access-profile "default"
-      exit
-   }
-   trap-options {
-      source-address 10.0.0.1
-      community "public"
-      exit
-   }
-   exit
-exit
-configure access-list extended "FiltreLAN"
-   rule 10 {
-      action permit
-      source {
-         address 10.0.0.0/8
-      }
-      exit
-   }
-   rule 20 {
-      action deny
-      source {
-         address any
-      }
-      exit
-   }
-   exit
-exit
-configure access-list context "FiltreLAN" ports "1/1/1" ingress
-   apply
-   exit
-exit
+configure
+    system
+        name device
+    exit
+    system
+        security
+            snmp
+                view "testview" subtree "1"
+                    mask ff type excluded
+                exit
+                view "testview" subtree "1.3.6.1.2"
+                    mask ff type excluded
+                exit
+                access group "test" security-model usm security-level auth-no-privacy read "testview" write "testview" notify "testview"
+                community "cawk" hash2 rwa version both
+                community "public" hash2 r version both
+            exit
+	exit
+    exit
+exit all

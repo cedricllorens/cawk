@@ -1,0 +1,12 @@
+configure
+    system
+        name device
+    exit
+    system
+        security
+            snmp
+		shutdown
+            exit
+	exit
+    exit
+exit all

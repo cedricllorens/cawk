@@ -32,7 +32,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%%SED_BK_JUNI%%SED_MGNT_BADPROTO%( |;)/ && block_services == 1 {
+/^%SED_BK_JUNI%{2}%SED_MGNT_BADPROTO%( |;)/ && block_services == 1 {
 	print_err("services_forbidproto_notset.juniper-junos.gawk",rm_last_char(rm_blank_before($0)),FNR,"high","error");
 	pass = 0;
 	next;

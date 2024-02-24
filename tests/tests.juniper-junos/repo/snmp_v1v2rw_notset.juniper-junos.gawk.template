@@ -32,7 +32,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%%SED_BK_JUNI%authorization write/ && block_community == 1 {
+/^%SED_BK_JUNI%{2}authorization write/ && block_community == 1 {
 	print_err("snmp_v1v2rw_notset.juniper-junos.gawk",rm_blank_before(rm_last_char($0)),FNR,"high","error");
         pass = 0;
 	nextfile;

@@ -17,6 +17,20 @@ interface FastEthernet0
  duplex auto
  no keepalive
 !
+route-map tag-filter deny 10
+ match tag 777
+route-map tag-filter permit 20
+!
+router ospf 1
+ router-id 10.0.0.2
+ log-adjacency-changes
+ network 10.16.2.1 0.0.0.255 area 0
+ distribute-list route-map tag-filter-in in
+!
+ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32
+!
+resequence prefix-list ipv4 ldp_filter 30 10
+!
 interface GigabitEthernet0/0
  ip address 10.0.68.45 255.255.255.0
  ip access-group BLOCK_VIRU in
@@ -35,6 +49,12 @@ ip access-list extended BLOCK_VIRUS
 !
 access-list 97 permit 10.0.168.143
 access-list 98 permit 10.0.168.133
+!
+router ospf 1
+ router-id 10.0.0.2
+ log-adjacency-changes
+ network 10.16.2.1 0.0.0.255 area 0
+ distribute-list route-map tag-filter-in in
 !
 snmp-server community cawk RO
 snmp-server community private RW

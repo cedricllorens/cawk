@@ -38,7 +38,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_FORTI%%SED_BK_FORTI%set status enable/ && block_edit == 1 {
+/^%SED_BK_FORTI%{2}set status enable/ && block_edit == 1 {
 	print_err("syslogd_enable_noset.fortinet.gawk",block_edit_str" : syslogd is enable",FNR,"high","pass");
 	passlocal = 1;	
 	next;

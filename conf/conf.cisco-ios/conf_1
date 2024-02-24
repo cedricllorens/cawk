@@ -24,6 +24,20 @@ interface GigabitEthernet0/1
  ip address 10.0.68.45 255.255.255.0
  no ip proxy-arp
 !
+route-map tag-filter deny 10
+ match tag 777
+route-map tag-filter permit 20
+!
+router ospf 1
+ router-id 10.0.0.2
+ log-adjacency-changes
+ network 10.16.2.1 0.0.0.255 area 0
+ distribute-list route-map tag-filter in
+!
+ip prefix-list ldp_filter seq 10 permit 0.0.0.0/0 le 32
+!
+resequence prefix-list ipv4 ldp_filter 30 10
+!
 interface GigabitEthernet0/1
  no ip address
 !

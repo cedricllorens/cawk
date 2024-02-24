@@ -209,13 +209,19 @@ clean_report:
 
 catalog:
 	@echo "cawk start done ----"
+	@echo "------------------------------"
 	@echo "---- Tests <repo> catalog ----"
+	@echo "------------------------------"
 	@$(foreach id,$(TESTS_CATALOG),\
+		echo " ---- "$(id)" ----";\
 		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
 	)
 
+	@echo "-----------------------------"
 	@echo "---- Tests <run> catalog ----"
+	@echo "-----------------------------"
 	@$(foreach id,$(TESTS_CATALOG_RUN),\
+		echo " ---- "$(id)" ----";\
 		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
 	)
 	@echo "cawk catalog done ----"
