@@ -39,12 +39,12 @@ BEGINFILE {
 }
 
 ENDFILE {
-	print "total number of files " length(files); 
-	print "total number of tests " length(tests); 
+	print "number_of_files " length(files); 
+	print "number_of_tests " length(tests); 
 	for(id in tests) printf("	test %s\n",id);
-	if ( ( pass + error ) > 0) print "the number of pass " pass " ("int(100 * pass / ( pass + error))"%)";
-	if ( ( pass + error ) > 0) print "the number of error " error " ("int(100 * error / ( pass + error))"%)";
-	print "total number of checks " length(files) * length(tests);
+	if ( ( pass + error ) > 0) print "number_of_pass " pass " ("int(100 * pass / ( pass + error))"%)";
+	if ( ( pass + error ) > 0) print "number_of_error " error " ("int(100 * error / ( pass + error))"%)";
+	print "number_of_checks " length(files) * length(tests);
 }
 
 END {

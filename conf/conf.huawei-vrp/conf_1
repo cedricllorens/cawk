@@ -15,7 +15,7 @@ rsa local-key-pair create
 user-interface vty 0 4
  protocol inbound ssh
 #
-aaa
+aaaa
  local-user admin password irreversible-cipher votre_mot_de_passe
  local-user admin privilege level 15
  local-user admin service-type ssh

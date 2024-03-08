@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if a http statement is set
+# purpose : checks if a http statement is set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

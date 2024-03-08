@@ -4,6 +4,17 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.2.0 (march 2024):
+	Makefile:
+	- review catalog output and tests running output
+	Tests:
+	- update all tests purposes with similar syntax
+	- add tests for all suppliers
+	- add paloalto-panos supplier
+	For next release:
+	- work to generate a Makefile that can runned in parallel, enforcing stable system and managing write race conditions
+	(commmon/gen_cawk_makefile.gawk.template), it will be used for huge number of devices assessment
+
 v1.1.0 (february 2024):
 	Makefile:
 	- add new suppliers for future tests and add os suffix for each scope
@@ -12,8 +23,8 @@ v1.1.0 (february 2024):
 	  gmake clean check_run supplier=cisco-ios (or juniper-junos, etc.)
 	  gmake view supplier=cisco-ios (or juniper-junos, etc.)
 	Tests:
-	- Add tests in existing suppliers and configure a better writting approach for matching block
-	- Add nokia-sros supplier
+	- add tests in existing suppliers and configure a better writting approach for matching block
+	- add nokia-sros supplier
 
 v1.0.0 (february 2024): initial version
 	- basis tests covering cisco-ios, huawei, fortiner, juniper-junos

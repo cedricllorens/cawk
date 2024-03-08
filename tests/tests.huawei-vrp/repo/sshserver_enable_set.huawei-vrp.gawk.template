@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if ssh server is no set
+# purpose : checks if ssh server is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -21,13 +21,13 @@ BEGINFILE {
 }
 
 /^ssh server enable/ {
-	print_err("sshserver_enable_set.huawei.gawk",$0,FNR,"high","pass");
+	print_err("sshserver_enable_set.huawei-vrp.gawk",$0,FNR,"high","pass");
 	pass = 1;
 	nextfile;
 }
 
 ENDFILE {
-	if ( !pass ) print_err("sshserver_enable_set.huawei.gawk","ssh server is not set",0,"high","error");
+	if ( !pass ) print_err("sshserver_enable_set.huawei-vrp.gawk","ssh server is not set",0,"high","error");
 }
 
 END {

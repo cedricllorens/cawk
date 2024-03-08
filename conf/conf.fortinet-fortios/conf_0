@@ -27,12 +27,23 @@ config firewall policy
     edit 1
         set srcintf "port1"
         set dstintf "wan1"
-        set srcaddr "all"
+        set srcaddr "10.10.10.10/24"
         set dstaddr "all"
         set action accept
         set schedule "always"
         set service "ALL"
         set utm-status enable
+    next
+    edit 2
+        set name "Deny-All"
+        set srcintf "any"
+        set srcaddr "all"
+        set dstintf "any"
+        set dstaddr "all"
+        set service "ALL"
+        set action deny
+        set schedule "always"
+        set comments "Deny all other traffic"
     next
 end
 

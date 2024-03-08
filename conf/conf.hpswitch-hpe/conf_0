@@ -1,59 +1,64 @@
-! Configuration du hostname
-sysname MonSwitch
+ip ssh server
+ip ssh version 2
+ip ssh authentication-retries 3
+ip ssh timeout 120
+ip ssh client-encryption aes256-ctr aes10-ctr aes128-ctr
+ip ssh server-encryption aes256-ctr aes10-ctr aes128-ctr
 
-! Configuration de l'interface de gestion
-vlan 1
-   description "VLAN de gestion"
-   ip address 10.0.0.1 255.255.255.0
-   exit
-ip ssh server enable
+interface Vlan-interface10
+ description "User VLAN"
+ ip address 10.168.10.1/24
 
-! Configuration des mots de passe
-local-user admin class manage
-   password cipher MonAdminPassword
-   service-type ssh
-   authorization-attribute level 3
-   exit
-local-user operator class manage
-   password cipher MonOperatorPassword
-   service-type ssh
-   authorization-attribute level 2
-   exit
+interface GigabitEthernet1/0/1
+ description "User Access Port"
+ port link-type access
+ port default vlan 10
+ port access-control security-policy
+ port access-control maximum-mac-count 2
+ port access-control violation restrict
+ port access-control aging type inactivity
+ port access-control aging time 10
 
-! Configuration des protocoles de routage (exemple: OSPF)
-ospf 1
-   area 0.0.0.0
-      network 10.0.0.1 0.0.0.0
-      exit
-   exit
+interface GigabitEthernet1/0/2
+ description "Trunk Port"
+ port link-type trunk
+ port trunk allow-pass vlan 10 20 30
+ port trunk allow-pass vlan remove 1 1002-1005
+ vlan-group 1 pruning
 
-! Configuration de la politique de sécurité
-acl number 2000
-   rule 5 permit source 10.0.0.0 0.255.255.255
-   rule 10 deny
-   exit
-traffic classifier CLASS1 operator or
-   if-match acl 2000
-   exit
-traffic behavior BEHAVIOR1
-   permit
-   exit
-traffic policy POLICY1
-   classifier CLASS1 behavior BEHAVIOR1
-   exit
-qos policy POLICY1
-   classifier CLASS1 behavior BEHAVIOR1
-   exit
-interface vlan-interface 1
-   traffic-policy POLICY1 inbound
-   exit
+ip route-static 0.0.0.0/0 10.168.1.1
 
-! Configuration SNMP
-snmp-agent
-   snmp-agent community read public
-   snmp-agent sys-info version v2c
-   snmp-agent trap enable
-   snmp-agent trap source Vlan-interface1
-   snmp-agent target-host trap address udp-domain 10.0.0.2 params securityname public v2c
-   exit
+snmp-agent group mygroup v3 auth sha priv aes256
+snmp-agent user myuser mygroup v3 auth sha myauthpriv myencryptpriv
+snmp-agent view myview included .1.3.6.1.4.1.11
+snmp-agent access myview mygroup read-only
+snmp-agent enable traps
 
+aaa authentication login default local
+aaa authorization exec default local
+aaa authorization commands 15 default local
+
+username myuser password mypassword level 15
+
+ntp server 0.pool.ntp.org prefer
+ntp server 1.pool.ntp.org
+ntp server 2.pool.ntp.org
+ntp server 3.pool.ntp.org
+ntp authenticate
+ntp authentication-key 1 md5 mysecretkey
+ntp trusted-key 1
+
+ip dhcp snooping vlan 10
+ip dhcp snooping
+
+ip arp inspection vlan 10
+ip arp inspection validate src-mac
+ip arp inspection validate ip
+
+ip access-list standard 100
+ permit 10.168.10.0 0.0.0.255
+ deny any log
+interface Vlan-interface10
+ ip access-group 100 in
+
+write memory

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if snmp v1v2 has forbidden communities
+# purpose : checks if snmp v1v2 has forbidden communities
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

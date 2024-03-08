@@ -1,0 +1,78 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if firewall last rule implement src=all dst=all service=all action=deny
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	src = 0;
+	dst = 0;
+	deny = 0;
+	service = 0;
+}
+
+/^config firewall policy/ {
+	block_firewall = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%edit / && block_firewall == 1 {
+	block_edit = 1;
+	src = 0;
+	dst = 0;
+	deny = 0;
+	service = 0;
+	next;
+}
+
+/^%SED_BK_FORTI%{2}set srcaddr "all"/ && block_edit == 1 {
+	src = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%{2}set dstaddr "all"/ && block_edit == 1 {
+	dst = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%{2}set service "ALL"/ && block_edit == 1 {
+	service = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%{2}set action deny/ && block_edit == 1 {
+	deny = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%next$/ && block_edit == 1 {
+	block_edit = 0;
+	next;
+}
+
+/^end$/ && block_firewall == 1 {
+	block_firewall = 0;
+}
+
+ENDFILE {
+	if ( src && dst && service && deny ) {
+		print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",0,"high","pass");	
+	} else {
+		print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",0,"high","error");	
+	}
+}
+
+END {
+}

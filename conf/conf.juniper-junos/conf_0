@@ -45,6 +45,13 @@ system {
             }
         }
     }
+    auth-order [ radius password ];
+    radius-server {
+        10.0.0.1 {
+            secret "$9$/g3dHZrJNjQw0XvT4vTgv/"; ## SECRET-DATA
+            source-address 192.168.1.1;
+        }
+    }
 }
 
 firewall {

@@ -1,0 +1,84 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if firewall last rule implement src=any dst=any service=any action=deny
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	src = 0;
+	dst = 0;
+	service = 0;
+	deny = 0;
+}
+
+/^security/ {
+	block_firewall = 1;
+	next;
+}
+
+/^%SED_BK_PALO%rules/ && block_firewall == 1 {
+	block_rules = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{2}[^ ]/ && !/^%SED_BK_PALO%{2}\}/ && block_rules == 1 {
+	block_rule = 1;
+	src = 0;
+	dst = 0;
+	service = 0;
+	deny = 0;
+	next;
+}
+
+/^%SED_BK_PALO%{3}source any/ && block_rules == 1 {
+	src = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{3}destination any/ && block_rules == 1 {
+	dst = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{3}service any/ && block_rules == 1 {
+	service = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{3}action deny/ && block_rules == 1 {
+	deny = 1;
+	next;
+}
+
+/^%SED_BK_PALO%\}/ && block_rules == 1 {
+	block_rules = 0;
+	next;
+}
+
+/^\}/ && block_firewall == 1 {
+	block_firewall = 0;
+	next;
+}
+
+ENDFILE {
+	if ( dst && src && service && deny ) {
+		print_err("firewall_lastrule_noset.paloalto-panos.gawk","firewall has last rule src=any dst=any service=any action=deny",0,"high","pass");
+	} else {
+		print_err("firewall_lastrule_noset.paloalto-panos.gawk","firewall has not last rule src=any dst=any service=any action=deny",0,"high","error");
+	}
+}
+
+END {
+}

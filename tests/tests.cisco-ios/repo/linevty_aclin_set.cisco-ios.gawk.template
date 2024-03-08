@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generate an error if a line vty has no access-class in
+# purpose : checks if a line vty has no access-class in
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

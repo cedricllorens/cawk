@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if snmp v1v2 has forbidden communities
+# purpose : checks if snmp v1v2 has forbidden communities
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -38,7 +38,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_NOKIA%{4}community/ && /%SED_SNMP_FORBID_COMMUNITY%/ && block_snmp == 1 {
-	print_err("snmp_v1v2_notset.nokia-sros.gawk",rm_blank_before($0),FNR,"high","error");
+	print_err("snmp_v1v2forbidcommunity_notset.nokia-sros.gawk",rm_blank_before($0),FNR,"high","error");
         pass = 0;
 	nextfile;
 }
@@ -56,7 +56,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2_notset.nokia-sros.gawk","snmp v1v2 has not forbidden communties",0,"high","pass");
+        if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.nokia-sros.gawk","snmp v1v2 has not forbidden communties",0,"high","pass");
 }
 
 END {

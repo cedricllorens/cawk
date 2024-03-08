@@ -8,8 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generate an error when an filter is def and not ref
-# purpose : this test generate an error when an filter is ref and not def
+# purpose : checks when an filter is def and not ref
+# purpose : checks when an filter is ref and not def
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

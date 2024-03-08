@@ -8,8 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generate an error when an acl is def and not ref
-# purpose : this test generate an error when an acl is ref and not def
+# purpose : checks when an acl is def and not ref
+# purpose : checks when an acl is ref and not def
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -46,7 +46,7 @@ ENDFILE {
 	# acl def not ref ----
 	for (id in acl_def) {
 		if ( !(id in acl_ref) ) {
-			print_err("acl_defref_set.huawei.gawk",id" : acl def but not ref :"acl_def[id],0,"low","error");
+			print_err("acl_defref_set.huawei-vrp.gawk",id" : def not ref :"acl_def[id],0,"low","error");
 			pass = 0;
 		}
 	}
@@ -54,12 +54,12 @@ ENDFILE {
 	# acl ref not def ----
 	for (id in acl_ref) {
 		if ( !(id in acl_def) ) {
-			print_err("acl_defref_set.huawei.gawk",id" : acl ref but not def :"acl_ref[id],0,"high","error");
+			print_err("acl_defref_set.huawei-vrp.gawk",id" : ref not def :"acl_ref[id],0,"high","error");
 			pass = 0;
 		}
 	}
 
-	if ( pass ) print_err("acl_defref_set.huawei.gawk","all acls defs are refs and the reverse",0,"high","pass");
+	if ( pass ) print_err("acl_defref_set.huawei-vrp.gawk","all acls defs are refs and the reverse",0,"high","pass");
 }
 
 END {

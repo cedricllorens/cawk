@@ -1,0 +1,44 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if aaa forbidden users are set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_aaa = 1;
+}
+
+/^aaa$/ {
+	block_aaa = 1;
+	next;
+}
+
+/^ local-user / && !/^ local-user %SED_AUTHUSER_HUAWEI%/ && block_aaa == 1 {
+	print_err("aaa_user_notset.huawei-vrp.gawk",$0,FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+/^[^ ]/ && block_aaa == 1 {
+	block_aaa = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("aaa_user_notset.huawei-vrp.gawk","aaa not forbidden users are set",0,"high","pass");
+}
+
+END {
+}

@@ -7,8 +7,8 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : this test generate an error when an acl is def and not ref
-# purpose : this test generate an error when an acl is ref and not def
+# purpose : checks when an acl is def and not ref
+# purpose : checks an error when an acl is ref and not def
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -55,7 +55,7 @@ ENDFILE {
 	# acl def and not ref
 	for (id in acl_def) {
 		if ( !(id in acl_ref) ) {
-			print_err("acl_defref_set.cisco-ios.gawk",id" : acl def but not ref :"acl_def[id],0,"low","error");
+			print_err("acl_defref_set.cisco-ios.gawk",id" : def not ref :"acl_def[id],0,"low","error");
 			pass = 0;
 		}
 	}
@@ -63,7 +63,7 @@ ENDFILE {
 	# acl ref and not def
 	for (id in acl_ref) {
 		if ( !(id in acl_def) ) {
-			print_err("acl_defref_set.cisco-ios.gawk",id" : acl ref but not def :"acl_ref[id],0,"high","error");
+			print_err("acl_defref_set.cisco-ios.gawk",id" : ref not def :"acl_ref[id],0,"high","error");
 			pass = 0;
 		}
 	}

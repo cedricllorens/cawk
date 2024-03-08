@@ -20,7 +20,7 @@ snmp-agent community write public
 #
 aaa
  local-user admin password irreversible-cipher votre_mot_de_passe
- local-user admin privilege level 15
+ local-user cawk privilege level 15
  local-user admin service-type ssh
 #
 acl number 3000
@@ -40,3 +40,24 @@ interface GigabitEthernet0/0/1
 #
 ssh server attack-defense max-retry-rate 3
 ssh server attack-defense max-retry-count 3
+#
+route-policy no_need_send_policy permit node 20
+#
+ospf 100 router-id 5.5.5.5
+ area 0.0.0.0
+#
+bgp 65500
+ router-id 5.5.5.5
+ peer 2.2.2.2 as-number 65500
+ peer 2.2.2.2 connect-interface LoopBack0
+ #
+ ipv4-family unicast
+  undo synchronization
+  import-route ospf 100 route-policy need_send
+  peer 2.2.2.2 enable
+#
+ip ip-prefix no_need_send index 10 permit 10.10.10.10 32
+#
+route-policy no_need_send_new deny node 10
+ if-match ip-prefix no_need_send_bad
+#

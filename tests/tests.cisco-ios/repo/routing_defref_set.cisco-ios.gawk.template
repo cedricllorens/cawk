@@ -7,8 +7,8 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : this test generate an error when an routing is def and not ref
-# purpose : this test generate an error when an routing is ref and not def
+# purpose : checks when an routing is def and not ref
+# purpose : checks an error when an routing is ref and not def
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -65,7 +65,7 @@ ENDFILE {
 	# routing def and not ref
 	for (id in routing_def) {
 		if ( !(id in routing_ref) ) {
-			print_err("routing_defref_set.cisco-ios.gawk",id" : routing def but not ref :"routing_def[id],0,"low","error");
+			print_err("routing_defref_set.cisco-ios.gawk",id" : def not ref :"routing_def[id],0,"low","error");
 			pass = 0;
 		}
 	}
@@ -73,7 +73,7 @@ ENDFILE {
 	# routing ref and not def
 	for (id in routing_ref) {
 		if ( !(id in routing_def) ) {
-			print_err("routing_defref_set.cisco-ios.gawk",id" : routing ref but not def :"routing_ref[id],0,"high","error");
+			print_err("routing_defref_set.cisco-ios.gawk",id" : ref not def :"routing_ref[id],0,"high","error");
 			pass = 0;
 		}
 	}

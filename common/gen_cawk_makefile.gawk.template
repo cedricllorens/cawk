@@ -1,0 +1,130 @@
+#%SED_GAWK_PATH%
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# cawk is Copyright (C) 2024 by Cedric Llorens
+#
+# it generates the makefile to parse configurations in parallel
+# mode thanks to call : gmake -j
+#
+# for future usage
+# ------------------------------------------------------------
+
+function help() {
+    print "Usage: generate_makefile.awk file_list files_per_target file_pgm"
+}
+
+BEGIN {
+
+    # ------------------
+    # ARGC entries -----
+    # ------------------
+
+    if (ARGC != 4) {
+	help();
+        exit 0;
+    }
+
+    file_list = ARGV[1]
+    files_per_target = ARGV[2]
+    file_pgm = ARGV[3]
+
+    # check entries
+
+    if (system("test -f " file_list) != 0) {
+        print file_list "is not a file";
+	help();
+	exit 0;
+    }
+
+    if (system("test -f " file_pgm) != 0) {
+        print file_pgm "is not a file";
+	help();
+	exit 0;
+    }
+
+    if ( files_per_target == 0 ) {
+	help();
+	exit 0;
+    }
+
+    # store entries in tab
+
+    while ((getline < file_list) > 0) {
+        files[++total_files] = $0
+    }
+    close(file_list)
+
+    while ((getline < file_pgm) > 0) {
+        pgms[++total_pgm] = $0
+    }
+    close(file_pgm)
+
+    targets = total_files / files_per_target
+    remainder = total_files % files_per_target
+
+    if (remainder > 0) {
+        targets++
+    }
+
+    # -------------------
+    # BUILD all temp vars
+    # -------------------
+    for (t = 1; t <= targets; t++) {
+        printf("file_target%s := $(shell mktemp -p tmp)\n",t);
+    }
+    printf("\n");
+
+    # ----------------
+    # BUILD all target
+    # ----------------
+
+    printf("all: init ");
+    for (t = 1; t <= targets; t++) {
+        printf("target%s ",t);
+    }
+    printf("\n");
+    printf("\t@cat ");
+    for (i = 1; i <= targets; i++) {
+	printf("$(file_target%s) ",i);
+    }
+    printf(" | sort | uniq");
+    printf("\n");
+    printf("\t@rm -f tmp/tmp*");
+    printf("\n");
+    printf("\n");
+
+    printf("init:\n");
+    printf("\t@rm -f tmp/tmp*");
+    printf("\n");
+
+    # -----------------
+    # BUILD sub targets
+    # -----------------
+
+    compteur = 1;
+    for (i = 1; i <= targets; i++) {
+        printf("\ntarget%s:",i);
+    	for (k = 1; k <= total_pgm ; k++) {
+        	printf("\n\t@%s ",pgms[k]);
+    		for (j = compteur; j < compteur + files_per_target; j++) {
+        		printf("%s ",files[j]);
+		}
+    		printf(">> $(file_target%s)",i);
+	}
+	compteur = compteur + files_per_target;
+    	printf("\n");
+    }
+    printf("\n");
+
+    # -------------------
+    # BUILD PHONY targets
+    # -------------------
+
+    printf(".PHONY: all init ");
+    for (t = 1; t <= targets; t++) {
+        printf("target%s ",t);
+    }
+    printf("\n");
+}

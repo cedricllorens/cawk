@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if syslogd is not set
+# purpose : checks if syslogd is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -39,13 +39,13 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%{2}set status enable/ && block_edit == 1 {
-	print_err("syslogd_enable_noset.fortinet.gawk",block_edit_str" : syslogd is enable",FNR,"high","pass");
+	print_err("syslogd_enable_noset.fortinet-fortios.gawk",block_edit_str" : syslogd is enable",FNR,"high","pass");
 	passlocal = 1;	
 	next;
 }
 
 /^%SED_BK_FORTI%next$/ && block_edit == 1 {
-	if ( ! passlocal ) print_err("syslogd_enable_noset.fortinet.gawk",block_edit_str" : syslogd is no enable",FNR,"high","error");
+	if ( ! passlocal ) print_err("syslogd_enable_noset.fortinet-fortios.gawk",block_edit_str" : syslogd is no enable",FNR,"high","error");
 	block_edit = 0;
 	next;
 }
@@ -55,7 +55,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( ! passglobal ) print_err("syslogd_enable_noset.fortinet.gawk","syslogd is no set",0,"high","error");
+	if ( ! passglobal ) print_err("syslogd_enable_noset.fortinet-fortios.gawk","syslogd is no set",0,"high","error");
 }
 
 END {

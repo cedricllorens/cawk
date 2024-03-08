@@ -12,15 +12,16 @@
 # - gmake tests_repo 	: build all <repo> tests
 # - gmake tests_run 	: build all <run> tests
 # - gmake check_repo 	: assess the confs with <repo> tests
-#   or gmake check_repo supplier=cisco-ios (or juniper-junos, etc.)
+#   or gmake clean check_repo supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake check_run 	: assess the confs with <run> tests
-#   or gmake check_run supplier=cisco-ios (or juniper-junos, etc.)
+#   or gmake clean check_run supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake view 		: view the assessment reports (and summary)
-#   or gmake view supplier=cisco-ios (or juniper-junos, etc.)
+#   or gmake clean check_repo view supplier=cisco-ios (or juniper-junos, etc.)
+#   or gmake clean check_run view supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake catalog 	: build the tests description catalog
 # ------------------------------------------------------------
 
-CAWK_RELEASE = v1.0.0
+CAWK_RELEASE = v1.2.0
 
 # ---------------
 
@@ -57,21 +58,31 @@ TESTS_nokia-sros_RUN_PATH = tests/tests.nokia-sros/run
 TESTS_nokia-sros_REPO_TEMPLATE = $(wildcard $(TESTS_nokia-sros_REPO_PATH)/*.template)
 TESTS_nokia-sros_RUN_TEMPLATE = $(wildcard $(TESTS_nokia-sros_RUN_PATH)/*.template)
 
+CONFIGURATION_paloalto-panos_PATH = conf/conf.paloalto-panos
+TESTS_paloalto-panos_REPO_PATH = tests/tests.paloalto-panos/repo
+TESTS_paloalto-panos_RUN_PATH = tests/tests.paloalto-panos/run
+TESTS_paloalto-panos_REPO_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_REPO_PATH)/*.template)
+TESTS_paloalto-panos_RUN_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_RUN_PATH)/*.template)
+
 TESTS_REPORT = report
 
-SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros
+TESTS_TMP = tmp
+
+SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_juniper-junos_REPO_PATH) \
 		$(TESTS_huawei-vrp_REPO_PATH) \
 		$(TESTS_fortinet-fortios_REPO_PATH) \
-		$(TESTS_nokia-sros_REPO_PATH)
+		$(TESTS_nokia-sros_REPO_PATH) \
+		$(TESTS_paloalto-panos_REPO_PATH)
 
 TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_juniper-junos_RUN_PATH) \
 		$(TESTS_huawei-vrp_RUN_PATH) \
 		$(TESTS_fortinet-fortios_RUN_PATH) \
-		$(TESTS_nokia-sros_RUN_PATH)
+		$(TESTS_nokia-sros_RUN_PATH) \
+		$(TESTS_paloalto-panos_RUN_PATH)
 
 # --------------- TESTS BUILDING BY SED CHANGE
 
@@ -81,7 +92,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests tests_target view clean_report clean catalog git supplier check_supplier
+.phony: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git supplier check_supplier
 
 all:
 	# ------------------------------------------------------------
@@ -91,11 +102,12 @@ all:
 	# - gmake tests_repo 	: build all <repo> tests
 	# - gmake tests_run 	: build all <run> tests
 	# - gmake check_repo 	: assess the confs with <repo> tests
-	#   or gmake check_repo supplier=cisco-ios (or view_juniper-junos, etc.)
+	#   or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake check_run 	: assess the confs with <run> tests
-	#   or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)
+	#   or gmake clean check_run supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake view		: view the reports and the summary
-	#   or gmake view supplier=cisco-ios (or view_juniper-junos, etc.)
+	#   or gmake clean check_repo view supplier=cisco-ios (or view_juniper-junos, etc.)
+	#   or gmake clean check_run view supplier=cisco-ios (or view_juniper-junos, etc.)
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
 
@@ -109,14 +121,13 @@ endif
 endif
 
 supplier:
-	@echo "cawk supplier start ----"
 	@echo "cawk --- the list of suppliers supported by cawk is:"
 	@echo $(SUPPLIER_SCOPE)
 	@echo "cawk supplier done ----"
 
 # --------------------------------
 
-tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk)
+tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk)
 
 tests_repo: tests_target
 	@echo "cawk tests_repo done ----"
@@ -126,9 +137,9 @@ tests_run: tests_target
 
 # --------------------------------
 
-check_repo: clean_report tests_target check_supplier
-	@echo "cawk check_repo start ----"
+check_repo: clean_report clean_tmp tests_target check_supplier
 ifeq ($(strip $(supplier)),)
+ifeq ($(strip $(parallel)),)
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
@@ -137,7 +148,9 @@ ifeq ($(strip $(supplier)),)
 		) \
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
+endif
 else
+ifeq ($(strip $(parallel)),)
 	@echo "cawk ---- compute $(supplier) devices ----"
 	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(foreach test,$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk),\
@@ -145,12 +158,13 @@ else
 	)
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
+endif
 	@echo "cawk check_repo done ----"
 
 check_run: clean_report tests_target check_supplier
-	@echo "cawk check_run start ----"
 ifeq ($(strip $(supplier)),)
-	@$(foreach scope,$(SUPPLIER_SCOPE),\
+ifeq ($(strip $(parallel)),)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(foreach test,$(TESTS_$(scope)_RUN_TEMPLATE:.gawk.template=.gawk),\
@@ -158,13 +172,16 @@ ifeq ($(strip $(supplier)),)
 		)
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
+endif
 else
+ifeq ($(strip $(parallel)),)
 	@echo "cawk ---- compute $(supplier) devices ----"
 	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(foreach test,$(TESTS_$(supllier)_RUN_TEMPLATE:.gawk.template=.gawk),\
 		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
 	) \
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
+endif
 endif
 	@echo "cawk check_run done ----"
 
@@ -176,26 +193,32 @@ ifneq ($(findstring $(supplier),$(SUPPLIER_SCOPE)),$(supplier))
 endif
 
 view: check_supplier
-	@echo "cawk view start ----"
 ifeq ($(strip $(supplier)),)
 	@$(foreach test,$(SUPPLIER_SCOPE),\
-		echo "---- Assessment $(test) devices ----" ;\
+		echo "------------------------------------" ;\
+		echo "---- Assessment $(test) devices" ;\
+		echo "------------------------------------" ;\
 		cat $(TESTS_REPORT)/assessment.$(test).csv ;\
-		echo "---- summary ----" ;\
+		echo "-------------------------" ;\
+		echo "---- $(test) summary" ;\
+		echo "-------------------------" ;\
 		cat $(TESTS_REPORT)/assessment.$(test).summary.txt ;\
 	)
 else
-	@echo "cawk ---- Assessment $(supplier) devices ----"
+	@echo "------------------------------------"
+	@echo "---- Assessment $(supplier) devices"
+	@echo "------------------------------------"
 	@cat $(TESTS_REPORT)/assessment.$(supplier).csv
-	@echo "cawk ---- summary ----"
+	@echo "------------------------------"
+	@echo " ---- $(supplier) summary"
+	@echo "------------------------------"
 	@cat $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 	@echo "cawk view done ----"
 
 # --------------------------------
 
-clean: clean_report
-	@echo "cawk clean start ----"
+clean: clean_report clean_tmp
 	rm -f $(TESTS_COMMON_PATH)/*.gawk
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		rm -f $(TESTS_$(scope)_REPO_PATH)/*.gawk $(TESTS_$(scope)_RUN_PATH)/*.gawk ;\
@@ -203,26 +226,36 @@ clean: clean_report
 	@echo "cawk clean done ----"
 
 clean_report:
-	@rm -f $(TESTS_REPORT)/*
+	rm -f $(TESTS_REPORT)/*
+
+clean_tmp:
+	rm -f $(TESTS_TMP)/tmp*
 
 # --------------------------------
 
 catalog:
-	@echo "cawk start done ----"
-	@echo "------------------------------"
-	@echo "---- Tests <repo> catalog ----"
-	@echo "------------------------------"
+	@echo "******************************"
+	@echo "******************************"
+	@echo "---- Tests <repo> catalog"
+	@echo "******************************"
+	@echo "******************************"
 	@$(foreach id,$(TESTS_CATALOG),\
+		echo " ---------------------------------------------------";\
 		echo " ---- "$(id)" ----";\
-		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
+		echo " ---------------------------------------------------";\
+		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' -e 's/tests\/tests\.//g' || true;\
 	)
 
-	@echo "-----------------------------"
-	@echo "---- Tests <run> catalog ----"
-	@echo "-----------------------------"
+	@echo "\n******************************"
+	@echo "******************************"
+	@echo "---- Tests <run> catalog"
+	@echo "******************************"
+	@echo "******************************"
 	@$(foreach id,$(TESTS_CATALOG_RUN),\
+		echo " ¬---------------------------------------------------";\
 		echo " ---- "$(id)" ----";\
-		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' || true;\
+		echo " ---------------------------------------------------";\
+		grep -H purpose $(id)/*template | sed -e 's/# purpose ://g' -e 's/tests\/tests\.//g' || true;\
 	)
 	@echo "cawk catalog done ----"
 

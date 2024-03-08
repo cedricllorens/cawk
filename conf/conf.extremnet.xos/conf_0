@@ -1,87 +1,66 @@
-configure snmp sysName "MonRouteur"
+ip ssh server
+ip ssh version 2
+ip ssh authentication-retries 3
+ip ssh timeout 120
+ip ssh client-encryption aes256-ctr aes10-ctr aes128-ctr
+ip ssh server-encryption aes256-ctr aes10-ctr aes128-ctr
 
-configure vlan default
-   ipaddress 10.0.0.1 255.255.255.0
-   enable web http
-   enable web https
-   enable ssh
-   enable telnet
-exit
+interface vlan10
+ description "User VLAN"
+ ip address 10.168.10.1/24
 
-configure account admin
-   encrypted-password "MonAdminPassword"
-exit
-configure account operator
-   encrypted-password "MonOperatorPassword"
-exit
+interface ethernet 1/1
+ description "User Access Port"
+ switchport access vlan 10
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security violation restrict
+ switchport port-security aging type inactivity
+ switchport port-security aging time 10
 
-configure vlan VLAN-LAN
-   tag 1
-   ipaddress 192.168.1.1 255.255.255.0
-exit
-configure vlan VLAN-WAN
-   tag 2
-   ipaddress 203.0.113.1 255.255.255.0
-exit
-configure vlan VLAN-DMZ
-   tag 3
-   ipaddress 172.16.1.1 255.255.255.0
-exit
+interface ethernet 1/2
+ description "Trunk Port"
+ switchport mode trunk
+ switchport trunk allowed vlan add 10,20,30
+ switchport trunk allowed vlan remove 1,1002-1005
+ switchport trunk pruning vlan enable
 
-configure ports 1/1/1-1/1/24
-   auto off
-   speed 1000
-   duplex full
-   tag vlan VLAN-LAN
-exit
-configure ports 1/2/1-1/2/24
-   auto off
-   speed 1000
-   duplex full
-   tag vlan VLAN-WAN
-exit
-configure ports 1/3/1-1/3/24
-   auto off
-   speed 1000
-   duplex full
-   tag vlan VLAN-DMZ
-exit
+ip route 0.0.0.0/0 10.168.1.1
 
-configure ospf
-   router-id 10.0.0.1
-   area 0.0.0.0
-      authentication simple-password "MonPasswordOSPF"
-      interface "1/2/1"
-         passive
-         authentication simple-password "MonPasswordOSPF"
-      exit
-   exit
-exit
+snmp-server group mygroup v3 auth sha priv aes256
+snmp-server user myuser mygroup v3 auth sha myauthpriv myencryptpriv
+snmp-server view myview included .1.3.6.1.4.1.1916
+snmp-server access myview mygroup read-only
+snmp-server enable traps
 
-configure bgp
-   as 65001
-   neighbor 203.0.113.2
-      remote-as 65002
-      authentication-key "MonPasswordBGP"
-   exit
-exit
+aaa authentication login default local
+aaa authorization exec default local
+aaa authorization commands 15 default local
 
-configure access-list FiltreLAN
-   permit ip 192.168.1.0/24 any log
-exit
-configure access-list DenyHTTP
-   deny tcp any any eq 80 log
-exit
-configure access-list AllowDNS
-   permit udp any any eq 53 log
-exit
-apply access-list DenyHTTP ingress "1/2/1"
-apply access-list AllowDNS ingress "1/2/1"
+username myuser privilege 15 secret mypassword
 
-configure snmp
-   syscontact "Administrateur réseau"
-   syslocation "Localisation du routeur"
-   add community "public" user "read-only"
-   add trap target-addr 10.0.0.2 params "public" version v2c
-exit
+ntp server 0.pool.ntp.org prefer
+ntp server 1.pool.ntp.org
+ntp server 2.pool.ntp.org
+ntp server 3.pool.ntp.org
+ntp authenticate
+ntp authentication-key 1 md5 mysecretkey
+ntp trusted-key 1
+
+ip dhcp snooping vlan 10
+ip dhcp snooping
+
+ip arp inspection vlan 10
+ip arp inspection validate src-mac
+ip arp inspection validate ip
+
+access-list 100 deny ip any host 10.168.10.1 log
+access-list 100 deny tcp any any eq 22 log
+access-list 100 deny udp any any eq 53 log
+access-list 100 deny udp any any range 10000 20000 log
+access-list 100 permit ip any any
+interface vlan10
+ ip access-group 100 in
+
+write memory
 

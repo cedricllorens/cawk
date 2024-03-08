@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generates an error if each user-interface vty has no acl outbound
+# purpose : checks if each user-interface vty has no acl outbound
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -17,7 +17,7 @@
 
 function acl_summary() {
 	if ( aclout == 0 ) {
-		print_err("userinterfacevty_aclout_set.huawei.gawk",userinterface" : acl outbound missing",userinterfacenovty,"high","error");
+		print_err("userinterfacevty_aclout_set.huawei-vrp.gawk",userinterface" : acl outbound missing",userinterfacenovty,"high","error");
 		pass = 0;
 	}
 }
@@ -52,7 +52,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("userinterfacevty_aclout_set.huawei.gawk","user-interface vty acl outbound are set",0,"high","pass");
+	if ( pass ) print_err("userinterfacevty_aclout_set.huawei-vrp.gawk","user-interface vty acl outbound are set",0,"high","pass");
 }
 
 END {

