@@ -1,0 +1,36 @@
+system
+ host-name     cawk
+ aa1a
+  auth-order tacacs local
+  user cawk
+   password xxxxx
+  !
+ !
+ tacacs
+  server 10.10.10.10
+  exit
+ !
+!
+vpn 0
+ name xx
+ interface ge1
+  ip address 10.20.10.10
+  tunnel-interface
+   color private
+   no allow-service dhcp
+   allow-service icmp
+   allow-service sshd
+   no allow-service https
+  !
+ !
+ interface ge2
+  ip address 10.20.10.100
+  tunnel-interface
+   color internet
+   no allow-service dhcp
+   allow-service icmp
+   allow-service sshd
+   no allow-service https
+  !
+ !
+!

@@ -7,6 +7,7 @@ srvice password-encryption
 hostname conf.test
 !
 ip http server
+ip rcmd cawk
 !
 enable secret 5 xxxxx
 !

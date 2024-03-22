@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if snmp v1v2 is not set
+# purpose : check if aaa config is set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -17,7 +17,8 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 1;
+	pass = 0;
+	block_system = 0;
 }
 
 /^system/ {
@@ -25,32 +26,19 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_PALO%snmp/ && block_system == 1 {
-	block_snmp = 1;
+/^ aaa/ && block_system == 1 {
+	print_err("aaa_config_set.cisco-viptela.gawk",$0,FNR,"high","pass");
+	pass = 1;
 	next;
 }
 
-/^%SED_BK_PALO%{2}community/ && block_snmp == 1 {
-	print_err("snmp_v1v2_notset.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","error");
-	pass = 0;
-	nextfile;
-}
-
-
-/^%SED_BK_PALO%\}/ && block_snmp == 1 {
-	block_snmp = 0;
-	next;
-}
-
-/^\}/ && block_system == 1 {
+/^!$/ && block_system == 1 {
 	block_system = 0;
 	next;
 }
 
 ENDFILE {
-	if ( pass ) {
-		print_err("snmp_v1v2_notset.paloalto-panos.gawk","snmp v1v2 is not set",0,"high","pass");
-	} 
+	if ( ! pass ) print_err("aaa_config_set.cisco-viptela.gawk","aaa config is not set",0,"high","error");
 }
 
 END {

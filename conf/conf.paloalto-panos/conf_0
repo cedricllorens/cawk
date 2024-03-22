@@ -42,12 +42,6 @@ zones {
 
 security {
   rules {
-    allow_web_traffic {
-      source inside
-      destination outside
-      service web
-      action allow
-    }
     allow_ssh {
       source any
       destination any

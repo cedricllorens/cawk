@@ -76,7 +76,7 @@ BEGINFILE {
 
 ENDFILE {
 	if ( pass ) {
-		print_err("firewall_anyany_noset.paloalto-panos.gawk","firewall has no rule src=any dst=any service=any action=allow",0,"high","pass");
+		print_err("firewall_anyany_notset.paloalto-panos.gawk","firewall has no rule src=any dst=any service=any action=allow",0,"high","pass");
 	} 
 }
 

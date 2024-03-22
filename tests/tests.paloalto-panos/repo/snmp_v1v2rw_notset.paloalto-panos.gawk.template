@@ -49,7 +49,7 @@ BEGINFILE {
 
 ENDFILE {
 	if ( pass ) {
-		print_err("snmp_v1v2rw_noset.paloalto-panos.gawk","snmp v1v2 rw is not set",0,"high","pass");
+		print_err("snmp_v1v2rw_notset.paloalto-panos.gawk","snmp v1v2 rw is not set",0,"high","pass");
 	} 
 }
 

@@ -40,6 +40,17 @@ config firewall policy
         set schedule "always"
         set comments "Deny all other traffic"
     next
+    edit 3
+        set name "Deny-All"
+        set srcintf "any"
+        set srcaddr "all"
+        set dstintf "any"
+        set dstaddr "all"
+        set service "HTTP"
+        set action accept
+        set schedule "always"
+        set comments "Deny all other traffic"
+    next
 end
 
 config firewall profile

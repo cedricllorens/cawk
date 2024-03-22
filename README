@@ -79,6 +79,7 @@ useful scripts
 
 cawk in gmake targets:
 	- gmake			: provide information on cawk running
+	- gmake system		: check if the system can run cawk
 	- gmake supplier	: provides the suppliers supported by cawk
 	- gmake clean 		: clean all 
 	- gmake tests_run 	: build all <repo> tests
@@ -93,6 +94,29 @@ cawk in gmake targets:
 	- gmake catalog 	: list the tests linked to <repo> or <run>
 
 	note : gmake clean check_repo view allows to launch a full <repo> assessment
+
+# ------------------------
+# ---- cawk gmake parallel
+# ------------------------
+
+in standard mode, cawk performs assessment not in parallel mode. to use prarallel mode,
+you have to modify the Makefile.support.mk file thanks to these gmake VARS:
+
+	# --------------- cawk parallel options
+	# enable parallel
+	MAKE_PARALLEL = yes
+	# number of files to process per target (all targets are processed in parallel)
+	MAKE_FILES_PER_TARGET = 1
+
+	# --------------- gmake parallel options
+	# gmake number of jobs
+	MAKE_J = 4
+	# gmake load average
+	MAKE_LOAD_AVG = 2
+
+once cawk parallel mode is enabled, before performing assessment, cawk build one Makefile
+per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
+enhanced performances for a huge set of files.
 
 # -------------------
 # ---- cawk community

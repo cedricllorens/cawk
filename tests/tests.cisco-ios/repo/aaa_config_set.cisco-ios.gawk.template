@@ -1,0 +1,34 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if aaa config is not set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+}
+
+/^aaa new-model/ {
+	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
+	pass = 1;
+	nextfile;
+}
+
+ENDFILE {
+	if ( ! pass ) print_err("aaa_config_set.cisco-ios.gawk","aaa config is not set",0,"high","error");
+}
+
+END {
+}

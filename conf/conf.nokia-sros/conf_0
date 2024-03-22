@@ -9,6 +9,10 @@ configure
                 inbound-max-sessions 7
                 outbound-max-sessions 2
             exit
+            ssh 
+                inbound-max-sessions 7
+                outbound-max-sessions 2
+            exit
             idle-timeout 1440
             motd text "Notice to all users: Software upgrade scheduled 3/2 1:00 AM"
         exit

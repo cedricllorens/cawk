@@ -4,6 +4,18 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.3.0 (march 2024):
+	Makefile:
+	- add Makefile.support.mk in order to set make options (i.e. cawk parallel mode)
+	- update Makefile to turn on cawk in parallel mode
+	- add a new <system> target to check if the system is ready to run cawk
+	Tests:
+	- add tests for all suppliers (fix some tests outputs / reporting)
+	- add cisco-viptela supplier
+	For next release:
+	- work on analysis firewall rules to find redundant && inconsistent rules
+	(research directory, only for dvt/test purpose) 
+
 v1.2.0 (march 2024):
 	Makefile:
 	- review catalog output and tests running output

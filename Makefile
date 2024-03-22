@@ -7,6 +7,7 @@
 #
 # Makefile
 # - gmake 		: provide information on cawk running
+# - gmake system	: allow to know if the system can run cawk
 # - gmake supplier 	: provide the suppliers covered by cawk
 # - gmake clean 	: clean all 
 # - gmake tests_repo 	: build all <repo> tests
@@ -21,7 +22,9 @@
 # - gmake catalog 	: build the tests description catalog
 # ------------------------------------------------------------
 
-CAWK_RELEASE = v1.2.0
+# ---------------
+
+include Makefile.support.mk
 
 # ---------------
 
@@ -64,13 +67,22 @@ TESTS_paloalto-panos_RUN_PATH = tests/tests.paloalto-panos/run
 TESTS_paloalto-panos_REPO_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_REPO_PATH)/*.template)
 TESTS_paloalto-panos_RUN_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_RUN_PATH)/*.template)
 
+CONFIGURATION_cisco-viptela_PATH = conf/conf.cisco-viptela
+TESTS_cisco-viptela_REPO_PATH = tests/tests.cisco-viptela/repo
+TESTS_cisco-viptela_RUN_PATH = tests/tests.cisco-viptela/run
+TESTS_cisco-viptela_REPO_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_REPO_PATH)/*.template)
+TESTS_cisco-viptela_RUN_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_RUN_PATH)/*.template)
+
 TESTS_REPORT = report
+
+TESTS_SYSTEM = system
 
 TESTS_TMP = tmp
 
-SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos
+SUPPLIER_SCOPE = cisco-ios cisco-viptela juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
+		$(TESTS_cisco-viptela_REPO_PATH) \
 		$(TESTS_juniper-junos_REPO_PATH) \
 		$(TESTS_huawei-vrp_REPO_PATH) \
 		$(TESTS_fortinet-fortios_REPO_PATH) \
@@ -78,6 +90,7 @@ TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_paloalto-panos_REPO_PATH)
 
 TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
+		$(TESTS_cisco-viptela_RUN_PATH) \
 		$(TESTS_juniper-junos_RUN_PATH) \
 		$(TESTS_huawei-vrp_RUN_PATH) \
 		$(TESTS_fortinet-fortios_RUN_PATH) \
@@ -92,11 +105,12 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.phony: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git supplier check_supplier
+.PHONY: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git supplier check_supplier system
 
 all:
 	# ------------------------------------------------------------
 	# - gmake 		: provide information on cawk running
+	# - gmake system	: allow to know if the system can run cawk
 	# - gmake supplier 	: provide the suppliers supported by cawk
 	# - gmake clean 	: clean all 
 	# - gmake tests_repo 	: build all <repo> tests
@@ -127,7 +141,12 @@ supplier:
 
 # --------------------------------
 
-tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk)
+system:
+	$(TESTS_SYSTEM)/cawk_check_system
+
+# --------------------------------
+
+tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-viptela_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk)
 
 tests_repo: tests_target
 	@echo "cawk tests_repo done ----"
@@ -139,7 +158,7 @@ tests_run: tests_target
 
 check_repo: clean_report clean_tmp tests_target check_supplier
 ifeq ($(strip $(supplier)),)
-ifeq ($(strip $(parallel)),)
+ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
@@ -148,39 +167,83 @@ ifeq ($(strip $(parallel)),)
 		) \
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
+else
+	@$(foreach scope,$(SUPPLIER_SCOPE),\
+		echo "cawk ---- compute $(scope) devices ----" ;\
+		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		find $(CONFIGURATION_$(scope)_PATH) -type f > $(TESTS_TMP)/conf_list_files.$(scope) ;\
+		find $(TESTS_$(scope)_REPO_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(scope) ;\
+		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
+		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
+		$(TESTS_TMP)/Makefile.$(scope) ;\
+		gmake -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
+	)
 endif
 else
-ifeq ($(strip $(parallel)),)
+ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@echo "cawk ---- compute $(supplier) devices ----"
 	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(foreach test,$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk),\
 		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
 	)
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
+else
+	@echo "cawk ---- compute $(supplier) devices ----"
+	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
+	@find $(CONFIGURATION_$(supplier)_PATH) -type f > $(TESTS_TMP)/conf_list_files.$(supplier)
+	@find $(TESTS_$(supplier)_REPO_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(supplier)
+	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
+	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
+	$(TESTS_TMP)/Makefile.$(supplier)
+	@gmake -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif
 	@echo "cawk check_repo done ----"
 
-check_run: clean_report tests_target check_supplier
+check_run: clean_report clean_tmp tests_target check_supplier
 ifeq ($(strip $(supplier)),)
-ifeq ($(strip $(parallel)),)
-	$(foreach scope,$(SUPPLIER_SCOPE),\
+ifeq ($(strip $(MAKE_PARALLEL)),no)
+	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(foreach test,$(TESTS_$(scope)_RUN_TEMPLATE:.gawk.template=.gawk),\
 			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv ;\
-		)
+		) \
+		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
+	)
+else
+	@$(foreach scope,$(SUPPLIER_SCOPE),\
+		echo "cawk ---- compute $(scope) devices ----" ;\
+		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		find $(CONFIGURATION_$(scope)_PATH) -type f > $(TESTS_TMP)/conf_list_files.$(scope) ;\
+		find $(TESTS_$(scope)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(scope) ;\
+		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
+		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
+		$(TESTS_TMP)/Makefile.$(scope) ;\
+		gmake -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 endif
 else
-ifeq ($(strip $(parallel)),)
+ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@echo "cawk ---- compute $(supplier) devices ----"
 	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(foreach test,$(TESTS_$(supllier)_RUN_TEMPLATE:.gawk.template=.gawk),\
 		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
 	) \
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
+else
+	@echo "cawk ---- compute $(supplier) devices ----"
+	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
+	@find $(CONFIGURATION_$(supplier)_PATH) -type f > $(TESTS_TMP)/conf_list_files.$(supplier)
+	@find $(TESTS_$(supplier)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(supplier)
+	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
+	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
+	$(TESTS_TMP)/Makefile.$(supplier)
+	@gmake -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif
 	@echo "cawk check_run done ----"
@@ -230,6 +293,8 @@ clean_report:
 
 clean_tmp:
 	rm -f $(TESTS_TMP)/tmp*
+	rm -f $(TESTS_TMP)/conf_*
+	rm -f $(TESTS_TMP)/Makefile*
 
 # --------------------------------
 

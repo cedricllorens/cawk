@@ -1,0 +1,6 @@
+permit	12.18.10.0	24	12.18.10.0	24	http
+deny	10.18.10.0	12	10.18.10.0	12	http
+permit	12.18.10.0	12	12.18.10.0	12	http
+deny	12.18.10.0	24	12.18.10.0	12	http
+deny	12.18.10.0	host	12.18.10.1	host	http
+deny	any		any	any		any	all

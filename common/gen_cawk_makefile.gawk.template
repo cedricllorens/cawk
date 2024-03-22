@@ -106,6 +106,7 @@ BEGIN {
     compteur = 1;
     for (i = 1; i <= targets; i++) {
         printf("\ntarget%s:",i);
+    	printf("\n\t@touch $(file_target%s)",i);
     	for (k = 1; k <= total_pgm ; k++) {
         	printf("\n\t@%s ",pgms[k]);
     		for (j = compteur; j < compteur + files_per_target; j++) {

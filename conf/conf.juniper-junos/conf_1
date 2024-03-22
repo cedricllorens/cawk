@@ -22,6 +22,16 @@ protocols {
             interface lo0.0;
         }
     }
+    bgp {
+        group cawk {
+        }
+        group cawk1 {
+        }
+        neighbor 10.168.1.2 {
+        }
+        neighbor 10.168.1.3 {
+        }
+    }
 }
 
 routing-options {
