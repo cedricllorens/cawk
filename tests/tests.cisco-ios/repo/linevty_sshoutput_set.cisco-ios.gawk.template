@@ -1,0 +1,59 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if a line vty has transport output (none|ssh)
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function sshoutput_summary() {
+	if ( sshoutput == 0 ) {
+		print_err("linevty_sshoutput_set.cisco-ios.gawk",linevty" : transport output (none|ssh) is missing",linenovty,"high","error");
+		pass = 0;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_vty = 0;
+	pass = 1;
+}
+
+/^line vty .*$/ {
+	if ( block_vty == 1 ) sshoutput_summary();
+	linevty = $0;
+	linenovty = FNR;
+	sshoutput = 0;
+        block_vty = 1;
+	next;
+}
+
+/^ transport output (none|ssh)$/ && block_vty == 1 {
+	sshoutput = 1;
+	next;
+}
+
+/^!$/ && block_vty == 1 {
+	sshoutput_summary();
+	block_vty = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("linevty_sshoutput_set.cisco-ios.gawk","line vty transport output (none|ssh) are set",0,"high","pass");
+}
+
+END {
+}

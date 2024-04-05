@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a rcmd statement is set
+# purpose : checks if a rcmd statement is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -25,7 +25,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("global_rcmd_notset.cisco-ios.gawk","rcmd statement not set",0,"high","pass");
+        if ( pass ) print_err("global_rcmd_notset.cisco-ios.gawk","rcmd statement is not set",0,"high","pass");
 }
 
 END {

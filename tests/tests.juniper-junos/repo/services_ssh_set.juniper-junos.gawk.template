@@ -48,7 +48,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( !pass ) print_err("services_ssh_set.juniper-junos.gawk","services must activate ssh service",0,"high","error");
+	if ( !pass ) print_err("services_ssh_set.juniper-junos.gawk","ssh service is not set",0,"high","error");
 }
 
 END {

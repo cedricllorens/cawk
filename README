@@ -103,16 +103,16 @@ in standard mode, cawk performs assessment not in parallel mode. to use praralle
 you have to modify the Makefile.support.mk file thanks to these gmake VARS:
 
 	# --------------- cawk parallel options
-	# enable parallel
+	# enable parallel yes/no
 	MAKE_PARALLEL = yes
 	# number of files to process per target (all targets are processed in parallel)
-	MAKE_FILES_PER_TARGET = 1
+	MAKE_FILES_PER_TARGET = 100
 
 	# --------------- gmake parallel options
 	# gmake number of jobs
 	MAKE_J = 4
 	# gmake load average
-	MAKE_LOAD_AVG = 2
+	MAKE_LOAD_AVG = 3
 
 once cawk parallel mode is enabled, before performing assessment, cawk build one Makefile
 per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 

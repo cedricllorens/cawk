@@ -41,6 +41,10 @@ BEGINFILE {
 	acl_ref[$NF] = $0;
 }
 
+/^snmp-agent community .* acl [^ ]+.*$/ {
+	acl_ref[$NF] = $0;
+}
+
 ENDFILE {
 
 	# acl def not ref ----

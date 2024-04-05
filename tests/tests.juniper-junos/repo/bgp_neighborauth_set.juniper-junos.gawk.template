@@ -48,7 +48,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_JUNI%{2}}$/ && block_neighbor == 1 {
-	if ( !pass ) print_err("bgp_neighborauth_set.juniper-junos.gawk","bgp/neighbor has no authentication-key :"neighbor_edit,neighbor_edit_no,"high","error");
+	if ( !pass ) print_err("bgp_neighborauth_set.juniper-junos.gawk","bgp/neighbor authentication-key is not set :"neighbor_edit,neighbor_edit_no,"high","error");
 	block_neighbor = 0;
 	next;
 }

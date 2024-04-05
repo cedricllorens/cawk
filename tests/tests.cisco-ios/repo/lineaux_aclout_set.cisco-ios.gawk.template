@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a line aux has no access-class out
+# purpose : checks if a line aux has access-class out
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

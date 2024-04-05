@@ -27,7 +27,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("aaa_user_notset.cisco-ios.gawk","aaa not forbidden users are set",0,"high","pass");
+	if ( pass ) print_err("aaa_user_notset.cisco-ios.gawk","aaa forbidden users are not set",0,"high","pass");
 }
 
 END {

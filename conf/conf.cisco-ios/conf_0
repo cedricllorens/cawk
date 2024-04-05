@@ -4,6 +4,10 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 srvice password-encryption
 !
+no ip bootp server
+no ip finger
+no ip source-route
+no cdp run
 hostname conf.test
 !
 ip http server
@@ -64,17 +68,25 @@ router ospf 1
 !
 snmp-server community cawk RO
 snmp-server community private RW
+snmp-server community cawk view unknown RO
+snmp-server view unknown1 1.1.1
+snmp-server file-transfer access-group CAWK
 !
 line con 0
  password 7 xxxxxx
 line aux 0
  password 7 xxxxxx
+ exec-timeout 0 0
  transport input all
 line vty 0 3
- transport input telnet
- transport output telnet
+ exec-timeout 0 0
+ transport input ssh
+ transport output ssh
 line vty 4 8
- transport input telnet
- transport output telnet
+ exec-timeout 0 0
+ access-class 55 in
+ access-class 66 in
+ transport input ssh
+ transport output ssh
 !
 end

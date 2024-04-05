@@ -13,7 +13,6 @@ ip route-static 0.0.0.0 0.0.0.0 10.0.113.1
 ssh server enable
 rsa local-key-pair create
 user-interface vty 0 4
- protocol inbound ssh
 #
 aaaa
  local-user admin password irreversible-cipher votre_mot_de_passe

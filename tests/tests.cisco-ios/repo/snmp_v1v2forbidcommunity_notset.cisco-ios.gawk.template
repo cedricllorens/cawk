@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if snmp v1v2 has forbidden communities
+# purpose : checks if snmp v1v2 forbidden communities are set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -26,7 +26,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.cisco-ios.gawk","snmp v1v2 has no forbidden communities",0,"high","pass");
+        if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.cisco-ios.gawk","snmp v1v2 forbidden communities are not set",0,"high","pass");
 }
 
 END {

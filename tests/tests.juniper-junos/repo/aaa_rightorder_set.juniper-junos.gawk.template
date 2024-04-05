@@ -26,7 +26,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%auth-order \[ %SED_AAASYSTEM_JUNI%/ && block_system == 1 {
+/^%SED_BK_JUNI%auth-order \[ %SED_AAASYSTEM_JUNI%/ && block_system == 1 && !/inactive/ {
 	print_err("aaa_rightorder_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
         pass = 1;
 	nextfile;	
@@ -37,7 +37,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( ! pass ) print_err("aaa_rightorder_set.juniper-junos.gawk","aaa auth order has not been detected",0,"high","error");
+        if ( ! pass ) print_err("aaa_rightorder_set.juniper-junos.gawk","aaa auth order is not set",0,"high","error");
 }
 
 END {

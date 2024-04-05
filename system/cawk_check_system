@@ -9,36 +9,36 @@
 
 echo "cawk -----------------------------------"
 echo "cawk : check if the main tools are there"
-echo "cawk : all should be available/green"
+echo "cawk : all should be available/OK"
 echo "cawk check system start ----------------"
 
 if command -v find >/dev/null 2>&1; then
-    echo "\033[0;32m'find' is available.\033[0m"
+    echo "OK : find is available."
 else
-    echo "\033[0;31m'find' is not available.\033[0m"
+    echo "NOK : find is not available."
 fi
 
 if command -v mktemp >/dev/null 2>&1; then
-    echo "\033[0;32m'mktemp' is available.\033[0m"
+    echo "OK : mktemp is available."
 else
-    echo "\033[0;31m'mktemp' is not available.\033[0m"
+    echo "NOK : mktemp is not available."
 fi
 
 if command -v gmake >/dev/null 2>&1; then
-    echo "\033[0;32m'gmake' is available.\033[0m"
+    echo "OK : gmake is available."
 else
-    echo "\033[0;31m'gmake' is not available.\033[0m"
+    echo "NOK : gmake is not available."
 fi
 
 if command -v gawk >/dev/null 2>&1; then
-    echo "\033[0;32m'gawk' is available.\033[0m"
+    echo "OK : gawk is available."
 else
-    echo "\033[0;31m'gawk' is not available.\033[0m"
+    echo "NOK : gawk is not available."
 fi
 
 if command -v sed >/dev/null 2>&1; then
-    echo "\033[0;32m'sed' is available.\033[0m"
+    echo "OK : sed is available."
 else
-    echo "\033[0;31m'sed' is not available.\033[0m"
+    echo "NOK : sed is not available."
 fi
 echo "cawk check system end ------------------"

@@ -4,6 +4,18 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.4.0 (april 2024):
+	Common:
+	- remove the init target in generated parallel Makefile built to avoid missing tests and silent mode
+	- enhance reporting with high, medium, low and review % computation with float
+	System:
+	- remove colors and add OK/NOK for gmake system (portability purpose)
+	Tests:
+	- add tests for cisco-ios,juniper-junos,huawei-vrp,cisco-viptela and nokia-sros
+	For future release:
+	- work on firewall rules analysis in order to find redundant && inconsistent rules
+	(i.e. research directory, only for dvt/test purpose) 
+	
 v1.3.0 (march 2024):
 	Makefile:
 	- add Makefile.support.mk in order to set make options (i.e. cawk parallel mode)

@@ -37,10 +37,6 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_NOKIA%{3}exit$/ && block_snmp == 1 {
-	block_snmp = 0;
-}
-
 /^%SED_BK_NOKIA%{2}exit$/ && block_security == 1 {
 	block_security = 0;
 }

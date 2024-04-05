@@ -48,7 +48,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("services_forbidproto_notset.juniper-junos.gawk","services has no setup forbidden protocols",0,"high","pass");
+	if ( pass ) print_err("services_forbidproto_notset.juniper-junos.gawk","services forbidden protocols are not set",0,"high","pass");
 }
 
 END {

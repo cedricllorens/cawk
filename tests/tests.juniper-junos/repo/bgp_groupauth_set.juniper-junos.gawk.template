@@ -48,7 +48,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_JUNI%{2}}$/ && block_group == 1 {
-	if ( !pass ) print_err("bgp_groupauth_set.juniper-junos.gawk","bgp/group has no authentication-key :"group_edit,group_edit_no,"high","error");
+	if ( !pass ) print_err("bgp_groupauth_set.juniper-junos.gawk","bgp/group authentication-key is not set :"group_edit,group_edit_no,"high","error");
 	block_group = 0;
 	next;
 }

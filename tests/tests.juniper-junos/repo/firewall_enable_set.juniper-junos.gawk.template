@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a firewall block has been defined
+# purpose : checks if a firewall is set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -20,13 +20,14 @@ BEGINFILE {
 	pass = 0;
 }
 
-/^firewall {/ {
+/^firewall {/ && !/inactive/ {
 	print_err("firewall_enable_set.juniper-junos.gawk",$0,FNR,"high","pass");
         pass = 1;
+	nextfile;
 }
 
 ENDFILE {
-        if ( ! pass ) print_err("firewall_enable_set.juniper-junos.gawk","firewall block has not been detected",0,"high","error");
+        if ( !pass ) print_err("firewall_enable_set.juniper-junos.gawk","firewall is not set",0,"high","error");
 }
 
 END {

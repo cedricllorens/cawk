@@ -48,7 +48,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("aaa_user_notset.cisco-viptela.gawk","aaa users are not set",0,"high","pass");
+	if ( pass ) print_err("aaa_user_notset.cisco-viptela.gawk","aaa users forbidden are not set",0,"high","pass");
 }
 
 END {

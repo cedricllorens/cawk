@@ -17,6 +17,23 @@ configure
             motd text "Notice to all users: Software upgrade scheduled 3/2 1:00 AM"
         exit
         security
+            management-access-filter
+                ip-filter
+                    default-action deny
+                    entry 100
+                        src-ip 192.168.2.0/24
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                    entry 200
+                        src-ip 192.168.2.0/24
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                exit
+            exit
             user "admin"
                 password "F6XjryaATzM" hash
                 access snmp

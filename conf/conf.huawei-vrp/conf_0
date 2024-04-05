@@ -17,10 +17,15 @@ rsa local-key-pair create
 user-interface vty 0 4
  authentication-mode aaa
  protocol inbound ssh
+ protocol outbound ssh
  acl 2000 inbound
  acl 7000 outbound
 #
 snmp-agent community write public
+snmp-agent community read cawk mib-view isoview01 acl 2001
+snmp-agent community write cawk1 mib-view isoview02 acl 2001
+snmp-agent mib-view isoview01 include system
+snmp-agent mib-view isoview03 include system
 #
 aaa
  local-user admin password irreversible-cipher votre_mot_de_passe

@@ -105,7 +105,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git supplier check_supplier system
+.PHONY: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git gitpush supplier check_supplier system
 
 all:
 	# ------------------------------------------------------------
@@ -176,7 +176,7 @@ else
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
 		$(TESTS_TMP)/Makefile.$(scope) ;\
-		gmake -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		gmake -s -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 endif
@@ -196,7 +196,7 @@ else
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
 	$(TESTS_TMP)/Makefile.$(supplier)
-	@gmake -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	@gmake -s -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif
@@ -222,7 +222,7 @@ else
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
 		$(TESTS_TMP)/Makefile.$(scope) ;\
-		gmake -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		gmake -s -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 endif
@@ -242,7 +242,7 @@ else
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
 	$(TESTS_TMP)/Makefile.$(supplier)
-	@gmake -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	@gmake -s -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif
@@ -327,12 +327,12 @@ catalog:
 # --------------------------------
 
 git:
-	# --------
-	# regular update
-	#      git add .
-	#      git commit -m "msg"
-	# --------
-	# push of a new version
-	#      	git push https://github.com/cedricllorens/cawk.git master
+	git add .
+	git commit -m "*$(CAWK_RELEASE) ref ChangeLog"
+
+gitpush:
+	git push https://github.com/cedricllorens/cawk.git master
 	# build a release directly at github level
-	#	git pull https://github.com/cedricllorens/cawk.git master --rebase
+	# git pull https://github.com/cedricllorens/cawk.git master --rebase
+
+

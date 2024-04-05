@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if aaa config is not set
+# purpose : check if <aaa config> is set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -17,17 +17,17 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 0;
+	pass = 1;
 }
 
 /^aaa new-model/ {
 	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
-	pass = 1;
+	pass = 0;
 	nextfile;
 }
 
 ENDFILE {
-	if ( ! pass ) print_err("aaa_config_set.cisco-ios.gawk","aaa config is not set",0,"high","error");
+	if ( pass ) print_err("aaa_config_set.cisco-ios.gawk","<aaa config> is not set",0,"high","error");
 }
 
 END {

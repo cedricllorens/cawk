@@ -80,7 +80,7 @@ BEGIN {
     # BUILD all target
     # ----------------
 
-    printf("all: init ");
+    printf("all: ");
     for (t = 1; t <= targets; t++) {
         printf("target%s ",t);
     }
@@ -93,10 +93,6 @@ BEGIN {
     printf("\n");
     printf("\t@rm -f tmp/tmp*");
     printf("\n");
-    printf("\n");
-
-    printf("init:\n");
-    printf("\t@rm -f tmp/tmp*");
     printf("\n");
 
     # -----------------
@@ -123,7 +119,7 @@ BEGIN {
     # BUILD PHONY targets
     # -------------------
 
-    printf(".PHONY: all init ");
+    printf(".PHONY: all ");
     for (t = 1; t <= targets; t++) {
         printf("target%s ",t);
     }

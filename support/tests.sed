@@ -25,7 +25,8 @@ s/%SED_AUTHUSER_HUAWEI%/\(admin\)/g
 # JUNIPER
 # ----------------------------------------------
 s/%SED_BK_JUNI%/([ ][ ][ ][ ])/g
-s/%SED_AAASYSTEM_JUNI%/(tacacs|radius)/g
+s/%SED_AUTHUSER_JUNI%/admin/g
+s/%SED_AAASYSTEM_JUNI%/(tacacs|tacplus|radius)/g
 # ----------------------------------------------
 # FORTINET
 # ----------------------------------------------

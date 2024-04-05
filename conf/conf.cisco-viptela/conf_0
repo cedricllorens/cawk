@@ -11,6 +11,27 @@ system
   exit
  !
 !
+snmp
+ view cawk_view_bad
+  oid 1.3
+ !
+ community public
+  view cawk_view
+  authorization write
+ !
+ view cawk_snmp_bad
+  oid 1.1
+ !
+ group cawk_group_snmp auth-priv
+  view cawk_snmp
+ !
+ user cawk_v3
+  auth sha
+  auth-password xx
+  priv sha
+  priv-password xx
+  group cawk_group_snmp_badx
+!
 vpn 0
  name xx
  interface ge1

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a http statement is set
+# purpose : checks if http statement is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -25,7 +25,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("global_http_notset.cisco-ios.gawk","http statement not set",0,"high","pass");
+        if ( pass ) print_err("global_http_notset.cisco-ios.gawk","http statement is not set",0,"high","pass");
 }
 
 END {

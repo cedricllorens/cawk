@@ -8,7 +8,7 @@
 # file support/tests.sed for further information
 #
 # purpose : checks when an acl is def and not ref
-# purpose : checks an error when an acl is ref and not def
+# purpose : checks when an acl is ref and not def
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -29,15 +29,20 @@ BEGINFILE {
 	next;
 }
 
-/^ip access-list (standard|extended) [^ ]+$/ {
+/^ip(v[46])? access-list (standard|extended) [^ ]+$/ {
 	acl_def[$NF] = $0;
 	next;
 }
 
 # ref ----
 
-/^ ip access-group [^ ]+ / {
+/^ ip access-group [^ ]+/ {
 	acl_ref[$3] = $0;
+	next;
+}
+
+/^ntp access-group [^ ]+ [^ ]+/ {
+	acl_ref[$4] = $0;
 	next;
 }
 
@@ -48,6 +53,7 @@ BEGINFILE {
 
 /^ access-class [^ ]+ / {
 	acl_ref[$2] = $0;
+	next;
 }
 
 ENDFILE {

@@ -25,14 +25,14 @@ BEGINFILE {
 
 # def ----
 
-/^[ ]+filter [^ ]+ {/ {
+/^[ ]+filter [^ ]+ {/ && !/inactive/ {
 	filter_def[$2] = rm_last_char(rm_blank_before($0));
 	next;
 }
 
 # ref ----
 
-/^[ ]+(input|output) [^ ]+;/ {
+/^[ ]+(input|output|input-list|output-list) [^ ]+;/ && !/inactive/ {
 	filter_ref[$2] = rm_last_char(rm_blank_before($0));
 	next;
 }

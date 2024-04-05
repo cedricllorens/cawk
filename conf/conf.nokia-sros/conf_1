@@ -4,6 +4,21 @@ configure
     exit
     system
         security
+            management-access-filter
+                ip-filter
+                    default-action permit
+                    entry 100
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                    entry 200
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                exit
+            exit
             snmp
 		shutdown
             exit
