@@ -19,6 +19,9 @@
 # - gmake view 		: view the assessment reports (and summary)
 #   or gmake clean check_repo view supplier=cisco-ios (or juniper-junos, etc.)
 #   or gmake clean check_run view supplier=cisco-ios (or juniper-junos, etc.)
+# - gmake view_error 	: view the assessment reports errors
+#   or gmake clean check_repo view_error supplier=cisco-ios (or juniper-junos, etc.)
+#   or gmake clean check_run view_error supplier=cisco-ios (or juniper-junos, etc.)
 # - gmake catalog 	: build the tests description catalog
 # ------------------------------------------------------------
 
@@ -105,7 +108,7 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view clean_report clean_tmp clean catalog git gitpush supplier check_supplier system
+.PHONY: all check_repo check_run tests tests_target view view_error clean_report clean_tmp clean catalog git gitpush supplier check_supplier system
 
 all:
 	# ------------------------------------------------------------
@@ -122,6 +125,9 @@ all:
 	# - gmake view		: view the reports and the summary
 	#   or gmake clean check_repo view supplier=cisco-ios (or view_juniper-junos, etc.)
 	#   or gmake clean check_run view supplier=cisco-ios (or view_juniper-junos, etc.)
+	# - gmake view_error 	: view the assessment reports errors
+	#   or gmake clean check_repo view_error supplier=cisco-ios (or juniper-junos, etc.)
+	#   or gmake clean check_run view_error supplier=cisco-ios (or juniper-junos, etc.)
 	# - gmake catalog 	: build the tests description catalog
 	# ------------------------------------------------------------
 
@@ -279,6 +285,16 @@ else
 endif
 	@echo "cawk view done ----"
 
+view_error: check_supplier
+ifeq ($(strip $(supplier)),)
+	@$(foreach test,$(SUPPLIER_SCOPE),\
+		cat $(TESTS_REPORT)/assessment.$(test).csv | grep ";error" ;\
+	)
+else
+	@cat $(TESTS_REPORT)/assessment.$(supplier).csv | grep ";error"
+endif
+	@echo "cawk view_error done ----"
+
 # --------------------------------
 
 clean: clean_report clean_tmp
@@ -327,12 +343,9 @@ catalog:
 # --------------------------------
 
 git:
-	git add .
-	git commit -m "*$(CAWK_RELEASE) ref ChangeLog"
+	# git add .
+	# git commit -m "*$(CAWK_RELEASE) ref ChangeLog"
 
 gitpush:
-	git push https://github.com/cedricllorens/cawk.git master
-	# build a release directly at github level
-	# git pull https://github.com/cedricllorens/cawk.git master --rebase
-
+	# git push https://github.com/cedricllorens/cawk.git master
 

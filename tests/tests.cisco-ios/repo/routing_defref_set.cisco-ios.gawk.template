@@ -60,8 +60,8 @@ BEGINFILE {
 	next;
 }
 
-/^[ ]*match ip address [^ ]+/ {
-	routing_ref[$4] = $0;
+/^ match ip address prefix-list [^ ]+/ {
+	acl_ref[$5] = $0;
 	next;
 }
 

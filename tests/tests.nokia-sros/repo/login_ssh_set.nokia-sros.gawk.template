@@ -46,7 +46,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( !pass ) print_err("login_ssh_set.nokia-sros.gawk","login forbidden ssh is not set",0,"high","error");
+        if ( !pass ) print_err("login_ssh_set.nokia-sros.gawk","login ssh is not set",0,"high","error");
 }
 
 END {

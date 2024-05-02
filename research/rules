@@ -7,4 +7,4 @@ deny	12.18.10.0	host		0	0	12.18.10.1	host	0	0	http
 deny	1.18.10.0	24		2	2	1.18.10.1	24	2	2	http
 permit	1.18.10.0	24		2	4	1.18.10.1	24	2	4	http
 permit	1.18.10.0	24		3	3	1.18.10.1	24	3	3	http
-deny	any		any		0	0	any		any	0	0	0
+deny	any		any		0	0	any		any	0	0	none

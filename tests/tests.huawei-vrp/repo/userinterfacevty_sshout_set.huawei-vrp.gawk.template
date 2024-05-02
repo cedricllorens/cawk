@@ -41,7 +41,7 @@ BEGINFILE {
 	next;
 }
 
-/^ protocol outbound ssh$/ && block_vty == 1 {
+/^ protocol outbound ssh[ ]*$/ && block_vty == 1 {
 	sshout = 1;
 	next;
 }

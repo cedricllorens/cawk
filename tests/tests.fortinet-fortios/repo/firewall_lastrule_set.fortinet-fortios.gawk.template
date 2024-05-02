@@ -25,6 +25,7 @@ BEGINFILE {
 
 /^config firewall policy/ {
 	block_firewall = 1;
+	block_edit = -1;
 	next;
 }
 
@@ -64,14 +65,16 @@ BEGINFILE {
 
 /^end$/ && block_firewall == 1 {
 	block_firewall = 0;
+	if ( block_edit != -1 ) {
+		if ( src && dst && service && deny ) {
+			print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",FNR,"high","pass");	
+		} else {
+			print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",FNR,"high","error");	
+		}
+	}
 }
 
 ENDFILE {
-	if ( src && dst && service && deny ) {
-		print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",0,"high","pass");	
-	} else {
-		print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",0,"high","error");	
-	}
 }
 
 END {

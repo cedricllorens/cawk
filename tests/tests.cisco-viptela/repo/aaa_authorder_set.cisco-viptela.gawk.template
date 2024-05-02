@@ -31,7 +31,7 @@ BEGINFILE {
 	next;
 }
 
-/^  auth-order tacacs/ && block_aaa == 1 {
+/^  auth-order / && /tacacs/ && block_aaa == 1 {
 	print_err("aaa_authorder_set.cisco-viptela.gawk",rm_blank_before($0),FNR,"high","pass");
 	pass = 1;
 	next;

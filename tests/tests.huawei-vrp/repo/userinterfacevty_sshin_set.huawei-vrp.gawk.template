@@ -41,7 +41,7 @@ BEGINFILE {
 	next;
 }
 
-/^ protocol inbound ssh$/ && block_vty == 1 {
+/^ protocol inbound ssh[ ]*$/ && block_vty == 1 {
 	sshin = 1;
 	next;
 }

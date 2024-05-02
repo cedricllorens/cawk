@@ -41,7 +41,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%{3}authentication-key / && block_group == 1 {
+/^%SED_BK_JUNI%{3}authentication-key(-chain)? / && block_group == 1 {
 	print_err("bgp_groupauth_set.juniper-junos.gawk",group_edit" "rm_last_char(rm_blank_before($0)),FNR,"high","pass");
 	pass = 1;
 	next;

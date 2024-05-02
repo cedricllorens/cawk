@@ -41,6 +41,18 @@ BEGINFILE {
 	next;
 }
 
+/^snmp-server group .*$/ {
+	for(i=1;i<=NF;i++) {
+		if ( $i == "read" && $(i+1) != "write" && $(i+1) != "notify" && $(i+1) != "access" ) {
+			snmp_ref[$(i+1)] = $0;
+		}
+		if ( $i == "write" && $(i+1) != "notify" && $(i+1) != "access" ) {
+			snmp_ref[$(i+1)] = $0;
+		}
+	}
+	next;
+}
+
 ENDFILE {
 
 	# snmp def and not ref

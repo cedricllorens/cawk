@@ -51,8 +51,13 @@ BEGINFILE {
 	next;
 }
 
-/^ access-class [^ ]+ / {
+/^ access-class [^ ]+ / && $4 != "prefix-list" {
 	acl_ref[$2] = $0;
+	next;
+}
+
+/^ match ip address [^ ]+/ && $4 != "prefix-list" {
+	acl_ref[$4] = $0;
 	next;
 }
 

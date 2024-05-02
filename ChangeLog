@@ -4,6 +4,16 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.5.0 (may 2024):
+	Common:
+	- add new Makefile target <view_error> to only view assessments errors
+	Tests:
+	- review all the tests and fix some bugs
+	For future release:
+	- work on firewall rules analysis in order to find redundant && inconsistent rules
+	- progress for cisco-ios scope
+	(i.e. research directory, only for dvt/test purpose) 
+
 v1.4.0 (april 2024):
 	Common:
 	- remove the init target in generated parallel Makefile built to avoid missing tests and silent mode

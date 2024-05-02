@@ -25,24 +25,32 @@ BEGINFILE {
 
 # def ----
 
-/^acl number [^ ]+$/ {
-	acl_def[$NF] = $0;
+/^acl number [^ ]+.*$/ {
+	acl_def[$3] = $0;
 	next;
 }
 
 # ref ----
 
-/^ acl [^ ]+ (inbound|outbound)$/ {
+/^[ ]*acl [^ ]+ (inbound|outbound)$/ {
 	acl_ref[$2] = $0;
 	next;
 }
 
-/^ packet-filter inbound acl [^ ]+$/ {
+/^[ ]*packet-filter inbound acl [^ ]+.*$/ {
+	acl_ref[$4] = $0;
+}
+
+/^[ ]*snmp-agent community .* acl [^ ]+.*$/ {
 	acl_ref[$NF] = $0;
 }
 
-/^snmp-agent community .* acl [^ ]+.*$/ {
-	acl_ref[$NF] = $0;
+/^[ ]*if-match acl [^ ]+.*$/ {
+	acl_ref[$3] = $0;
+}
+
+/^[ ]*tftp-server acl [^ ]+.*$/ {
+	acl_ref[$3] = $0;
 }
 
 ENDFILE {

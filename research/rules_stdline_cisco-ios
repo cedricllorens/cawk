@@ -1,0 +1,7 @@
+access-list 1 permit 192.168.1.0 0.0.0.255
+access-list 1 permit 192.0.0.0 0.255.255.255
+access-list 1 deny 192.0.0.0 0.255.255.255
+access-list 2 permit 192.0.0.0 0.255.255.255
+access-list 2 deny 192.0.0.0 0.255.255.255
+access-list 3 deny 192.0.0.0 0.255.255.255
+!
