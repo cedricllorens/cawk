@@ -61,6 +61,11 @@ BEGINFILE {
 	next;
 }
 
+/^ntp access-group [^ ]+/ {
+	acl_ref[$NF] = $0;
+	next;
+}
+
 ENDFILE {
 
 	# acl def and not ref

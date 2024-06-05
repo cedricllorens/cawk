@@ -8,6 +8,7 @@
 # ----------------------------------------------
 s/%SED_GAWK_PATH%/!\/usr\/bin\/env -S gawk -f/g
 s/%SED_INCLUDE_PATH%/"common\/common.gawk"/g
+s/%SED_INCLUDE_PATH_FWLIB%/"common\/common.fwlib.gawk"/g
 # ----------------------------------------------
 # CISCO
 # ----------------------------------------------

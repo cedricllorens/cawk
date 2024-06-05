@@ -121,6 +121,16 @@ once cawk parallel mode is enabled, before performing assessment, cawk build one
 per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
 enhanced performances for a huge set of files.
 
+# --------------------
+# ---- cawk risk level
+# --------------------
+
+cawk allows the following risk level:
+	- high   : for (high impacts) security errors
+	- medium : for (medium impacts) security errors
+	- low    : for (low impacts) security errors
+	- info   : for audit/information errors
+
 # -------------------
 # ---- cawk community
 # -------------------

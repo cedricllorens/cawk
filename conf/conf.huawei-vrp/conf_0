@@ -13,6 +13,8 @@ ip route-static 0.0.0.0 0.0.0.0 10.0.113.1
 http server enable
 rcmd server enable
 #
+ntp-service unicast-server 10.0.0.0
+#
 rsa local-key-pair create
 user-interface vty 0 4
  authentication-mode aaa
@@ -33,7 +35,7 @@ aaa
  local-user admin service-type ssh
 #
 acl number 3000
- rule 5 permit tcp source 10.168.1.0 0.0.0.255 destination any
+ rule 5 permit ip source 10.168.1.0 0.0.0.255 destination any
  rule 10 deny ip source any destination any
 #
 acl number 5000

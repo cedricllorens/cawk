@@ -4,9 +4,11 @@
 # ------------------------------------------------------------
 #
 
-@include "../common/common.gawk.template"
-
-# -------------------------------
+# -----------------------------------------------
+# -----------------------------------------------
+# FW SUPPORT FUNCTIONS
+# -----------------------------------------------
+# -----------------------------------------------
 
 function cawk_cidrNetworkMask(cidr) {
     prefix_length = int(cidr)
@@ -42,6 +44,17 @@ function cawk_netMaskToBinary(netmask) {
         binary = binary cawk_decToBin(octets[netmask_j])
     }
     return binary
+}
+
+function cawk_netMaskInv(netmask) {
+    if ( netmask == "any" ) return netmask
+    if ( netmask == "" ) return "any"
+    n = split(netmask, octets, ".")
+    delete maskInv
+    for (netmaskinv_j = 1; netmaskinv_j <= 4; netmaskinv_j++) {
+	maskInv[netmaskinv_j] = 255 - octets[netmaskinv_j]
+    }
+    return maskInv[1] "." maskInv[2] "." maskInv[3] "." maskInv[4]
 }
 
 function cawk_hostMaskToBinary(netmask) {
@@ -129,20 +142,13 @@ function cawk_decToBin(decimal) {
 function cawk_max(x, y) { return (x > y) ? x : y }
 function cawk_min(x, y) { return (x < y) ? x : y }
 
-function cawk_init_fw_rules() {
+# -----------------------------------------------
+# -----------------------------------------------
+# FW INIT RULES
+# -----------------------------------------------
+# -----------------------------------------------
 
-        # file format ----------------------------------
-        # action           : permit/deny
-        # src@             : ip
-        # src_net@         : cird/netmask
-        # port_src         : port_src		set 0 if empty
-        # port_src_range   : port_src_range	set 0 if empty
-        # dst@             : ip			set 0 if empty
-        # dst_net@         : cird/netmask	set 0 if empty
-        # port_dst         : port_dst		set 0 if empty
-        # port_dst_range   : port_dst_range	set 0 if empty
-        # protocol         : protocol		set none if empty
-        # file format ----------------------------------
+function cawk_init_fw_rules() {
 
 	delete cawk_filter
 	delete cawk_filter_name
@@ -161,19 +167,27 @@ function cawk_init_fw_rules() {
 	cawk_nbrules = 0
 }
 
+# -----------------------------------------------
+# -----------------------------------------------
+# FW ADD RULES
+# -----------------------------------------------
+# -----------------------------------------------
+
 function cawk_add_fw_rules(filter_test_name,filter_name,action,src,src_net,port_src,port_src_range,dst,dst_net,port_dst,port_dst_range,protocol) {
 
         # file format ----------------------------------
+	# test_name        : string
+	# test_description : string
         # action           : permit/deny
         # src@             : ip
-        # src_net@         : cird/netmask
+        # src_net@         : cird/netmask	set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
         # port_src         : port_src		set 0 if empty
         # port_src_range   : port_src_range	set 0 if empty
         # dst@             : ip			set 0 if empty
-        # dst_net@         : cird/netmask	set 0 if empty
+        # dst_net@         : cird/netmask	set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
         # port_dst         : port_dst		set 0 if empty
         # port_dst_range   : port_dst_range	set 0 if empty
-        # protocol         : protocol		set none if empty
+        # protocol         : protocol		set "none" if empty
         # file format ----------------------------------
 
 	cawk_nbrules += 1
@@ -203,14 +217,13 @@ function cawk_add_fw_rules(filter_test_name,filter_name,action,src,src_net,port_
 		cawk_src[cawk_nbrules] = cawk_binToDec(cawk_ipToBinary("0.0.0.0"))
 		cawk_src_net[cawk_nbrules] = cawk_binToDec(cawk_ipToBinary("255.255.255.255"))
 	} else if (cidr ~ /^[0-9]+$/) {
-		cawk_src[cawk_nbrules] =\
+		cawk_src[cawk_nbrules] = \
 		cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr)))
-		cawk_src_net[cawk_nbrules] =\
+		cawk_src_net[cawk_nbrules] = \
 		cawk_binToDec(cawk_binaryOR(cawk_cidrHostMask(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr))))
 	} else {
-		cawk_src[cawk_nbrules] =\
-		cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
-		cawk_src_net[cawk_nbrules] =\
+		cawk_src[cawk_nbrules] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
+		cawk_src_net[cawk_nbrules] = \
 		cawk_binToDec(cawk_binaryOR(cawk_hostMaskToBinary(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr))))
 	}
 
@@ -256,9 +269,17 @@ function cawk_add_fw_rules(filter_test_name,filter_name,action,src,src_net,port_
 
 }
 
+# -----------------------------------------------
+# -----------------------------------------------
+# FW RULES ASSESSMENT
+# -----------------------------------------------
+# -----------------------------------------------
+
 function cawk_fw_rules_assessment() {
 
         # file format ----------------------------------
+	# test_name        : string
+	# test_description : string
         # action           : permit/deny
         # src@             : ip
         # src_net@         : cird/netmask
@@ -322,7 +343,7 @@ function cawk_fw_rules_assessment() {
 							cawk_action[s+1]" "\
 							cawk_src_orig[s+1]" "cawk_port_src[s+1]"/"cawk_port_src_range[s+1]" "\
 							cawk_dst_orig[s+1]" "cawk_port_dst[s+1]"/"cawk_port_dst_range[s+1]" "\
-							cawk_protocol[s+1]" "rule_analysis,FNR,"high","pass");
+							cawk_protocol[s+1]" "rule_analysis,FNR,"info","error");
 						}
 					}
 				}

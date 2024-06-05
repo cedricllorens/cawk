@@ -13,6 +13,8 @@ hostname conf.test
 ip http server
 ip rcmd cawk
 !
+ntp server 10.0.0.0
+ntp access-group cawk_ntp_bad
 enable secret 5 xxxxx
 !
 interface FastEthernet0

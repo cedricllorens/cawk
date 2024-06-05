@@ -66,6 +66,9 @@ system {
             source-address 192.168.1.1;
         }
     }
+    ntp {
+        server 192.168.1.100 prefer;
+    }
 }
 
 firewall {

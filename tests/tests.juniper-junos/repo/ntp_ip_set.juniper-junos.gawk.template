@@ -1,0 +1,56 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if <ntp server ip> is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_system = 0;
+}
+
+/^system {/ && block_system == 0 {
+	block_system = 1;
+	block_ntp = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%ntp/ && block_system == 1 && block_ntp == 0 {
+	block_ntp = 1;
+	next;	
+}
+
+/^%SED_BK_JUNI%{2}server [0-9\.]+/ && block_ntp == 1 {
+	print_err("ntp_ip_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
+        pass = 1;
+	nextfile;	
+}
+
+/^%SED_BK_JUNI%}$/ && block_ntp == 1 {
+	block_ntp = 0;
+	next;
+}
+
+/^}$/ && block_system == 1 {
+	block_system = 0;
+	next;
+}
+
+ENDFILE {
+        if ( ! pass ) print_err("ntp_ip_set.juniper-junos.gawk","<ntp server ip> is not set",0,"high","error");
+}
+
+END {
+}

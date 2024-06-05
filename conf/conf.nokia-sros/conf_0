@@ -1,6 +1,11 @@
 configure
     system
         name device
+        time
+            ntp
+                server 10.168.1.1
+            exit
+        exit
         login-control
             ftp
                 inbound-max-sessions 5

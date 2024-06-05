@@ -76,13 +76,19 @@ TESTS_cisco-viptela_RUN_PATH = tests/tests.cisco-viptela/run
 TESTS_cisco-viptela_REPO_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_REPO_PATH)/*.template)
 TESTS_cisco-viptela_RUN_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_RUN_PATH)/*.template)
 
+CONFIGURATION_research_PATH = conf/conf.research
+TESTS_research_REPO_PATH = tests/tests.research/repo
+TESTS_research_RUN_PATH = tests/tests.research/run
+TESTS_research_REPO_TEMPLATE = $(wildcard $(TESTS_research_REPO_PATH)/*.template)
+TESTS_research_RUN_TEMPLATE = $(wildcard $(TESTS_research_RUN_PATH)/*.template)
+
 TESTS_REPORT = report
 
 TESTS_SYSTEM = system
 
 TESTS_TMP = tmp
 
-SUPPLIER_SCOPE = cisco-ios cisco-viptela juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos
+SUPPLIER_SCOPE = cisco-ios cisco-viptela juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos research
 
 TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_cisco-viptela_REPO_PATH) \
@@ -90,7 +96,8 @@ TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
 		$(TESTS_huawei-vrp_REPO_PATH) \
 		$(TESTS_fortinet-fortios_REPO_PATH) \
 		$(TESTS_nokia-sros_REPO_PATH) \
-		$(TESTS_paloalto-panos_REPO_PATH)
+		$(TESTS_paloalto-panos_REPO_PATH) \
+		$(TESTS_research_REPO_PATH)
 
 TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_cisco-viptela_RUN_PATH) \
@@ -98,7 +105,8 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_huawei-vrp_RUN_PATH) \
 		$(TESTS_fortinet-fortios_RUN_PATH) \
 		$(TESTS_nokia-sros_RUN_PATH) \
-		$(TESTS_paloalto-panos_RUN_PATH)
+		$(TESTS_paloalto-panos_RUN_PATH) \
+		$(TESTS_research_RUN_PATH)
 
 # --------------- TESTS BUILDING BY SED CHANGE
 
@@ -152,7 +160,7 @@ system:
 
 # --------------------------------
 
-tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-viptela_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk)
+tests_target : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-viptela_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_research_REPO_TEMPLATE:.gawk.template=.gawk)
 
 tests_repo: tests_target
 	@echo "cawk tests_repo done ----"

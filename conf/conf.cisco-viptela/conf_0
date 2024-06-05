@@ -6,6 +6,9 @@ system
    password xxxxx
   !
  !
+ ntp
+  server 10.168.1.100 prefer
+ !
  tacacs
   server 10.10.10.10
   exit

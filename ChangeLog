@@ -4,6 +4,17 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.6.0 (june 2024):
+	Common:
+	- migrate the fw rules assessment library in common directory
+	- add the <research> as supplier target for development purpose
+	- add a new risk level = info for audit purpose
+	- update reporting to take into consideration the new risk level info and sort the list of tests
+	Tests:
+	- add new tests checking cisco-ios simple acl with risk level info and add other tests
+	- add new tests checking huawei-vrp acl (partially done) with risk level info and add other tests
+	- add ntp tests for cisco-ios,juniper-junos,huawei-vrp,cisco-viptela and nokia-sros
+
 v1.5.0 (may 2024):
 	Common:
 	- add new Makefile target <view_error> to only view assessments errors

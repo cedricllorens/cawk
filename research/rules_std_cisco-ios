@@ -1,7 +1,0 @@
-ip access-list standard 11
- 10 permit 10.0.0.0 0.0.0.127
- 20 deny any
-!
-ip access-list standard 12
- 10 permit 10.0.0.0 0.0.0.127
-!
