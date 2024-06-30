@@ -51,12 +51,22 @@ BEGINFILE {
 	next;
 }
 
+/^snmp-server group .* access [^ ]+$/ {
+	acl_ref[$NF] = $0;
+	next;
+}
+
 /^ access-class [^ ]+ / && $4 != "prefix-list" {
 	acl_ref[$2] = $0;
 	next;
 }
 
-/^ match ip address [^ ]+/ && $4 != "prefix-list" {
+/^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" {
+	acl_ref[$4] = $0;
+	next;
+}
+
+/^[ ]*match access-group name [^ ]+/ {
 	acl_ref[$4] = $0;
 	next;
 }

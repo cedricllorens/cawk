@@ -108,6 +108,8 @@ TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
 		$(TESTS_paloalto-panos_RUN_PATH) \
 		$(TESTS_research_RUN_PATH)
 
+EXCEPTION_PATH = exceptions
+
 # --------------- TESTS BUILDING BY SED CHANGE
 
 %.gawk: %.gawk.template
@@ -177,8 +179,13 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 		echo "cawk ---- compute $(scope) devices ----" ;\
 		touch $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		$(foreach test,$(TESTS_$(scope)_REPO_TEMPLATE:.gawk.template=.gawk),\
-			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv ;\
+			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
 		) \
+		egrep -v -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).csv || true ;\
+		egrep -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).exceptions.csv || true ;\
+		rm -f $(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 else
@@ -190,7 +197,13 @@ else
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
 		$(TESTS_TMP)/Makefile.$(scope) ;\
-		gmake -s -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		gmake -s -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > \
+		$(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
+		egrep -v -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).csv || true ;\
+		egrep -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).exceptions.csv || true ;\
+		rm -f $(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 endif
@@ -199,8 +212,13 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@echo "cawk ---- compute $(supplier) devices ----"
 	@touch $(TESTS_REPORT)/assessment.$(supplier).csv
 	@$(foreach test,$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk),\
-		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
+		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv.swap ;\
 	)
+	egrep -v -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).csv || true
+	egrep -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).exceptions.csv || true
+	rm -f $(TESTS_REPORT)/assessment.$(supplier).csv.swap
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 else
 	@echo "cawk ---- compute $(supplier) devices ----"
@@ -210,7 +228,12 @@ else
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
 	$(TESTS_TMP)/Makefile.$(supplier)
-	@gmake -s -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	@gmake -s -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv.swap
+	egrep -v -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).csv || true
+	egrep -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).exceptions.csv || true
+	rm -f $(TESTS_REPORT)/assessment.$(supplier).csv.swap
 	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif
@@ -225,6 +248,11 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 		$(foreach test,$(TESTS_$(scope)_RUN_TEMPLATE:.gawk.template=.gawk),\
 			find $(CONFIGURATION_$(scope)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(scope).csv ;\
 		) \
+		egrep -v -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).csv || true ;\
+		egrep -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).exceptions.csv || true ;\
+		rm -f $(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 else
@@ -237,6 +265,11 @@ else
 		$(TESTS_TMP)/conf_list_files.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(scope) > \
 		$(TESTS_TMP)/Makefile.$(scope) ;\
 		gmake -s -f $(TESTS_TMP)/Makefile.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(scope).csv ;\
+		egrep -v -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).csv || true ;\
+		egrep -f $(EXCEPTION_PATH)/exceptions.$(scope) $(TESTS_REPORT)/assessment.$(scope).csv.swap > \
+		$(TESTS_REPORT)/assessment.$(scope).exceptions.csv || true ;\
+		rm -f $(TESTS_REPORT)/assessment.$(scope).csv.swap ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(scope).csv > $(TESTS_REPORT)/assessment.$(scope).summary.txt ;\
 	)
 endif
@@ -247,6 +280,11 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@$(foreach test,$(TESTS_$(supllier)_RUN_TEMPLATE:.gawk.template=.gawk),\
 		find $(CONFIGURATION_$(supplier)_PATH) -type f -exec ./$(test) {} \; >> $(TESTS_REPORT)/assessment.$(supplier).csv ;\
 	) \
+	egrep -v -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).csv || true
+	egrep -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).exceptions.csv || true
+	rm -f $(TESTS_REPORT)/assessment.$(supplier).csv.swap
 	$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 else
 	@echo "cawk ---- compute $(supplier) devices ----"
@@ -257,6 +295,11 @@ else
 	$(TESTS_TMP)/conf_list_files.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(supplier) > \
 	$(TESTS_TMP)/Makefile.$(supplier)
 	@gmake -s -f $(TESTS_TMP)/Makefile.$(supplier) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(TESTS_REPORT)/assessment.$(supplier).csv
+	egrep -v -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).csv || true
+	egrep -f $(EXCEPTION_PATH)/exceptions.$(supplier) $(TESTS_REPORT)/assessment.$(supplier).csv.swap > \
+	$(TESTS_REPORT)/assessment.$(supplier).exceptions.csv || true
+	rm -f $(TESTS_REPORT)/assessment.$(supplier).csv.swap
 	@$(TESTS_COMMON_PATH)/report.gawk $(TESTS_REPORT)/assessment.$(supplier).csv > $(TESTS_REPORT)/assessment.$(supplier).summary.txt
 endif
 endif

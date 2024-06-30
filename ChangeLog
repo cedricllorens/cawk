@@ -4,6 +4,13 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.7.0 (june 2024):
+	Common:
+	- build exceptions directory with empty exception files per supplier
+	- update Makefile to build for each assessment an exception report
+	Tests:
+	- Run and fix bugs on all suppliers tests
+
 v1.6.0 (june 2024):
 	Common:
 	- migrate the fw rules assessment library in common directory

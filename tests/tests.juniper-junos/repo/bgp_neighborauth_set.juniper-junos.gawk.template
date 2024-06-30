@@ -41,7 +41,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%{3}authentication-key / && block_neighbor == 1 {
+/^%SED_BK_JUNI%{3}[ ]*authentication-key / && block_neighbor == 1 {
 	print_err("bgp_neighborauth_set.juniper-junos.gawk",neighbor_edit" "rm_last_char(rm_blank_before($0)),FNR,"high","pass");
 	pass = 1;
 	next;

@@ -41,6 +41,11 @@ BEGINFILE {
 }
 
 /^ip access-list standard [^ ]+$/ {
+	if ( cawk_fw_rules_assessment() && acl != "" ) {
+		print_err("fw_aclstd_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+	cawk_init_fw_rules();
+
 	acl = $4;
 	block_acl = 1;
 	check = 1;
@@ -55,10 +60,11 @@ BEGINFILE {
 }
 
 /^(!|end)$/ && block_acl == 1 {
-	if ( cawk_fw_rules_assessment() ) {
+	if ( cawk_fw_rules_assessment() && acl != "" ) {
 		print_err("fw_aclstd_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 	}
 	cawk_init_fw_rules();
+
 	block_acl = 0;
 	acl = "";
 }

@@ -36,7 +36,7 @@ BEGINFILE {
 
 # ref ----
 
-/^[ ][ ]group[ ][^ ]+/ && block_snmp == 1 {
+/^[ ][ ]group[ ]+[^ ]+/ && block_snmp == 1 {
 	snmp_ref[$2] = $0;
 	next;
 }

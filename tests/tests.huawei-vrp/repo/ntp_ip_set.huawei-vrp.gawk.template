@@ -27,7 +27,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( !pass ) print_err("ntp_ip_set.huawei-vrp.gawk","ssh server is not set",0,"high","error");
+	if ( !pass ) print_err("ntp_ip_set.huawei-vrp.gawk","ntp server is not set",0,"high","error");
 }
 
 END {

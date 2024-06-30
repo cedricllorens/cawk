@@ -41,7 +41,7 @@ BEGINFILE {
 	acl_ref[$4] = $0;
 }
 
-/^[ ]*snmp-agent community .* acl [^ ]+.*$/ {
+/^[ ]*snmp-agent (group|community) .* acl [^ ]+.*$/ {
 	acl_ref[$NF] = $0;
 }
 
