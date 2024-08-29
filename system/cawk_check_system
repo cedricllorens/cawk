@@ -18,6 +18,12 @@ else
     echo "NOK : find is not available."
 fi
 
+if command -v m4 >/dev/null 2>&1; then
+    echo "OK : m4 is available."
+else
+    echo "NOK : m4 is not available."
+fi
+
 if command -v mktemp >/dev/null 2>&1; then
     echo "OK : mktemp is available."
 else

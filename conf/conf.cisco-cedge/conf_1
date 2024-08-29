@@ -1,0 +1,3 @@
+line vty 0 10
+ no exec
+!

@@ -77,6 +77,7 @@ snmp-server file-transfer access-group CAWK
 line con 0
  password 7 xxxxxx
 line aux 0
+ no exec
  password 7 xxxxxx
  exec-timeout 0 0
  transport input all

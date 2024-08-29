@@ -1,0 +1,7 @@
+zone security DMZ
+!
+line vty 0 10
+ no exec
+ transport input ssh
+ transport output ssh
+!

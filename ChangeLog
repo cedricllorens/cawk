@@ -4,6 +4,18 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.8.0 (august 2024):
+	Common:
+	- fix some little bugs or bad ouputs of the Makefile
+	- include m4 preprocessing of exceptions to include later friendly m4 functions
+	- a test can has <.template> suffix and <.m4> suffix, for <.m4> a preprocessing 
+          is performed by m4 functions available in the cawk m4 directory. m4 allows to
+          define predefined templates of tests managing configuration block hierarchy 
+	  automatically
+	Tests:
+	- add a new supplier : cisco-cedge
+	- add new tests for cisco-ios, cisco-cedge, cisco-viptela (tests with *.m4 extension)
+
 v1.7.0 (june 2024):
 	Common:
 	- build exceptions directory with empty exception files per supplier

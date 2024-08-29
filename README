@@ -10,8 +10,9 @@ cawk is Copyright (C) 2024 by Cedric Llorens
 # -----------------
 
 cawk objective is to provide to the community a complete list of tests allowing to check 
-network configurations whatever the supplier. Moreover, cawk is ONLY based on two well-known
+network configurations whatever the supplier. Moreover, cawk is ONLY based on 3 well-known
 packages: 
+- gnu m4 aka m4
 - gnu make aka gmake
 - gnu awk aka gawk
 
@@ -41,6 +42,8 @@ cawk has the following directories:
 - common  : contain a <kind of library> (set of functions) including in the tests and others common
 useful scripts
 
+- m4   : contain a collection of m4 libraries defining m4 functions that may be used at exceptions or tests level
+
 - tests   : a collection of individual tests *.template per supplier :
 
 	- each supplier test (cisco-ios, etc) is divided into two part:
@@ -49,9 +52,9 @@ useful scripts
 		- run  : used to put tests (from repo) that apply to your environment 
 		(gmake tests_run && check_run to launch)
 
-	- a tests has <.template> suffix, but the test is converted to <.gawk> suffix thanks to
-	the file support/tests.sed. this change allows to write tests more easily && enforce env 
-	system portability, so each test refer to %SED_VAR% aka:
+	- a tests has <.template> suffix or <.m4> suffix, but the test is converted to <.gawk> suffix thanks to
+	the file support/tests.sed for <.template suffix> and thanks to the file support/tests.sed and m4 preprocessing. 
+        this change allows to write tests more easily && enforce env system portability, so each test refer to %SED_VAR% aka:
 
 		- %SED_BLOCK_JUNIPER% : space identation used for block hierarchy
 		- %SED_COMMON_PATH% = to point out the common <kind of library>
@@ -61,6 +64,8 @@ useful scripts
 		these values can be changed thanks to the file support/tests.sed
 
 - confs   : a collection of configurations per supplier
+
+- exceptions   : a collection of exceptions per supplier applied for reporting
 
 - report  : assessment reports (and summary), each report has a same format:
 	- name of the configuration

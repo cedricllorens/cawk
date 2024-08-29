@@ -59,3 +59,6 @@ vpn 0
   !
  !
 !
+policy
+ zone LAN
+!
