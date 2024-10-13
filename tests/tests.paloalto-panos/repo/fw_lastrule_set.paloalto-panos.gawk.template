@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if firewall does not implement src=all dst=all service=any action=allow
+# purpose : checks if firewall last rule implement src=any dst=any service=any action=deny
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -20,7 +20,7 @@ BEGINFILE {
 	src = 0;
 	dst = 0;
 	service = 0;
-	pass = 1;
+	deny = 0;
 }
 
 /^security/ {
@@ -38,6 +38,7 @@ BEGINFILE {
 	src = 0;
 	dst = 0;
 	service = 0;
+	deny = 0;
 	next;
 }
 
@@ -56,11 +57,8 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_PALO%{3}action allow/ && block_rules == 1 {
-	if ( src && dst && service ) {
-		print_err("firewall_anyany_notset.paloalto-panos.gawk","firewall has rule src=any dst=any service=any action=allow",FNR,"high","error");
-		pass = 0;
-	}
+/^%SED_BK_PALO%{3}action deny/ && block_rules == 1 {
+	deny = 1;
 	next;
 }
 
@@ -75,9 +73,11 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) {
-		print_err("firewall_anyany_notset.paloalto-panos.gawk","firewall has no rule src=any dst=any service=any action=allow",0,"high","pass");
-	} 
+	if ( dst && src && service && deny ) {
+		print_err("fw_lastrule_noset.paloalto-panos.gawk","firewall has last rule src=any dst=any service=any action=deny",0,"high","pass");
+	} else {
+		print_err("fw_lastrule_noset.paloalto-panos.gawk","firewall has not last rule src=any dst=any service=any action=deny",0,"high","error");
+	}
 }
 
 END {

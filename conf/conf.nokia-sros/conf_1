@@ -24,4 +24,12 @@ configure
             exit
 	exit
     exit
+    router
+        interface FastEthernet1
+            ip directed-broadcast
+        exit
+        interface FastEthernet2
+            ip directed-broadcast
+        exit
+    exit
 exit all

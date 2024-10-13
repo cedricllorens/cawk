@@ -7,10 +7,22 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if firewall management default permit is not set
+# purpose : checks if firewall management filter rules anyany is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
+
+function local_filtermgnt_analysis() {
+	if ( srcmgnt == -1 && dstmgnt == -1 && permitmgnt == -1 ) {
+		srcmgnt = dstmgnt = permitmgnt = 0;
+	} else {
+		if ( srcmgnt == 0 && dstmgnt == 0 && permitmgnt == 1 ) {
+			print_err("fw_allallmgnt_notset.nokia-sros.gawk","ip-filter allall rule is set",FNR,"high","error");
+			pass = 0;
+		}
+		srcmgnt = dstmgnt = permitmgnt = -1;
+	}
+}
 
 BEGIN {
 }
@@ -21,6 +33,9 @@ BEGINFILE {
 	block_security = 0;
 	block_mgnt = 0;
 	block_filter = 0;
+	srcmgnt = -1;
+	dstmgnt = -1;
+	permitmgnt = -1;
 }
 
 /^%SED_BK_NOKIA%system/ && block_system == 0 {
@@ -43,9 +58,25 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_NOKIA%{5}default-action permit/ && block_filter == 1 {
-        print_err("firewallmngt_defaultpermit_notset.nokia-sros.gawk",rm_blank_before($0),0,"high","error");
-	pass = 0;
+/^%SED_BK_NOKIA%{5}entry/ && block_filter == 1 {
+	local_filtermgnt_analysis();
+	next;
+}
+
+/^%SED_BK_NOKIA%{6}src-ip/ && block_filter == 1 {
+	srcmgnt = 1;
+}
+
+/^%SED_BK_NOKIA%{6}dst-ip/ && block_filter == 1 {
+	srcmgnt = 1;
+}
+
+/^%SED_BK_NOKIA%{6}action permit/ && block_filter == 1 {
+	permitmgnt = 1;
+}
+
+/^%SED_BK_NOKIA%{5}exit$/ && block_filter == 1 {
+	local_filtermgnt_analysis();
 	next;
 }
 
@@ -70,7 +101,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("firewallmngt_defaultpermit_notset.nokia-sros.gawk","ip-filter default permit is not set",0,"high","pass");
+        if ( pass ) print_err("fw_allallmgnt_notset.nokia-sros.gawk","ip-filter allall rules not set",0,"high","pass");
 }
 
 END {

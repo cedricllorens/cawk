@@ -9,6 +9,8 @@ hostname conf.test
 enable secret 5 xxxxxx
 !
 interface FastEthernet0
+ ip proxy-arp
+ ip directed-broadcast
  no ip address
  shutdown
  speed auto
@@ -19,6 +21,7 @@ interface GigabitEthernet0/0
  ip address 10.0.68.45 255.255.255.0
  ip access-group BLOCK_VIRUS in
  no ip proxy-arp
+ no ip redirects
 !
 interface GigabitEthernet0/1
  ip address 10.0.68.45 255.255.255.0

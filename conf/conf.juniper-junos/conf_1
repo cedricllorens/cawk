@@ -3,6 +3,7 @@ interfaces {
         unit 0 {
             family inet {
                 address 10.168.1.1/24;
+                directed-broadcast
             }
         }
     }
@@ -10,6 +11,7 @@ interfaces {
         unit 0 {
             family inet {
                 address 10.0.0.1/32;
+                directed-broadcast
             }
         }
     }

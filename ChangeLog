@@ -4,6 +4,14 @@
 # ------------------------------------------------------------
 cawk is Copyright (C) 2024 by Cedric Llorens
 
+v1.9.0 (october 2024):
+	Common:
+	- fix a small bug (Makefile - gmake catalog)
+        - add a new target : gmake common to provide the list of functions available in the common directory for tests
+	Tests:
+	- add new tests for cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
+	- review the paloalto-panos conf (add <deviceconfig> block) and update the tests accordingly
+
 v1.8.0 (august 2024):
 	Common:
 	- fix some little bugs or bad ouputs of the Makefile

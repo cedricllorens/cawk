@@ -41,23 +41,23 @@ BEGINFILE {
 	check = 1;
 	if ( acl != $2 ) {
 		if ( cawk_fw_rules_assessment() && acl != "" ) {
-			print_err("fw_aclstdline_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+			print_err("acl_checkstdline_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 		}
 		cawk_init_fw_rules();
 	}
 	acl = $2;
-	cawk_add_fw_rules("fw_aclstdline_check.cisco-ios.gawk","access-list "acl,$3,$4,cawk_netMaskInv($5),0,0,0,0,0,0,"none")
+	cawk_add_fw_rules("acl_checkstdline_check.cisco-ios.gawk","access-list "acl,$3,$4,cawk_netMaskInv($5),0,0,0,0,0,0,"none")
 }
 
 /^(!|end)$/ && acl != "" {
 	if ( cawk_fw_rules_assessment() ) {
-		print_err("fw_aclstdline_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+		print_err("acl_checkstdline_check.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 	}
 	acl = "";
 }
 
 ENDFILE { 
-	if ( check == 0 ) print_err("fw_aclstdline_check.cisco-ios.gawk","no <access-list [0-9]*> found",FNR,"info","pass");
+	if ( check == 0 ) print_err("acl_checkstdline_check.cisco-ios.gawk","no <access-list [0-9]*> found",FNR,"info","pass");
 }
 
 END {

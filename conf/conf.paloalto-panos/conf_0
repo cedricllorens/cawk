@@ -1,28 +1,47 @@
-system {
-  name MyFirewall
-  domain acme.com
-  time-zone Europe/Paris
-  ntp server 0.pool.ntp.org
-  dns server 8.8.8.8
-  management-profile mgmt_profile
-  interfaces {
-    eth1 inside
-    eth2 outside
-  }
-  snmp {
-    community public {
-      access write
+deviceconfig {
+  system {
+    name MyFirewall
+    domain acme.com
+    time-zone Europe/Paris
+    ntp server 0.pool.ntp.org
+    dns server 8.8.8.8
+    management-profile mgmt_profile
+    interfaces {
+      eth1 inside
+      eth2 outside
     }
-    users {
-      snmp_user {
-        engine_id 8000000000000001
-        authentication {
-          protocol sha
-          password secret123
+    snmp {
+      community public {
+        access write
+      }
+      users {
+        snmp_user {
+          engine_id 8000000000000001
+          authentication {
+            protocol sha
+            password secret123
+          }
+          privacy {
+            protocol aes128
+            password secret456
+          }
         }
-        privacy {
-          protocol aes128
-          password secret456
+      }
+    }
+  }
+}
+
+network {
+  interface {
+    ethernet {
+      ethernet1/1 {
+        layer3 {
+          ip 192.168.1.1/24;
+          icmp-redirect yes;
+          icmp-unreachable yes;
+          proxy-arp yes;
+          ping no;
+          rpf-check disable;
         }
       }
     }
@@ -125,5 +144,23 @@ groups {
 logging {
   profile default {
     destination syslog:server_ip
+  }
+}
+
+aaa {
+  authentication-profile {
+    radius-auth {
+      protocol radius;
+      server {
+        block-radius {
+          server-1 {
+            address 192.168.1.100;
+            secret-key "your_secret_key";
+            timeout 5;
+            retry 3;
+          }
+        }
+      }
+    }
   }
 }

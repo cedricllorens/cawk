@@ -1,25 +1,27 @@
-system {
-  name MyFirewall
-  domain acme.com
-  time-zone Europe/Paris
-  ntp server 0.pool.ntp.org
-  dns server 8.8.8.8
-  management-profile mgmt_profile
-  interfaces {
-    eth1 inside
-    eth2 outside
-  }
-  snmp {
-    users {
-      snmp_user {
-        engine_id 8000000000000001
-        authentication {
-          protocol sha
-          password secret123
-        }
-        privacy {
-          protocol aes128
-          password secret456
+deviceconfig {
+  system {
+    name MyFirewall
+    domain acme.com
+    time-zone Europe/Paris
+    ntp server 0.pool.ntp.org
+    dns server 8.8.8.8
+    management-profile mgmt_profile
+    interfaces {
+      eth1 inside
+      eth2 outside
+    }
+    snmp {
+      users {
+        snmp_user {
+          engine_id 8000000000000001
+          authentication {
+            protocol sha
+            password secret123
+          }
+          privacy {
+            protocol aes128
+            password secret456
+          }
         }
       }
     }

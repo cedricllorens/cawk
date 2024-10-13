@@ -9,6 +9,7 @@
 # - gmake 		: provide information on cawk running
 # - gmake system	: allow to know if the system can run cawk
 # - gmake supplier 	: provide the suppliers covered by cawk
+# - gmake common        : provide the list of functions available in the common directory
 # - gmake clean 	: clean all 
 # - gmake tests_repo 	: build all <repo> tests
 # - gmake tests_run 	: build all <run> tests
@@ -153,13 +154,14 @@ EXCEPTION_M4 = $(wildcard $(EXCEPTION_PATH)/*.m4)
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view view_error clean_report clean_tmp clean catalog git gitpush supplier check_supplier system
+.PHONY: all check_repo check_run tests tests_target view view_error clean_report clean_tmp clean catalog git gitpush supplier check_supplier system common
 
 all:
 	# ------------------------------------------------------------
 	# - gmake 		: provide information on cawk running
 	# - gmake system	: allow to know if the system can run cawk
 	# - gmake supplier 	: provide the suppliers supported by cawk
+	# - gmake common        : provide the list of functions available in the common directory
 	# - gmake clean 	: clean all 
 	# - gmake tests_repo 	: build all <repo> tests
 	# - gmake tests_run 	: build all <run> tests
@@ -194,6 +196,11 @@ supplier:
 
 system:
 	$(TESTS_SYSTEM)/cawk_check_system
+
+# --------------------------------
+
+common:
+	grep purpose common/*.template
 
 # --------------------------------
 
@@ -407,7 +414,7 @@ clean_tmp:
 
 # --------------------------------
 
-catalog:
+catalog: tests_repo tests_run
 	@echo "******************************"
 	@echo "******************************"
 	@echo "---- Tests <repo> catalog"

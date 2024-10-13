@@ -3,8 +3,15 @@ config system global
     set admin-ssh-port 22
 end
 
+config system settings
+    set source-routing enable
+end
+
 config system interface
     edit "management"
+        set icmp-redirect enable
+        set icmp-unreachable enable
+        set proxy-arp enable
         set vdom "root"
         set ip 10.168.1.1 255.255.255.0
         set allowaccess ssh https
@@ -119,5 +126,23 @@ config system snmp v3user
         set privpassword <privacy_password>
         set privmethod aes128
         set vdom <vdom_name>
+    next
+end
+
+config user tacacs+
+    edit "toto"
+        set server 10.0.0.0
+    next
+    edit "admin"
+        set server 11.0.0.0
+    next
+    edit "TAC"
+        set server 11.0.0.0
+    next
+end
+
+config user cedric
+    edit "toto"
+        set server 10.0.0.0
     next
 end

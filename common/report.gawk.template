@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : this test generate a cawk report
+# this test generate a cawk report
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

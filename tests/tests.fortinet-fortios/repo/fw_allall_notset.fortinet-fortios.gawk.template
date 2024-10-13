@@ -53,7 +53,7 @@ BEGINFILE {
 
 /^%SED_BK_FORTI%{2}set action accept/ && block_edit == 1 {
 	if ( src && dst && service ) {
-		print_err("firewall_allall_noset.fortinet-fortios.gawk","firewall has rule src=all dst=all service=all action=accept",FNR,"high","error");
+		print_err("fw_allall_noset.fortinet-fortios.gawk","firewall has rule src=all dst=all service=all action=accept",FNR,"high","error");
 		pass = 0;
 	}
 	next;
@@ -69,7 +69,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("firewall_allall_noset.fortinet-fortios.gawk","firewall has no rule src=all dst=all service=all action=accept",0,"high","pass");
+	if ( pass ) print_err("fw_allall_noset.fortinet-fortios.gawk","firewall has no rule src=all dst=all service=all action=accept",0,"high","pass");
 }
 
 END {

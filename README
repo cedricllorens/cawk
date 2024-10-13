@@ -86,6 +86,7 @@ cawk in gmake targets:
 	- gmake			: provide information on cawk running
 	- gmake system		: check if the system can run cawk
 	- gmake supplier	: provides the suppliers supported by cawk
+	- gmake common          : provide the list of functions available in the common directory
 	- gmake clean 		: clean all 
 	- gmake tests_run 	: build all <repo> tests
 	- gmake tests_repo 	: build all <repo> tests

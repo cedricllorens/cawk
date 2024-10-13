@@ -31,7 +31,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_PALO%{3}service %SED_FORBIDPROTO_PALO%/ && block_rules == 1 {
-	print_err("firewall_forbidproto_notset.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","error");
+	print_err("fw_forbidproto_notset.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }
@@ -48,7 +48,7 @@ BEGINFILE {
 
 ENDFILE {
 	if ( pass ) {
-		print_err("firewall_forbidproto_notset.paloalto-panos.gawk","firewall has no forbidden protocols",0,"high","pass");
+		print_err("fw_forbidproto_notset.paloalto-panos.gawk","firewall has no forbidden protocols",0,"high","pass");
 	} 
 }
 

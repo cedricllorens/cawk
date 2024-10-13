@@ -18,16 +18,47 @@ BEGIN {
 
 BEGINFILE {
 	pass = 1;
+	pass_ser = 1;
+	pass_auth = 1;
+	pass_autho = 1;
+	pass_acc = 1;
 }
 
 /^aaa new-model/ {
 	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
 	pass = 0;
-	nextfile;
+	next;
+}
+
+/^(tacacs|radius) server / {
+	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
+	pass_ser = 0;
+	next;
+}
+
+/^aaa authentication / {
+	pass_auth = 0;
+	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
+	next;
+}
+
+/^aaa authorization / {
+	pass_autho = 0;
+	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
+	next;
+}
+
+/^aaa accounting / {
+	pass_acc = 0;
+	print_err("aaa_config_set.cisco-ios.gawk",$0,FNR,"high","pass");
 }
 
 ENDFILE {
 	if ( pass ) print_err("aaa_config_set.cisco-ios.gawk","<aaa config> is not set",0,"high","error");
+	if ( pass_serv ) print_err("aaa_config_set.cisco-ios.gawk","<(tacacs|radius) server> is not set",0,"high","error");
+	if ( pass_auth ) print_err("aaa_config_set.cisco-ios.gawk","<aaa authentication> is not set",0,"high","error");
+	if ( pass_autho ) print_err("aaa_config_set.cisco-ios.gawk","<aaa authorization> is not set",0,"high","error");
+	if ( pass_acc ) print_err("aaa_config_set.cisco-ios.gawk","<aaa accounting> is not set",0,"high","error");
 }
 
 END {

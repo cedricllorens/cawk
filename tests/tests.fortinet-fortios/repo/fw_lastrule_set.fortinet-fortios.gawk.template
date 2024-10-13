@@ -67,9 +67,9 @@ BEGINFILE {
 	block_firewall = 0;
 	if ( block_edit != -1 ) {
 		if ( src && dst && service && deny ) {
-			print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",FNR,"high","pass");	
+			print_err("fw_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",FNR,"high","pass");	
 		} else {
-			print_err("firewall_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",FNR,"high","error");	
+			print_err("fw_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",FNR,"high","error");	
 		}
 	}
 }

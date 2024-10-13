@@ -20,29 +20,29 @@ BEGINFILE {
 	pass = 1;
 }
 
-/^system/ {
+/^%SED_BK_PALO%system/ {
 	block_system = 1;
 	next;
 }
 
-/^%SED_BK_PALO%snmp/ && block_system == 1 {
+/^%SED_BK_PALO%{2}snmp/ && block_system == 1 {
 	block_snmp = 1;
 	next;
 }
 
-/^%SED_BK_PALO%{2}[ ]+access write/ && block_snmp == 1 {
+/^%SED_BK_PALO%{3}[ ]+access write/ && block_snmp == 1 {
 	print_err("snmp_v1v2rw_notset.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	nextfile;
 }
 
 
-/^%SED_BK_PALO%\}/ && block_snmp == 1 {
+/^%SED_BK_PALO%{2}\}/ && block_snmp == 1 {
 	block_snmp = 0;
 	next;
 }
 
-/^\}/ && block_system == 1 {
+/^%SED_BK_PALO%\}/ && block_system == 1 {
 	block_system = 0;
 	next;
 }

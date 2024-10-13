@@ -14,6 +14,10 @@ s/%SED_INCLUDE_PATH_FWLIB%/"common\/common.fwlib.gawk"/g
 # ----------------------------------------------
 s/%SED_AUTHUSER_CISCO%/\(admin\)/g
 # ----------------------------------------------
+# CISCO_CEDGE
+# ----------------------------------------------
+s/%SED_AUTHUSER_CEDGE%/\(admin\)/g
+# ----------------------------------------------
 # CISCO_VIPTELA
 # ----------------------------------------------
 s/%SED_AUTHUSER_VIPTELA%/\(admin\)/g
@@ -32,6 +36,7 @@ s/%SED_AAASYSTEM_JUNI%/(tacacs|tacplus|radius)/g
 # FORTINET
 # ----------------------------------------------
 s/%SED_BK_FORTI%/([ ][ ][ ][ ])/g
+s/%SED_AUTHUSER_FORTI%/\"admin\"/g
 s/%SED_FORBIDPROTO_FORTI%/\"(HTTP)\"/g
 # ----------------------------------------------
 # NOKIA
