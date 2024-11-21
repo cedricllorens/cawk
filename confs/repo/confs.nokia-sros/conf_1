@@ -1,0 +1,37 @@
+configure
+    system
+        name device
+    exit
+    system
+        security
+            ssh
+            exit
+            management-access-filter
+                ip-filter
+                    default-action permit
+                    entry 100
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                    entry 200
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                exit
+            exit
+            snmp
+		shutdown
+            exit
+	exit
+    exit
+    router
+        interface FastEthernet1
+            ip directed-broadcast
+        exit
+        interface FastEthernet2
+            ip directed-broadcast
+        exit
+    exit
+exit all

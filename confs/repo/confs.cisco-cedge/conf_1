@@ -1,0 +1,8 @@
+no cdp run
+line vty 0 10
+ no exec
+!
+ip ssh version 1
+crypto
+ hash md5
+!

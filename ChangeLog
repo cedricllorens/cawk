@@ -2,7 +2,25 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-cawk is Copyright (C) 2024 by Cedric Llorens
+# cawk is Copyright (C) 2024 by Cedric Llorens
+# ------------------------------------------------------------
+
+v2.0.0 (november 2024): this is a major update with new usage of building <AUDIT-NAME> assessments
+	Common:
+	- add <number_of_pass_error> in the summary report
+	- review the output of the <gmake> command at cawk root directory (provide full help on the cawk gmake targets)
+	Makefile:
+	- review the Makefile parts
+	- use of variables to point out all cawk core directories
+	- able to create/delete/list an assessment based on an <AUDIT_NAME> thanks to new cawk targets : 
+		- gmake create_audit audit=AUDIT_NAME
+		- gmake delete_audit audit=AUDIT_NAME
+		- gmake list_audit
+		You may refer to README for further information and the number of assessments that can be built is limited by system resources
+	Directories:
+	- confs, tests, exceptions and reports directories setup have been reviewed and organized on the same design 
+	Tests:
+	- add new tests for cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
 
 v1.9.0 (october 2024):
 	Common:

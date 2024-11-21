@@ -90,6 +90,8 @@ ENDFILE {
     	for (i = 1; i <= n; i++) {
         	print "\ttest "tests[tests_tri[i]];
     	}
+	print "----";
+	print "number_of_pass_error " pass + error;
 	if ( ( pass + error ) > 0) {
 		decimal = sprintf("%.1f", 100 * pass / ( pass + error))
 		print "number_of_pass " pass " (" decimal "%)";

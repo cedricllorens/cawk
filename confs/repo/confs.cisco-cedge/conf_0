@@ -1,0 +1,9 @@
+zone security DMZ
+http server_nox
+ip rcmd cmd
+!
+line vty 0 10
+ no exec
+ transport input ssh
+ transport output ssh
+!

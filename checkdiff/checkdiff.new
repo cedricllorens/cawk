@@ -1,0 +1,1924 @@
+   62 reports/repo/assessment.cisco-cedge.csv
+    0 reports/repo/assessment.cisco-cedge.exceptions.csv
+   44 reports/repo/assessment.cisco-cedge.summary.txt
+   97 reports/repo/assessment.cisco-ios.csv
+    0 reports/repo/assessment.cisco-ios.exceptions.csv
+   50 reports/repo/assessment.cisco-ios.summary.txt
+   34 reports/repo/assessment.cisco-viptela.csv
+    0 reports/repo/assessment.cisco-viptela.exceptions.csv
+   29 reports/repo/assessment.cisco-viptela.summary.txt
+   47 reports/repo/assessment.fortinet-fortios.csv
+    0 reports/repo/assessment.fortinet-fortios.exceptions.csv
+   36 reports/repo/assessment.fortinet-fortios.summary.txt
+   58 reports/repo/assessment.huawei-vrp.csv
+    0 reports/repo/assessment.huawei-vrp.exceptions.csv
+   37 reports/repo/assessment.huawei-vrp.summary.txt
+   47 reports/repo/assessment.juniper-junos.csv
+    0 reports/repo/assessment.juniper-junos.exceptions.csv
+   34 reports/repo/assessment.juniper-junos.summary.txt
+   42 reports/repo/assessment.nokia-sros.csv
+    0 reports/repo/assessment.nokia-sros.exceptions.csv
+   34 reports/repo/assessment.nokia-sros.summary.txt
+   24 reports/repo/assessment.paloalto-panos.csv
+    0 reports/repo/assessment.paloalto-panos.exceptions.csv
+   27 reports/repo/assessment.paloalto-panos.summary.txt
+   18 reports/repo/assessment.research.csv
+    0 reports/repo/assessment.research.exceptions.csv
+   18 reports/repo/assessment.research.summary.txt
+  738 total
+   97 reports/repo/assessment.cisco-ios.csv
+    0 reports/repo/assessment.cisco-ios.exceptions.csv
+   50 reports/repo/assessment.cisco-ios.summary.txt
+  147 total
+   0 reports/run/assessment.cisco-cedge.csv
+   0 reports/run/assessment.cisco-cedge.exceptions.csv
+  15 reports/run/assessment.cisco-cedge.summary.txt
+   0 reports/run/assessment.cisco-ios.csv
+   0 reports/run/assessment.cisco-ios.exceptions.csv
+  15 reports/run/assessment.cisco-ios.summary.txt
+   0 reports/run/assessment.cisco-viptela.csv
+   0 reports/run/assessment.cisco-viptela.exceptions.csv
+  15 reports/run/assessment.cisco-viptela.summary.txt
+   0 reports/run/assessment.fortinet-fortios.csv
+   0 reports/run/assessment.fortinet-fortios.exceptions.csv
+  15 reports/run/assessment.fortinet-fortios.summary.txt
+   0 reports/run/assessment.huawei-vrp.csv
+   0 reports/run/assessment.huawei-vrp.exceptions.csv
+  15 reports/run/assessment.huawei-vrp.summary.txt
+   0 reports/run/assessment.juniper-junos.csv
+   0 reports/run/assessment.juniper-junos.exceptions.csv
+  15 reports/run/assessment.juniper-junos.summary.txt
+   0 reports/run/assessment.nokia-sros.csv
+   0 reports/run/assessment.nokia-sros.exceptions.csv
+  15 reports/run/assessment.nokia-sros.summary.txt
+   0 reports/run/assessment.paloalto-panos.csv
+   0 reports/run/assessment.paloalto-panos.exceptions.csv
+  15 reports/run/assessment.paloalto-panos.summary.txt
+   0 reports/run/assessment.research.csv
+   0 reports/run/assessment.research.exceptions.csv
+  15 reports/run/assessment.research.summary.txt
+ 135 total
+  0 reports/run/assessment.cisco-ios.csv
+  0 reports/run/assessment.cisco-ios.exceptions.csv
+ 15 reports/run/assessment.cisco-ios.summary.txt
+ 15 total
+   62 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.exceptions.csv
+   44 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.summary.txt
+   97 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.exceptions.csv
+   50 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.summary.txt
+   34 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.exceptions.csv
+   29 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.summary.txt
+   47 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.exceptions.csv
+   36 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.summary.txt
+   58 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.exceptions.csv
+   37 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.summary.txt
+   47 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.exceptions.csv
+   34 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.summary.txt
+   42 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.exceptions.csv
+   34 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.summary.txt
+   24 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.exceptions.csv
+   27 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.summary.txt
+   18 reports/run_client1_skffqsfqhsf10948494/assessment.research.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.research.exceptions.csv
+   18 reports/run_client1_skffqsfqhsf10948494/assessment.research.summary.txt
+  738 total
+   97 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.csv
+    0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.exceptions.csv
+   50 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.summary.txt
+  147 total
+   62 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.exceptions.csv
+   44 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.summary.txt
+   97 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.exceptions.csv
+   50 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.summary.txt
+   34 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.exceptions.csv
+   29 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.summary.txt
+   47 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.exceptions.csv
+   36 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.summary.txt
+   58 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.exceptions.csv
+   37 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.summary.txt
+   47 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.exceptions.csv
+   34 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.summary.txt
+   42 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.exceptions.csv
+   34 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.summary.txt
+   24 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.exceptions.csv
+   27 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.summary.txt
+   18 reports/run_client2_mqsdhqndqqos198440/assessment.research.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.research.exceptions.csv
+   18 reports/run_client2_mqsdhqndqqos198440/assessment.research.summary.txt
+  738 total
+   97 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.csv
+    0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.exceptions.csv
+   50 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.summary.txt
+  147 total
+    62 reports/repo/assessment.cisco-cedge.csv
+     0 reports/repo/assessment.cisco-cedge.exceptions.csv
+    44 reports/repo/assessment.cisco-cedge.summary.txt
+    97 reports/repo/assessment.cisco-ios.csv
+     0 reports/repo/assessment.cisco-ios.exceptions.csv
+    50 reports/repo/assessment.cisco-ios.summary.txt
+    34 reports/repo/assessment.cisco-viptela.csv
+     0 reports/repo/assessment.cisco-viptela.exceptions.csv
+    29 reports/repo/assessment.cisco-viptela.summary.txt
+    47 reports/repo/assessment.fortinet-fortios.csv
+     0 reports/repo/assessment.fortinet-fortios.exceptions.csv
+    36 reports/repo/assessment.fortinet-fortios.summary.txt
+    58 reports/repo/assessment.huawei-vrp.csv
+     0 reports/repo/assessment.huawei-vrp.exceptions.csv
+    37 reports/repo/assessment.huawei-vrp.summary.txt
+    47 reports/repo/assessment.juniper-junos.csv
+     0 reports/repo/assessment.juniper-junos.exceptions.csv
+    34 reports/repo/assessment.juniper-junos.summary.txt
+    42 reports/repo/assessment.nokia-sros.csv
+     0 reports/repo/assessment.nokia-sros.exceptions.csv
+    34 reports/repo/assessment.nokia-sros.summary.txt
+    24 reports/repo/assessment.paloalto-panos.csv
+     0 reports/repo/assessment.paloalto-panos.exceptions.csv
+    27 reports/repo/assessment.paloalto-panos.summary.txt
+    18 reports/repo/assessment.research.csv
+     0 reports/repo/assessment.research.exceptions.csv
+    18 reports/repo/assessment.research.summary.txt
+     0 reports/run/assessment.cisco-cedge.csv
+     0 reports/run/assessment.cisco-cedge.exceptions.csv
+    15 reports/run/assessment.cisco-cedge.summary.txt
+     0 reports/run/assessment.cisco-ios.csv
+     0 reports/run/assessment.cisco-ios.exceptions.csv
+    15 reports/run/assessment.cisco-ios.summary.txt
+     0 reports/run/assessment.cisco-viptela.csv
+     0 reports/run/assessment.cisco-viptela.exceptions.csv
+    15 reports/run/assessment.cisco-viptela.summary.txt
+     0 reports/run/assessment.fortinet-fortios.csv
+     0 reports/run/assessment.fortinet-fortios.exceptions.csv
+    15 reports/run/assessment.fortinet-fortios.summary.txt
+     0 reports/run/assessment.huawei-vrp.csv
+     0 reports/run/assessment.huawei-vrp.exceptions.csv
+    15 reports/run/assessment.huawei-vrp.summary.txt
+     0 reports/run/assessment.juniper-junos.csv
+     0 reports/run/assessment.juniper-junos.exceptions.csv
+    15 reports/run/assessment.juniper-junos.summary.txt
+     0 reports/run/assessment.nokia-sros.csv
+     0 reports/run/assessment.nokia-sros.exceptions.csv
+    15 reports/run/assessment.nokia-sros.summary.txt
+     0 reports/run/assessment.paloalto-panos.csv
+     0 reports/run/assessment.paloalto-panos.exceptions.csv
+    15 reports/run/assessment.paloalto-panos.summary.txt
+     0 reports/run/assessment.research.csv
+     0 reports/run/assessment.research.exceptions.csv
+    15 reports/run/assessment.research.summary.txt
+    62 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.exceptions.csv
+    44 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-cedge.summary.txt
+    97 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.exceptions.csv
+    50 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-ios.summary.txt
+    34 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.exceptions.csv
+    29 reports/run_client1_skffqsfqhsf10948494/assessment.cisco-viptela.summary.txt
+    47 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.exceptions.csv
+    36 reports/run_client1_skffqsfqhsf10948494/assessment.fortinet-fortios.summary.txt
+    58 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.exceptions.csv
+    37 reports/run_client1_skffqsfqhsf10948494/assessment.huawei-vrp.summary.txt
+    47 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.exceptions.csv
+    34 reports/run_client1_skffqsfqhsf10948494/assessment.juniper-junos.summary.txt
+    42 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.exceptions.csv
+    34 reports/run_client1_skffqsfqhsf10948494/assessment.nokia-sros.summary.txt
+    24 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.exceptions.csv
+    27 reports/run_client1_skffqsfqhsf10948494/assessment.paloalto-panos.summary.txt
+    18 reports/run_client1_skffqsfqhsf10948494/assessment.research.csv
+     0 reports/run_client1_skffqsfqhsf10948494/assessment.research.exceptions.csv
+    18 reports/run_client1_skffqsfqhsf10948494/assessment.research.summary.txt
+    62 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.exceptions.csv
+    44 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-cedge.summary.txt
+    97 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.exceptions.csv
+    50 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-ios.summary.txt
+    34 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.exceptions.csv
+    29 reports/run_client2_mqsdhqndqqos198440/assessment.cisco-viptela.summary.txt
+    47 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.exceptions.csv
+    36 reports/run_client2_mqsdhqndqqos198440/assessment.fortinet-fortios.summary.txt
+    58 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.exceptions.csv
+    37 reports/run_client2_mqsdhqndqqos198440/assessment.huawei-vrp.summary.txt
+    47 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.exceptions.csv
+    34 reports/run_client2_mqsdhqndqqos198440/assessment.juniper-junos.summary.txt
+    42 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.exceptions.csv
+    34 reports/run_client2_mqsdhqndqqos198440/assessment.nokia-sros.summary.txt
+    24 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.exceptions.csv
+    27 reports/run_client2_mqsdhqndqqos198440/assessment.paloalto-panos.summary.txt
+    18 reports/run_client2_mqsdhqndqqos198440/assessment.research.csv
+     0 reports/run_client2_mqsdhqndqqos198440/assessment.research.exceptions.csv
+    18 reports/run_client2_mqsdhqndqqos198440/assessment.research.summary.txt
+  2349 total
+------------------------------------
+---- Assessment cisco-ios devices
+------------------------------------
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;aaa new-model;30;high;pass
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor2 secret 5 xxxx;28;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor secret 5 xxxx;27;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_checkstd_check.cisco-ios.gawk;no <ip access-list standard> found;95;info;pass
+confs/repo/confs.cisco-ios/conf_0;acl_checkstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;95;info;pass
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;55 : ref not def : access-class 55 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;66 : ref not def : access-class 66 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;97 : def not ref :access-list 97 permit 10.0.168.143;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;98 : def not ref :access-list 98 permit 10.0.168.133;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRU : ref not def : ip access-group BLOCK_VIRU in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRUS : def not ref :ip access-list extended BLOCK_VIRUS;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;cawk_ntp_bad : ref not def :ntp access-group cawk_ntp_bad;0;high;error
+confs/repo/confs.cisco-ios/conf_0;global_http_notset.cisco-ios.gawk;ip http server;13;high;error
+confs/repo/confs.cisco-ios/conf_0;global_nocdprun_set.cisco-ios.gawk;no cdp run;10;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipbootpserver_set.cisco-ios.gawk;no ip bootp server;7;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipfinger_set.cisco-ios.gawk;no ip finger;8;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipsourceroute_set.cisco-ios.gawk;no ip source-route;9;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_rcmd_notset.cisco-ios.gawk;ip rcmd cawk;14;high;error
+confs/repo/confs.cisco-ios/conf_0;global_servicepassword_set.cisco-ios.gawk;<service password-encryption> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;int_directedbroadcast_notset.cisco-ios.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_proxyarp_notset.cisco-ios.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;lineaux_aclout_set.cisco-ios.gawk;line aux 0 : acl out missing;79;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_exectimeout00_set.cisco-ios.gawk;line aux 0 : <exec-timeout 0 0> is set;79;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_noexec_set.cisco-ios.gawk;line aux <no exec> is set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;linevty_aclin_set.cisco-ios.gawk;line vty 0 3 : acl in missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 0 3 : acl out missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 4 8 : acl out missing;88;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 0 3 : <exec-timeout 0 0> is set;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 4 8 : <exec-timeout 0 0> is set;88;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_sshinput_set.cisco-ios.gawk;line vty transport input (none|ssh) are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;linevty_sshoutput_set.cisco-ios.gawk;line vty transport output (none|ssh) are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;ntp_access-group_set.cisco-ios.gawk;ntp access-group cawk_ntp_bad;17;high;pass
+confs/repo/confs.cisco-ios/conf_0;ntp_ip_set.cisco-ios.gawk;ntp server 10.0.0.0;16;high;pass
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;FILTERTHIS : def not ref :ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;ldp_filter : ref not def :resequence prefix-list ipv4 ldp_filter 30 10;0;high;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter : def not ref :route-map tag-filter permit 20;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter-in : ref not def : distribute-list route-map tag-filter-in in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2_notset.cisco-ios.gawk;snmp-server community cawk RO;71;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2rw_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown1 : def not ref :snmp-server view unknown1 1.1.1;0;low;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown : ref not def :snmp-server community cawk view unknown RO;0;high;error
+confs/repo/confs.cisco-ios/conf_0;ssh_setup_set.cisco-ios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_user_notset.cisco-ios.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;52;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 12 has no redundant/inconsistent rules;57;info;pass
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;63;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;11 : def not ref :ip access-list standard 11;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;12 : def not ref :ip access-list standard 12;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;1 : def not ref :access-list 1 deny 10.0.0.0 0.128.255.255;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;2 : def not ref :access-list 2 deny any;0;low;error
+confs/repo/confs.cisco-ios/conf_1;global_http_notset.cisco-ios.gawk;http statement is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;global_nocdprun_set.cisco-ios.gawk;<no cdp run> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipbootpserver_set.cisco-ios.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipfinger_set.cisco-ios.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipsourceroute_set.cisco-ios.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_rcmd_notset.cisco-ios.gawk;rcmd statement is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;global_servicepassword_set.cisco-ios.gawk;service password-encryption;5;high;pass
+confs/repo/confs.cisco-ios/conf_1;int_directedbroadcast_notset.cisco-ios.gawk;interface FastEthernet0 <ip directed-broadcast> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;int_proxyarp_notset.cisco-ios.gawk;interface FastEthernet0 <ip proxy-arp> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_aclout_set.cisco-ios.gawk;line aux acls out are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_exectimeout00_set.cisco-ios.gawk;line aux <exec-timeout 0 0> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_noexec_set.cisco-ios.gawk;line aux 0 <no exec> is missing;73;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_aclin_set.cisco-ios.gawk;line vty acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_aclout_set.cisco-ios.gawk;line vty acls out are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_exectimeout00_set.cisco-ios.gawk;line vty <exec-timeout 0 0> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 0 3 : transport input (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 4 8 : transport input (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 0 3 : transport output (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 4 8 : transport output (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_access-group_set.cisco-ios.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_ip_set.cisco-ios.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;routing_defref_set.cisco-ios.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2_notset.cisco-ios.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2rw_notset.cisco-ios.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_viewdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;ssh_setup_set.cisco-ios.gawk;ip ssh version v2;7;high;pass
+confs/repo/confs.cisco-ios/conf_1;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+-------------------------
+---- Summary cisco-ios
+-------------------------
+number_of_checks 70
+number_of_files 2
+number_of_tests 35
+	test aaa_config_set.cisco-ios.gawk
+	test aaa_user_notset.cisco-ios.gawk
+	test acl_checkstd_check.cisco-ios.gawk
+	test acl_checkstdline_check.cisco-ios.gawk
+	test acl_defref_set.cisco-ios.gawk
+	test global_http_notset.cisco-ios.gawk
+	test global_nocdprun_set.cisco-ios.gawk
+	test global_noipbootpserver_set.cisco-ios.gawk
+	test global_noipfinger_set.cisco-ios.gawk
+	test global_noipsourceroute_set.cisco-ios.gawk
+	test global_rcmd_notset.cisco-ios.gawk
+	test global_servicepassword_set.cisco-ios.gawk
+	test int_directedbroadcast_notset.cisco-ios.gawk
+	test int_ipredirects_set.cisco-ios.gawk
+	test int_proxyarp_notset.cisco-ios.gawk
+	test int_unreachable_notset.cisco-ios.gawk
+	test ipsec_olderalgcrypto_notset.cisco-ios.gawk
+	test lineaux_aclin_set.cisco-ios.gawk
+	test lineaux_aclout_set.cisco-ios.gawk
+	test lineaux_exectimeout00_set.cisco-ios.gawk
+	test lineaux_noexec_set.cisco-ios.gawk
+	test linevty_aclin_set.cisco-ios.gawk
+	test linevty_aclout_set.cisco-ios.gawk
+	test linevty_exectimeout00_set.cisco-ios.gawk
+	test linevty_sshinput_set.cisco-ios.gawk
+	test linevty_sshoutput_set.cisco-ios.gawk
+	test ntp_access-group_set.cisco-ios.gawk
+	test ntp_ip_set.cisco-ios.gawk
+	test routing_defref_set.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-ios.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-ios.gawk
+	test snmp_v1v2rw_notset.cisco-ios.gawk
+	test snmp_viewdefref_set.cisco-ios.gawk
+	test ssh_setup_set.cisco-ios.gawk
+	test ssh_versionv1_notset.cisco-ios.gawk
+----
+number_of_pass_error 97
+number_of_pass 40 (41.2%)
+	number_of_pass_high 37 (92.5%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 3 (7.5%)
+number_of_error 57 (58.8%)
+	number_of_error_high 43 (75.4%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 10 (17.5%)
+	number_of_error_info 4 (7.0%)
+------------------------------------
+---- Assessment cisco-viptela devices
+------------------------------------
+confs/repo/confs.cisco-viptela/conf_0;aaa_authorder_set.cisco-viptela.gawk;auth-order tacacs local;4;high;pass
+confs/repo/confs.cisco-viptela/conf_0;aaa_config_set.cisco-viptela.gawk; aaa;3;high;pass
+confs/repo/confs.cisco-viptela/conf_0;aaa_user_notset.cisco-viptela.gawk;user cawk;5;high;error
+confs/repo/confs.cisco-viptela/conf_0;fw_zone_set.cisco-viptela.gawk;fw zone is set :  zone LAN;63;high;pass
+confs/repo/confs.cisco-viptela/conf_0;interface_allowall_notset.cisco-viptela.gawk;allow-service all;46;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowall_notset.cisco-viptela.gawk;allow-service all;57;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowforbidproto_notset.cisco-viptela.gawk;allow-service ftp;55;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowforbidproto_notset.cisco-viptela.gawk;allow-service telnet;45;high;error
+confs/repo/confs.cisco-viptela/conf_0;ipsec_olderalgcrypto_notset.cisco-viptela.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_0;ntp_ip_set.cisco-viptela.gawk;  server 10.168.1.100 prefer;10;high;pass
+confs/repo/confs.cisco-viptela/conf_0;snmp_groupdefref_set.cisco-ios.gawk;cawk_group_snmp_badx : ref not def :  group cawk_group_snmp_badx;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_groupdefref_set.cisco-ios.gawk;cawk_group_snmp : def not ref : group cawk_group_snmp auth-priv;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk;community public;21;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2_notset.cisco-viptela.gawk;community public;21;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2rw_notset.cisco-viptela.gawk;authorization write;23;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_snmp_bad : def not ref : view cawk_snmp_bad;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_snmp : ref not def :  view cawk_snmp;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_view_bad : def not ref : view cawk_view_bad;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_view : ref not def :  view cawk_view;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;ssh_setup_set.cisco-viptela.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;aaa_authorder_set.cisco-viptela.gawk;aaa authentication order is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;aaa_config_set.cisco-viptela.gawk;aaa config is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;aaa_user_notset.cisco-viptela.gawk;aaa users forbidden are not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;fw_zone_set.cisco-viptela.gawk;fw zone is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;interface_allowall_notset.cisco-viptela.gawk;interface allowalls are not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;interface_allowforbidproto_notset.cisco-viptela.gawk;interface allowforbidprotos are not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;ipsec_olderalgcrypto_notset.cisco-viptela.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;ntp_ip_set.cisco-viptela.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;snmp_groupdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk;snmp v1v2 forbidden community is not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;snmp_v1v2_notset.cisco-viptela.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;snmp_v1v2rw_notset.cisco-viptela.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;snmp_viewdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-viptela/conf_1;ssh_setup_set.cisco-viptela.gawk;<ssh server> is not set;0;high;error
+-------------------------
+---- Summary cisco-viptela
+-------------------------
+number_of_checks 28
+number_of_files 2
+number_of_tests 14
+	test aaa_authorder_set.cisco-viptela.gawk
+	test aaa_config_set.cisco-viptela.gawk
+	test aaa_user_notset.cisco-viptela.gawk
+	test fw_zone_set.cisco-viptela.gawk
+	test interface_allowall_notset.cisco-viptela.gawk
+	test interface_allowforbidproto_notset.cisco-viptela.gawk
+	test ipsec_olderalgcrypto_notset.cisco-viptela.gawk
+	test ntp_ip_set.cisco-viptela.gawk
+	test snmp_groupdefref_set.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-viptela.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk
+	test snmp_v1v2rw_notset.cisco-viptela.gawk
+	test snmp_viewdefref_set.cisco-ios.gawk
+	test ssh_setup_set.cisco-viptela.gawk
+----
+number_of_pass_error 34
+number_of_pass 14 (41.2%)
+	number_of_pass_high 14 (100.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 0 (0.0%)
+number_of_error 20 (58.8%)
+	number_of_error_high 17 (85.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 3 (15.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment cisco-cedge devices
+------------------------------------
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_user_notset.cisco-cedge.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;acl_checkstd_check.cisco-cedge.gawk;no <ip access-list standard> found;9;info;pass
+confs/repo/confs.cisco-cedge/conf_0;acl_checkstdline_check.cisco-cedge.gawk;no <access-list [0-9]*> found;9;info;pass
+confs/repo/confs.cisco-cedge/conf_0;acl_defref_set.cisco-cedge.gawk;all acls defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;fw_zonesecurity_set.cisco-cedge.gawk;fw zone is set : zone security DMZ;1;high;pass
+confs/repo/confs.cisco-cedge/conf_0;global_http_notset.cisco-cedge.gawk;http server_nox;2;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_nocdprun_set.cisco-cedge.gawk;<no cdp run> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipbootpserver_set.cisco-cedge.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipfinger_set.cisco-cedge.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipsourceroute_set.cisco-cedge.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_rcmd_notset.cisco-cedge.gawk;ip rcmd cmd;3;high;error
+confs/repo/confs.cisco-cedge/conf_0;int_directedbroadcast_notset.cisco-cedge.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;int_noipredirects_set.cisco-cedge.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;int_proxyarp_notset.cisco-cedge.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;int_unreachable_notset.cisco-cedge.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;ipsec_olderalgcrypto_notset.cisco-cedge.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;linevty_transportinputssh_set.cisco-cedge.gawk;line vty <transport input ssh> is set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;linevty_transportoutputssh_set.cisco-cedge.gawk;line vty <transport output ssh> is set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;ntp_access-group_set.cisco-cedge.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;ntp_ip_set.cisco-cedge.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;routing_defref_set.cisco-cedge.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;snmp_v1v2forbidcommunity_notset.cisco-cedge.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;snmp_v1v2_notset.cisco-cedge.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;snmp_v1v2rw_notset.cisco-cedge.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;snmp_viewdefref_set.cisco-cedge.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_0;ssh_setup_set.cisco-cedge.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;ssh_versionv1_notset.cisco-cedge.gawk;<ssh version 1> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_user_notset.cisco-cedge.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;acl_checkstd_check.cisco-cedge.gawk;no <ip access-list standard> found;8;info;pass
+confs/repo/confs.cisco-cedge/conf_1;acl_checkstdline_check.cisco-cedge.gawk;no <access-list [0-9]*> found;8;info;pass
+confs/repo/confs.cisco-cedge/conf_1;acl_defref_set.cisco-cedge.gawk;all acls defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;fw_zonesecurity_set.cisco-cedge.gawk;fw zone is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_http_notset.cisco-cedge.gawk;http statement is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;global_nocdprun_set.cisco-cedge.gawk;no cdp run;1;high;pass
+confs/repo/confs.cisco-cedge/conf_1;global_noipbootpserver_set.cisco-cedge.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_noipfinger_set.cisco-cedge.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_noipsourceroute_set.cisco-cedge.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_rcmd_notset.cisco-cedge.gawk;rcmd statement is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;int_directedbroadcast_notset.cisco-cedge.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;int_noipredirects_set.cisco-cedge.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;int_proxyarp_notset.cisco-cedge.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;int_unreachable_notset.cisco-cedge.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;ipsec_oldercryptoalg_notset.cisco-cedge.gawk; hash md5;7;high;error
+confs/repo/confs.cisco-cedge/conf_1;linevty_transportinputssh_set.cisco-cedge.gawk;line vty 0 10 <transport input ssh> is missing;2;high;error
+confs/repo/confs.cisco-cedge/conf_1;linevty_transportoutputssh_set.cisco-cedge.gawk;line vty 0 10 <transport output ssh> is missing;2;high;error
+confs/repo/confs.cisco-cedge/conf_1;ntp_access-group_set.cisco-cedge.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;ntp_ip_set.cisco-cedge.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;routing_defref_set.cisco-cedge.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;snmp_v1v2forbidcommunity_notset.cisco-cedge.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;snmp_v1v2_notset.cisco-cedge.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;snmp_v1v2rw_notset.cisco-cedge.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;snmp_viewdefref_set.cisco-cedge.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-cedge/conf_1;ssh_setup_set.cisco-cedge.gawk;ip ssh version 1;5;high;pass
+confs/repo/confs.cisco-cedge/conf_1;ssh_versionv1_notset.cisco-cedge.gawk;ip ssh version 1;5;high;error
+-------------------------
+---- Summary cisco-cedge
+-------------------------
+number_of_checks 58
+number_of_files 2
+number_of_tests 29
+	test aaa_config_set.cisco-cedge.gawk
+	test aaa_user_notset.cisco-cedge.gawk
+	test acl_checkstd_check.cisco-cedge.gawk
+	test acl_checkstdline_check.cisco-cedge.gawk
+	test acl_defref_set.cisco-cedge.gawk
+	test fw_zonesecurity_set.cisco-cedge.gawk
+	test global_http_notset.cisco-cedge.gawk
+	test global_nocdprun_set.cisco-cedge.gawk
+	test global_noipbootpserver_set.cisco-cedge.gawk
+	test global_noipfinger_set.cisco-cedge.gawk
+	test global_noipsourceroute_set.cisco-cedge.gawk
+	test global_rcmd_notset.cisco-cedge.gawk
+	test int_directedbroadcast_notset.cisco-cedge.gawk
+	test int_noipredirects_set.cisco-cedge.gawk
+	test int_proxyarp_notset.cisco-cedge.gawk
+	test int_unreachable_notset.cisco-cedge.gawk
+	test ipsec_olderalgcrypto_notset.cisco-cedge.gawk
+	test ipsec_oldercryptoalg_notset.cisco-cedge.gawk
+	test linevty_transportinputssh_set.cisco-cedge.gawk
+	test linevty_transportoutputssh_set.cisco-cedge.gawk
+	test ntp_access-group_set.cisco-cedge.gawk
+	test ntp_ip_set.cisco-cedge.gawk
+	test routing_defref_set.cisco-cedge.gawk
+	test snmp_v1v2_notset.cisco-cedge.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-cedge.gawk
+	test snmp_v1v2rw_notset.cisco-cedge.gawk
+	test snmp_viewdefref_set.cisco-cedge.gawk
+	test ssh_setup_set.cisco-cedge.gawk
+	test ssh_versionv1_notset.cisco-cedge.gawk
+----
+number_of_pass_error 62
+number_of_pass 35 (56.5%)
+	number_of_pass_high 31 (88.6%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 4 (11.4%)
+number_of_error 27 (43.5%)
+	number_of_error_high 27 (100.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 0 (0.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment juniper-junos devices
+------------------------------------
+confs/repo/confs.juniper-junos/conf_0;aaa_config_set.juniper-junos.gawk;radius-server {;63;high;pass
+confs/repo/confs.juniper-junos/conf_0;aaa_rightorder_set.juniper-junos.gawk;auth-order [ radius password ];;62;high;pass
+confs/repo/confs.juniper-junos/conf_0;aaa_user_notset.juniper-junos.gawk;user MonUtilisateur {;54;high;error
+confs/repo/confs.juniper-junos/conf_0;bgp_groupauth_set.juniper-junos.gawk;group cawk1  authentication-key x;30;high;pass
+confs/repo/confs.juniper-junos/conf_0;bgp_groupauth_set.juniper-junos.gawk;group cawk  authentication-key x;27;high;pass
+confs/repo/confs.juniper-junos/conf_0;bgp_neighborauth_set.juniper-junos.gawk;neighbor 10.168.1.2  authentication-key x;33;high;pass
+confs/repo/confs.juniper-junos/conf_0;bgp_neighborauth_set.juniper-junos.gawk;neighbor 10.168.1.3  authentication-key x;36;high;pass
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;strust-to-trust : filter ref but not def :input strust-to-trust;0;high;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-trust : filter def but not ref :filter trust-to-trust ;0;low;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-trusts : filter ref but not def :output trust-to-trusts;0;high;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-untrust : filter def but not ref :filter trust-to-untrust ;0;low;error
+confs/repo/confs.juniper-junos/conf_0;firewall_enable_set.juniper-junos.gawk;firewall {;74;high;pass
+confs/repo/confs.juniper-junos/conf_0;int_directedbroadcast_notset.juniper-junos.gawk;interface <directed-broadcast> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;int_proxyarp_notset.juniper-junos.gawk;interface <proxy-arp> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;int_redirects_notset.juniper-junos.gawk;interface <redirects> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;int_unreachables_notset.juniper-junos.gawk;interface <unreachables> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;ipsec_olderalgcrypto_notset.juniper-junos.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;ntp_ip_set.juniper-junos.gawk;server 192.168.1.100 prefer;;70;high;pass
+confs/repo/confs.juniper-junos/conf_0;services_forbidproto_notset.juniper-junos.gawk;services forbidden protocols are not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2forbidcommunity_notset.juniper-junos.gawk;community public {;124;high;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2_notset.juniper-junos.gawk;community public {;124;high;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2rw_notset.juniper-junos.gawk;authorization write;125;high;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v3_set.juniper-junos.gawk;v3 {;130;high;pass
+confs/repo/confs.juniper-junos/conf_0;ssh_setup_set.juniper-junos.gawk;ssh;51;high;pass
+confs/repo/confs.juniper-junos/conf_1;aaa_config_set.juniper-junos.gawk;aaa config is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;aaa_rightorder_set.juniper-junos.gawk;aaa auth order is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;aaa_user_notset.juniper-junos.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;bgp_groupauth_set.juniper-junos.gawk;bgp/group authentication-key is not set :group cawk1 ;30;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_groupauth_set.juniper-junos.gawk;bgp/group authentication-key is not set :group cawk ;28;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_neighborauth_set.juniper-junos.gawk;bgp/neighbor authentication-key is not set :neighbor 10.168.1.2 ;32;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_neighborauth_set.juniper-junos.gawk;bgp/neighbor authentication-key is not set :neighbor 10.168.1.3 ;34;high;error
+confs/repo/confs.juniper-junos/conf_1;filter_defref_set.juniper-junos.gawk;trust-to-untrust : filter def but not ref :filter trust-to-untrust ;0;low;error
+confs/repo/confs.juniper-junos/conf_1;firewall_enable_set.juniper-junos.gawk;firewall is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;int_directedbroadcast_notset.juniper-junos.gawk;unit 0 { <directed-broadcast> is set;11;high;error
+confs/repo/confs.juniper-junos/conf_1;int_directedbroadcast_notset.juniper-junos.gawk;unit 0 { <directed-broadcast> is set;3;high;error
+confs/repo/confs.juniper-junos/conf_1;int_proxyarp_notset.juniper-junos.gawk;interface <proxy-arp> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;int_redirects_notset.juniper-junos.gawk;interface <redirects> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;int_unreachables_notset.juniper-junos.gawk;interface <unreachables> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;ipsec_olderalgcrypto_notset.juniper-junos.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;ntp_ip_set.juniper-junos.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;services_forbidproto_notset.juniper-junos.gawk;ftp ;50;high;error
+confs/repo/confs.juniper-junos/conf_1;services_forbidproto_notset.juniper-junos.gawk;telnet;49;high;error
+confs/repo/confs.juniper-junos/conf_1;snmp_v1v2forbidcommunity_notset.juniper-junos.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;snmp_v1v2_notset.juniper-junos.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;snmp_v1v2rw_notset.juniper-junos.gawk;snmp v1v2 write mode is not set;0;high;pass
+confs/repo/confs.juniper-junos/conf_1;snmp_v3_set.juniper-junos.gawk;snmp v3 is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;ssh_setup_set.juniper-junos.gawk;ssh service is not set;0;high;error
+-------------------------
+---- Summary juniper-junos
+-------------------------
+number_of_checks 38
+number_of_files 2
+number_of_tests 19
+	test aaa_config_set.juniper-junos.gawk
+	test aaa_rightorder_set.juniper-junos.gawk
+	test aaa_user_notset.juniper-junos.gawk
+	test bgp_groupauth_set.juniper-junos.gawk
+	test bgp_neighborauth_set.juniper-junos.gawk
+	test filter_defref_set.juniper-junos.gawk
+	test firewall_enable_set.juniper-junos.gawk
+	test int_directedbroadcast_notset.juniper-junos.gawk
+	test int_proxyarp_notset.juniper-junos.gawk
+	test int_redirects_notset.juniper-junos.gawk
+	test int_unreachables_notset.juniper-junos.gawk
+	test ipsec_olderalgcrypto_notset.juniper-junos.gawk
+	test ntp_ip_set.juniper-junos.gawk
+	test services_forbidproto_notset.juniper-junos.gawk
+	test snmp_v1v2_notset.juniper-junos.gawk
+	test snmp_v1v2forbidcommunity_notset.juniper-junos.gawk
+	test snmp_v1v2rw_notset.juniper-junos.gawk
+	test snmp_v3_set.juniper-junos.gawk
+	test ssh_setup_set.juniper-junos.gawk
+----
+number_of_pass_error 47
+number_of_pass 24 (51.1%)
+	number_of_pass_high 24 (100.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 0 (0.0%)
+number_of_error 23 (48.9%)
+	number_of_error_high 20 (87.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 3 (13.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment huawei-vrp devices
+------------------------------------
+confs/repo/confs.huawei-vrp/conf_0;aaa_config_notset.huawei-vrp.gawk;aaa;32;high;pass
+confs/repo/confs.huawei-vrp/conf_0;aaa_user_notset.huawei-vrp.gawk; local-user cawk privilege level 15;34;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;2000 : ref not def : acl 2000 inbound;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;2001 : ref not def :snmp-agent community write cawk1 mib-view isoview02 acl 2001;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;3000 : def not ref :acl number 3000;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;5000 : def not ref :acl number 5000;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;7000 : ref not def : acl 7000 outbound;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;8000 : ref not def : packet-filter inbound acl 8000;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 0/any 0/0 ip inconsistent rules;40;info;error
+confs/repo/confs.huawei-vrp/conf_0;fw_aclstd_check.huawei-vrp.gawk;acl number 5000 has no redundant/inconsistent rules;44;info;pass
+confs/repo/confs.huawei-vrp/conf_0;global_http_notset.huawei-vrp.gawk;http server enable;13;high;error
+confs/repo/confs.huawei-vrp/conf_0;global_rcmd_notset.huawei-vrp.gawk;rcmd server enable;14;high;error
+confs/repo/confs.huawei-vrp/conf_0;int_arpproxy_notset.huawei-vrp.gawk;interface <arp proxy> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;int_directbroadcast_notset.huawei-vrp.gawk;interface <direct-broadcast> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;int_ipredirects_notset.huawei-vrp.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;ipsec_olderalgcrypto_notset.huawei-vrp.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;ntp_ip_set.huawei-vrp.gawk;ntp-service unicast-server 10.0.0.0;16;high;pass
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;need_send : ref not def :  import-route ospf 100 route-policy need_send;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_bad : ref not def : if-match ip-prefix no_need_send_bad;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send : def not ref :ip ip-prefix no_need_send index 10 permit 10.10.10.10 32;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_new : def not ref :route-policy no_need_send_new deny node 10;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_policy : def not ref :route-policy no_need_send_policy permit node 20;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2forbidcommunity_notset.huawei-vrp.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community read cawk mib-view isoview01 acl 2001;27;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community write cawk1 mib-view isoview02 acl 2001;28;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2rw_notset.huawei-vro.gawk;snmp-agent community write cawk1 mib-view isoview02 acl 2001;28;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2rw_notset.huawei-vro.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmpview_defref_set.huawei-vrp.gawk;isoview02 : ref not def :snmp-agent community write cawk1 mib-view isoview02 acl 2001;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmpview_defref_set.huawei-vrp.gawk;isoview03 : def not ref :snmp-agent mib-view isoview03 include system;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;ssh_setup_set.huawei-vrp.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;userinterfacevty_aaa_set.huawei-vrp.gawk;user-interface vty authentication-mode aaa are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;userinterfacevty_aclin_set.huawei-vrp.gawk;user-interface vty acl inbound are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;userinterfacevty_aclout_set.huawei-vrp.gawk;user-interface vty acl outbound are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;userinterfacevty_sshin_set.huawei-vrp.gawk;user-interface vty ssh inbound are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_0;userinterfacevty_sshout_set.huawei-vrp.gawk;user-interface vty ssh outbound are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;aaa_config_notset.huawei-vrp.gawk;aaa config is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_1;aaa_user_notset.huawei-vrp.gawk;aaa not forbidden users are set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;acl_defref_set.huawei-vrp.gawk;all acls defs are refs and the reverse;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 has no redundant/inconsistent rules;25;info;pass
+confs/repo/confs.huawei-vrp/conf_1;global_http_notset.huawei-vrp.gawk;http server is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;global_rcmd_notset.huawei-vrp.gawk;rcmd server is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;int_arpproxy_notset.huawei-vrp.gawk;interface <arp proxy> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;int_directbroadcast_notset.huawei-vrp.gawk;interface <direct-broadcast> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;int_ipredirects_notset.huawei-vrp.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;ipsec_olderalgcrypto_notset.huawei-vrp.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;ntp_ip_set.huawei-vrp.gawk;ntp server is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_1;routing_defref_set.huawei-vrf.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;snmp_v1v2forbidcommunity_notset.huawei-vrp.gawk;snmp v1v2 do not use forbidden communities;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;snmp_v1v2_notset.huawei-vrp.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;snmp_v1v2rw_notset.huawei-vro.gawk;snmp v1v2 write mode is not set;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;snmpview_defref_set.huawei-vrp.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.huawei-vrp/conf_1;ssh_setup_set.huawei-vrp.gawk;ssh server enable;13;high;pass
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aaa_set.huawei-vrp.gawk;user-interface vty 0 4 : authentication-mode aaa missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aclin_set.huawei-vrp.gawk;user-interface vty 0 4 : acl inbound missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aclout_set.huawei-vrp.gawk;user-interface vty 0 4 : acl outbound missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_sshin_set.huawei-vrp.gawk;user-interface vty 0 4 : ssh inbound is not set;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_sshout_set.huawei-vrp.gawk;user-interface vty 0 4 : ssh outbound is not set;15;high;error
+-------------------------
+---- Summary huawei-vrp
+-------------------------
+number_of_checks 44
+number_of_files 2
+number_of_tests 22
+	test aaa_config_notset.huawei-vrp.gawk
+	test aaa_user_notset.huawei-vrp.gawk
+	test acl_defref_set.huawei-vrp.gawk
+	test fw_aclstd_check.huawei-vrp.gawk
+	test global_http_notset.huawei-vrp.gawk
+	test global_rcmd_notset.huawei-vrp.gawk
+	test int_arpproxy_notset.huawei-vrp.gawk
+	test int_directbroadcast_notset.huawei-vrp.gawk
+	test int_ipredirects_notset.huawei-vrp.gawk
+	test ipsec_olderalgcrypto_notset.huawei-vrp.gawk
+	test ntp_ip_set.huawei-vrp.gawk
+	test routing_defref_set.huawei-vrf.gawk
+	test snmp_v1v2_notset.huawei-vrp.gawk
+	test snmp_v1v2forbidcommunity_notset.huawei-vrp.gawk
+	test snmp_v1v2rw_notset.huawei-vro.gawk
+	test snmpview_defref_set.huawei-vrp.gawk
+	test ssh_setup_set.huawei-vrp.gawk
+	test userinterfacevty_aaa_set.huawei-vrp.gawk
+	test userinterfacevty_aclin_set.huawei-vrp.gawk
+	test userinterfacevty_aclout_set.huawei-vrp.gawk
+	test userinterfacevty_sshin_set.huawei-vrp.gawk
+	test userinterfacevty_sshout_set.huawei-vrp.gawk
+----
+number_of_pass_error 58
+number_of_pass 27 (46.6%)
+	number_of_pass_high 25 (92.6%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 2 (7.4%)
+number_of_error 31 (53.4%)
+	number_of_error_high 24 (77.4%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 6 (19.4%)
+	number_of_error_info 1 (3.2%)
+------------------------------------
+---- Assessment fortinet-fortios devices
+------------------------------------
+confs/repo/confs.fortinet-fortios/conf_0;aaa_config_set.fortinet.gawk;config user tacacs+;132;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;aaa_user_notset.fortinet.gawk;    edit "TAC";139;high;error
+confs/repo/confs.fortinet-fortios/conf_0;aaa_user_notset.fortinet.gawk;    edit "toto";133;high;error
+confs/repo/confs.fortinet-fortios/conf_0;fw_allall_noset.fortinet-fortios.gawk;firewall has no rule src=all dst=all service=all action=accept;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;fw_forbidproto_noset.fortinet-fortios.gawk;firewall has no forbidden protocols;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;fw_lastrule_set.fortinet-fortios.gawk;firewall has last rule src=all dst=all service=all action=deny;55;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;global_sourcerouting_noset.fortinet-fortios.gawk;set source-routing enable;7;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_icmpredirect_noset.fortinet-fortios.gawk;edit "management" set icmp-redirect enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_icmpunreachable_noset.fortinet-fortios.gawk;edit "management" set icmp-unreachable enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_mgntforbidallow_noset.fortinet-fortios.gawk;edit "managementport" set allowaccess ping https ssh telnet;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_mgnt_noset.fortinet-fortios.gawk;edit "management";11;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;int_mgnt_noset.fortinet-fortios.gawk;edit "managementport";19;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;int_proxyarp_noset.fortinet-fortios.gawk;edit "management" set proxy-arp enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ipsec_ikev1_noset.fortinet-fortios.gawk;set version v1;100;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ipsec_oldercryptoalg_noset.fortinet-fortios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;ntp_enablestatus_set.fortinet.gawk;ntp enable status is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ntp_enablestatus_set.fortinet.gawk;ntp server is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;pwd_expirealways_noset.fortinet-fortios.gawk;<password-expire = always> is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2forbidcommunity_notset.fortinet-fortios.gawk;set name "public";106;high;error
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2_notset.fortinet-fortios.gawk;set name "public";106;high;error
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2rw_notset.fortinet-fortios.gawk;set access write;108;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ssh_setup_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ssh_versionv1_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;syslogd_enable_noset.fortinet-fortios.gawk;edit 1 : syslogd is enable;81;high;pass
+confs/repo/confs.fortinet-fortios/conf_0;syslogd_enable_noset.fortinet-fortios.gawk;edit 2 : syslogd is no enable;87;high;error
+confs/repo/confs.fortinet-fortios/conf_1;aaa_config_set.fortinet.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_1;aaa_user_notset.fortinet.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;fw_allall_noset.fortinet-fortios.gawk;firewall has rule src=all dst=all service=all action=accept;53;high;error
+confs/repo/confs.fortinet-fortios/conf_1;fw_forbidproto_noset.fortinet-fortios.gawk;set service "HTTP";63;high;error
+confs/repo/confs.fortinet-fortios/conf_1;fw_lastrule_set.fortinet-fortios.gawk;firewall has not last rule src=all dst=all service=all action=deny;68;high;error
+confs/repo/confs.fortinet-fortios/conf_1;global_sourcerouting_noset.fortinet-fortios.gawk;no mgnt interface is set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;int_icmpredirect_noset.fortinet-fortios.gawk;no interface with <icmp-redirect>;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;int_icmpunreachable_noset.fortinet-fortios.gawk;no interface with <icmp-unreachable>;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;int_mgntforbidallow_noset.fortinet-fortios.gawk;mngt interface without forbidden protocols;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;int_mgnt_noset.fortinet-fortios.gawk;no mgnt interface is set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_1;int_proxyarp_noset.fortinet-fortios.gawk;no interface with <proxy-arp>;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;ipsec_ikev1_noset.fortinet-fortios.gawk;ikev1 is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;ipsec_oldercryptoalg_noset.fortinet-fortios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;ntp_enablestatus_set.fortinet.gawk;set server cawk;16;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;ntp_enablestatus_set.fortinet.gawk;set status enable;11;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;pwd_expirealways_noset.fortinet-fortios.gawk;set password-expire "always";7;high;error
+confs/repo/confs.fortinet-fortios/conf_1;snmp_v1v2forbidcommunity_notset.fortinet-fortios.gawk;snmp v1v2 communities are not forbiden;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;snmp_v1v2_notset.fortinet-fortios.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;snmp_v1v2rw_notset.fortinet-fortios.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;ssh_setup_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_1;ssh_versionv1_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;pass
+confs/repo/confs.fortinet-fortios/conf_1;syslogd_enable_noset.fortinet-fortios.gawk;edit 1 : syslogd is enable;94;high;pass
+-------------------------
+---- Summary fortinet-fortios
+-------------------------
+number_of_checks 42
+number_of_files 2
+number_of_tests 21
+	test aaa_config_set.fortinet.gawk
+	test aaa_user_notset.fortinet.gawk
+	test fw_allall_noset.fortinet-fortios.gawk
+	test fw_forbidproto_noset.fortinet-fortios.gawk
+	test fw_lastrule_set.fortinet-fortios.gawk
+	test global_sourcerouting_noset.fortinet-fortios.gawk
+	test int_icmpredirect_noset.fortinet-fortios.gawk
+	test int_icmpunreachable_noset.fortinet-fortios.gawk
+	test int_mgnt_noset.fortinet-fortios.gawk
+	test int_mgntforbidallow_noset.fortinet-fortios.gawk
+	test int_proxyarp_noset.fortinet-fortios.gawk
+	test ipsec_ikev1_noset.fortinet-fortios.gawk
+	test ipsec_oldercryptoalg_noset.fortinet-fortios.gawk
+	test ntp_enablestatus_set.fortinet.gawk
+	test pwd_expirealways_noset.fortinet-fortios.gawk
+	test snmp_v1v2_notset.fortinet-fortios.gawk
+	test snmp_v1v2forbidcommunity_notset.fortinet-fortios.gawk
+	test snmp_v1v2rw_notset.fortinet-fortios.gawk
+	test ssh_setup_set.fortinet-fortios.gawk
+	test ssh_versionv1_set.fortinet-fortios.gawk
+	test syslogd_enable_noset.fortinet-fortios.gawk
+----
+number_of_pass_error 47
+number_of_pass 25 (53.2%)
+	number_of_pass_high 25 (100.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 0 (0.0%)
+number_of_error 22 (46.8%)
+	number_of_error_high 22 (100.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 0 (0.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment nokia-sros devices
+------------------------------------
+confs/repo/confs.nokia-sros/conf_0;aaa_accounting_set.nokia-sros.gawk;accounting;75;high;pass
+confs/repo/confs.nokia-sros/conf_0;aaa_authorization_set.nokia-sros.gawk;authorization;76;high;pass
+confs/repo/confs.nokia-sros/conf_0;aaa_config_set.nokia-sros.gawk;tacplus;74;high;pass
+confs/repo/confs.nokia-sros/conf_0;aaa_user_notset.nokia-sros.gawk;user "cawk2";61;high;error
+confs/repo/confs.nokia-sros/conf_0;aaa_user_notset.nokia-sros.gawk;user "cawk";50;high;error
+confs/repo/confs.nokia-sros/conf_0;fw_allallmgnt_notset.nokia-sros.gawk;ip-filter allall rules not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;fw_defaultpermitmgnt_notset.nokia-sros.gawk;ip-filter default permit is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;int_directedbroadcast_notset.nokia-sros.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;int_icmpunreachable_notset.nokia-sros.gawk;interface <ip icmp-unreachable> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;int_ipredirects_notset.nokia-sros.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;int_proxyarp_notset.nokia-sros.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;int_sourceroute_notset.nokia-sros.gawk;interface <ip source-route> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;ipsec_olderalgcrypto_notset.nokia-sros.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_0;login_forbidproto_notset.nokia-sros.gawk;ftp;10;high;error
+confs/repo/confs.nokia-sros/conf_0;login_forbidproto_notset.nokia-sros.gawk;telnet;13;high;error
+confs/repo/confs.nokia-sros/conf_0;login_ssh_set.nokia-sros.gawk;ssh ;17;high;pass
+confs/repo/confs.nokia-sros/conf_0;ntp_ip_set.nokia-sros.gawk;server 10.168.1.1;6;high;pass
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2forbidcommunity_notset.nokia-sros.gawk;community "public" hash2 r version both;72;high;error
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2_notset.nokia-sros.gawk;community "cawk" hash2 rwa version both;71;high;error
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2rw_notset.nokia-sros.gawk;community "cawk" hash2 rwa version both;71;high;error
+confs/repo/confs.nokia-sros/conf_0;ssh_setup_set.nokia-sros.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_accounting_set.nokia-sros.gawk;aaa accounting is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_authorization_set.nokia-sros.gawk;aaa authorization is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_config_set.nokia-sros.gawk;aaa config is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_user_notset.nokia-sros.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;fw_allallmgnt_notset.nokia-sros.gawk;ip-filter allall rule is set;16;high;error
+confs/repo/confs.nokia-sros/conf_1;fw_allallmgnt_notset.nokia-sros.gawk;ip-filter allall rule is set;21;high;error
+confs/repo/confs.nokia-sros/conf_1;fw_defaultpermitmgnt_notset.nokia-sros.gawk;default-action permit;0;high;error
+confs/repo/confs.nokia-sros/conf_1;int_directedbroadcast_notset.nokia-sros.gawk;interface FastEthernet1 ip directed-broadcast;31;high;error
+confs/repo/confs.nokia-sros/conf_1;int_directedbroadcast_notset.nokia-sros.gawk;interface FastEthernet2 ip directed-broadcast;34;high;error
+confs/repo/confs.nokia-sros/conf_1;int_icmpunreachable_notset.nokia-sros.gawk;interface <ip icmp-unreachable> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;int_ipredirects_notset.nokia-sros.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;int_proxyarp_notset.nokia-sros.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;int_sourceroute_notset.nokia-sros.gawk;interface <ip source-route> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;ipsec_olderalgcrypto_notset.nokia-sros.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;login_forbidproto_notset.nokia-sros.gawk;login forbidden forbidprotos are not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;login_ssh_set.nokia-sros.gawk;login ssh is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;ntp_ip_set.nokia-sros.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;snmp_v1v2forbidcommunity_notset.nokia-sros.gawk;snmp v1v2 forbidden communties are not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;snmp_v1v2_notset.nokia-sros.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;snmp_v1v2rw_notset.nokia-sros.gawk;snmp v1v2 write access is not set;0;high;pass
+confs/repo/confs.nokia-sros/conf_1;ssh_setup_set.nokia-sros.gawk;ssh;7;high;pass
+-------------------------
+---- Summary nokia-sros
+-------------------------
+number_of_checks 38
+number_of_files 2
+number_of_tests 19
+	test aaa_accounting_set.nokia-sros.gawk
+	test aaa_authorization_set.nokia-sros.gawk
+	test aaa_config_set.nokia-sros.gawk
+	test aaa_user_notset.nokia-sros.gawk
+	test fw_allallmgnt_notset.nokia-sros.gawk
+	test fw_defaultpermitmgnt_notset.nokia-sros.gawk
+	test int_directedbroadcast_notset.nokia-sros.gawk
+	test int_icmpunreachable_notset.nokia-sros.gawk
+	test int_ipredirects_notset.nokia-sros.gawk
+	test int_proxyarp_notset.nokia-sros.gawk
+	test int_sourceroute_notset.nokia-sros.gawk
+	test ipsec_olderalgcrypto_notset.nokia-sros.gawk
+	test login_forbidproto_notset.nokia-sros.gawk
+	test login_ssh_set.nokia-sros.gawk
+	test ntp_ip_set.nokia-sros.gawk
+	test snmp_v1v2_notset.nokia-sros.gawk
+	test snmp_v1v2forbidcommunity_notset.nokia-sros.gawk
+	test snmp_v1v2rw_notset.nokia-sros.gawk
+	test ssh_setup_set.nokia-sros.gawk
+----
+number_of_pass_error 42
+number_of_pass 24 (57.1%)
+	number_of_pass_high 24 (100.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 0 (0.0%)
+number_of_error 18 (42.9%)
+	number_of_error_high 18 (100.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 0 (0.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment paloalto-panos devices
+------------------------------------
+confs/repo/confs.paloalto-panos/conf_0;fw_anyany_notset.paloalto-panos.gawk;firewall has rule src=any dst=any service=any action=allow;87;high;error
+confs/repo/confs.paloalto-panos/conf_0;fw_forbidproto_notset.paloalto-panos.gawk;firewall has no forbidden protocols;0;high;pass
+confs/repo/confs.paloalto-panos/conf_0;fw_lastrule_noset.paloalto-panos.gawk;firewall has last rule src=any dst=any service=any action=deny;0;high;pass
+confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes;;41;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes;;42;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes;;43;high;error
+confs/repo/confs.paloalto-panos/conf_0;ipsec_olderalgcrypto_notset.paloalto-panos.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk;community public {;15;high;error
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2_notset.paloalto-panos.gawk;community public {;15;high;error
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2rw_notset.paloalto-panos.gawk;access write;16;high;error
+confs/repo/confs.paloalto-panos/conf_0;ssh_setup_set.paloalto-panos.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.paloalto-panos/conf_0;ssh_versionv1_notset.paloalto-panos.gawk;ssh-version 1;7;high;error
+confs/repo/confs.paloalto-panos/conf_1;fw_anyany_notset.paloalto-panos.gawk;firewall has no rule src=any dst=any service=any action=allow;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;fw_forbidproto_notset.paloalto-panos.gawk;service web;47;high;error
+confs/repo/confs.paloalto-panos/conf_1;fw_lastrule_noset.paloalto-panos.gawk;firewall has not last rule src=any dst=any service=any action=deny;0;high;error
+confs/repo/confs.paloalto-panos/conf_1;int_icmpredirect_notset.paloalto-panos.gawk;interface <icmp-redirect yes> is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;int_icmpunreachable_notset.paloalto-panos.gawk;interface <icmp-unreachable yes> is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;int_proxyarp_notset.paloalto-panos.gawk;interface <proxy-arp yes> is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;ipsec_olderalgcrypto_notset.paloalto-panos.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk;snmp v1v2 has no forbidden comminities;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;snmp_v1v2_notset.paloalto-panos.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;snmp_v1v2rw_notset.paloalto-panos.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.paloalto-panos/conf_1;ssh_setup_set.paloalto-panos.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.paloalto-panos/conf_1;ssh_versionv1_notset.paloalto-panos.gawk;<ssh version 1> is not set;0;high;pass
+-------------------------
+---- Summary paloalto-panos
+-------------------------
+number_of_checks 24
+number_of_files 2
+number_of_tests 12
+	test fw_anyany_notset.paloalto-panos.gawk
+	test fw_forbidproto_notset.paloalto-panos.gawk
+	test fw_lastrule_noset.paloalto-panos.gawk
+	test int_icmpredirect_notset.paloalto-panos.gawk
+	test int_icmpunreachable_notset.paloalto-panos.gawk
+	test int_proxyarp_notset.paloalto-panos.gawk
+	test ipsec_olderalgcrypto_notset.paloalto-panos.gawk
+	test snmp_v1v2_notset.paloalto-panos.gawk
+	test snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk
+	test snmp_v1v2rw_notset.paloalto-panos.gawk
+	test ssh_setup_set.paloalto-panos.gawk
+	test ssh_versionv1_notset.paloalto-panos.gawk
+----
+number_of_pass_error 24
+number_of_pass 12 (50.0%)
+	number_of_pass_high 12 (100.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 0 (0.0%)
+number_of_error 12 (50.0%)
+	number_of_error_high 12 (100.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 0 (0.0%)
+	number_of_error_info 0 (0.0%)
+------------------------------------
+---- Assessment research devices
+------------------------------------
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;4;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstd_check.cisco-ios.gawk;access-list 12 has no redundant/inconsistent rules;9;info;pass
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstd_check.huawei-vrp.gawk;no <acl number [0-9]*> found;15;info;pass
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;13;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;13;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;15;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.cisco-ios.gawk;no <ip access-list standard> found;19;info;pass
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 11 has no redundant/inconsistent rules;4;info;pass
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 12 permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip redundant rules;8;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 13 permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip deny 0/any 0/0 0/0 0/0 none inconsistent rules;11;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 14 has no redundant/inconsistent rules;14;info;pass
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 deny 0/any 0/0 0/any 0/0 ip deny 0/any 0/0 10.168.1.0/255.255.255.0 0/0 ip redundant rules;19;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 0/any 0/0 ip inconsistent rules;19;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 10.168.1.0/255.255.255.0 0/0 ip inconsistent rules;19;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;19;info;pass
+confs/repo/confs.research/fw_std_ip-filter;fw_aclstd_check.cisco-ios.gawk;no <ip access-list standard> found;4;info;pass
+confs/repo/confs.research/fw_std_ip-filter;fw_aclstd_check.huawei-vrp.gawk;no <acl number [0-9]*> found;4;info;pass
+confs/repo/confs.research/fw_std_ip-filter;fw_aclstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;4;info;pass
+-------------------------
+---- Summary research
+-------------------------
+number_of_checks 9
+number_of_files 3
+number_of_tests 3
+	test fw_aclstd_check.cisco-ios.gawk
+	test fw_aclstd_check.huawei-vrp.gawk
+	test fw_aclstdline_check.cisco-ios.gawk
+----
+number_of_pass_error 18
+number_of_pass 9 (50.0%)
+	number_of_pass_high 0 (0.0%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 9 (100.0%)
+number_of_error 9 (50.0%)
+	number_of_error_high 0 (0.0%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 0 (0.0%)
+	number_of_error_info 9 (100.0%)
+cawk view_repo done ----
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor2 secret 5 xxxx;28;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor secret 5 xxxx;27;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;55 : ref not def : access-class 55 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;66 : ref not def : access-class 66 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;97 : def not ref :access-list 97 permit 10.0.168.143;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;98 : def not ref :access-list 98 permit 10.0.168.133;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRU : ref not def : ip access-group BLOCK_VIRU in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRUS : def not ref :ip access-list extended BLOCK_VIRUS;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;cawk_ntp_bad : ref not def :ntp access-group cawk_ntp_bad;0;high;error
+confs/repo/confs.cisco-ios/conf_0;global_http_notset.cisco-ios.gawk;ip http server;13;high;error
+confs/repo/confs.cisco-ios/conf_0;global_rcmd_notset.cisco-ios.gawk;ip rcmd cawk;14;high;error
+confs/repo/confs.cisco-ios/conf_0;global_servicepassword_set.cisco-ios.gawk;<service password-encryption> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_aclout_set.cisco-ios.gawk;line aux 0 : acl out missing;79;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_exectimeout00_set.cisco-ios.gawk;line aux 0 : <exec-timeout 0 0> is set;79;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclin_set.cisco-ios.gawk;line vty 0 3 : acl in missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 0 3 : acl out missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 4 8 : acl out missing;88;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 0 3 : <exec-timeout 0 0> is set;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 4 8 : <exec-timeout 0 0> is set;88;high;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;FILTERTHIS : def not ref :ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;ldp_filter : ref not def :resequence prefix-list ipv4 ldp_filter 30 10;0;high;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter : def not ref :route-map tag-filter permit 20;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter-in : ref not def : distribute-list route-map tag-filter-in in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2_notset.cisco-ios.gawk;snmp-server community cawk RO;71;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2rw_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown1 : def not ref :snmp-server view unknown1 1.1.1;0;low;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown : ref not def :snmp-server community cawk view unknown RO;0;high;error
+confs/repo/confs.cisco-ios/conf_0;ssh_setup_set.cisco-ios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;52;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;63;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;11 : def not ref :ip access-list standard 11;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;12 : def not ref :ip access-list standard 12;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;1 : def not ref :access-list 1 deny 10.0.0.0 0.128.255.255;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;2 : def not ref :access-list 2 deny any;0;low;error
+confs/repo/confs.cisco-ios/conf_1;global_nocdprun_set.cisco-ios.gawk;<no cdp run> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipbootpserver_set.cisco-ios.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipfinger_set.cisco-ios.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipsourceroute_set.cisco-ios.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;int_directedbroadcast_notset.cisco-ios.gawk;interface FastEthernet0 <ip directed-broadcast> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;int_proxyarp_notset.cisco-ios.gawk;interface FastEthernet0 <ip proxy-arp> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;lineaux_noexec_set.cisco-ios.gawk;line aux 0 <no exec> is missing;73;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 0 3 : transport input (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 4 8 : transport input (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 0 3 : transport output (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 4 8 : transport output (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_access-group_set.cisco-ios.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_ip_set.cisco-ios.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;aaa_user_notset.cisco-viptela.gawk;user cawk;5;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowall_notset.cisco-viptela.gawk;allow-service all;46;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowall_notset.cisco-viptela.gawk;allow-service all;57;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowforbidproto_notset.cisco-viptela.gawk;allow-service ftp;55;high;error
+confs/repo/confs.cisco-viptela/conf_0;interface_allowforbidproto_notset.cisco-viptela.gawk;allow-service telnet;45;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_groupdefref_set.cisco-ios.gawk;cawk_group_snmp_badx : ref not def :  group cawk_group_snmp_badx;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_groupdefref_set.cisco-ios.gawk;cawk_group_snmp : def not ref : group cawk_group_snmp auth-priv;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk;community public;21;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2_notset.cisco-viptela.gawk;community public;21;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_v1v2rw_notset.cisco-viptela.gawk;authorization write;23;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_snmp_bad : def not ref : view cawk_snmp_bad;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_snmp : ref not def :  view cawk_snmp;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_view_bad : def not ref : view cawk_view_bad;0;low;error
+confs/repo/confs.cisco-viptela/conf_0;snmp_viewdefref_set.cisco-ios.gawk;cawk_view : ref not def :  view cawk_view;0;high;error
+confs/repo/confs.cisco-viptela/conf_0;ssh_setup_set.cisco-viptela.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;aaa_authorder_set.cisco-viptela.gawk;aaa authentication order is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;aaa_config_set.cisco-viptela.gawk;aaa config is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;fw_zone_set.cisco-viptela.gawk;fw zone is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;ntp_ip_set.cisco-viptela.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.cisco-viptela/conf_1;ssh_setup_set.cisco-viptela.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;aaa_config_set.cisco-cedge.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_http_notset.cisco-cedge.gawk;http server_nox;2;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_nocdprun_set.cisco-cedge.gawk;<no cdp run> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipbootpserver_set.cisco-cedge.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipfinger_set.cisco-cedge.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_noipsourceroute_set.cisco-cedge.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;global_rcmd_notset.cisco-cedge.gawk;ip rcmd cmd;3;high;error
+confs/repo/confs.cisco-cedge/conf_0;ntp_access-group_set.cisco-cedge.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;ntp_ip_set.cisco-cedge.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_0;ssh_setup_set.cisco-cedge.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;aaa_config_set.cisco-cedge.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;fw_zonesecurity_set.cisco-cedge.gawk;fw zone is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_noipbootpserver_set.cisco-cedge.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_noipfinger_set.cisco-cedge.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;global_noipsourceroute_set.cisco-cedge.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;ipsec_oldercryptoalg_notset.cisco-cedge.gawk; hash md5;7;high;error
+confs/repo/confs.cisco-cedge/conf_1;linevty_transportinputssh_set.cisco-cedge.gawk;line vty 0 10 <transport input ssh> is missing;2;high;error
+confs/repo/confs.cisco-cedge/conf_1;linevty_transportoutputssh_set.cisco-cedge.gawk;line vty 0 10 <transport output ssh> is missing;2;high;error
+confs/repo/confs.cisco-cedge/conf_1;ntp_access-group_set.cisco-cedge.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;ntp_ip_set.cisco-cedge.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-cedge/conf_1;ssh_versionv1_notset.cisco-cedge.gawk;ip ssh version 1;5;high;error
+confs/repo/confs.juniper-junos/conf_0;aaa_user_notset.juniper-junos.gawk;user MonUtilisateur {;54;high;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;strust-to-trust : filter ref but not def :input strust-to-trust;0;high;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-trust : filter def but not ref :filter trust-to-trust ;0;low;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-trusts : filter ref but not def :output trust-to-trusts;0;high;error
+confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-untrust : filter def but not ref :filter trust-to-untrust ;0;low;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2forbidcommunity_notset.juniper-junos.gawk;community public {;124;high;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2_notset.juniper-junos.gawk;community public {;124;high;error
+confs/repo/confs.juniper-junos/conf_0;snmp_v1v2rw_notset.juniper-junos.gawk;authorization write;125;high;error
+confs/repo/confs.juniper-junos/conf_1;aaa_config_set.juniper-junos.gawk;aaa config is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;aaa_rightorder_set.juniper-junos.gawk;aaa auth order is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_groupauth_set.juniper-junos.gawk;bgp/group authentication-key is not set :group cawk1 ;30;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_groupauth_set.juniper-junos.gawk;bgp/group authentication-key is not set :group cawk ;28;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_neighborauth_set.juniper-junos.gawk;bgp/neighbor authentication-key is not set :neighbor 10.168.1.2 ;32;high;error
+confs/repo/confs.juniper-junos/conf_1;bgp_neighborauth_set.juniper-junos.gawk;bgp/neighbor authentication-key is not set :neighbor 10.168.1.3 ;34;high;error
+confs/repo/confs.juniper-junos/conf_1;filter_defref_set.juniper-junos.gawk;trust-to-untrust : filter def but not ref :filter trust-to-untrust ;0;low;error
+confs/repo/confs.juniper-junos/conf_1;firewall_enable_set.juniper-junos.gawk;firewall is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;int_directedbroadcast_notset.juniper-junos.gawk;unit 0 { <directed-broadcast> is set;11;high;error
+confs/repo/confs.juniper-junos/conf_1;int_directedbroadcast_notset.juniper-junos.gawk;unit 0 { <directed-broadcast> is set;3;high;error
+confs/repo/confs.juniper-junos/conf_1;ntp_ip_set.juniper-junos.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;services_forbidproto_notset.juniper-junos.gawk;ftp ;50;high;error
+confs/repo/confs.juniper-junos/conf_1;services_forbidproto_notset.juniper-junos.gawk;telnet;49;high;error
+confs/repo/confs.juniper-junos/conf_1;snmp_v3_set.juniper-junos.gawk;snmp v3 is not set;0;high;error
+confs/repo/confs.juniper-junos/conf_1;ssh_setup_set.juniper-junos.gawk;ssh service is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;aaa_user_notset.huawei-vrp.gawk; local-user cawk privilege level 15;34;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;2000 : ref not def : acl 2000 inbound;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;2001 : ref not def :snmp-agent community write cawk1 mib-view isoview02 acl 2001;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;3000 : def not ref :acl number 3000;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;5000 : def not ref :acl number 5000;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;7000 : ref not def : acl 7000 outbound;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;acl_defref_set.huawei-vrp.gawk;8000 : ref not def : packet-filter inbound acl 8000;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 0/any 0/0 ip inconsistent rules;40;info;error
+confs/repo/confs.huawei-vrp/conf_0;global_http_notset.huawei-vrp.gawk;http server enable;13;high;error
+confs/repo/confs.huawei-vrp/conf_0;global_rcmd_notset.huawei-vrp.gawk;rcmd server enable;14;high;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;need_send : ref not def :  import-route ospf 100 route-policy need_send;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_bad : ref not def : if-match ip-prefix no_need_send_bad;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send : def not ref :ip ip-prefix no_need_send index 10 permit 10.10.10.10 32;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_new : def not ref :route-policy no_need_send_new deny node 10;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;routing_defref_set.huawei-vrf.gawk;no_need_send_policy : def not ref :route-policy no_need_send_policy permit node 20;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2forbidcommunity_notset.huawei-vrp.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community read cawk mib-view isoview01 acl 2001;27;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community write cawk1 mib-view isoview02 acl 2001;28;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2_notset.huawei-vrp.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2rw_notset.huawei-vro.gawk;snmp-agent community write cawk1 mib-view isoview02 acl 2001;28;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmp_v1v2rw_notset.huawei-vro.gawk;snmp-agent community write public;26;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmpview_defref_set.huawei-vrp.gawk;isoview02 : ref not def :snmp-agent community write cawk1 mib-view isoview02 acl 2001;0;high;error
+confs/repo/confs.huawei-vrp/conf_0;snmpview_defref_set.huawei-vrp.gawk;isoview03 : def not ref :snmp-agent mib-view isoview03 include system;0;low;error
+confs/repo/confs.huawei-vrp/conf_0;ssh_setup_set.huawei-vrp.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_1;aaa_config_notset.huawei-vrp.gawk;aaa config is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_1;ntp_ip_set.huawei-vrp.gawk;ntp server is not set;0;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aaa_set.huawei-vrp.gawk;user-interface vty 0 4 : authentication-mode aaa missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aclin_set.huawei-vrp.gawk;user-interface vty 0 4 : acl inbound missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_aclout_set.huawei-vrp.gawk;user-interface vty 0 4 : acl outbound missing;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_sshin_set.huawei-vrp.gawk;user-interface vty 0 4 : ssh inbound is not set;15;high;error
+confs/repo/confs.huawei-vrp/conf_1;userinterfacevty_sshout_set.huawei-vrp.gawk;user-interface vty 0 4 : ssh outbound is not set;15;high;error
+confs/repo/confs.fortinet-fortios/conf_0;aaa_user_notset.fortinet.gawk;    edit "TAC";139;high;error
+confs/repo/confs.fortinet-fortios/conf_0;aaa_user_notset.fortinet.gawk;    edit "toto";133;high;error
+confs/repo/confs.fortinet-fortios/conf_0;global_sourcerouting_noset.fortinet-fortios.gawk;set source-routing enable;7;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_icmpredirect_noset.fortinet-fortios.gawk;edit "management" set icmp-redirect enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_icmpunreachable_noset.fortinet-fortios.gawk;edit "management" set icmp-unreachable enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_mgntforbidallow_noset.fortinet-fortios.gawk;edit "managementport" set allowaccess ping https ssh telnet;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;int_proxyarp_noset.fortinet-fortios.gawk;edit "management" set proxy-arp enable;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ipsec_ikev1_noset.fortinet-fortios.gawk;set version v1;100;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ntp_enablestatus_set.fortinet.gawk;ntp enable status is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ntp_enablestatus_set.fortinet.gawk;ntp server is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2forbidcommunity_notset.fortinet-fortios.gawk;set name "public";106;high;error
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2_notset.fortinet-fortios.gawk;set name "public";106;high;error
+confs/repo/confs.fortinet-fortios/conf_0;snmp_v1v2rw_notset.fortinet-fortios.gawk;set access write;108;high;error
+confs/repo/confs.fortinet-fortios/conf_0;ssh_setup_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_0;syslogd_enable_noset.fortinet-fortios.gawk;edit 2 : syslogd is no enable;87;high;error
+confs/repo/confs.fortinet-fortios/conf_1;aaa_config_set.fortinet.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_1;fw_allall_noset.fortinet-fortios.gawk;firewall has rule src=all dst=all service=all action=accept;53;high;error
+confs/repo/confs.fortinet-fortios/conf_1;fw_forbidproto_noset.fortinet-fortios.gawk;set service "HTTP";63;high;error
+confs/repo/confs.fortinet-fortios/conf_1;fw_lastrule_set.fortinet-fortios.gawk;firewall has not last rule src=all dst=all service=all action=deny;68;high;error
+confs/repo/confs.fortinet-fortios/conf_1;int_mgnt_noset.fortinet-fortios.gawk;no mgnt interface is set;0;high;error
+confs/repo/confs.fortinet-fortios/conf_1;pwd_expirealways_noset.fortinet-fortios.gawk;set password-expire "always";7;high;error
+confs/repo/confs.fortinet-fortios/conf_1;ssh_setup_set.fortinet-fortios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_0;aaa_user_notset.nokia-sros.gawk;user "cawk2";61;high;error
+confs/repo/confs.nokia-sros/conf_0;aaa_user_notset.nokia-sros.gawk;user "cawk";50;high;error
+confs/repo/confs.nokia-sros/conf_0;login_forbidproto_notset.nokia-sros.gawk;ftp;10;high;error
+confs/repo/confs.nokia-sros/conf_0;login_forbidproto_notset.nokia-sros.gawk;telnet;13;high;error
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2forbidcommunity_notset.nokia-sros.gawk;community "public" hash2 r version both;72;high;error
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2_notset.nokia-sros.gawk;community "cawk" hash2 rwa version both;71;high;error
+confs/repo/confs.nokia-sros/conf_0;snmp_v1v2rw_notset.nokia-sros.gawk;community "cawk" hash2 rwa version both;71;high;error
+confs/repo/confs.nokia-sros/conf_0;ssh_setup_set.nokia-sros.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_accounting_set.nokia-sros.gawk;aaa accounting is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_authorization_set.nokia-sros.gawk;aaa authorization is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;aaa_config_set.nokia-sros.gawk;aaa config is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;fw_allallmgnt_notset.nokia-sros.gawk;ip-filter allall rule is set;16;high;error
+confs/repo/confs.nokia-sros/conf_1;fw_allallmgnt_notset.nokia-sros.gawk;ip-filter allall rule is set;21;high;error
+confs/repo/confs.nokia-sros/conf_1;fw_defaultpermitmgnt_notset.nokia-sros.gawk;default-action permit;0;high;error
+confs/repo/confs.nokia-sros/conf_1;int_directedbroadcast_notset.nokia-sros.gawk;interface FastEthernet1 ip directed-broadcast;31;high;error
+confs/repo/confs.nokia-sros/conf_1;int_directedbroadcast_notset.nokia-sros.gawk;interface FastEthernet2 ip directed-broadcast;34;high;error
+confs/repo/confs.nokia-sros/conf_1;login_ssh_set.nokia-sros.gawk;login ssh is not set;0;high;error
+confs/repo/confs.nokia-sros/conf_1;ntp_ip_set.nokia-sros.gawk;<ntp server ip> is not set;0;high;error
+confs/repo/confs.paloalto-panos/conf_0;fw_anyany_notset.paloalto-panos.gawk;firewall has rule src=any dst=any service=any action=allow;87;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes;;41;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes;;42;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes;;43;high;error
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk;community public {;15;high;error
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2_notset.paloalto-panos.gawk;community public {;15;high;error
+confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2rw_notset.paloalto-panos.gawk;access write;16;high;error
+confs/repo/confs.paloalto-panos/conf_0;ssh_setup_set.paloalto-panos.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.paloalto-panos/conf_0;ssh_versionv1_notset.paloalto-panos.gawk;ssh-version 1;7;high;error
+confs/repo/confs.paloalto-panos/conf_1;fw_forbidproto_notset.paloalto-panos.gawk;service web;47;high;error
+confs/repo/confs.paloalto-panos/conf_1;fw_lastrule_noset.paloalto-panos.gawk;firewall has not last rule src=any dst=any service=any action=deny;0;high;error
+confs/repo/confs.paloalto-panos/conf_1;ssh_setup_set.paloalto-panos.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;4;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;13;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;13;info;error
+confs/repo/confs.research/fw_std_cisco-ios;fw_aclstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;15;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 12 permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip redundant rules;8;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 13 permit 11.0.0.0/host 0/0 10.0.0.0/255.255.255.0 0/0 ip deny 0/any 0/0 0/0 0/0 none inconsistent rules;11;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 deny 0/any 0/0 0/any 0/0 ip deny 0/any 0/0 10.168.1.0/255.255.255.0 0/0 ip redundant rules;19;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 0/any 0/0 ip inconsistent rules;19;info;error
+confs/repo/confs.research/fw_std_huawei-vrp;fw_aclstd_check.huawei-vrp.gawk;acl number 3000 permit 10.168.1.0/255.255.255.0 0/0 0/any 0/0 ip deny 0/any 0/0 10.168.1.0/255.255.255.0 0/0 ip inconsistent rules;19;info;error
+cawk view_repo_error done ----
+------------------------------------
+---- Assessment  cisco-ios devices
+------------------------------------
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;aaa new-model;30;high;pass
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor2 secret 5 xxxx;28;high;error
+confs/repo/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor secret 5 xxxx;27;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_checkstd_check.cisco-ios.gawk;no <ip access-list standard> found;95;info;pass
+confs/repo/confs.cisco-ios/conf_0;acl_checkstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;95;info;pass
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;55 : ref not def : access-class 55 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;66 : ref not def : access-class 66 in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;97 : def not ref :access-list 97 permit 10.0.168.143;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;98 : def not ref :access-list 98 permit 10.0.168.133;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRU : ref not def : ip access-group BLOCK_VIRU in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRUS : def not ref :ip access-list extended BLOCK_VIRUS;0;low;error
+confs/repo/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;cawk_ntp_bad : ref not def :ntp access-group cawk_ntp_bad;0;high;error
+confs/repo/confs.cisco-ios/conf_0;global_http_notset.cisco-ios.gawk;ip http server;13;high;error
+confs/repo/confs.cisco-ios/conf_0;global_nocdprun_set.cisco-ios.gawk;no cdp run;10;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipbootpserver_set.cisco-ios.gawk;no ip bootp server;7;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipfinger_set.cisco-ios.gawk;no ip finger;8;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_noipsourceroute_set.cisco-ios.gawk;no ip source-route;9;high;pass
+confs/repo/confs.cisco-ios/conf_0;global_rcmd_notset.cisco-ios.gawk;ip rcmd cawk;14;high;error
+confs/repo/confs.cisco-ios/conf_0;global_servicepassword_set.cisco-ios.gawk;<service password-encryption> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;int_directedbroadcast_notset.cisco-ios.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_proxyarp_notset.cisco-ios.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;lineaux_aclout_set.cisco-ios.gawk;line aux 0 : acl out missing;79;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_exectimeout00_set.cisco-ios.gawk;line aux 0 : <exec-timeout 0 0> is set;79;high;error
+confs/repo/confs.cisco-ios/conf_0;lineaux_noexec_set.cisco-ios.gawk;line aux <no exec> is set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;linevty_aclin_set.cisco-ios.gawk;line vty 0 3 : acl in missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 0 3 : acl out missing;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 4 8 : acl out missing;88;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 0 3 : <exec-timeout 0 0> is set;84;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 4 8 : <exec-timeout 0 0> is set;88;high;error
+confs/repo/confs.cisco-ios/conf_0;linevty_sshinput_set.cisco-ios.gawk;line vty transport input (none|ssh) are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;linevty_sshoutput_set.cisco-ios.gawk;line vty transport output (none|ssh) are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_0;ntp_access-group_set.cisco-ios.gawk;ntp access-group cawk_ntp_bad;17;high;pass
+confs/repo/confs.cisco-ios/conf_0;ntp_ip_set.cisco-ios.gawk;ntp server 10.0.0.0;16;high;pass
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;FILTERTHIS : def not ref :ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;ldp_filter : ref not def :resequence prefix-list ipv4 ldp_filter 30 10;0;high;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter : def not ref :route-map tag-filter permit 20;0;low;error
+confs/repo/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter-in : ref not def : distribute-list route-map tag-filter-in in;0;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2_notset.cisco-ios.gawk;snmp-server community cawk RO;71;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_v1v2rw_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown1 : def not ref :snmp-server view unknown1 1.1.1;0;low;error
+confs/repo/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown : ref not def :snmp-server community cawk view unknown RO;0;high;error
+confs/repo/confs.cisco-ios/conf_0;ssh_setup_set.cisco-ios.gawk;<ssh server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_0;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa config> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;aaa_user_notset.cisco-ios.gawk;aaa forbidden users are not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;52;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 12 has no redundant/inconsistent rules;57;info;pass
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;61;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;63;info;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;11 : def not ref :ip access-list standard 11;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;12 : def not ref :ip access-list standard 12;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;1 : def not ref :access-list 1 deny 10.0.0.0 0.128.255.255;0;low;error
+confs/repo/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;2 : def not ref :access-list 2 deny any;0;low;error
+confs/repo/confs.cisco-ios/conf_1;global_http_notset.cisco-ios.gawk;http statement is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;global_nocdprun_set.cisco-ios.gawk;<no cdp run> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipbootpserver_set.cisco-ios.gawk;<no ip bootp server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipfinger_set.cisco-ios.gawk;<no ip finger> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_noipsourceroute_set.cisco-ios.gawk;<no ip source-route> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;global_rcmd_notset.cisco-ios.gawk;rcmd statement is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;global_servicepassword_set.cisco-ios.gawk;service password-encryption;5;high;pass
+confs/repo/confs.cisco-ios/conf_1;int_directedbroadcast_notset.cisco-ios.gawk;interface FastEthernet0 <ip directed-broadcast> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;int_proxyarp_notset.cisco-ios.gawk;interface FastEthernet0 <ip proxy-arp> is set;13;high;error
+confs/repo/confs.cisco-ios/conf_1;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_aclout_set.cisco-ios.gawk;line aux acls out are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_exectimeout00_set.cisco-ios.gawk;line aux <exec-timeout 0 0> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;lineaux_noexec_set.cisco-ios.gawk;line aux 0 <no exec> is missing;73;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_aclin_set.cisco-ios.gawk;line vty acls in are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_aclout_set.cisco-ios.gawk;line vty acls out are set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_exectimeout00_set.cisco-ios.gawk;line vty <exec-timeout 0 0> is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 0 3 : transport input (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 4 8 : transport input (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 0 3 : transport output (none|ssh) is missing;78;high;error
+confs/repo/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 4 8 : transport output (none|ssh) is missing;83;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_access-group_set.cisco-ios.gawk;<ntp access-group> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;ntp_ip_set.cisco-ios.gawk;<ntp server> is not set;0;high;error
+confs/repo/confs.cisco-ios/conf_1;routing_defref_set.cisco-ios.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2_notset.cisco-ios.gawk;snmp v1v2 is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_v1v2rw_notset.cisco-ios.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;snmp_viewdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/repo/confs.cisco-ios/conf_1;ssh_setup_set.cisco-ios.gawk;ip ssh version v2;7;high;pass
+confs/repo/confs.cisco-ios/conf_1;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+------------------------------
+ ---- Summary  cisco-ios
+------------------------------
+number_of_checks 70
+number_of_files 2
+number_of_tests 35
+	test aaa_config_set.cisco-ios.gawk
+	test aaa_user_notset.cisco-ios.gawk
+	test acl_checkstd_check.cisco-ios.gawk
+	test acl_checkstdline_check.cisco-ios.gawk
+	test acl_defref_set.cisco-ios.gawk
+	test global_http_notset.cisco-ios.gawk
+	test global_nocdprun_set.cisco-ios.gawk
+	test global_noipbootpserver_set.cisco-ios.gawk
+	test global_noipfinger_set.cisco-ios.gawk
+	test global_noipsourceroute_set.cisco-ios.gawk
+	test global_rcmd_notset.cisco-ios.gawk
+	test global_servicepassword_set.cisco-ios.gawk
+	test int_directedbroadcast_notset.cisco-ios.gawk
+	test int_ipredirects_set.cisco-ios.gawk
+	test int_proxyarp_notset.cisco-ios.gawk
+	test int_unreachable_notset.cisco-ios.gawk
+	test ipsec_olderalgcrypto_notset.cisco-ios.gawk
+	test lineaux_aclin_set.cisco-ios.gawk
+	test lineaux_aclout_set.cisco-ios.gawk
+	test lineaux_exectimeout00_set.cisco-ios.gawk
+	test lineaux_noexec_set.cisco-ios.gawk
+	test linevty_aclin_set.cisco-ios.gawk
+	test linevty_aclout_set.cisco-ios.gawk
+	test linevty_exectimeout00_set.cisco-ios.gawk
+	test linevty_sshinput_set.cisco-ios.gawk
+	test linevty_sshoutput_set.cisco-ios.gawk
+	test ntp_access-group_set.cisco-ios.gawk
+	test ntp_ip_set.cisco-ios.gawk
+	test routing_defref_set.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-ios.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-ios.gawk
+	test snmp_v1v2rw_notset.cisco-ios.gawk
+	test snmp_viewdefref_set.cisco-ios.gawk
+	test ssh_setup_set.cisco-ios.gawk
+	test ssh_versionv1_notset.cisco-ios.gawk
+----
+number_of_pass_error 97
+number_of_pass 40 (41.2%)
+	number_of_pass_high 37 (92.5%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 3 (7.5%)
+number_of_error 57 (58.8%)
+	number_of_error_high 43 (75.4%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 10 (17.5%)
+	number_of_error_info 4 (7.0%)
+cawk view_repo done ----
+------------------------------------
+---- Assessment cisco-ios devices
+------------------------------------
+-------------------------
+---- Summary cisco-ios
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment cisco-viptela devices
+------------------------------------
+-------------------------
+---- Summary cisco-viptela
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment cisco-cedge devices
+------------------------------------
+-------------------------
+---- Summary cisco-cedge
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment juniper-junos devices
+------------------------------------
+-------------------------
+---- Summary juniper-junos
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment huawei-vrp devices
+------------------------------------
+-------------------------
+---- Summary huawei-vrp
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment fortinet-fortios devices
+------------------------------------
+-------------------------
+---- Summary fortinet-fortios
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment nokia-sros devices
+------------------------------------
+-------------------------
+---- Summary nokia-sros
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment paloalto-panos devices
+------------------------------------
+-------------------------
+---- Summary paloalto-panos
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+------------------------------------
+---- Assessment research devices
+------------------------------------
+-------------------------
+---- Summary research
+-------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+cawk view_run done ----
+--------------------------------------
+---- Assessment cisco-ios devices
+--------------------------------------
+------------------------------
+ ---- Summary cisco-ios
+------------------------------
+number_of_checks 0
+number_of_files 0
+number_of_tests 0
+----
+number_of_pass_error 0
+number_of_pass 0
+	number_of_pass_high 0
+	number_of_pass_medium 0
+	number_of_pass_low 0
+	number_of_pass_info 0
+number_of_error 0
+	number_of_error_high 0
+	number_of_error_medium 0
+	number_of_error_low 0
+	number_of_error_info 0
+cawk view_run done ----
+-----------------------------------------------
+---- Assessment client1_skffqsfqhsf10948494 cisco-ios devices
+-----------------------------------------------
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;aaa new-model;30;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor2 secret 5 xxxx;28;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor secret 5 xxxx;27;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_checkstd_check.cisco-ios.gawk;no <ip access-list standard> found;95;info;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_checkstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;95;info;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;55 : ref not def : access-class 55 in;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;66 : ref not def : access-class 66 in;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;97 : def not ref :access-list 97 permit 10.0.168.143;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;98 : def not ref :access-list 98 permit 10.0.168.133;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRU : ref not def : ip access-group BLOCK_VIRU in;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRUS : def not ref :ip access-list extended BLOCK_VIRUS;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;cawk_ntp_bad : ref not def :ntp access-group cawk_ntp_bad;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_http_notset.cisco-ios.gawk;ip http server;13;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_nocdprun_set.cisco-ios.gawk;no cdp run;10;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_noipbootpserver_set.cisco-ios.gawk;no ip bootp server;7;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_noipfinger_set.cisco-ios.gawk;no ip finger;8;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_noipsourceroute_set.cisco-ios.gawk;no ip source-route;9;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_rcmd_notset.cisco-ios.gawk;ip rcmd cawk;14;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;global_servicepassword_set.cisco-ios.gawk;<service password-encryption> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;int_directedbroadcast_notset.cisco-ios.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;int_proxyarp_notset.cisco-ios.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;lineaux_aclout_set.cisco-ios.gawk;line aux 0 : acl out missing;79;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;lineaux_exectimeout00_set.cisco-ios.gawk;line aux 0 : <exec-timeout 0 0> is set;79;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;lineaux_noexec_set.cisco-ios.gawk;line aux <no exec> is set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_aclin_set.cisco-ios.gawk;line vty 0 3 : acl in missing;84;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 0 3 : acl out missing;84;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 4 8 : acl out missing;88;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 0 3 : <exec-timeout 0 0> is set;84;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 4 8 : <exec-timeout 0 0> is set;88;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_sshinput_set.cisco-ios.gawk;line vty transport input (none|ssh) are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;linevty_sshoutput_set.cisco-ios.gawk;line vty transport output (none|ssh) are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;ntp_access-group_set.cisco-ios.gawk;ntp access-group cawk_ntp_bad;17;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;ntp_ip_set.cisco-ios.gawk;ntp server 10.0.0.0;16;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;FILTERTHIS : def not ref :ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;ldp_filter : ref not def :resequence prefix-list ipv4 ldp_filter 30 10;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter : def not ref :route-map tag-filter permit 20;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter-in : ref not def : distribute-list route-map tag-filter-in in;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;snmp_v1v2_notset.cisco-ios.gawk;snmp-server community cawk RO;71;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;snmp_v1v2rw_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown1 : def not ref :snmp-server view unknown1 1.1.1;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown : ref not def :snmp-server community cawk view unknown RO;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;ssh_setup_set.cisco-ios.gawk;<ssh server> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_0;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa config> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;aaa_user_notset.cisco-ios.gawk;aaa forbidden users are not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;52;info;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 12 has no redundant/inconsistent rules;57;info;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;61;info;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;61;info;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;63;info;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;11 : def not ref :ip access-list standard 11;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;12 : def not ref :ip access-list standard 12;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;1 : def not ref :access-list 1 deny 10.0.0.0 0.128.255.255;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;2 : def not ref :access-list 2 deny any;0;low;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_http_notset.cisco-ios.gawk;http statement is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_nocdprun_set.cisco-ios.gawk;<no cdp run> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_noipbootpserver_set.cisco-ios.gawk;<no ip bootp server> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_noipfinger_set.cisco-ios.gawk;<no ip finger> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_noipsourceroute_set.cisco-ios.gawk;<no ip source-route> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_rcmd_notset.cisco-ios.gawk;rcmd statement is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;global_servicepassword_set.cisco-ios.gawk;service password-encryption;5;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;int_directedbroadcast_notset.cisco-ios.gawk;interface FastEthernet0 <ip directed-broadcast> is set;13;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;int_proxyarp_notset.cisco-ios.gawk;interface FastEthernet0 <ip proxy-arp> is set;13;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;lineaux_aclout_set.cisco-ios.gawk;line aux acls out are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;lineaux_exectimeout00_set.cisco-ios.gawk;line aux <exec-timeout 0 0> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;lineaux_noexec_set.cisco-ios.gawk;line aux 0 <no exec> is missing;73;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_aclin_set.cisco-ios.gawk;line vty acls in are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_aclout_set.cisco-ios.gawk;line vty acls out are set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_exectimeout00_set.cisco-ios.gawk;line vty <exec-timeout 0 0> is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 0 3 : transport input (none|ssh) is missing;78;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 4 8 : transport input (none|ssh) is missing;83;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 0 3 : transport output (none|ssh) is missing;78;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 4 8 : transport output (none|ssh) is missing;83;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;ntp_access-group_set.cisco-ios.gawk;<ntp access-group> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;ntp_ip_set.cisco-ios.gawk;<ntp server> is not set;0;high;error
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;routing_defref_set.cisco-ios.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;snmp_v1v2_notset.cisco-ios.gawk;snmp v1v2 is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;snmp_v1v2rw_notset.cisco-ios.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;snmp_viewdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;ssh_setup_set.cisco-ios.gawk;ip ssh version v2;7;high;pass
+confs/run_client1_skffqsfqhsf10948494/confs.cisco-ios/conf_1;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+-------------------------------------
+ ---- Summary client1_skffqsfqhsf10948494 cisco-ios
+-------------------------------------
+number_of_checks 70
+number_of_files 2
+number_of_tests 35
+	test aaa_config_set.cisco-ios.gawk
+	test aaa_user_notset.cisco-ios.gawk
+	test acl_checkstd_check.cisco-ios.gawk
+	test acl_checkstdline_check.cisco-ios.gawk
+	test acl_defref_set.cisco-ios.gawk
+	test global_http_notset.cisco-ios.gawk
+	test global_nocdprun_set.cisco-ios.gawk
+	test global_noipbootpserver_set.cisco-ios.gawk
+	test global_noipfinger_set.cisco-ios.gawk
+	test global_noipsourceroute_set.cisco-ios.gawk
+	test global_rcmd_notset.cisco-ios.gawk
+	test global_servicepassword_set.cisco-ios.gawk
+	test int_directedbroadcast_notset.cisco-ios.gawk
+	test int_ipredirects_set.cisco-ios.gawk
+	test int_proxyarp_notset.cisco-ios.gawk
+	test int_unreachable_notset.cisco-ios.gawk
+	test ipsec_olderalgcrypto_notset.cisco-ios.gawk
+	test lineaux_aclin_set.cisco-ios.gawk
+	test lineaux_aclout_set.cisco-ios.gawk
+	test lineaux_exectimeout00_set.cisco-ios.gawk
+	test lineaux_noexec_set.cisco-ios.gawk
+	test linevty_aclin_set.cisco-ios.gawk
+	test linevty_aclout_set.cisco-ios.gawk
+	test linevty_exectimeout00_set.cisco-ios.gawk
+	test linevty_sshinput_set.cisco-ios.gawk
+	test linevty_sshoutput_set.cisco-ios.gawk
+	test ntp_access-group_set.cisco-ios.gawk
+	test ntp_ip_set.cisco-ios.gawk
+	test routing_defref_set.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-ios.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-ios.gawk
+	test snmp_v1v2rw_notset.cisco-ios.gawk
+	test snmp_viewdefref_set.cisco-ios.gawk
+	test ssh_setup_set.cisco-ios.gawk
+	test ssh_versionv1_notset.cisco-ios.gawk
+----
+number_of_pass_error 97
+number_of_pass 40 (41.2%)
+	number_of_pass_high 37 (92.5%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 3 (7.5%)
+number_of_error 57 (58.8%)
+	number_of_error_high 43 (75.4%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 10 (17.5%)
+	number_of_error_info 4 (7.0%)
+cawk view_run done ----
+-----------------------------------------------
+---- Assessment client2_mqsdhqndqqos198440 cisco-ios devices
+-----------------------------------------------
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_config_set.cisco-ios.gawk;aaa new-model;30;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor2 secret 5 xxxx;28;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;aaa_user_notset.cisco-ios.gawk;username backdoor secret 5 xxxx;27;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_checkstd_check.cisco-ios.gawk;no <ip access-list standard> found;95;info;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_checkstdline_check.cisco-ios.gawk;no <access-list [0-9]*> found;95;info;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;55 : ref not def : access-class 55 in;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;66 : ref not def : access-class 66 in;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;97 : def not ref :access-list 97 permit 10.0.168.143;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;98 : def not ref :access-list 98 permit 10.0.168.133;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRU : ref not def : ip access-group BLOCK_VIRU in;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;BLOCK_VIRUS : def not ref :ip access-list extended BLOCK_VIRUS;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;acl_defref_set.cisco-ios.gawk;cawk_ntp_bad : ref not def :ntp access-group cawk_ntp_bad;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_http_notset.cisco-ios.gawk;ip http server;13;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_nocdprun_set.cisco-ios.gawk;no cdp run;10;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_noipbootpserver_set.cisco-ios.gawk;no ip bootp server;7;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_noipfinger_set.cisco-ios.gawk;no ip finger;8;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_noipsourceroute_set.cisco-ios.gawk;no ip source-route;9;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_rcmd_notset.cisco-ios.gawk;ip rcmd cawk;14;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;global_servicepassword_set.cisco-ios.gawk;<service password-encryption> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;int_directedbroadcast_notset.cisco-ios.gawk;interface <ip directed-broadcast> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;int_proxyarp_notset.cisco-ios.gawk;interface <ip proxy-arp> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;lineaux_aclout_set.cisco-ios.gawk;line aux 0 : acl out missing;79;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;lineaux_exectimeout00_set.cisco-ios.gawk;line aux 0 : <exec-timeout 0 0> is set;79;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;lineaux_noexec_set.cisco-ios.gawk;line aux <no exec> is set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_aclin_set.cisco-ios.gawk;line vty 0 3 : acl in missing;84;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 0 3 : acl out missing;84;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_aclout_set.cisco-ios.gawk;line vty 4 8 : acl out missing;88;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 0 3 : <exec-timeout 0 0> is set;84;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_exectimeout00_set.cisco-ios.gawk;line vty 4 8 : <exec-timeout 0 0> is set;88;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_sshinput_set.cisco-ios.gawk;line vty transport input (none|ssh) are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;linevty_sshoutput_set.cisco-ios.gawk;line vty transport output (none|ssh) are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;ntp_access-group_set.cisco-ios.gawk;ntp access-group cawk_ntp_bad;17;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;ntp_ip_set.cisco-ios.gawk;ntp server 10.0.0.0;16;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;FILTERTHIS : def not ref :ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;ldp_filter : ref not def :resequence prefix-list ipv4 ldp_filter 30 10;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter : def not ref :route-map tag-filter permit 20;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;routing_defref_set.cisco-ios.gawk;tag-filter-in : ref not def : distribute-list route-map tag-filter-in in;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;snmp_v1v2_notset.cisco-ios.gawk;snmp-server community cawk RO;71;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;snmp_v1v2rw_notset.cisco-ios.gawk;snmp-server community private RW;72;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown1 : def not ref :snmp-server view unknown1 1.1.1;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;snmp_viewdefref_set.cisco-ios.gawk;unknown : ref not def :snmp-server community cawk view unknown RO;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;ssh_setup_set.cisco-ios.gawk;<ssh server> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_0;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa accounting> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authentication> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa authorization> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;aaa_config_set.cisco-ios.gawk;<aaa config> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;aaa_user_notset.cisco-ios.gawk;aaa forbidden users are not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 11 permit 10.0.0.0/255.255.255.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none inconsistent rules;52;info;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_checkstd_check.cisco-ios.gawk;access-list 12 has no redundant/inconsistent rules;57;info;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none redundant rules;61;info;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 1 permit 10.127.1.0/255.255.255.0 0/0 0/0 0/0 none deny 10.0.0.0/255.127.0.0 0/0 0/0 0/0 none inconsistent rules;61;info;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_checkstdline_check.cisco-ios.gawk;access-list 2 deny 10.0.0.0/255.192.0.0 0/0 0/0 0/0 none deny any/any 0/0 0/0 0/0 none redundant rules;63;info;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;11 : def not ref :ip access-list standard 11;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;12 : def not ref :ip access-list standard 12;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;1 : def not ref :access-list 1 deny 10.0.0.0 0.128.255.255;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;acl_defref_set.cisco-ios.gawk;2 : def not ref :access-list 2 deny any;0;low;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_http_notset.cisco-ios.gawk;http statement is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_nocdprun_set.cisco-ios.gawk;<no cdp run> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_noipbootpserver_set.cisco-ios.gawk;<no ip bootp server> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_noipfinger_set.cisco-ios.gawk;<no ip finger> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_noipsourceroute_set.cisco-ios.gawk;<no ip source-route> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_rcmd_notset.cisco-ios.gawk;rcmd statement is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;global_servicepassword_set.cisco-ios.gawk;service password-encryption;5;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;int_directedbroadcast_notset.cisco-ios.gawk;interface FastEthernet0 <ip directed-broadcast> is set;13;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;int_ipredirects_set.cisco-ios.gawk;interface <ip redirects> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;int_proxyarp_notset.cisco-ios.gawk;interface FastEthernet0 <ip proxy-arp> is set;13;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;int_unreachable_notset.cisco-ios.gawk;interface <ip unreachables> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;ipsec_olderalgcrypto_notset.cisco-ios.gawk;<older crypto algorithm> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;lineaux_aclin_set.cisco-ios.gawk;line aux acls in are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;lineaux_aclout_set.cisco-ios.gawk;line aux acls out are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;lineaux_exectimeout00_set.cisco-ios.gawk;line aux <exec-timeout 0 0> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;lineaux_noexec_set.cisco-ios.gawk;line aux 0 <no exec> is missing;73;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_aclin_set.cisco-ios.gawk;line vty acls in are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_aclout_set.cisco-ios.gawk;line vty acls out are set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_exectimeout00_set.cisco-ios.gawk;line vty <exec-timeout 0 0> is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 0 3 : transport input (none|ssh) is missing;78;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_sshinput_set.cisco-ios.gawk;line vty 4 8 : transport input (none|ssh) is missing;83;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 0 3 : transport output (none|ssh) is missing;78;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;linevty_sshoutput_set.cisco-ios.gawk;line vty 4 8 : transport output (none|ssh) is missing;83;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;ntp_access-group_set.cisco-ios.gawk;<ntp access-group> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;ntp_ip_set.cisco-ios.gawk;<ntp server> is not set;0;high;error
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;routing_defref_set.cisco-ios.gawk;all routings defs are refs and the reverse;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;snmp_v1v2forbidcommunity_notset.cisco-ios.gawk;snmp v1v2 forbidden communities are not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;snmp_v1v2_notset.cisco-ios.gawk;snmp v1v2 is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;snmp_v1v2rw_notset.cisco-ios.gawk;snmp v1v2 rw is not set;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;snmp_viewdefref_set.cisco-ios.gawk;all snmps defs are refs and the reverse;0;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;ssh_setup_set.cisco-ios.gawk;ip ssh version v2;7;high;pass
+confs/run_client2_mqsdhqndqqos198440/confs.cisco-ios/conf_1;ssh_versionv1_notset.cisco-ios.gawk;<ssh version 1> is not set;0;high;pass
+-------------------------------------
+ ---- Summary client2_mqsdhqndqqos198440 cisco-ios
+-------------------------------------
+number_of_checks 70
+number_of_files 2
+number_of_tests 35
+	test aaa_config_set.cisco-ios.gawk
+	test aaa_user_notset.cisco-ios.gawk
+	test acl_checkstd_check.cisco-ios.gawk
+	test acl_checkstdline_check.cisco-ios.gawk
+	test acl_defref_set.cisco-ios.gawk
+	test global_http_notset.cisco-ios.gawk
+	test global_nocdprun_set.cisco-ios.gawk
+	test global_noipbootpserver_set.cisco-ios.gawk
+	test global_noipfinger_set.cisco-ios.gawk
+	test global_noipsourceroute_set.cisco-ios.gawk
+	test global_rcmd_notset.cisco-ios.gawk
+	test global_servicepassword_set.cisco-ios.gawk
+	test int_directedbroadcast_notset.cisco-ios.gawk
+	test int_ipredirects_set.cisco-ios.gawk
+	test int_proxyarp_notset.cisco-ios.gawk
+	test int_unreachable_notset.cisco-ios.gawk
+	test ipsec_olderalgcrypto_notset.cisco-ios.gawk
+	test lineaux_aclin_set.cisco-ios.gawk
+	test lineaux_aclout_set.cisco-ios.gawk
+	test lineaux_exectimeout00_set.cisco-ios.gawk
+	test lineaux_noexec_set.cisco-ios.gawk
+	test linevty_aclin_set.cisco-ios.gawk
+	test linevty_aclout_set.cisco-ios.gawk
+	test linevty_exectimeout00_set.cisco-ios.gawk
+	test linevty_sshinput_set.cisco-ios.gawk
+	test linevty_sshoutput_set.cisco-ios.gawk
+	test ntp_access-group_set.cisco-ios.gawk
+	test ntp_ip_set.cisco-ios.gawk
+	test routing_defref_set.cisco-ios.gawk
+	test snmp_v1v2_notset.cisco-ios.gawk
+	test snmp_v1v2forbidcommunity_notset.cisco-ios.gawk
+	test snmp_v1v2rw_notset.cisco-ios.gawk
+	test snmp_viewdefref_set.cisco-ios.gawk
+	test ssh_setup_set.cisco-ios.gawk
+	test ssh_versionv1_notset.cisco-ios.gawk
+----
+number_of_pass_error 97
+number_of_pass 40 (41.2%)
+	number_of_pass_high 37 (92.5%)
+	number_of_pass_medium 0 (0.0%)
+	number_of_pass_low 0 (0.0%)
+	number_of_pass_info 3 (7.5%)
+number_of_error 57 (58.8%)
+	number_of_error_high 43 (75.4%)
+	number_of_error_medium 0 (0.0%)
+	number_of_error_low 10 (17.5%)
+	number_of_error_info 4 (7.0%)
+cawk view_run done ----

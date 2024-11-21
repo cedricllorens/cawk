@@ -81,17 +81,19 @@ BEGIN {
     # ----------------
 
     printf("all: ");
-    for (t = 1; t <= targets; t++) {
-        printf("target%s ",t);
+    if ( targets >= 1 ) {
+    	for (t = 1; t <= targets; t++) {
+       	 	printf("target%s ",t);
+    	}
+    	printf("\n");
+    	printf("\t@cat ");
+    	for (i = 1; i <= targets; i++) {
+		printf("$(file_target%s) ",i);
+    	}
+    	printf(" | sort | uniq");
+   	printf("\n");
+    	printf("\t@rm -f tmp/tmp*");
     }
-    printf("\n");
-    printf("\t@cat ");
-    for (i = 1; i <= targets; i++) {
-	printf("$(file_target%s) ",i);
-    }
-    printf(" | sort | uniq");
-    printf("\n");
-    printf("\t@rm -f tmp/tmp*");
     printf("\n");
     printf("\n");
 
