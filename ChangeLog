@@ -5,6 +5,8 @@
 # cawk is Copyright (C) 2024 by Cedric Llorens
 # ------------------------------------------------------------
 
+v2.0.1 (december 2024): add .gitkeep reports/repo and reports/run as not pushed in gitlab
+
 v2.0.0 (november 2024): this is a major update with new usage of building <AUDIT-NAME> assessments
 	Common:
 	- add <number_of_pass_error> in the summary report
