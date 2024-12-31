@@ -1,0 +1,74 @@
+sysname MonRouteur
+#
+interface GigabitEthernet0/0/1
+ description Connexion au réseau local
+ port link-type access
+ port default vlan 10
+#
+interface Vlanif10
+ ip address 10.168.1.1 255.255.255.0
+#
+ip route-static 0.0.0.0 0.0.0.0 10.0.113.1
+#
+http server enable
+rcmd server enable
+#
+ntp-service unicast-server 10.0.0.0
+#
+rsa local-key-pair create
+user-interface vty 0 4
+ authentication-mode aaa
+ protocol inbound ssh
+ protocol outbound ssh
+ acl 2000 inbound
+ acl 7000 outbound
+#
+snmp-agent community write public
+snmp-agent community read cawk mib-view isoview01 acl 2001
+snmp-agent community write cawk1 mib-view isoview02 acl 2001
+snmp-agent mib-view isoview01 include system
+snmp-agent mib-view isoview03 include system
+#
+aaa
+ local-user admin password irreversible-cipher votre_mot_de_passe
+ local-user cawk privilege level 15
+ local-user admin service-type ssh
+#
+acl number 3000
+ rule 5 permit ip source 10.168.1.0 0.0.0.255 destination any
+ rule 10 deny ip source any destination any
+#
+acl number 5000
+ rule 5 permit tcp source 10.168.1.0 0.0.0.255 destination any
+ rule 10 deny ip source any destination any
+#
+interface Vlanif10
+ packet-filter inbound acl 8000
+#
+ssh user admin
+interface GigabitEthernet0/0/1
+ port isolate enable
+#
+ssh server attack-defense max-retry-rate 3
+ssh server attack-defense max-retry-count 3
+#
+route-policy no_need_send_policy permit node 20
+#
+ospf 100 router-id 5.5.5.5
+ area 0.0.0.0
+#
+bgp 65500
+ router-id 5.5.5.5
+ peer 2.2.2.2 as-number 65500
+ peer 2.2.2.2 connect-interface LoopBack0
+ #
+ ipv4-family unicast
+  undo synchronization
+  import-route ospf 100 route-policy need_send
+  peer 2.2.2.2 enable
+#
+ip ip-prefix no_need_send index 10 permit 10.10.10.10 32
+#
+route-policy no_need_send_new deny node 10
+ if-match ip-prefix no_need_send_bad
+#

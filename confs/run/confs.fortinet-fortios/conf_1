@@ -1,0 +1,118 @@
+config system global
+    set hostname MonFirewall
+    set admin-ssh-port 22
+end
+
+config system admin
+    set password-expire "always"
+end
+
+config system ntp
+    set status enable
+end
+
+config ntpserver
+    edit 1
+        set server cawk
+    next
+end
+
+config system interface
+    edit "port1"
+        set vdom "root"
+        set ip 10.168.1.1 255.255.255.0
+        set allowaccess ping https ssh telnet
+    next
+end
+
+config system admin
+    edit "admin"
+        set password votre_mot_de_passe
+        set accprofile super_admin
+    next
+end
+
+config firewall policy
+    edit 1
+        set srcintf "port1"
+        set dstintf "wan1"
+        set srcaddr "all"
+        set dstaddr "10.10.10.10/24"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+    next
+    edit 2
+        set name "Deny-All"
+        set srcintf "any"
+        set srcaddr "all"
+        set dstintf "any"
+        set dstaddr "all"
+        set service "ALL"
+        set action accept
+        set schedule "always"
+        set comments "Deny all other traffic"
+    next
+    edit 3
+        set name "Deny-All"
+        set srcintf "any"
+        set srcaddr "all"
+        set dstintf "any"
+        set dstaddr "all"
+        set service "HTTP"
+        set action accept
+        set schedule "always"
+        set comments "Deny all other traffic"
+    next
+end
+
+config firewall profile
+    edit "default"
+        set inspection-mode proxy-based
+        set profile-protocol-options default
+    next
+end
+
+config firewall vip
+    edit 1
+        set extintf "wan1"
+        set extip 10.0.113.2
+        set mappedip 10.168.1.2
+        set portforward enable
+        set mappedport 22
+    next
+end
+
+config ips global
+    set status enable
+    set sensor-options default
+end
+
+config log syslogd2
+    edit 1
+        set status enable
+        set facility local1
+    next
+end
+
+config system snmp
+    set status disable
+    set contact "Nom de l'administrateur"
+    set location "Emplacement du pare-feu"
+    set allowaccess snmp
+end
+
+config vpn ipsec phase1-interface
+    edit "VPN_Phase1"
+        set interface "wan1"
+        set dpd enable
+        set dpd-idle-timeout 300
+        set proposal aes256-sha1
+        set local-gw <local_gateway_ip>
+        set remote-gw <remote_gateway_ip>
+        set keylife 28800
+        set psksecret <pre_shared_key>
+        set version v2
+    next
+end

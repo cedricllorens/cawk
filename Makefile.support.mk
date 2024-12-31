@@ -2,14 +2,11 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024 by Cedric Llorens
-# ------------------------------------------------------------
-# Makefile.support.mk
-# Used to define cawk && Makefile options
+# cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v2.0.0
+CAWK_RELEASE = v2.1.0
 
 # --------------- cawk parallel options
 # enable parallel : yes/no

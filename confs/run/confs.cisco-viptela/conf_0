@@ -1,0 +1,64 @@
+system
+ host-name     cawk
+ aaa
+  auth-order tacacs local
+  user cawk
+   password xxxxx
+  !
+ !
+ ntp
+  server 10.168.1.100 prefer
+ !
+ tacacs
+  server 10.10.10.10
+  exit
+ !
+!
+snmp
+ view cawk_view_bad
+  oid 1.3
+ !
+ community public
+  view cawk_view
+  authorization write
+ !
+ view cawk_snmp_bad
+  oid 1.1
+ !
+ group cawk_group_snmp auth-priv
+  view cawk_snmp
+ !
+ user cawk_v3
+  auth sha
+  auth-password xx
+  priv sha
+  priv-password xx
+  group cawk_group_snmp_badx
+!
+vpn 0
+ name xx
+ interface ge1
+  ip address 10.20.10.10
+  tunnel-interface
+   color private
+   no allow-service dhcp
+   allow-service telnet
+   allow-service all
+   no allow-service https
+  !
+ !
+ interface ge2
+  ip address 10.20.10.100
+  tunnel-interface
+   color internet
+   no allow-service dhcp
+   allow-service ftp
+   allow-service sshd
+   allow-service all
+   no allow-service https
+  !
+ !
+!
+policy
+ zone LAN
+!

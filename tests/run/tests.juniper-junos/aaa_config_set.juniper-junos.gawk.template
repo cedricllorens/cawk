@@ -1,0 +1,44 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if aaa config is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_system = 0;
+}
+
+/^system {/ && block_system == 0 {
+	block_system = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%%SED_AAASYSTEM_JUNI%/ && block_system == 1 && !/inactive/ {
+	print_err("aaa_config_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
+        pass = 1;
+	nextfile;	
+}
+
+/^}$/ && block_system == 1 {
+	block_system = 0;
+}
+
+ENDFILE {
+        if ( ! pass ) print_err("aaa_config_set.juniper-junos.gawk","aaa config is not set",0,"high","error");
+}
+
+END {
+}

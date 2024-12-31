@@ -1,0 +1,55 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if aaa authentication-order tacacs is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_system = 0;
+}
+
+/^system/ {
+	block_system = 1;
+	next;
+}
+
+/^ aaa/ && block_system == 1 {
+	block_aaa = 1;
+	next;
+}
+
+/^  auth-order / && /tacacs/ && block_aaa == 1 {
+	print_err("aaa_authorder_set.cisco-viptela.gawk",rm_blank_before($0),FNR,"high","pass");
+	pass = 1;
+	next;
+}
+
+/^ !$/ && block_aaa == 1 {
+	block_aaa = 0;
+	next;
+}
+
+/^!$/ && block_system == 1 {
+	block_system = 0;
+	next;
+}
+
+ENDFILE {
+	if ( ! pass ) print_err("aaa_authorder_set.cisco-viptela.gawk","aaa authentication order is not set",0,"high","error");
+}
+
+END {
+}

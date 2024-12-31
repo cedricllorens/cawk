@@ -1,0 +1,39 @@
+————————————————
+PROCEDURE PULL REQUEST
+————————————————
+
+# project clone
+git clone https://github.com/cedricllorens/cawk.git
+cd cawk
+
+# build your own develop branch
+git checkout -b cawk_name_update
+
+# perform your changes
+git add .
+git commit -m "Update ..."
+
+# push your update
+git push origin cawk_name_update
+
+# create the push request at Github
+
+————————————————
+LOCAL VALIDATION
+————————————————
+
+git fetch origin cawk_name_update
+git checkout cawk_name_update
+
+---- check
+
+git checkout main
+# validate the PR at Gihub and remove the branch cawk_name_update
+
+———————————————-
+PACKAGE UPDATE
+———————————————
+
+git pull origin main
+
+

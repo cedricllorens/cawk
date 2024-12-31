@@ -1,0 +1,95 @@
+!
+version 12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+srvice password-encryption
+!
+no ip bootp server
+no ip finger
+no ip source-route
+no cdp run
+hostname conf.test
+!
+ip http server
+ip rcmd cawk
+!
+ntp server 10.0.0.0
+ntp access-group cawk_ntp_bad
+enable secret 5 xxxxx
+!
+interface FastEthernet0
+ no ip address
+ shutdown
+ speed auto
+ duplex auto
+ no keepalive
+!
+username backdoor secret 5 xxxx
+username backdoor2 secret 5 xxxx
+!
+aaa new-model
+!
+route-map tag-filter deny 10
+ match tag 777
+route-map tag-filter permit 20
+!
+router ospf 1
+ router-id 10.0.0.2
+ log-adjacency-changes
+ network 10.16.2.1 0.0.0.255 area 0
+ distribute-list route-map tag-filter-in in
+!
+ip prefix-list FILTERTHIS seq 10 permit 0.0.0.0/0 le 32
+!
+resequence prefix-list ipv4 ldp_filter 30 10
+!
+interface GigabitEthernet0/0
+ ip address 10.0.68.45 255.255.255.0
+ ip access-group BLOCK_VIRU in
+ no ip proxy-arp
+!
+interface GigabitEthernet0/1
+ ip address 10.0.68.45 255.255.255.0
+ no ip proxy-arp
+!
+interface GigabitEthernet0/1
+ no ip address
+!
+ip access-list extended BLOCK_VIRUS
+ deny   77 any any
+ permit ip any any
+!
+access-list 97 permit 10.0.168.143
+access-list 98 permit 10.0.168.133
+!
+router ospf 1
+ router-id 10.0.0.2
+ log-adjacency-changes
+ network 10.16.2.1 0.0.0.255 area 0
+ distribute-list route-map tag-filter-in in
+!
+snmp-server community cawk RO
+snmp-server community private RW
+snmp-server community cawk view unknown RO
+snmp-server view unknown1 1.1.1
+snmp-server file-transfer access-group CAWK
+!
+line con 0
+ password 7 xxxxxx
+line aux 0
+ no exec
+ password 7 xxxxxx
+ exec-timeout 0 0
+ transport input all
+line vty 0 3
+ exec-timeout 0 0
+ transport input ssh
+ transport output ssh
+line vty 4 8
+ exec-timeout 0 0
+ access-class 55 in
+ access-class 66 in
+ transport input ssh
+ transport output ssh
+!
+end

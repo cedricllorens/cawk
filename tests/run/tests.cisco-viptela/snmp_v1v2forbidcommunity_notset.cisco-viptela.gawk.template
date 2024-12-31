@@ -1,0 +1,45 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if snmp v1v2 forbidden community is not set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_snmp = 0;
+}
+
+/^snmp/ {
+	block_snmp = 1;
+	next;
+}
+
+/^ community / && /%SED_SNMP_FORBID_COMMUNITY%/ && block_snmp == 1 {
+	print_err("snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk",rm_blank_before($0),FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+/^!$/ && block_snmp == 1 {
+	block_snmp = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.cisco-viptela.gawk","snmp v1v2 forbidden community is not set",0,"high","pass");
+}
+
+END {
+}

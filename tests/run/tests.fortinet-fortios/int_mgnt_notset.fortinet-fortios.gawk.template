@@ -1,0 +1,44 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if a management interface is not set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0 ;
+	block_interface = 0;
+}
+
+/^config system interface/ {
+	block_interface = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%edit / && /%SED_MGNT_KW%/ && block_interface == 1 {
+	print_err("int_mgnt_noset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
+	pass = 1;	
+	next;
+}
+
+/^end$/ {
+	block_interface = 0;
+}
+
+ENDFILE {
+	if ( ! pass ) print_err("int_mgnt_noset.fortinet-fortios.gawk","no mgnt interface is set",0,"high","error");
+}
+
+END {
+}

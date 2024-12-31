@@ -1,0 +1,63 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if aaa authorization is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_system = 0;
+	block_security = 0;
+	block_aaa = 0;
+}
+
+/^%SED_BK_NOKIA%system/ && block_system == 0 {
+	block_system = 1;
+	next;
+}
+
+/^%SED_BK_NOKIA%{2}security/ && block_system == 1 {
+	block_security = 1;
+	next;
+}
+
+/^%SED_BK_NOKIA%{3}%SED_AAASYSTEM_NOKIA%/ && block_security == 1 {
+	block_aaa = 1;
+	next;
+}
+
+/^%SED_BK_NOKIA%{4}authorization/ && block_aaa == 1 {
+	print_err("aaa_authorization_set.nokia-sros.gawk",rm_blank_before($0),FNR,"high","pass");
+	pass = 1;
+	nextfile;
+}
+
+/^%SED_BK_NOKIA%{3}exit$/ && block_aaa == 1 {
+	block_aaa = 0;
+}
+
+/^%SED_BK_NOKIA%{2}exit$/ && block_security == 1 {
+	block_security = 0;
+}
+
+/^%SED_BK_NOKIA%exit$/ && block_system == 1 {
+	block_system = 0;
+}
+
+ENDFILE {
+        if ( ! pass ) print_err("aaa_authorization_set.nokia-sros.gawk","aaa authorization is not set",0,"high","error");
+}
+
+END {
+}

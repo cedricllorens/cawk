@@ -1,0 +1,44 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if snmp v3 is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_snmp = 0;
+}
+
+/^snmp {/ {
+	block_snmp = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%v3 / && block_snmp == 1 {
+	print_err("snmp_v3_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
+        pass = 1;
+	nextfile;
+}
+
+/^}/ {
+	block_snmp = 0;
+}
+
+ENDFILE {
+        if ( !pass ) print_err("snmp_v3_set.juniper-junos.gawk","snmp v3 is not set",0,"high","error");
+}
+
+END {
+}

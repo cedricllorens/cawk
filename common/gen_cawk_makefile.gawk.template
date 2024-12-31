@@ -3,8 +3,6 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# cawk is Copyright (C) 2024 by Cedric Llorens
-#
 # it generates the makefile to parse configurations in parallel
 # mode thanks to call : gmake -j
 #

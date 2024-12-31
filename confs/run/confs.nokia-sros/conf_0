@@ -1,0 +1,87 @@
+configure
+    system
+        name device
+        time
+            ntp
+                server 10.168.1.1
+            exit
+        exit
+        login-control
+            ftp
+                inbound-max-sessions 5
+            exit
+            telnet
+                inbound-max-sessions 7
+                outbound-max-sessions 2
+            exit
+            ssh 
+                inbound-max-sessions 7
+                outbound-max-sessions 2
+            exit
+            idle-timeout 1440
+            motd text "Notice to all users: Software upgrade scheduled 3/2 1:00 AM"
+        exit
+        security
+            management-access-filter
+                ip-filter
+                    default-action deny
+                    entry 100
+                        src-ip 192.168.2.0/24
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                    entry 200
+                        src-ip 192.168.2.0/24
+                        protocol tcp
+                        dst-port 22
+                        action permit
+                    exit
+                exit
+            exit
+            user "admin"
+                password "F6XjryaATzM" hash
+                access snmp
+                snmp
+                    authentication hash md5 e14672e71d3e96e7a1e19472527ee969 privacy none
+                    group "testgroup"
+                exit
+            exit
+            user "cawk"
+                password "" hash2
+                access snmp
+                console
+                    new-password-at-login
+                exit
+                snmp
+                    authentication hash md5 e14672e71d3e96e7a1e19472527ee969 privacy none
+                    group "testgroup"
+                exit
+            exit
+            user "cawk2"
+            exit
+            snmp
+                view "testview" subtree "1"
+                    mask ff type excluded
+                exit
+                view "testview" subtree "1.3.6.1.2"
+                    mask ff type excluded
+                exit
+                access group "test" security-model usm security-level auth-no-privacy read "testview" write "testview" notify "testview"
+                community "cawk" hash2 rwa version both
+                community "public" hash2 r version both
+            exit
+            tacplus
+                accounting
+                authorization
+                timeout 5
+                single-connection
+                server 1 address 10.10.0.5 secret "h6.TeL7YPohbmhlvz0gob." hash2
+                server 2 address 10.10.0.6 secret "h6.TeL7YPog7WbLsR3QRd." hash2
+                server 3 address 10.10.0.7 secret "h6.TeL7YPojGJqbYt85LVk" hash2
+                server 4 address 10.10.0.8 secret "h6.TeL7YPoiCfWKUFHARvk" hash2
+                server 5 address 10.10.0.9 secret "h6.TeL7YPojuCyTFvTNGBU" hash2
+            exit
+	exit
+    exit
+exit all

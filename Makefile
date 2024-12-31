@@ -2,10 +2,7 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024 by Cedric Llorens
-# ------------------------------------------------------------
-# cawk main Makefile
-# define all the cawk commands
+# cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
 # ---------------
@@ -27,260 +24,83 @@ EXCEPTION_M4 = $(wildcard $(EXCEPTION_PATH)/repo/*.m4) $(wildcard $(EXCEPTION_PA
 
 REPORT_PATH = reports
 
-SUPPLIER_SCOPE = cisco-ios cisco-viptela cisco-cedge juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos research
-
-# --------------- CISCO-IOS
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_cisco-ios_REPO_PATH = $(CONFS_PATH)/repo/confs.cisco-ios
-	CONFIGURATION_cisco-ios_RUN_PATH = $(CONFS_PATH)/run/confs.cisco-ios
-else
-	CONFIGURATION_cisco-ios_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.cisco-ios
-endif
-TESTS_cisco-ios_REPO_PATH = $(TESTS_PATH)/repo/tests.cisco-ios
-ifeq ($(strip $(audit)),)
-	TESTS_cisco-ios_RUN_PATH = $(TESTS_PATH)/run/tests.cisco-ios
-else
-	TESTS_cisco-ios_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.cisco-ios
-endif
-TESTS_cisco-ios_REPO_TEMPLATE = $(wildcard $(TESTS_cisco-ios_REPO_PATH)/*.template)
-TESTS_cisco-ios_REPO_M4 = $(wildcard $(TESTS_cisco-ios_REPO_PATH)/*.m4)
-TESTS_cisco-ios_RUN_TEMPLATE = $(wildcard $(TESTS_cisco-ios_RUN_PATH)/*.template)
-TESTS_cisco-ios_RUN_M4 = $(wildcard $(TESTS_cisco-ios_RUN_PATH)/*.m4)
-
-# --------------- JUNIPER-JUNOS
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_juniper-junos_REPO_PATH = $(CONFS_PATH)/repo/confs.juniper-junos
-	CONFIGURATION_juniper-junos_RUN_PATH = $(CONFS_PATH)/run/confs.juniper-junos
-else
-	CONFIGURATION_juniper-junos_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.juniper-junos
-endif
-TESTS_juniper-junos_REPO_PATH = $(TESTS_PATH)/repo/tests.juniper-junos
-ifeq ($(strip $(audit)),)
-	TESTS_juniper-junos_RUN_PATH = $(TESTS_PATH)/run/tests.juniper-junos
-else
-	TESTS_juniper-junos_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.juniper-junos
-endif
-TESTS_juniper-junos_REPO_TEMPLATE = $(wildcard $(TESTS_juniper-junos_REPO_PATH)/*.template)
-TESTS_juniper-junos_REPO_M4 = $(wildcard $(TESTS_juniper-junos_REPO_PATH)/*.m4)
-TESTS_juniper-junos_RUN_TEMPLATE = $(wildcard $(TESTS_juniper-junos_RUN_PATH)/*.template)
-TESTS_juniper-junos_RUN_M4 = $(wildcard $(TESTS_juniper-junos_RUN_PATH)/*.m4)
-
-# --------------- HUAWEI-VRP
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_huawei-vrp_REPO_PATH = $(CONFS_PATH)/repo/confs.huawei-vrp
-	CONFIGURATION_huawei-vrp_RUN_PATH = $(CONFS_PATH)/run/confs.huawei-vrp
-else
-	CONFIGURATION_huawei-vrp_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.huawei-vrp
-endif
-TESTS_huawei-vrp_REPO_PATH = $(TESTS_PATH)/repo/tests.huawei-vrp
-ifeq ($(strip $(audit)),)
-	TESTS_huawei-vrp_RUN_PATH = $(TESTS_PATH)/run/tests.huawei-vrp
-else
-	TESTS_huawei-vrp_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.huawei-vrp
-endif
-TESTS_huawei-vrp_REPO_TEMPLATE = $(wildcard $(TESTS_huawei-vrp_REPO_PATH)/*.template)
-TESTS_huawei-vrp_REPO_M4 = $(wildcard $(TESTS_huawei-vrp_REPO_PATH)/*.m4)
-TESTS_huawei-vrp_RUN_TEMPLATE = $(wildcard $(TESTS_huawei-vrp_RUN_PATH)/*.template)
-TESTS_huawei-vrp_RUN_M4 = $(wildcard $(TESTS_huawei-vrp_RUN_PATH)/*.m4)
-
-# --------------- FORTINET-FORTIOS
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_fortinet-fortios_REPO_PATH = $(CONFS_PATH)/repo/confs.fortinet-fortios
-	CONFIGURATION_fortinet-fortios_RUN_PATH = $(CONFS_PATH)/run/confs.fortinet-fortios
-else
-	CONFIGURATION_fortinet-fortios_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.fortinet-fortios
-endif
-TESTS_fortinet-fortios_REPO_PATH = $(TESTS_PATH)/repo/tests.fortinet-fortios
-ifeq ($(strip $(audit)),)
-	TESTS_fortinet-fortios_RUN_PATH = $(TESTS_PATH)/run/tests.fortinet-fortios
-else
-	TESTS_fortinet-fortios_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.fortinet-fortios
-endif
-TESTS_fortinet-fortios_REPO_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_REPO_PATH)/*.template)
-TESTS_fortinet-fortios_REPO_M4 = $(wildcard $(TESTS_fortinet-fortios_REPO_PATH)/*.m4)
-TESTS_fortinet-fortios_RUN_TEMPLATE = $(wildcard $(TESTS_fortinet-fortios_RUN_PATH)/*.template)
-TESTS_fortinet-fortios_RUN_M4 = $(wildcard $(TESTS_fortinet-fortios_RUN_PATH)/*.m4)
-
-# --------------- NOKIA-SROS
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_nokia-sros_REPO_PATH = $(CONFS_PATH)/repo/confs.nokia-sros
-	CONFIGURATION_nokia-sros_RUN_PATH = $(CONFS_PATH)/run/confs.nokia-sros
-else
-	CONFIGURATION_nokia-sros_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.nokia-sros
-endif
-TESTS_nokia-sros_REPO_PATH = $(TESTS_PATH)/repo/tests.nokia-sros
-ifeq ($(strip $(audit)),)
-	TESTS_nokia-sros_RUN_PATH = $(TESTS_PATH)/run/tests.nokia-sros
-else
-	TESTS_nokia-sros_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.nokia-sros
-endif
-TESTS_nokia-sros_REPO_TEMPLATE = $(wildcard $(TESTS_nokia-sros_REPO_PATH)/*.template)
-TESTS_nokia-sros_REPO_M4 = $(wildcard $(TESTS_nokia-sros_REPO_PATH)/*.m4)
-TESTS_nokia-sros_RUN_TEMPLATE = $(wildcard $(TESTS_nokia-sros_RUN_PATH)/*.template)
-TESTS_nokia-sros_RUN_M4 = $(wildcard $(TESTS_nokia-sros_RUN_PATH)/*.m4)
-
-# --------------- PALOALTO-PANOS
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_paloalto-panos_REPO_PATH = $(CONFS_PATH)/repo/confs.paloalto-panos
-	CONFIGURATION_paloalto-panos_RUN_PATH = $(CONFS_PATH)/run/confs.paloalto-panos
-else
-	CONFIGURATION_paloalto-panos_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.paloalto-panos
-endif
-TESTS_paloalto-panos_REPO_PATH = $(TESTS_PATH)/repo/tests.paloalto-panos
-ifeq ($(strip $(audit)),)
-	TESTS_paloalto-panos_RUN_PATH = $(TESTS_PATH)/run/tests.paloalto-panos
-else
-	TESTS_paloalto-panos_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.paloalto-panos
-endif
-TESTS_paloalto-panos_REPO_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_REPO_PATH)/*.template)
-TESTS_paloalto-panos_REPO_M4 = $(wildcard $(TESTS_paloalto-panos_REPO_PATH)/*.m4)
-TESTS_paloalto-panos_RUN_TEMPLATE = $(wildcard $(TESTS_paloalto-panos_RUN_PATH)/*.template)
-TESTS_paloalto-panos_RUN_M4 = $(wildcard $(TESTS_paloalto-panos_RUN_PATH)/*.m4)
-
-# --------------- CISCO-VIPTELA
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_cisco-viptela_REPO_PATH = $(CONFS_PATH)/repo/confs.cisco-viptela
-	CONFIGURATION_cisco-viptela_RUN_PATH = $(CONFS_PATH)/run/confs.cisco-viptela
-else
-	CONFIGURATION_cisco-viptela_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.cisco-viptela
-endif
-TESTS_cisco-viptela_REPO_PATH = $(TESTS_PATH)/repo/tests.cisco-viptela
-ifeq ($(strip $(audit)),)
-	TESTS_cisco-viptela_RUN_PATH = $(TESTS_PATH)/run/tests.cisco-viptela
-else
-	TESTS_cisco-viptela_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.cisco-viptela
-endif
-TESTS_cisco-viptela_REPO_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_REPO_PATH)/*.template)
-TESTS_cisco-viptela_REPO_M4 = $(wildcard $(TESTS_cisco-viptela_REPO_PATH)/*.m4)
-TESTS_cisco-viptela_RUN_TEMPLATE = $(wildcard $(TESTS_cisco-viptela_RUN_PATH)/*.template)
-TESTS_cisco-viptela_RUN_M4 = $(wildcard $(TESTS_cisco-viptela_RUN_PATH)/*.m4)
-
-# --------------- CISCO-CEDGE
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_cisco-cedge_REPO_PATH = $(CONFS_PATH)/repo/confs.cisco-cedge
-	CONFIGURATION_cisco-cedge_RUN_PATH = $(CONFS_PATH)/run/confs.cisco-cedge
-else
-	CONFIGURATION_cisco-cedge_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.cisco-cedge
-endif
-TESTS_cisco-cedge_REPO_PATH = $(TESTS_PATH)/repo/tests.cisco-cedge
-ifeq ($(strip $(audit)),)
-	TESTS_cisco-cedge_RUN_PATH = $(TESTS_PATH)/run/tests.cisco-cedge
-else
-	TESTS_cisco-cedge_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.cisco-cedge
-endif
-TESTS_cisco-cedge_REPO_TEMPLATE = $(wildcard $(TESTS_cisco-cedge_REPO_PATH)/*.template)
-TESTS_cisco-cedge_REPO_M4 = $(wildcard $(TESTS_cisco-cedge_REPO_PATH)/*.m4)
-TESTS_cisco-cedge_RUN_TEMPLATE = $(wildcard $(TESTS_cisco-cedge_RUN_PATH)/*.template)
-TESTS_cisco-cedge_RUN_M4 = $(wildcard $(TESTS_cisco-cedge_RUN_PATH)/*.m4)
-
-# --------------- RESEARCH
-
-ifeq ($(strip $(audit)),)
-	CONFIGURATION_research_REPO_PATH = $(CONFS_PATH)/repo/confs.research
-	CONFIGURATION_research_RUN_PATH = $(CONFS_PATH)/run/confs.research
-else
-	CONFIGURATION_research_RUN_PATH = $(CONFS_PATH)/run_${audit}/confs.research
-endif
-TESTS_research_REPO_PATH = $(TESTS_PATH)/repo/tests.research
-ifeq ($(strip $(audit)),)
-	TESTS_research_RUN_PATH = $(TESTS_PATH)/run/tests.research
-else
-	TESTS_research_RUN_PATH = $(TESTS_PATH)/run_${audit}/tests.research
-endif
-TESTS_research_REPO_TEMPLATE = $(wildcard $(TESTS_research_REPO_PATH)/*.template)
-TESTS_research_REPO_M4 = $(wildcard $(TESTS_research_REPO_PATH)/*.m4)
-TESTS_research_RUN_TEMPLATE = $(wildcard $(TESTS_research_RUN_PATH)/*.template)
-TESTS_research_RUN_M4 = $(wildcard $(TESTS_research_RUN_PATH)/*.m4)
-
 # ---------------
 
-TESTS_CATALOG = $(TESTS_cisco-ios_REPO_PATH) \
-		$(TESTS_cisco-viptela_REPO_PATH) \
-		$(TESTS_cisco-cedge_REPO_PATH) \
-		$(TESTS_juniper-junos_REPO_PATH) \
-		$(TESTS_huawei-vrp_REPO_PATH) \
-		$(TESTS_fortinet-fortios_REPO_PATH) \
-		$(TESTS_nokia-sros_REPO_PATH) \
-		$(TESTS_paloalto-panos_REPO_PATH) \
-		$(TESTS_research_REPO_PATH)
+# Define all suppliers/platforms
+SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge research
 
-TESTS_CATALOG_RUN = $(TESTS_cisco-ios_RUN_PATH) \
-		$(TESTS_cisco-viptela_RUN_PATH) \
-		$(TESTS_cisco-cedge_RUN_PATH) \
-		$(TESTS_juniper-junos_RUN_PATH) \
-		$(TESTS_huawei-vrp_RUN_PATH) \
-		$(TESTS_fortinet-fortios_RUN_PATH) \
-		$(TESTS_nokia-sros_RUN_PATH) \
-		$(TESTS_paloalto-panos_RUN_PATH) \
-		$(TESTS_research_RUN_PATH)
+# Generic template for all suppliers
+define supplier_template
+CONFIGURATION_$(1)_REPO_PATH = $$(CONFS_PATH)/repo/confs.$(1)
+ifeq ($$(strip $$(audit)),)
+	CONFIGURATION_$(1)_RUN_PATH = $$(CONFS_PATH)/run/confs.$(1)
+else
+	CONFIGURATION_$(1)_RUN_PATH = $$(CONFS_PATH)/run_$${audit}/confs.$(1)
+endif
+
+TESTS_$(1)_REPO_PATH = $$(TESTS_PATH)/repo/tests.$(1)
+ifeq ($$(strip $$(audit)),)
+	TESTS_$(1)_RUN_PATH = $$(TESTS_PATH)/run/tests.$(1)
+else
+	TESTS_$(1)_RUN_PATH = $$(TESTS_PATH)/run_$${audit}/tests.$(1)
+endif
+
+TESTS_$(1)_REPO_TEMPLATE = $$(wildcard $$(TESTS_$(1)_REPO_PATH)/*.template)
+TESTS_$(1)_REPO_M4 = $$(wildcard $$(TESTS_$(1)_REPO_PATH)/*.m4)
+TESTS_$(1)_RUN_TEMPLATE = $$(wildcard $$(TESTS_$(1)_RUN_PATH)/*.template)
+TESTS_$(1)_RUN_M4 = $$(wildcard $$(TESTS_$(1)_RUN_PATH)/*.m4)
+endef
+
+# Generate rules for all suppliers
+$(foreach supplier,$(SUPPLIER_SCOPE),$(eval $(call supplier_template,$(supplier))))
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view_repo view_run view_repo_error view_run_error clean_report clean_tmp clean catalog git gitpush supplier check_supplier system common create_audit delete_audit list_audit check check_update
+.PHONY: all check_repo check_run tests tests_target view_repo view_run view_repo_error view_run_error clean_report clean_tmp clean catalog git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit check check_update
 
 all:
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK COMMAND REF"
-	@echo "# note that you can have several targets for a same gmake call like : gmake clean check_repo view_repo"
+	@echo "# -- CAWK INFO --------------------------------------------------------------------------------------------------"
+	@echo "# note : you can have several targets for a same gmake call like -> gmake clean check_repo view_repo"
 	@echo "# note : <repo> is the original cawk repository of coded tests, test's confs and exceptions"
 	@echo "# note : <run> is an empty repository used for your own tests/checks"
 	@echo "# note : <run_AUDIT_NAME> are repositories for all of your contexts or for your customers"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK MAIN"
-	@echo "# gmake          : provide information on cawk running"
-	@echo "# gmake check    : allow to run a cawk compliance check (result must be OK only after the first installation)"
-	@echo "# gmake system   : allow to know if the system can run cawk"
+	@echo "# -- CAWK MAIN -------------------------------------------------------------------------------------------------"
+	@echo "# gmake : provide information on cawk running"
+	@echo "# gmake check : allow to run a cawk compliance check (result must be OK only after the first installation)"
+	@echo "# gmake system : allow to know if the system can run cawk"
 	@echo "# gmake supplier : provide the suppliers supported by cawk"
-	@echo "# gmake common   : provide the list of functions available in the common directory"
-	@echo "# gmake clean    : clean all"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK BUILD TESTS"
-	@echo "# gmake tests_repo                 : build tests associated to repo directory"
-	@echo "# gmake tests_run                  : build tests associated to run directory"
+	@echo "# gmake common : provide the list of functions available in the common directory"
+	@echo "# gmake clean : clean all"
+	@echo "# -- CAWK TESTS -------------------------------------------------------------------------------------------------"
+	@echo "# gmake tests_repo : build tests associated to repo directory"
+	@echo "# gmake tests_run : build tests associated to run directory"
 	@echo "# gmake tests_run audit=AUDIT_NAME : build tests associated to AUDIT_NAME directory"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK CREATE ASSESSMENTS"
+	@echo "# -- CAWK ASSESSMENT --------------------------------------------------------------------------------------------"
 	@echo "# gmake create_audit audit=AUDIT_NAME : create AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
 	@echo "# gmake delete_audit audit=AUDIT_NAME : delete AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
-	@echo "# gmake list_audit                    : list all the AUDIT_NAMEs"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK ASSESSMENTS"
+	@echo "# gmake list_audit : list all the AUDIT_NAMEs"
+	@echo "# -- CAWK CHECK -------------------------------------------------------------------------------------------------"
 	@echo "# gmake check_repo : assess the confs with <repo> tests (build tests if not)"
-	@echo "#   or gmake clean check_repo (run all suppliers)"
-	@echo "#   or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
+	@echo "#  or gmake clean check_repo (run all suppliers)"
+	@echo "#  or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
 	@echo "# gmake check_run  : assess the confs with <run> tests (build tests if not)"
-	@echo "#   For run assessment ----"
-	@echo "#   or gmake check_run (run all suppliers)"
-	@echo "#   or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)"
-	@echo "#   For special assessment ----"
-	@echo "#   or gmake check_run audit=AUDIT_NAME (run all suppliers)"
-	@echo "#   or gmake check_run supplier=cisco-ios audit=AUDIT_NAME (or view_juniper-junos, etc.)"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK VIEW ASSESSMENTS"
+	@echo "#  or gmake check_run (run all suppliers)"
+	@echo "#  or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)"
+	@echo "#  or gmake check_run audit=AUDIT_NAME (run all suppliers)"
+	@echo "#  or gmake check_run supplier=cisco-ios audit=AUDIT_NAME (or view_juniper-junos, etc.)"
+	@echo "# -- CAWK VIEW -------------------------------------------------------------------------------------------------"
 	@echo "# gmake view_repo : view the repo reports (all in report/repo directory)"
-	@echo "#   or gmake view_repo supplier=cisco-ios (or juniper-junos, etc.)"
-	@echo "# gmake view_run  : view the run reports (all in report/run directory)"
-	@echo "#   or gmake view_run supplier=cisco-ios (or juniper-junos, etc.)"
-	@echo "#   or gmake view_run supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK VIEW ERROR ASSESSMENTS"
+	@echo "#  or gmake view_repo supplier=cisco-ios (or juniper-junos, etc.)"
 	@echo "# gmake view_repo_error : view the repo assessment reports errors (all in report/repo directory)"
-	@echo "#   or gmake view_repo_error supplier=cisco-ios (or juniper-junos, etc.)"
+	@echo "#  or gmake view_repo_error supplier=cisco-ios (or juniper-junos, etc.)"
+	@echo "# gmake view_run  : view the run reports (all in report/run directory)"
+	@echo "#  or gmake view_run supplier=cisco-ios (or juniper-junos, etc.)"
+	@echo "#  or gmake view_run supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
 	@echo "# gmake view_run_error  : view the run assessment reports errors (all in report/run directory)"
-	@echo "#   or gmake view_run_error audit=AUDIT_NAME (all in report/repo directory)"
-	@echo "#   or gmake view_run_error supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
-	@echo "# CAWK TEST CATALOG"
+	@echo "#  or gmake view_run_error audit=AUDIT_NAME (all in report/repo directory)"
+	@echo "#  or gmake view_run_error supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
+	@echo "# -- CAWK CATALOG ---------------------------------------------------------------------------------------------"
 	@echo "# gmake catalog : build the tests description catalog"
-	@echo "# -----------------------------------------------------------------------------------------------------------------------------"
 
 # --------------------------------
 
@@ -345,9 +165,21 @@ common:
 
 # --------------------------------
 
-tests_target_repo : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_M4:.gawk.m4=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-viptela_REPO_M4:.gawk.m4=.gawk) $(TESTS_cisco-viptela_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-cedge_REPO_M4:.gawk.m4=.gawk) $(TESTS_cisco-cedge_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_REPO_M4:.gawk.m4=.gawk) $(TESTS_juniper-junos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_REPO_M4:.gawk.m4=.gawk) $(TESTS_huawei-vrp_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_REPO_M4:.gawk.m4=.gawk) $(TESTS_fortinet-fortios_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_REPO_M4:.gawk.m4=.gawk) $(TESTS_nokia-sros_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_REPO_M4:.gawk.m4=.gawk) $(TESTS_paloalto-panos_REPO_TEMPLATE:.gawk.template=.gawk) $(TESTS_research_REPO_M4:.gawk.m4=.gawk) $(TESTS_research_REPO_TEMPLATE:.gawk.template=.gawk) $(EXCEPTION_M4:.m4=)
+SUPPLIER_M4_REPO_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_M4:.gawk.m4=.gawk))
+SUPPLIER_TEMPLATE_REPO_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk))
 
-tests_target_run : $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-ios_RUN_M4:.gawk.m4=.gawk) $(TESTS_cisco-ios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-viptela_RUN_M4:.gawk.m4=.gawk) $(TESTS_cisco-viptela_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_cisco-cedge_RUN_M4:.gawk.m4=.gawk) $(TESTS_cisco-cedge_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_juniper-junos_RUN_M4:.gawk.m4=.gawk) $(TESTS_juniper-junos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_huawei-vrp_RUN_M4:.gawk.m4=.gawk) $(TESTS_huawei-vrp_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_fortinet-fortios_RUN_M4:.gawk.m4=.gawk) $(TESTS_fortinet-fortios_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_nokia-sros_RUN_M4:.gawk.m4=.gawk) $(TESTS_nokia-sros_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_paloalto-panos_RUN_M4:.gawk.m4=.gawk) $(TESTS_paloalto-panos_RUN_TEMPLATE:.gawk.template=.gawk) $(TESTS_research_RUN_M4:.gawk.m4=.gawk) $(TESTS_research_RUN_TEMPLATE:.gawk.template=.gawk) $(EXCEPTION_M4:.m4=)
+tests_target_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) \
+		$(SUPPLIER_M4_REPO_FILES) \
+		$(SUPPLIER_TEMPLATE_REPO_FILES) \
+		$(EXCEPTION_M4:.m4=)
+
+SUPPLIER_M4_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_M4:.gawk.m4=.gawk))
+SUPPLIER_TEMPLATE_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_TEMPLATE:.gawk.template=.gawk))
+
+tests_target_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) \
+		$(SUPPLIER_M4_RUN_FILES) \
+		$(SUPPLIER_TEMPLATE_RUN_FILES) \
+		$(EXCEPTION_M4:.m4=)
 
 tests_repo: tests_target_repo
 	@echo "cawk tests_repo done ----"
@@ -754,7 +586,27 @@ catalog: tests_repo tests_run
 
 # --------------------------------
 
+gitcheckdist:
+	echo "---- to be done : Update ChangeLog"
+	echo "---- to be done : Check no customer assessments"
+	gmake list_audit
+	echo "---- to be done : Update Authors"
+	echo "---- done : no *.gawk must be there"
+	find . -name *.gawk
+	echo "---- done : Update run repository confs && tests && exceptions from repo"
+	rm -r confs/run && cp -r confs/repo confs/run
+	rm -r tests/run && cp -r tests/repo tests/run
+	rm -r exceptions/run && cp -r exceptions/repo exceptions/run
+	echo "---- done : touch ./gitkeep for reports/repo reports/run"
+	touch reports/repo/.gitkeep && touch reports/run/.gitkeep && touch tmp/.gitkeep
+	echo "---- to be done : Update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)"
+	echo "---- done : Check .gitkeep in directories"
+	find . -name .gitkeep
+	# echo "Update checkdiff"
+	# gmake check_update && gmake check
+
 git:
+	# gmake gitcheckdist
 	# git add .
 	# git commit -m "*$(CAWK_RELEASE) ref ChangeLog"
 
@@ -791,13 +643,13 @@ check:
 	@gmake check_run audit=client1_skffqsfqhsf10948494
 	@gmake check_run audit=client2_mqsdhqndqqos198440
 	@wc -l reports/*/* >> checkdiff/checkdiff.new
-	@gmake view_repo >> checkdiff/checkdiff.new
-	@gmake view_repo_error >> checkdiff/checkdiff.new
-	@gmake view_repo supplier=cisco-ios >> checkdiff/checkdiff.new
-	@gmake view_run >> checkdiff/checkdiff.new
-	@gmake view_run supplier=cisco-ios >> checkdiff/checkdiff.new
-	@gmake view_run supplier=cisco-ios audit=client1_skffqsfqhsf10948494 >> checkdiff/checkdiff.new
-	@gmake view_run supplier=cisco-ios audit=client2_mqsdhqndqqos198440 >> checkdiff/checkdiff.new
+	@gmake view_repo | wc -l >> checkdiff/checkdiff.new
+	@gmake view_repo_error | wc -l >> checkdiff/checkdiff.new
+	@gmake view_repo supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new
+	@gmake view_run | wc -l >> checkdiff/checkdiff.new
+	@gmake view_run supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new
+	@gmake view_run supplier=cisco-ios audit=client1_skffqsfqhsf10948494 | wc -l >> checkdiff/checkdiff.new
+	@gmake view_run supplier=cisco-ios audit=client2_mqsdhqndqqos198440 | wc -l >> checkdiff/checkdiff.new
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
 	gmake delete_audit audit=client2_mqsdhqndqqos198440
 	@echo "------------------------------------------------------"

@@ -1,0 +1,59 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if each user-interface vty has ssh outbound set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function acl_summary() {
+	if ( sshout == 0 ) {
+		print_err("userinterfacevty_sshout_set.huawei-vrp.gawk",userinterface" : ssh outbound is not set",userinterfacenovty,"high","error");
+		pass = 0;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_vty = 0;
+	pass = 1;
+}
+
+/^user-interface vty .*$/ {
+	if ( block_vty == 1 ) acl_summary();
+	userinterface = $0;
+	userinterfacenovty = FNR;
+	sshout = 0;
+        block_vty = 1;
+	next;
+}
+
+/^ protocol outbound ssh[ ]*$/ && block_vty == 1 {
+	sshout = 1;
+	next;
+}
+
+/^#$/ && block_vty == 1 {
+	acl_summary();
+	block_vty = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("userinterfacevty_sshout_set.huawei-vrp.gawk","user-interface vty ssh outbound are set",0,"high","pass");
+}
+
+END {
+}

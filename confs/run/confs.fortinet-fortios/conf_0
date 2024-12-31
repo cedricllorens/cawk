@@ -1,0 +1,148 @@
+config system global
+    set hostname MonFirewall
+    set admin-ssh-port 22
+end
+
+config system settings
+    set source-routing enable
+end
+
+config system interface
+    edit "management"
+        set icmp-redirect enable
+        set icmp-unreachable enable
+        set proxy-arp enable
+        set vdom "root"
+        set ip 10.168.1.1 255.255.255.0
+        set allowaccess ssh https
+    next
+    edit "managementport"
+        set vdom "root"
+        set ip 10.168.1.1 255.255.255.0
+        set allowaccess ping https ssh telnet
+    next
+end
+
+config system admin
+    edit "admin"
+        set password votre_mot_de_passe
+        set accprofile super_admin
+    next
+end
+
+config firewall policy
+    edit 1
+        set srcintf "port1"
+        set dstintf "wan1"
+        set srcaddr "10.10.10.10/24"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+    next
+    edit 2
+        set name "Deny-All"
+        set srcintf "any"
+        set srcaddr "all"
+        set dstintf "any"
+        set dstaddr "all"
+        set service "ALL"
+        set action deny
+        set schedule "always"
+        set comments "Deny all other traffic"
+    next
+end
+
+config firewall profile
+    edit "default"
+        set inspection-mode proxy-based
+        set profile-protocol-options default
+    next
+end
+
+config firewall vip
+    edit 1
+        set extintf "wan1"
+        set extip 10.0.113.2
+        set mappedip 10.168.1.2
+        set portforward enable
+        set mappedport 22
+    next
+end
+
+config ips global
+    set status enable
+    set sensor-options default
+end
+
+config log syslogd
+    edit 1
+        set status enable
+        set facility local1
+    next
+    edit 2
+        set status disable
+        set facility local1
+    next
+end
+
+config vpn ipsec phase1-interface
+    edit "VPN_Phase1"
+        set interface "wan1"
+        set dpd enable
+        set dpd-idle-timeout 300
+        set proposal aes256-sha1
+        set local-gw <local_gateway_ip>
+        set remote-gw <remote_gateway_ip>
+        set keylife 28800
+        set psksecret <pre_shared_key>
+        set version v1
+    next
+end
+
+config system snmp community
+    edit 1
+        set name "public"
+        set status enable
+        set access write
+    next
+end
+
+config system snmp user
+    edit "private"
+        set authpassword <authentication_password>
+        set authmethod sha
+        set privpassword <privacy_password>
+        set privmethod aes128
+        set vdom <vdom_name>
+    next
+end
+
+config system snmp v3user
+    edit "user1"
+        set authpassword <authentication_password>
+        set authmethod sha
+        set privpassword <privacy_password>
+        set privmethod aes128
+        set vdom <vdom_name>
+    next
+end
+
+config user tacacs+
+    edit "toto"
+        set server 10.0.0.0
+    next
+    edit "admin"
+        set server 11.0.0.0
+    next
+    edit "TAC"
+        set server 11.0.0.0
+    next
+end
+
+config user cedric
+    edit "toto"
+        set server 10.0.0.0
+    next
+end

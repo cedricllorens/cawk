@@ -1,0 +1,33 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if a <ssh server> is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^(ip )?ssh(s)? / {
+	print_err("ssh_setup_set.cisco-ios.gawk",$0,FNR,"high","pass");
+        pass = 0;
+	nextfile;
+}
+
+ENDFILE {
+        if ( pass ) print_err("ssh_setup_set.cisco-ios.gawk","<ssh server> is not set",0,"high","error");
+}
+
+END {
+}
