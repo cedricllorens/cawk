@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a line vty has <transport intput ssh>
+# purpose : check if a line vty has <transport intput ssh>
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

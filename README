@@ -18,7 +18,13 @@ packages:
 
 These packages are very powerful today and the cawk project intends to ONLY use these
 packages. No other langage, no database, no configure, etc. cawk try to keep things simple 
-and understandable for the whole. In summary, in gawk && gmake && gm4 we trust :-) 
+and understandable for the whole. The package size is very very low with a strong power :-).
+
+You can play with two predefined assessment <repo> and <run> included in cawk package, but
+you can create/delete as many different assessments as you want <run_{audit_name}> based on 
+your own different networks or customers.
+
+In summary, in gawk && gmake && gm4 we trust :-) 
 
 # ----------------------
 # ---- cawk installation
@@ -54,8 +60,10 @@ exceptions or tests level
 		tests/run or tests/run_{audit_name} directories
 		- tests/run  : a full copy of repo by default (you may copy tests from tests/repo 
 		or add your own tests)
+		-- audit=AUDIT_NAME assessment --
 		- tests/run_{audit_name} : contains a full copy of repo tests when created (you can 
 		remove or add other tests or add your own tests)
+		-- audit=AUDIT_NAME assessment --
 
 	- inside each core tests directories, you have a full set of tests supplier directories
 
@@ -78,8 +86,10 @@ exceptions or tests level
 		- confs/repo : contains a collection of cawk tests confs
 		- confs/run : a full copy of repo by default (you may copy configurations from confs/repo 
 		or add your own configurations)
+		-- audit=AUDIT_NAME assessment --
 		- confs/run_{audit_name} : a full copy of repo confs when created (you can remove or 
 		add other configurations)
+		-- audit=AUDIT_NAME assessment --
 
 	- inside each core conf directories, you have a full set of configuration supplier directories
 
@@ -88,7 +98,9 @@ exceptions or tests level
 	- there are 3 types of core exceptions directories:
 		- exceptions/repo : contains a collection of up-and-running exceptions
 		- exceptions/run : contains a collection of up-and-running exceptions (a full copy of repo)
+		-- audit=AUDIT_NAME assessment --
 		- exceptions/run_{audit_name} : contains a full copy of repo exceptions when created
+		-- audit=AUDIT_NAME assessment --
 
 	- inside each core exception directories, you have a full set of exception supplier files
 
@@ -97,7 +109,9 @@ exceptions or tests level
 	- there are 3 types of core report directories:
 		- report/repo : empty by default, contains the repo assessment results
 		- report/run : empty by default, contains the run assessment results
+		-- audit=AUDIT_NAME assessment --
 		- report/run_{audit_name} : empty by default, contains the run_{audit_name} assessment results
+		-- audit=AUDIT_NAME assessment --
 
 	- an assessment report has the following format :
 		- name of the configuration
@@ -140,15 +154,20 @@ once cawk parallel mode is enabled, before performing assessment, cawk build one
 per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
 enhanced performances for a huge set of files.
 
-# --------------------
-# ---- cawk risk level
-# --------------------
+# -----------------------------------
+# ---- cawk risk level && status code
+# -----------------------------------
 
-cawk allows the following risk level:
-	- high   : for (high impacts) security errors
-	- medium : for (medium impacts) security errors
-	- low    : for (low impacts) security errors
-	- info   : for audit/information errors
+cawk allows the following risk levels:
+	- high   : for (high impacts) security item
+	- medium : for (medium impacts) security item
+	- low    : for (low impacts) security item
+	- info   : for audit/information item
+
+cawk allows the following status codes:
+	- pass    : Check passed successfully
+	- error   : Check failed or error occurred
+	- warning : check passed with warning
 
 # --------------------
 # ---- cawk first use
@@ -162,12 +181,17 @@ after install, cd to the cawk root directory and type:
 	and see results, you may check reports/repo assessment files 
 
 	- gmake clean check_run view_run : it applies the test run to conf run and 
-	see results, you may check reports/run assessment files 
+	see results, you may check reports/run assessment files
+
+	-- audit=AUDIT_NAME assessment --
 
 	- gmake create_audit audit=client1 : it creates client1 assessment, all tests 
 	from repo are copied, all exceptions from repo are copied, all confs from repo 
 	are copied. now, you may remove or/and add tests, remove and/or add true confs 
 	and run this assessment as such
+
+          	- gmake check_run audit=client1 : it applies the test run_client1 to conf 
+		run_client1,you may also check reports/run_client1 assessment files
           
           	- gmake check_run view_run audit=client1 : it applies the test run_client1 
 		to conf run_client1 and see results,you may also check reports/run_client1 
@@ -177,6 +201,12 @@ after install, cd to the cawk root directory and type:
 		but only for cisco-ios configurations 
 
           	- gmake delete_audit audit=client1 : remove the client1 assessment
+
+	- gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)
+
+	- gmake run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)
+
+	-- audit=AUDIT_NAME assessment --
 
 # -------------------
 # ---- cawk community

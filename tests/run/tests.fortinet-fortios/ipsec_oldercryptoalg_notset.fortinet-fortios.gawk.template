@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if <older crypto algorithm> is not set
+# purpose : check if <older crypto algorithm> is not set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

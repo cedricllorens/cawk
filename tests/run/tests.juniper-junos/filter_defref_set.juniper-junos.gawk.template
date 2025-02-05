@@ -8,8 +8,9 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks when an filter is def and not ref
-# purpose : checks when an filter is ref and not def
+# purpose : check when <filter> def and not ref
+# purpose : check when <filter> ref and not def
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

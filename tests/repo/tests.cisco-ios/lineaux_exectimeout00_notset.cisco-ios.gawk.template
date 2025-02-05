@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a line aux has no <exec-timeout 0 0>
+# purpose : check if a line aux has no <exec-timeout 0 0>
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

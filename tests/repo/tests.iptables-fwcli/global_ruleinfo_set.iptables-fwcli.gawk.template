@@ -1,0 +1,109 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : perform a basic set of checks on the rules 
+# author  : gauthier goncalves, wael elsingaby
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function processrule(rule) {
+
+    if ( rule ~  /-j (ACCEPT|DROP|REJECT|SNAT|DNAT)/) {
+
+        if ( rule !~ "-s" && rule !~ "--dport" ) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"info","warning");
+        }
+        
+        if (rule ~ /-s 0\.0\.0\.0\/0/ || rule ~ /-s ::\/0/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with wide -s <<"rule">>", FNR, "info", "warning");
+        }
+
+        if (rule ~ /-m state/ && rule !~ /--state (NEW|ESTABLISHED|RELATED)/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without state matching <<"rule">>",FNR,"info","warning");
+        }
+
+        if ( rule ~ "-p icmp" && rule !~ "--icmp-type") {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without --icmp-type <<"rule">>",FNR,"info","warning");
+        }
+
+        if (rule !~ /-p (tcp|udp|icmp)/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule without protocol <<"rule">>", FNR, "info", "warning");
+        }
+
+        if (rule ~ /REJECT/ && rule !~ /--reject-with/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule without --reject-with <<"rule">>", FNR, "info", "warning");
+        }
+
+        if (rule ~ "-j SNAT" || rule ~ "-j DNAT") {
+            if (rule !~ /-d/ && rule !~ /--to-source/ && rule !~ /--to-destination/) {
+                print_err("nat_ruleinfo_notset.iptables-fwcli.gawk","rule nat missing destination <<"rule">>",FNR,"info","warning");
+            }
+        }
+        
+        if (rule ~ /--limit/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule with rate-limit <<"rule">>",FNR,"info","warning");
+            pass = 0;
+        }
+        
+        if (rule ~ /--connlimit/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule with connlimit <<"rule">>",FNR,"info","warning");
+            pass = 0;
+        }
+    }
+
+}
+# local functions ----
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = "";
+    pass = 1;
+}
+
+# std line ----
+/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/{
+  processrule($0);
+  next;
+}
+# std line ----
+
+# multi line rule ----
+/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    processrule(rule);
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+
+    if ( pass )  {
+	  print_err("global_ruleinfo_set.piptables-fwcli.gawk","no permissive rules detected",FNR,"info","pass");
+    } 
+
+}
+
+END {
+}

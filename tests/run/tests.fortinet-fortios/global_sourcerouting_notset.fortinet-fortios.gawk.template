@@ -9,6 +9,7 @@
 # file support/tests.sed for further information
 #
 # purpose : checks if <source-routing> is not set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

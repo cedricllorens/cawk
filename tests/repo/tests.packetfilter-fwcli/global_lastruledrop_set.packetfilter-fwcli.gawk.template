@@ -1,0 +1,61 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <last drop rule> is set
+# author  : lucas vanhaaren
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    last_rule = "";
+    rule = "";
+}
+
+# std rule ----
+/^(pass|block) / && !/\\$/ {
+    last_rule = $0;
+    next;
+}
+# std rule ----
+
+# multi line rule ----
+/^(pass|block) / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    last_rule = rule;
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+    if (tolower(last_rule) ~ /^block / ) {
+        print_err("global_lastruledrop_set.packetfilter-fwcli.gawk","last rule is drop <<"last_rule">>",FNR,"medium","pass");
+    } else {
+        print_err("global_lastruledrop_set.packetfilter-fwcli.gawk","last rule is not drop <<"last_rule">>",FNR,"medium","error");
+    }
+}
+
+END {
+}
+

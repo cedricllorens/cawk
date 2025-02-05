@@ -1,0 +1,82 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <overlapping rules> are not set
+# author  : lucas vanhaaren
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function processrule(rule,chain,target,rule_dict) {
+
+    if ( rule ~ / -j (ACCEPT|DROP)$/) {
+
+        # Extract the parameters of the rule (everything except chain and target)
+        parameters = ""
+        for (i = 3; i < NF; i++) {
+            parameters = parameters $i " ";
+        }
+
+        # check for overlap: parameters already exist but the target differs
+        if ((chain FS parameters) in rule_dict && rule_dict[chain FS parameters] != target) {
+            print_err("global_overlaprule_notset.iptables-fwcli.gawk",": Overlapping rule detected <<"rule">> versus <<" parameters rule_dict[chain FS parameters] ">>",FNR,"medium","error");
+            pass = 0;
+        }
+
+        # Store the rule with chain and parameters as key, and target as value
+        rule_dict[chain FS parameters] = target;
+    }
+}
+# local functions ----
+
+BEGIN {
+}
+
+BEGINFILE {
+    delete rule_dict;
+    rule = "";
+    pass = 1;
+}
+
+# std rule ----
+/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+    processrule($0,$3,$NF,rule_dict);
+    next;
+}
+# std rule ----
+
+# multi line rule ----
+/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    processrule($0,$3,$NF,rule_dict);
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+    if ( pass ) {
+        print_err("global_overlaprule_notset.iptables-fwcli.gawk","no overlapping rules detected",0,"medium","pass");
+    }
+}
+
+END {
+}

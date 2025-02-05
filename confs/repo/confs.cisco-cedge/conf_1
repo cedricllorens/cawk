@@ -6,3 +6,6 @@ ip ssh version 1
 crypto
  hash md5
 !
+interface toto
+ cdp enable
+!

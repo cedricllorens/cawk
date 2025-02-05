@@ -1,0 +1,69 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check for each vpn x / interface / tunnel-interface / allow-service all is not set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_vpn = 0;
+	block_interface = 0;
+	block_tunnelinterface = 0;
+}
+
+/^vpn/ {
+	block_vpn = 1;
+	next;
+}
+
+/^ interface/ && block_vpn == 1 {
+	block_interface = 1;
+	block_tunnelinterface = 0;
+	next;
+}
+
+/^  tunnel-interface/ && block_interface == 1 {
+	block_tunnelinterface = 1;
+	next;
+}
+
+/^   allow-service all/ && block_tunnelinterface == 1 {
+	print_err("int_allowall_notset.cisco-viptela.gawk",rm_blank_before($0),FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+/^  !$/ && block_tunnelinterface == 1 {
+	block_tunnelinterface = 0;
+	next;
+}
+
+/^ !$/ && block_interface == 1 {
+	block_interface = 0;
+	next;
+}
+
+/^!$/ && block_vpn == 1 {
+	block_vpn = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("int_allowall_notset.cisco-viptela.gawk","interface allowalls are not set",0,"high","pass");
+}
+
+END {
+}

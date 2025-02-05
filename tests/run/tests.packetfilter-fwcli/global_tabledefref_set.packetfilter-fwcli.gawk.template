@@ -1,0 +1,71 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check vars def not ref and ref not def
+# author  : pierre bertrand
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    delete TABLESDEF;
+    delete TABLESREF;
+}
+
+# table def ----
+/^table/ {
+    print "DEBUG DEF "$2;
+    TABLESDEF[$2] = $2;
+    line_number[$2] = FNR;
+    next;
+}
+
+# table ref ----
+/.*<\w+>/ && !/^table/ {
+    for (i=1;i<=NF;i++) {
+        if($i ~ /<\w+>/) {
+            print "DEBUG REF "$i;
+            TABLESREF[$i] = $i;
+            if (line_number[$i]==""){
+                line_number[$i] = FNR;
+            } else {
+                line_number [$i] = line_number[$i]" "FNR;
+            }
+        }
+    }
+    next;
+}
+ 
+ENDFILE {
+
+    # table def and not ref ----
+    pass = 1;
+    for (id in TABLESDEF) {
+        if (!(id in TABLESREF)) {
+            print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table def not ref "id"",line_number[id],"low","error");
+            pass = 0;
+        }
+    }
+    if (pass) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table def not ref",0,"low","pass");
+
+    # table ref and not def ----
+    pass = 1;
+    for (id in TABLESREF) {
+        if (!(id in TABLESDEF)) {
+            print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table ref not def "id"",line_number[id],"high","error");
+        }
+    }
+    if ( pass ) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table ref not def",0,"low","pass");
+}
+
+END {
+}

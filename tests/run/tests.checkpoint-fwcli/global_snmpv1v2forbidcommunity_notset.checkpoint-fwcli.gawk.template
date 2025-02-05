@@ -1,0 +1,54 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <snmp v1v2 forbidden communities> are not set
+# author  : maxime souris
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    delete VAR;
+    pass = 1;
+}
+
+# var def ----
+/^set[ \t]*\w+[ \t]*=/ {
+    match($0, /^set[ \t]*(\w+)[ \t]*=/, var)
+    VAR["$"var[1]] = $0;
+    next;
+}
+
+# no var ----
+/^set snmp community .*/ && $4 !~ /^\$\w+/ && $4 ~ /%SED_SNMP_FORBID_COMMUNITY%/ {
+    print_err("global_snmpv1v2forbidcommunity_notset.checkpoint-fwcli.gawk","snmpv1v2 forbidden community <<"$0">>",FNR,"high","error");
+    pass = 0;
+    next
+}
+# no var ----
+
+# var ----
+/^set snmp community .*/ && $4 ~ /^\$\w+/ && VAR[$4] ~ /%SED_SNMP_FORBID_COMMUNITY%/ {
+    print_err("global_snmpv1v2forbidcommunity_notset.checkpoint-fwcli.gawk","snmpv1v2 forbidden community <<"$0"/"VAR[$4]">>",FNR,"high","error");
+    pass = 0;
+    next
+}
+# var ----
+
+ENDFILE {
+    if (pass == 1) {
+        print_err("global_snmpv1v2forbidcommunity_notset.checkpoint-fwcli.gawk","snmpv1v2 forbidden communities not set",0,"high","pass");
+    }
+}
+
+END {
+}

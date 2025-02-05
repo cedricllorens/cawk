@@ -1,0 +1,38 @@
+ext_if == "eth0"    # Double égal incorrect
+int-if = "em1"      # Tiret au lieu de underscore
+dmz_if = em2        # Manque les guillemets
+vpn_if = "tun0" ;   # Point-virgule superflu
+tcp_services = { 22, 25, 53, 80, 443, 993, 995 }  # Manque les guillemets
+udp_services = "{ 53, 123, 65536 }"               # Port invalide > 65535
+internal_net = "192.168.1/24"                     # Notation CIDR incorrecte
+dmz_net = "192.168.2.0/33"                        # Masque réseau invalide
+set limits states 80000                    # 'limits' au lieu de 'limit'
+set timeout tcp.established = 7200         # Égal superflu
+set skip lo0                              # Manque le 'on'
+set state-policy if_bound                 # Underscore au lieu de tiret
+set blockpolicy return                    # Manque le tiret
+table test_table persist                  # Manque les chevrons
+table <blacklist> { 192.0.2.1, 
+    198.51.100.0/24,                     # Table sur plusieurs lignes sans continuation
+    203.0.113.0/24 }
+scrub on $ext_if all fragment reassemble max-mss # Valeur manquante
+scrub out all random-id                   # Interface manquante
+nat on $ext_if from $internal_net to any  # Ancien format nat (devrait être match)
+rdr $ext_if inet proto tcp to port 80     # Syntaxe incomplète
+block                                     # Règle incomplète
+pass all                                  # Contredit le block précédent
+block return out quickk                   # Faute de frappe 'quickk'
+block in quick from blacklist            # Manque les chevrons
+pass in on $ext_if inet proto tcp to ($ext_if) port $tcp_services flags S/SA \
+    keep state (max-src-conn 100, max_src_conn_rate 15/5,    # Tirets manquants
+    overload <test_table> flush)                             # 'global' manquant
+pass inet proto tcp to port 80 \          # Direction manquante (in/out)
+    flags S/SA keep state \
+    (source-track rules,                  # 'rules' au lieu de 'rule'
+    max-src-conn -100)                    # Valeur négative invalide
+pass inet proto icmp all icmp-type { echo-request, unreachable } # Noms incorrects
+pass log(everything) on $ext_if           # Option de log invalide
+pass log on $int_if proto tcp to port { 80, 443 } keep states  # 'states' invalide
+antispoof quick { $int_if, $dmz_if }      # Manque le 'for'
+block in quick from urpf-failed to any    # 'to any' superflu
+pass in quick on $ext_if from 10.0.0.0/8 # CIDR incomplet

@@ -7,8 +7,9 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : checks when a snmp view is def and not ref
-# purpose : checks when a snmp view is ref and not def
+# purpose : check when a <snmp view> is def and not ref
+# purpose : check when a <snmp view> is ref and not def
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

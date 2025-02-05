@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if snmp v1v2 is rw not set
+# purpose : checks if <snmp v1v2 write> is not set
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

@@ -1,0 +1,46 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <lldp|cdp> is not set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_protocols = 0;
+	pass = 1;
+}
+
+/^protocols {/ {
+    block_protocols = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%(lldp|cdp) {/ && block_protocols == 1 {
+	print_err("protocols_lldpcdp_notset.juniper-junos.gawk",group_edit" "rm_last_char(rm_blank_before($0)),FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+/^}$/ && block_protocols == 1 {
+	block_protocols = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("protocols_lldpcdp_notset.juniper-junos.gawk","protocols lldp/cdp is not set",1,"high","pass");
+}
+
+END {
+}

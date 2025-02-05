@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if aaa forbidden users are not set
+# purpose : check that <aaa forbidden users> are not set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

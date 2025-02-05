@@ -1,0 +1,74 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <vars> def not ref and ref not def
+# author  : pierre bertrand
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    delete DEF;
+    delete REF;
+    delete LINENB;
+}
+
+# vars def ----
+/^\w+[ \t]*=[ \t]*/ {
+    def = $0;
+    sub(/\s*=.*$/, "", def);
+    gsub(/\s+/, "", def);
+    DEF[def] = FNR;
+    LINENB[def] = FNR;
+    next;
+}
+
+# vars ref ----
+/.*\$\w+.*/ {
+    while (match($0, /\$\w+/)) { 
+        ref = substr($0, RSTART+1, RLENGTH-1);
+        REF[ref]= FNR;
+        if (LINENB[ref]!="") {
+            LINENB[ref] = LINENB[ref]" "FNR;
+        } else {
+            LINENB[ref]=FNR;
+        }
+        $0 = substr($0, RSTART + RLENGTH);
+    }
+    next;
+}
+   
+ENDFILE {
+
+    # vars def and not ref ----
+    pass = 1;
+    for (id in DEF) {
+        if (!(id in REF)) {
+            print_err("global_vardefref_set.iptables-fwcli.gawk","var def not ref <<"id">>",LINENB[id],"low","error");
+            pass=0;
+        }
+    }
+    if (pass) print_err("global_vardefref_set.iptables-fwcli.gawk","no var def not ref",0,"low","pass");
+
+    # vars ref and not def ----
+    pass = 1;
+    for (id in REF) { 
+        if (!(id in DEF)) {
+            print_err("global_vardefref_set.iptables-fwcli.gawk","var ref not def <<"id">>",LINENB[id],"high","error");
+            pass = 0;
+        }
+    }
+    if (pass) print_err("global_vardefref_set.iptables-fwcli.gawk","no var ref not def",0,"high","pass");
+}
+
+END {
+}

@@ -9,6 +9,7 @@
 # file support/tests.sed for further information
 #
 # purpose : check if <ntp server ip> is set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

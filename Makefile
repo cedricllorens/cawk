@@ -27,7 +27,7 @@ REPORT_PATH = reports
 # ---------------
 
 # Define all suppliers/platforms
-SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge research
+SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge packetfilter-fwcli checkpoint-fwcli iptables-fwcli research
 
 # Generic template for all suppliers
 define supplier_template
@@ -56,30 +56,41 @@ $(foreach supplier,$(SUPPLIER_SCOPE),$(eval $(call supplier_template,$(supplier)
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view_repo view_run view_repo_error view_run_error clean_report clean_tmp clean catalog git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit check check_update
+.PHONY: all check_repo check_run tests tests_target view_repo view_run view_repo_error view_run_error clean_report clean_tmp clean catalog git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit check check_update run_audit
 
 all:
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK INFO --------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# note : you can have several targets for a same gmake call like -> gmake clean check_repo view_repo"
 	@echo "# note : <repo> is the original cawk repository of coded tests, test's confs and exceptions"
 	@echo "# note : <run> is an empty repository used for your own tests/checks"
 	@echo "# note : <run_AUDIT_NAME> are repositories for all of your contexts or for your customers"
-	@echo "# -- CAWK MAIN -------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK MAIN --------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake : provide information on cawk running"
 	@echo "# gmake check : allow to run a cawk compliance check (result must be OK only after the first installation)"
 	@echo "# gmake system : allow to know if the system can run cawk"
 	@echo "# gmake supplier : provide the suppliers supported by cawk"
 	@echo "# gmake common : provide the list of functions available in the common directory"
 	@echo "# gmake clean : clean all"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK TESTS -------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake tests_repo : build tests associated to repo directory"
 	@echo "# gmake tests_run : build tests associated to run directory"
 	@echo "# gmake tests_run audit=AUDIT_NAME : build tests associated to AUDIT_NAME directory"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK ASSESSMENT --------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake create_audit audit=AUDIT_NAME : create AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
 	@echo "# gmake delete_audit audit=AUDIT_NAME : delete AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
-	@echo "# gmake list_audit : list all the AUDIT_NAMEs"
+	@echo "# gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)"
+	@echo "# gmake run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK CHECK -------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake check_repo : assess the confs with <repo> tests (build tests if not)"
 	@echo "#  or gmake clean check_repo (run all suppliers)"
 	@echo "#  or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
@@ -88,7 +99,9 @@ all:
 	@echo "#  or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)"
 	@echo "#  or gmake check_run audit=AUDIT_NAME (run all suppliers)"
 	@echo "#  or gmake check_run supplier=cisco-ios audit=AUDIT_NAME (or view_juniper-junos, etc.)"
-	@echo "# -- CAWK VIEW -------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK VIEW --------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake view_repo : view the repo reports (all in report/repo directory)"
 	@echo "#  or gmake view_repo supplier=cisco-ios (or juniper-junos, etc.)"
 	@echo "# gmake view_repo_error : view the repo assessment reports errors (all in report/repo directory)"
@@ -99,7 +112,9 @@ all:
 	@echo "# gmake view_run_error  : view the run assessment reports errors (all in report/run directory)"
 	@echo "#  or gmake view_run_error audit=AUDIT_NAME (all in report/repo directory)"
 	@echo "#  or gmake view_run_error supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
-	@echo "# -- CAWK CATALOG ---------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK CATALOG -----------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# gmake catalog : build the tests description catalog"
 
 # --------------------------------
@@ -137,6 +152,13 @@ endif
 list_audit:
 	@find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq
 	@echo "cawk list_audit end ----"
+
+RUN_DIRS := $(shell find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq)
+run_audit:
+	@for dir in $(RUN_DIRS); do \
+		gmake check_run audit=$$dir; \
+	done
+	@echo "cawk run_audit end ----"
 
 # --------------------------------
 
@@ -593,6 +615,12 @@ gitcheckdist:
 	echo "---- to be done : Update Authors"
 	echo "---- done : no *.gawk must be there"
 	find . -name *.gawk
+	echo "---- done clean DS store file ----"
+	find . -name .DS_Store | xargs rm -f
+	echo "---- done clean vscode param ----"
+	rm -r -f .vscode
+	echo "---- done clean orig file ----"
+	find . -name *.orig | xargs rm -f
 	echo "---- done : Update run repository confs && tests && exceptions from repo"
 	rm -r confs/run && cp -r confs/repo confs/run
 	rm -r tests/run && cp -r tests/repo tests/run
@@ -602,8 +630,9 @@ gitcheckdist:
 	echo "---- to be done : Update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)"
 	echo "---- done : Check .gitkeep in directories"
 	find . -name .gitkeep
-	# echo "Update checkdiff"
-	# gmake check_update && gmake check
+	echo "---- to be done : Update checkdiff"
+	echo "Update checkdiff"
+	echo "gmake check_update && gmake check"
 
 git:
 	# gmake gitcheckdist
@@ -650,6 +679,9 @@ check:
 	@gmake view_run supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new
 	@gmake view_run supplier=cisco-ios audit=client1_skffqsfqhsf10948494 | wc -l >> checkdiff/checkdiff.new
 	@gmake view_run supplier=cisco-ios audit=client2_mqsdhqndqqos198440 | wc -l >> checkdiff/checkdiff.new
+	@gmake clean
+	@gmake run_audit
+	@wc -l reports/*/* >> checkdiff/checkdiff.new
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
 	gmake delete_audit audit=client2_mqsdhqndqqos198440
 	@echo "------------------------------------------------------"

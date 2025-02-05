@@ -1,0 +1,35 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <lldp enable> is not set
+# author : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1 ;
+}
+
+/^lldp enable/ {
+	print_err("global_rcmd_notset.huawei-vrp.gawk",$0,FNR,"high","error");
+	pass = 0;
+	nextfile;
+}
+
+ENDFILE {
+	if ( pass ) print_err("global_rcmd_notset.huawei-vrp.gawk","rcmd server is not set",0,"high","pass");
+}
+
+END {
+}

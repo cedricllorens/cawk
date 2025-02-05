@@ -1,0 +1,36 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <snmp v1v2 write> is not set
+# author  : maxime souris
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+}
+
+/^set snmp community .*/ && $0 ~ /authorization/ && $0 !~ /read-only/ {
+    print_err("global_snmpv1v2rw_notset.checkpoint-fwcli.gawk","snmpv1v2 write community <<"$0">>",FNR,"high","error");
+    pass = 0;
+    next;
+}
+
+ENDFILE {
+    if (pass == 1) {
+        print_err("global_snmpv1v2rw_notset.checkpoint-fwcli.gawk","snmpv1v2 write communities not set",0,"high","pass");
+    }
+}
+
+END {
+}

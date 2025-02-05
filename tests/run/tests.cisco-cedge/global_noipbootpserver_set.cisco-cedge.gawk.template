@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if <no ip bootp server> is set
+# purpose : check if <no ip bootp server> is set or <ip bootp server> is not set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -23,7 +24,12 @@ BEGINFILE {
 /^no ip bootp server/ {
 	print_err("global_noipbootpserver_set.cisco-cedge.gawk",$0,FNR,"high","pass");
 	pass = 0;
-	nextfile;
+	next;
+}
+
+/^ip bootp server/ {
+	print_err("global_noipbootpserver_set.cisco-cedge.gawk","<ip bootp server> is set",0,"high","error");
+	next;
 }
 
 ENDFILE {

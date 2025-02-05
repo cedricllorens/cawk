@@ -9,6 +9,7 @@
 # file support/tests.sed for further information
 #
 # purpose : checks if a line aux has <no exec>
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

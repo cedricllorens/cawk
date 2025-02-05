@@ -1,0 +1,45 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if <lldp> is not set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1 ;
+	block_global = 0;
+}
+
+/^config system (global|settings)/ {
+	block_global = 1;
+	next;
+}
+
+/^%SED_BK_FORTI%set lldp/ && block_global == 1 {
+	print_err("global_lldp_noset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
+	pass = 0;	
+	next;
+}
+
+/^end$/ {
+	block_global = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("global_lldp_noset.fortinet-fortios.gawk","no mgnt interface is set",0,"high","pass");
+}
+
+END {
+}

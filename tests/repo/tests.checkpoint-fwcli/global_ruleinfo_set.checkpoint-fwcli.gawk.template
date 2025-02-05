@@ -1,0 +1,79 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : provide rule information
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function processrule(rule) {
+    # src/dst any match ----
+    if (match(rule, /source\s+"?Any"?/) || match(rule, /destination\s+"?Any"?/)) {
+        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","whitelist/blacklist rule detected : "rule,FNR,"info","warning");
+        pass = 0;
+    }
+    
+    # service any match ----
+    if ( match(rule, /service\s+"?Any"?/) ) {
+       print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","service <any> rule detected : "rule,FNR,"info","warning");
+       pass = 0;
+    }
+    
+    # check if accept is linked to src/dst any ----
+    if ( match(rule, /action\s+"?Accept"?/) && (match(rule, /source\s+"?Any"?/) && match(rule, /destination\s+"?Any"?/)) ) {
+        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","src <any> dst <nay> rule detected : "rule,FNR,"info","warning"); 
+        pass = 0;
+    }
+}
+# local functions ----
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    rule = "";
+}
+
+# std rule ----
+/add (access-)?rule / && !/\\$/ {
+    processrule($0);
+    next;
+}
+# std rule ----
+
+# multi line rule ----
+/add (access-)?rule / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    processrule(rule);
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+    if (pass == 1) {
+        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","no permissive rules detected",0,"info","warning");
+    }
+}
+
+END {
+}

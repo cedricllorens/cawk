@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v2.1.0
+CAWK_RELEASE = v2.2.0
 
 # --------------- cawk parallel options
 # enable parallel : yes/no

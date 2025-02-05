@@ -1,0 +1,49 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check basic tests on rules
+# author  : adrien lebout
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+# check block option ----
+/^block[ ]/ && $2 !~/^(in|out|all|return|quick|drop|log)$/ {
+	print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","block option error <<"$0">>",FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+# check pass option ----
+/^pass[ ]/ && $2 !~/^(in|inet|out|all|log|quick)$/ {
+	print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","pass option error <<"$0">>",FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+# check scrub option ----
+/^scrub[ ]/ && $2 !~/^(in|out|all|on|reassemble|fragment)$/ {
+	print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","scrub option error <<"$0">>",FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","all rules are correct",0,"high","pass");
+}
+
+END {
+}

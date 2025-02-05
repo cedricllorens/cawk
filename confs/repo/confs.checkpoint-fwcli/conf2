@@ -1,0 +1,18 @@
+set snmp_community="cawk"
+set snmp_trap_server_ip="192.168.1.200"
+set snmp_trap_community="trap_community"
+set user-policy apply
+set snmp enabled true
+set snmp community $snmp_community authorization read-only
+set snmp contact "admin@domain.com"
+set snmp location "Datacenter Room"
+set snmp trap-community $snmp_trap_community
+set snmp trap-server $snmp_trap_server_ip
+add access-rule name "Allow_SSH_Internal_to_SSH_Server" layer "Network" position 1 source "Internal_Network" destination "SSH_Server" service "ssh" action "Accept" track "Log"
+add access-rule name "Allow_Web_Traffic" layer "Network" position 2 source "Guest_Network" destination "Internet" service "http-https" action "Accept" track "Log"
+add nat-rule name "Internal_to_Internet_SNAT" original-source "Internal_Network" translated-source "192.0.2.100" original-destination "Any" method "Static" position 1
+add nat-rule name "DNAT_HTTP_to_Web_Server" original-destination "203.0.113.1" translated-destination "Web_Server_Internal" service "http" method "Static" position 2
+add access-rule name "Limit_Bandwidth" layer "Network" position 7 source "Guest_Network" destination "Internet" service "http-https" action "Accept" qos-action "Limit_1Mbps" track "Log"
+add access-rule name "Allow_Internal_Comms" layer "Network" position 8 source "Internal_Network" destination "Internal_Network" action "Accept" track "Log"
+add access-rule name "Block_Finance_to_HR" layer "Network" position 9 source "Finance_Department" destination "HR_Department" action "Drop" track "Log"
+add access-rule name "Allow_Internal_DNS" layer "Network" position 10 source "Internal_Network" destination "DNS_Servers" service "dns" action "Accept" track "Log"

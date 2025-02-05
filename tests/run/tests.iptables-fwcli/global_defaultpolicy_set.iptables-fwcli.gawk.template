@@ -1,0 +1,61 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <-P default policy> is set
+# author  : wael elsingaby
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    input_found = 1;
+    forward_found = 1;
+    output_found = 1;
+}
+
+/-P INPUT/ { 
+    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for input found <<"$0">>",FNR,"medium","pass");
+    input_found = 0;
+    next;
+}
+
+/-P FORWARD/ { 
+    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for forward found <<"$0">>",FNR,"medium","pass");
+    forward_found = 0;
+    next;
+}
+
+/-P OUTPUT/ { 
+    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for output found <<"$0">>",FNR,"medium","pass");
+    output_found = 0;
+    next;
+}
+
+ENDFILE {
+    
+    if (input_found) {
+        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for input not found",FNR,"medium","error");
+    }
+
+    if (forward_found) {
+        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for forward not found",FNR,"medium","error");
+    }
+    
+    if (output_found) {
+        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for output not found",FNR,"medium","error");
+    }
+
+}
+
+END {
+}

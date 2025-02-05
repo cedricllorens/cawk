@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if an interface has no <ip source-route>
+# purpose : check if an interface has no <ip source-route>
+# author  : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

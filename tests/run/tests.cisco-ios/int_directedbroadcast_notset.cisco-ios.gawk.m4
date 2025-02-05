@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if an interface has no <ip directed-broadcast>
+# purpose : check if an interface has no <ip directed-broadcast>
+# author  : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -28,6 +29,7 @@ dnl MACRO BEGIN --------------------------
 
 m4_cawk_parse_block(
 
+dnl level 0 --
 `/^interface .*$/',`
 	interface = $0;
 	interfaceno = FNR;
@@ -40,6 +42,7 @@ m4_cawk_parse_block(
 	}
 ', 
 
+dnl level 1 --
 `/^ ip directed-broadcast/',`directedbroadcast = 1;',
 `', `'
 

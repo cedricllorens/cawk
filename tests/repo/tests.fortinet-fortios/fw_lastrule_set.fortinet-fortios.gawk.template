@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if firewall last rule implement src=all dst=all service=all action=deny
+# purpose : checks if <firewall last rule> implement src=all dst=all service=all action=deny
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

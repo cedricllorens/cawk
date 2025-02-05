@@ -1,0 +1,57 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <ntp statements> is set
+# author  : maxime souris
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    ntp_state = 0;
+}
+
+# ntp active ----
+/^set ntp enabled / {
+    ntp_state = 1;
+    next;
+}
+
+# ntp set ----
+/^set ntp server / {
+    pass = 0;
+    if ($4 == "primary") {
+        ntp_adress_server = $5  
+    } else {
+        ntp_adress_server = $4  
+    }
+    next;
+}
+
+ENDFILE {
+
+    if ( ntp_state && (ntp_adress_server !~ /^([0-9]{1,3}\.){3}[0-9]{1,3}/ && ntp_adress_server !~ /\$\w+/) ) {
+        print_err("global_ntp_set.checkpoint-fwcli.gawk","ntp configured but with a bad address <<"ntp_adress_server">>",FNR,"medium","error");
+    } else if ( !ntp_state && (ntp_adress_server ~ /^([0-9]{1,3}\.){3}[0-9]{1,3}/ || ntp_adress_server ~ /\$\w+/) ) {
+        print_err("global_ntp_set.checkpoint-fwcli.gawk","ntp configured but not activated <<"ntp_adress_server">>",FNR,"medium","error");
+    } else if ( ntp_state && (ntp_adress_server ~ /^([0-9]{1,3}\.){3}[0-9]{1,3}/ || ntp_adress_server ~ /\$\w+/) ) {
+        print_err("global_ntp_set.checkpoint-fwcli.gawk","ntp configured and activated <<"ntp_adress_server">>",FNR,"medium","pass");
+    }
+
+    if ( pass ) {
+        print_err("global_ntp_set.checkpoint-fwcli.gawk","ntp not configured",FNR,"medium","error");
+    }
+}   
+
+END {
+}

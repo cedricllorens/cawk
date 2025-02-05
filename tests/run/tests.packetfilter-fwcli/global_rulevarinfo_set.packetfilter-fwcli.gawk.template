@@ -1,0 +1,140 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : provide rule <var> information
+# author  : adrien lebout
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+  delete INTERFACE
+  delete NAME
+  delete PASSIN
+  delete PASSOUT
+  delete BLOCKIN
+  delete BLOCKOUT
+  line = ""
+  pass = 1;
+}
+
+# linking interfaces with their var name to print
+/=[ \t]*"/ {
+  if ($3 != "\"{") {
+    NAME["$"$1] = ""
+    INTERFACE["$"$1] = $3
+    gsub(/"/, "", INTERFACE["$"$1])
+  } else {
+    NAME["$"$1] = ""
+    gsub(/,/, "", INTERFACE["$"$1])
+    j = 4
+    while ($j != "}\"") {
+      INTERFACE["$"$1] = INTERFACE["$"$1]" "$j
+      j++
+    }
+  }
+}
+
+# rule storage -------
+
+/^pass in ([a-z]{3})?[ ]?([a-z]{5})?[ ]?on/ {
+  if ($3 == "on") {
+      PASSIN[$0 ", line : ", FNR] = $4
+  } else if ($4 == "on") {
+      PASSIN[$0 ", line : ", FNR] = $5
+  } else if ($5 == "on") {
+      PASSIN[$0 ", line : ", FNR] = $6
+  }
+}
+
+/^pass out ([a-z]{3})?[ ]?([a-z]{5})?[ ]?on/ {
+  if ($3 == "on") {
+      PASSOUT[$0 ", line : ", FNR] = $4
+  } else if ($4 == "on") {
+      PASSOUT[$0", line : ", FNR] = $5
+  } else if ($5 == "on") {
+      PASSOUT[$0 ", line : ", FNR] = $6
+  }
+}
+
+/^block in ([a-z]{3})?[ ]?([a-z]{5})?[ ]?on/ {
+  if ($3 == "on") {
+      BLOCKIN[$0] = $4
+  } else if ($4 == "on") {
+      BLOCKIN[$0] = $5
+  } else if ($5 == "on") {
+      BLOCKIN[$0] = $6
+  }
+}
+
+/^block out ([a-z]{3})?[ ]?([a-z]{5})?[ ]?on/ {
+  if ($3 == "on") {
+      BLOCKOUT[$0] = $4
+  } else if ($4 == "on") {
+      BLOCKOUT[$0] = $5
+  } else if ($5 == "on") {
+      BLOCKOUT[$0] = $6
+  }
+}
+
+ENDFILE {
+    for (id in NAME) {
+      passin = 0
+      passout = 0
+      blockin = 0
+      blockout = 0
+
+      # PASSIN -------
+
+      for (line in PASSIN) {
+        if (PASSIN[line] == id) { 
+          print_err("global_rulevarinfo_set.packetfilter-fwcli.gawk","pass in : ("id") is applied to ("INTERFACE[id]") interface",FNR,"info","pass");
+          pass = 0;
+        }
+      }
+
+      # PASSOUT -------
+
+      for (line in PASSOUT) {
+        if (PASSOUT[line] == id) { 
+          print_err("global_rulevarinfo_set.packetfilter-fwcli.gawk","pass out : ("id") is applied to ("INTERFACE[id]") interface",FNR,"info","pass");
+          pass = 0;
+        }
+      }
+
+      # BLOCKIN ------
+
+      for (line in BLOCKIN) {
+        if (BLOCKIN[line] == id) { 
+          print_err("global_rulevarinfo_set.packetfilter-fwcli.gawk","block in : ("id") is applied to ("INTERFACE[id]") interface",FNR,"info","pass");
+          pass = 0;
+        }
+      }
+
+      # BLOCKOUT ------
+
+      for (line in BLOCKOUT) {
+        if (BLOCKOUT[line] == id) {
+          print_err("global_rulevarinfo_set.packetfilter-fwcli.gawk","block out : ("id") is applied to ("INTERFACE[id]") interface",FNR,"info","pass");
+          pass = 0;
+        }
+      }
+  }
+
+  # PERMISSIVE RULE ----
+  if ( pass )  {
+	  print_err("global_rulevarinfo_set.packetfilter-fwcli.gawk","no var detected",FNR,"info","pass");
+  }
+}
+
+END {
+}

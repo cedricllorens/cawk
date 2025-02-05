@@ -7,7 +7,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks <access-list ... > have inconsistentsredundant rules
+# purpose : check that <access-list ... > have inconsistentsredundant rules
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 # file format ----------------------------------

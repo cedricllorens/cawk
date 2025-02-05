@@ -1,0 +1,84 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <ip_ioc_list> is set
+# author  : wael elsingaby
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function processrule(rule,ioc) {
+    for (ip in ioc) {
+        if( rule ~ ("-s[ ]*" ip)) {
+            ioc[ip] = 1;
+        }
+    }
+}
+# local functions ----
+
+BEGIN {
+    ioc["10.0.0.0"] = 0;
+}
+
+BEGINFILE {
+    rule = "";
+}
+
+# vars def ----
+/^\w+[ \t]*=[ \t]*/ {
+    for (ip in ioc) {
+        if( $0 ~ ip ) {
+            ioc[ip] = 1;
+        }
+    }
+    next;
+}
+
+# rule def ----
+/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+    processrule($0,ioc);
+    next;
+}
+
+# multi line rule ----
+/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    processrule($0,ioc);
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+    pass = 1;
+    for (ip in ioc) {
+        if (ioc[ip] == 0) {
+            print_err("global_ipioclist_set.iptables-fwcli.gawk","ioc ip not found <<"ip">>",0,"info","warning");
+            pass = 0;
+        }
+    }
+    if (pass == 1) {
+        print_err("global_ipioclist_set.iptables-fwcli.gawk","all ioc ip are found ",0,"info","pass");
+    }
+}
+
+END {
+}

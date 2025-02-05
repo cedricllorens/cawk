@@ -1,0 +1,151 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : List and monitor default policies
+# author  : adrien lebout
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+  delete DEFAULT_POLICY_NAME;
+  delete DEFAULT_POLICY_VAR;
+  DEFAULT_POLICY_VAR["block-policy"]=0;
+  DEFAULT_POLICY_VAR["loginterface"]=0;
+}
+
+#  DEFAULT_POLICY_VAR values ----
+/=[ ]*"/ {
+  if ($3 != "\"{") {
+    DEFAULT_POLICY_NAME["$"$1] = ""
+    DEFAULT_POLICY_VAR["$"$1] = $3
+    gsub(/"/, "", DEFAULT_POLICY_VAR["$"$1])
+  } else {
+    j = 4
+    DEFAULT_POLICY_NAME["$"$1] = ""
+    gsub(/,/, "", DEFAULT_POLICY_VAR["$"$1])
+    while ($j != "}\"") {
+      DEFAULT_POLICY_VAR["$"$1] = DEFAULT_POLICY_VAR["$"$1]" "$j
+      j++
+    }
+  }
+}
+
+# map set values ----
+/^set / {
+  switch ($2) {
+
+    # ---------------------
+    case "loginterface":
+      DEFAULT_POLICY_VAR["loginterface"]=1;
+      for (id in DEFAULT_POLICY_NAME) {
+        if (id == $3) {
+          print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy loginterface on : "$0,FNR,"info","pass");
+        }
+      }
+      next;
+    
+    # ---------------------
+    case "skip" :
+      for (id in DEFAULT_POLICY_NAME) {
+        if (id == $3) { 
+          print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option skip on : "$0,FNR,"info","pass");
+        }
+      }
+      next;
+    
+    # ---------------------
+    case "block-policy" :
+      DEFAULT_POLICY_VAR["block-policy"]=1;
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option block policy : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "optimization":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option optimization : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "timeout":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option timeout : "$0,FNR,"info","pass");
+      next;
+
+    # ---------------------
+    case "max-mss":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+
+    # ---------------------
+    case "strict-rfc1323":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+
+    # ---------------------
+    case "debug":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+
+    # ---------------------
+    case "skip-step":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "max-src-nodes":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "max-dst-nodes":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "limit":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "src-addr":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option src-addr : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "state-policy":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option state-policy : "$0,FNR,"info","pass");
+      next;
+    
+    # ---------------------
+    case "encap":
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option encap : "$0,FNR,"info","pass");
+      next;
+    }
+    
+    next;
+}
+
+ENDFILE {
+  pass = 1;
+
+  # check monitored default policies 
+  for (id in DEFAULT_POLICY_VAR) {
+    if (DEFAULT_POLICY_VAR[id] == 0) {
+            print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy is null : "id,0,"info","warning");
+            pass = 0;
+    }
+  }
+
+  if ( pass ) print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","all mandatory policies are setup",0,"high","pass");
+}
+
+END {
+}

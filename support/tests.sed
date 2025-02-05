@@ -24,7 +24,7 @@ s/%SED_AUTHUSER_CEDGE%/\(admin\)/g
 # CISCO_VIPTELA
 # ----------------------------------------------
 s/%SED_AUTHUSER_VIPTELA%/\(admin\)/g
-s/%SED_FORBIDPROTO_VIPTELA%/\(telnet|ftp\)/g
+s/%SED_FORBIDPROTO_VIPTELA%/\(http|telnet|ftp|lldp|cdp\)/g
 #
 # ----------------------------------------------
 # HUAWEI
@@ -43,7 +43,7 @@ s/%SED_AAASYSTEM_JUNI%/(tacacs|tacplus|radius)/g
 # ----------------------------------------------
 s/%SED_BK_FORTI%/([ ][ ][ ][ ])/g
 s/%SED_AUTHUSER_FORTI%/\"admin\"/g
-s/%SED_FORBIDPROTO_FORTI%/\"(HTTP)\"/g
+s/%SED_FORBIDPROTO_FORTI%/\"(HTTP|TELNET|FTP|LLDP|CDP)\"/g
 #
 # ----------------------------------------------
 # NOKIA
@@ -51,17 +51,29 @@ s/%SED_FORBIDPROTO_FORTI%/\"(HTTP)\"/g
 s/%SED_BK_NOKIA%/([ ][ ][ ][ ])/g
 s/%SED_AUTHUSER_NOKIA%/\("admin"\)/g
 s/%SED_AAASYSTEM_NOKIA%/(tacplus|radius)/g
-s/%SED_FORBIDPROTO_NOKIA%/(telnet|ftp)/g
+s/%SED_FORBIDPROTO_NOKIA%/(http|telnet|ftp|lldp|cdp)/g
 #
 # ----------------------------------------------
 # PALOALTO
 # ----------------------------------------------
 s/%SED_BK_PALO%/([ ][ ])/g
-s/%SED_FORBIDPROTO_PALO%/(web)/g
+s/%SED_FORBIDPROTO_PALO%/(web|telnet|ftp|lldp|cdp)/g
+#
+# ----------------------------------------------
+# CHECKPOINT
+# ----------------------------------------------
+#
+# ----------------------------------------------
+# PACKETFILTER
+# ----------------------------------------------
+#
+# ----------------------------------------------
+# IPTABLES
+# ----------------------------------------------
 #
 # ----------------------------------------------
 # GENERIC SYSTEM RULES
 # ----------------------------------------------
 s/%SED_SNMP_FORBID_COMMUNITY%/(private|public)/g
 s/%SED_MGNT_KW%/\(management|mgnt\)/g
-s/%SED_MGNT_BADPROTO%/\(telnet|ftp\)/g
+s/%SED_MGNT_BADPROTO%/\(http|telnet|ftp\)/g

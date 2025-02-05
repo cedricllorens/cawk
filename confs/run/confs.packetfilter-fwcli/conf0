@@ -1,0 +1,37 @@
+ext_if = "em0"    # Interface externe
+int_if = "em1"    # Interface interne
+dmz_if = "em2"    # Interface DMZ
+vpn_if = "tun0"   # Interface VPN
+tcp_services = "{ 22, 25, 53, 80, 443, 993, 995 }"
+set limit states 80000
+set limit frags 40000
+set limit src-nodes 50000
+set timeout tcp.established 7200
+set timeout tcp.closing 60
+set skip on lo0
+set state-policy if-bound
+set block-policy return
+table <test_table> persist
+table <blacklist> persist { 192.0.2.1, 198.51.100.0/24, 203.0.113.0/24 }
+scrub in on $ext_if all fragment reassemble max-mss 1440
+scrub out on $ext_if all random-id
+match out on $ext_if inet from $vpn_if to any nat-to ($ext_if)
+match in on $ext_if inet proto tcp from any to ($ext_if) port 80 rdr-to 192.168.1.10 port 80
+block all
+scrub out on $ext_if all random-id
+block return out quick on ! $ext_if from $internal_net to any
+block in quick from <blacklist>
+pass in on $ext_if inet proto tcp to ($ext_if) port $tcp_services flags S/SA \
+    keep state (max-src-conn 100, max-src-conn-rate 15/5, \
+    overload <test_table> flush global)
+pass inet proto tcp from any to any port 80 \
+    flags S/SA keep state \
+    (source-track rule, max-src-conn 100, max-src-conn-rate 15/5, \
+    overload <test_table> flush global)
+pass inet proto icmp all icmp-type { echoreq, unreach } keep state
+pass log (all) on $ext_if proto tcp to port 22
+pass log (all) on $int_if proto tcp to port { 80, 443 }
+antispoof quick for { $int_if, $dmz_if }
+block in quick from urpf-failed
+block in quick from urpf-failed
+block in quick on $ext_if from { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } to any

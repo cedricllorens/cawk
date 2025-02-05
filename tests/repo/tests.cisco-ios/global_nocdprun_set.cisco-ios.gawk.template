@@ -8,7 +8,8 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if <no cdp run> is set
+# purpose : check if <no cdp run> is set and <cdp run> is not set
+# author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -20,10 +21,15 @@ BEGINFILE {
 	pass = 1;
 }
 
-/^no cdp run/ {
+/^no (ip )?cdp run/ {
 	print_err("global_nocdprun_set.cisco-ios.gawk",$0,FNR,"high","pass");
 	pass = 0;
-	nextfile;
+	next;
+}
+
+/^(ip )?cdp run/ {
+	print_err("global_nocdprun_set.cisco-ios.gawk","<cdp run> is set",0,"high","error");
+	next;
 }
 
 ENDFILE {

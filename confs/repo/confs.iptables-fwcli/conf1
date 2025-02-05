@@ -1,0 +1,34 @@
+cawkvar="192.168.1.100"
+cawkvarnew="10.0.0.0"
+iptables -A INPUT -s "$var" -j DROP
+iptables -N CAWK_DEF
+iptables iptables -A INPUT -p tcp --dport 22222 -j CAWK_REF
+iptables -A INPUT -i loop -j ACCEPT
+iptables -A OUTPUT -o loop -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp --dport 22222 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j DROP
+iptables -A INPUT --dport 53 -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A INPUT -s 992.168.1.0/24 -j DROP
+iptables -A INPUT -s 192.168.1.10 -j ACCEPT
+iptables -A INPUT -j LOG --log-prefix "Dropped Packet:"
+iptables -A INPUT -j DROP
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -j LOG --log-prefix "LOG_PACKET: " --log-level 4
+iptables -A INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix "INVALID_PACKET: " --log-level 4
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+iptables -A INPUT -p icmp --icmp-type fragmentation-needed -j LOG --log-prefix "ICMP_LARGE: " --log-level 4
+iptables -A INPUT -p icmp --icmp-type fragmentation-needed -j ACCEPT
+iptables -A INPUT -m limit --limit 10/min -j LOG --log-prefix "LIMIT_LOG: " --log-level 4
+iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 2/sec --limit-burst 10 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -m connlimit --connlimit-above 5 -j REJECT --reject-with tcp-reset
+iptables -A INPUT -p tcp --dport 22 -m connlimit --connlimit-above 5 -j REJECT --reject-with tcp-reset
+iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j REJECT --reject-with tcp-reset
+iptables -A INPUT -p tcp \
+	--dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j REJECT --reject-with tcp-reset
+iptables -A INPUT -p tcp \
+	--dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j DROP --reject-with tcp-reset
