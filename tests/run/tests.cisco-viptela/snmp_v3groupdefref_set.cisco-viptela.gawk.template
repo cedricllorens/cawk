@@ -7,8 +7,8 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : check when a <snmp view> is def and not ref
-# purpose : check when a <snmp view> is ref and not def
+# purpose : check when a <snmp v3 group> is def and not ref
+# purpose : check when a <snmp v3 group> is ref and not def
 # author  : cedric llorens
 # ------------------------------------------------------------
 
@@ -30,14 +30,14 @@ BEGINFILE {
 
 # def ----
 
-/^[ ]view [^ ]+/ && block_snmp == 1 {
+/^[ ]group [^ ]+/ && block_snmp == 1 {
 	snmp_def[$2] = $0;
 	next;
 }
 
 # ref ----
 
-/^[ ][ ]view [^ ]+/ && block_snmp == 1 {
+/^[ ][ ]group[ ]+[^ ]+/ && block_snmp == 1 {
 	snmp_ref[$2] = $0;
 	next;
 }
@@ -52,7 +52,7 @@ ENDFILE {
 	# snmp def and not ref
 	for (id in snmp_def) {
 		if ( !(id in snmp_ref) ) {
-			print_err("snmp_viewdefref_set.cisco-ios.gawk",id" : def not ref :"snmp_def[id],0,"low","error");
+			print_err("snmp_v3groupdefref_set.cisco-viptela.gawk",id" : def not ref :"snmp_def[id],0,"low","error");
 			pass = 0;
 		}
 	}
@@ -60,12 +60,12 @@ ENDFILE {
 	# snmp ref and not def
 	for (id in snmp_ref) {
 		if ( !(id in snmp_def) ) {
-			print_err("snmp_viewdefref_set.cisco-ios.gawk",id" : ref not def :"snmp_ref[id],0,"high","error");
+			print_err("snmp_v3groupdefref_set.cisco-viptela.gawk",id" : ref not def :"snmp_ref[id],0,"high","error");
 			pass = 0;
 		}
 	}
 
-	if ( pass ) print_err("snmp_viewdefref_set.cisco-ios.gawk","all snmps defs are refs and the reverse",0,"high","pass");
+	if ( pass ) print_err("snmp_v3groupdefref_set.cisco-viptela.gawk","all snmps defs are refs and the reverse",0,"high","pass");
 }
 
 END {

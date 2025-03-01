@@ -5,6 +5,23 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v2.3.0 (march 2025):
+	Tests:
+	- add a new supplier scope cisco-xe
+	- add new tests (snmp v3) for all these supplier scopes :
+	  cisco-ios, cisco-cedge, cisco-xe, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
+	Reports:
+	- computation of two key security indicators in the summary report:
+		- security Compliance : expressed as a percentage between 0% and 100%, where 100% is the best score
+		- average number of errors per Device : measured from 0 up to an upper bound, where 0 is the best score
+	- generate automatically json reports from csv reports using the cawk assessment format (ref README)
+	- generate automatically json reports from txt summary reports using the cawk summary headers
+	Cawk makefile:
+	- automatically build a tar.gz file in archives directory in reports/repo or reports/run or reports/run_AUDIT_NAME
+	  each time an assessment is runned, the date of day is part of the tar.gz filename
+	- you may clean reports or archives by new clean targets (clean_report_repo, ..., clean_archive_repo, ...), please
+	  refer to the cawk gmake help
+
 v2.2.0 (february 2025):
 	- add a new target <run_audit>, allowing to run all the assessments with AUDIT_NAMEs (audit=AUDIT_NAME)
 	- review all purpose/author sections and add new tests (lldp/cdp) for all supplier scopes :

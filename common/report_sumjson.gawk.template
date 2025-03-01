@@ -1,0 +1,144 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# this script converts the summary txt file to a JSON file.
+# header starts with several dashes (---- ...) and defines a section.
+# the first word of the line is the field name.
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+    delim = "\034"      # délimiteur pour concaténer plusieurs valeurs
+    sectCount = 0       # compteur de sections
+}
+
+# remove leading and trailing spaces
+function trim(str) {
+    gsub(/^[ \t]+|[ \t]+$/, "", str)
+    return str
+}
+
+# manage special characters in JSON
+function json_escape(str,    s) {
+    s = str
+    gsub(/\\/,"\\\\", s)
+    gsub(/"/, "\\\"", s)
+    return "\"" s "\""
+}
+
+# manage key/value pairs in the current section.
+function addKV(section, key, value) {
+    composite = section SUBSEP key
+    if (composite in data) {
+        data[composite] = data[composite] delim value
+        count[composite]++
+    } else {
+        data[composite] = value
+        count[composite] = 1
+        keyCount[section]++
+        order[section, keyCount[section]] = key
+    }
+}
+
+{
+    line = $0
+    
+    # ignore lines composed only of dashes (separators)
+    # ignore lines starting with an email address or "cawk view_repo done"
+    if (line ~ /^[ -]*$/ && line ~ /^[-]+$/) next
+    if (line ~ /^[^ ]+@/ || line ~ /^cawk view_repo done/) next
+
+    # check if the line is a header
+    if (line ~ /^[-]+/) {
+        header = line
+        gsub(/^[-]+/, "", header)
+        gsub(/[-]+$/, "", header)
+        header = trim(header)
+        
+        if (header == "") next
+        
+        if (header ~ /^Summary[ \t]+/) {
+            split(header, arr, /[ \t]+/)
+            current_section = "Summary"
+            if (!(current_section in sectSeen)) {
+                sectCount++
+                sectOrder[sectCount] = current_section
+                sectSeen[current_section] = 1
+            }
+            addKV(current_section, "value", arr[2])
+        } else {
+            current_section = header
+            if (!(current_section in sectSeen)) {
+                sectCount++
+                sectOrder[sectCount] = current_section
+                sectSeen[current_section] = 1
+            }
+        }
+        next
+    }
+
+    # clean the line
+    line = trim(line)
+    if (line == "") next
+
+    # check if the line contains an "=" (e.g. for security indicators)
+    if (index(line, "=") > 0) {
+        split(line, parts, "=")
+        key = trim(parts[1])
+        value = trim(parts[2])
+    } else {
+        n = split(line, tokens, /[ \t]+/)
+        key = tokens[1]
+        if (n > 1)
+            value = substr(line, index(line, tokens[2]))
+        else
+            value = ""
+    }
+    if (current_section == "")
+        current_section = "default"
+    addKV(current_section, key, value)
+}
+
+END {
+    printf "{\n"
+    # move over the sections
+    for (s = 1; s <= sectCount; s++) {
+        sec = sectOrder[s]
+        printf "  " json_escape(sec) ": {"
+        firstKey = 1
+        # for each key in the section
+        for (i = 1; i <= keyCount[sec]; i++) {
+            k = order[sec, i]
+            composite = sec SUBSEP k
+            if (!firstKey)
+                printf ","
+            printf "\n    " json_escape(k) ": "
+            if (count[composite] > 1) {
+                # if more values, then create a json array
+                printf "["
+                n = split(data[composite], arr, delim)
+                for (j = 1; j <= n; j++) {
+                    if (j > 1)
+                        printf ", "
+                    printf json_escape(arr[j])
+                }
+                printf "]"
+            } else {
+                printf json_escape(data[composite])
+            }
+            firstKey = 0
+        }
+        printf "\n  }"
+        if (s < sectCount)
+            printf ","
+        printf "\n"
+    }
+    printf "}\n"
+}

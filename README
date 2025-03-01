@@ -30,12 +30,12 @@ In summary, in gawk && gmake && gm4 we trust :-)
 # ---- cawk installation
 # ----------------------
 
-jump to a specific directory and extract cawk, cd to cawk and type the <gmake> command in order
-to have help on the cawk gmake targets. 
+jump to a specific directory and extract cawk, cd to cawk root directory and type the <gmake> 
+command in order to have help on the cawk gmake targets. 
 
 note : you may have to change the file support/tests.sed for finding the gawk path at your system 
 level required for buidling tests:
-	-%SED_GAWK_PATH% = to point out the right path for gawk 
+	-%SED_GAWK_PATH% must point out the right path for gawk 
 	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
 
 # ---------------------
@@ -113,13 +113,8 @@ exceptions or tests level
 		- report/run_{audit_name} : empty by default, contains the run_{audit_name} assessment results
 		-- audit=AUDIT_NAME assessment --
 
-	- an assessment report has the following format :
-		- name of the configuration
-		- name of the test
-		- error description
-		- line number where the error has been found in the configuration
-		- risklevel 
-		- <pass> or <error> states
+	- each of these directories has a sub-directory <archives>. each time an asessment is performed
+	  a tar.gz file is built and stored in this directory including the date in filename
 
 - support : contains files helping for building cawk:
 
@@ -168,6 +163,26 @@ cawk allows the following status codes:
 	- pass    : Check passed successfully
 	- error   : Check failed or error occurred
 	- warning : check passed with warning
+
+# -----------------------------------
+# ---- cawk assessment format
+# -----------------------------------
+
+cawk follows an assessment report format consisting of six fields:
+	1) conf_name: The name of the configuration
+	2) test_name: The name of the test
+	3) error_line: The output describing the error
+	4) line_nb: The line number
+	5) risk_level: The risk level (high, medium, low, info)
+	6) status_code: The status code (pass, error, warning)
+
+# ---------------------------------
+# ---- cawk security key indicators
+# ---------------------------------
+
+cawk computes two key security indicators in the summary report:
+	- security Compliance : expressed as a percentage between 0% and 100% (100% best score)
+	- average number of errors per Device : measured from 0 up to an upper bound (0 best score)
 
 # --------------------
 # ---- cawk first use

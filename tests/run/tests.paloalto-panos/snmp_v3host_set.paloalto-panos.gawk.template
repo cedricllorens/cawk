@@ -1,0 +1,64 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <snmp v3 host> is set
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^%SED_BK_PALO%system/ {
+	block_system = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{2}snmp-server/ && block_system == 1 {
+	block_snmp = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{3}v3/ && block_snmp == 1 {
+	block_v3 = 1;
+	next;
+}
+
+/^%SED_BK_PALO%{4}trap-group/ && block_v3 == 1 {
+	print_err("snmp_v3host_set.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","pass");
+	pass = 0;
+	next;
+}
+
+/^%SED_BK_PALO%{3}\}/ && block_v3 == 1 {
+	block_v3 = 0;
+	next;
+}
+
+/^%SED_BK_PALO%{2}\}/ && block_snmp == 1 {
+	block_snmp = 0;
+	next;
+}
+
+/^%SED_BK_PALO%\}/ && block_system == 1 {
+	block_system = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("snmp_v3host_notset.paloalto-panos.gawk","snmp v3 host is not set",0,"high","error");
+}
+
+END {
+}

@@ -71,6 +71,20 @@ configure
                 community "cawk" hash2 rwa version both
                 community "public" hash2 r version both
             exit
+            snmpv3
+                user myUser
+                    authentication-mode sha
+                    authentication-password myAuthPass
+                    privacy-mode aes
+                    privacy-password myPrivPass
+                exit
+                trap-server myTrapServer
+                    address 192.168.1.100
+                    port 162
+                    version snmpv3
+                    user myUser
+                exit
+            exit
             tacplus
                 accounting
                 authorization
@@ -82,6 +96,6 @@ configure
                 server 4 address 10.10.0.8 secret "h6.TeL7YPoiCfWKUFHARvk" hash2
                 server 5 address 10.10.0.9 secret "h6.TeL7YPojuCyTFvTNGBU" hash2
             exit
-	exit
+        exit
     exit
-exit all
+exit

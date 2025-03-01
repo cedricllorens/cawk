@@ -34,6 +34,11 @@ snmp
   priv sha
   priv-password xx
   group cawk_group_snmp_badx
+ !
+ trap
+  source-interface ge1
+  host 10.10.10.10
+ !
 !
 vpn 0
  name xx

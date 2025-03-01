@@ -11,6 +11,35 @@ deviceconfig {
       eth1 inside
       eth2 outside
     }
+    snmp-server {
+      v3 {
+        user snmpUser {
+          authentication {
+            mode sha
+            password "YourAuthPassword"
+          }
+          privacy {
+            mode aes128
+            password "YourPrivacyPassword"
+          }
+          engine-id local
+          security-level privacy
+          view defaultView
+          notify-filter defaultFilter
+          access-control-list defaultACL
+        }
+        trap-group defaultTrapGroup {
+          version v3 priv
+          user snmpUser
+            targets {
+              192.0.2.1 {
+                retries 3
+                timeout 5
+            }
+          }
+        }
+      }
+    }
     snmp {
       community public {
         access write
@@ -31,7 +60,6 @@ deviceconfig {
     }
   }
 }
-
 network {
   interface {
     ethernet {

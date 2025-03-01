@@ -20,7 +20,7 @@ function processrule(rule) {
     if ( rule ~  /-j (ACCEPT|DROP|REJECT|SNAT|DNAT)/) {
 
         if ( rule !~ "-s" && rule !~ "--dport" ) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"info","warning");
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"low","warning");
         }
         
         if (rule ~ /-s 0\.0\.0\.0\/0/ || rule ~ /-s ::\/0/) {

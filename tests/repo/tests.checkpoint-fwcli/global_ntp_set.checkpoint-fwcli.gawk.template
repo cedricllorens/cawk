@@ -19,6 +19,7 @@ BEGIN {
 BEGINFILE {
     pass = 1;
     ntp_state = 0;
+    ntp_adress_server = "";
 }
 
 # ntp active ----

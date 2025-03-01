@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_NOKIA%{3}snmp/ && block_security == 1 {
+/^%SED_BK_NOKIA%{3}snmp$/ && block_security == 1 {
 	block_snmp = 1;
 	next;
 }

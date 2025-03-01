@@ -7,6 +7,18 @@ config system settings
     set source-routing enable
 end
 
+config system snmp user
+    edit "snmpUser"
+        set status enable
+        set auth-proto sha
+        set auth-pwd "myAuthPassword"
+        set priv-proto aes
+        set priv-pwd "myPrivPassword"
+        set security-level privacy
+        set notify-hosts 192.168.1.100
+    next
+end
+
 config system interface
     edit "management"
         set icmp-redirect enable

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# this test generate a cawk report
+# this script generates a cawk report
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -126,6 +126,9 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
+	print "--------------------";
+	print "---- test stats ----";
+	print "--------------------";
 	print "number_of_checks " length(files) * length(tests);
 	print "number_of_files " length(files); 
 	print "number_of_tests " length(tests);
@@ -138,37 +141,39 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
-	print "----";
+	print "----------------------";
+	print "---- output stats ----";
+	print "----------------------";
 	print "number_of_pass_error_warning " pass + error + warning;
 	if ( ( pass + error + warning) > 0) {
 		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning))
 		print "number_of_pass " pass " (" decimal "%)";
 	} else {
-		print "number_of_pass " pass;
+		print "number_of_pass " pass " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_high / pass )
 		print "\tnumber_of_pass_high " pass_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_high " pass_high;
+		print "\tnumber_of_pass_high " pass_high " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_medium / pass )
 		print "\tnumber_of_pass_medium " pass_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_medium " pass_medium;
+		print "\tnumber_of_pass_medium " pass_medium " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_low / pass )
 		print "\tnumber_of_pass_low " pass_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_low " pass_low;
+		print "\tnumber_of_pass_low " pass_low " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_info / pass )
 		print "\tnumber_of_pass_info " pass_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_info " pass_info;
+		print "\tnumber_of_pass_info " pass_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
@@ -177,31 +182,31 @@ ENDFILE {
 		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning))
 		print "number_of_error " error " (" decimal "%)";
 	} else {
-		print "number_of_error " error;
+		print "number_of_error " error " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_high / error )
 		print "\tnumber_of_error_high " error_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_high " error_high;
+		print "\tnumber_of_error_high " error_high " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_medium / error )
 		print "\tnumber_of_error_medium " error_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_medium " error_medium;
+		print "\tnumber_of_error_medium " error_medium " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_low / error )
 		print "\tnumber_of_error_low " error_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_low " error_low;
+		print "\tnumber_of_error_low " error_low " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_info / error )
 		print "\tnumber_of_error_info " error_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_info " error_info;
+		print "\tnumber_of_error_info " error_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
@@ -210,31 +215,49 @@ ENDFILE {
 		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning))
 		print "number_of_warning " warning " (" decimal "%)";
 	} else {
-		print "number_of_warning " warning;
+		print "number_of_warning " warning " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_high / warning )
 		print "\tnumber_of_warning_high " warning_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_high " warning_high;
+		print "\tnumber_of_warning_high " warning_high " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_medium / warning )
 		print "\tnumber_of_warning_medium " warning_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_medium " warning_medium;
+		print "\tnumber_of_warning_medium " warning_medium " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_low / warning )
 		print "\tnumber_of_warning_low " warning_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_low " warning_low;
+		print "\tnumber_of_warning_low " warning_low " (0.0%)";;
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_info / warning )
 		print "\tnumber_of_warning_info " warning_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_info " warning_info;
+		print "\tnumber_of_warning_info " warning_info " (0.0%)";
+	}
+
+	# ------------------------------------------------------------------
+
+	print "---------------------------------";
+	print "---- security key indicators ----";
+	print "---------------------------------";
+	if ((pass_high + pass_medium + pass_low + error_high + error_medium + error_low) > 0) {
+		key1 = sprintf("%.0f", 100 - 100  * ( ((3*error_high + 2*error_medium + error_low)) / (3 * (pass_high + pass_medium + pass_low + error_high + error_medium + error_low)) ) )
+		print "security_compliance (no   warning) = " key1 "% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+	} else {
+		print "security_compliance (no   warning) = 100% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+	}
+	if ( (length(files)) > 0) {
+		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
+		print "error_avg_perdevice (no   warning) = " key2 " (0-0/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+	} else {
+		print "error_avg_perdevice (no   warning) = 0 (0-0/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
 	}
 }
 

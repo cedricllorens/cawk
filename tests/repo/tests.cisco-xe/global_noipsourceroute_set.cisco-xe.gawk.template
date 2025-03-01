@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v3> is set
+# purpose : check if <no ip source-route> is set and <ip source-route> is not set
 # author  : cedric llorens
 # ------------------------------------------------------------
 
@@ -18,27 +18,22 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 0;
-	block_snmp = 0;
+	pass = 1;
 }
 
-/^snmp {/ {
-	block_snmp = 1;
+/^no ip source-route/ {
+	print_err("global_noipsourceroute_set.cisco-xe.gawk",$0,FNR,"high","pass");
+	pass = 0;
 	next;
 }
 
-/^%SED_BK_JUNI%v3 / && block_snmp == 1 {
-	print_err("snmp_v3_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
-        pass = 1;
-	nextfile;
-}
-
-/^}/ {
-	block_snmp = 0;
+/^ip source-route/ {
+	print_err("global_noipsourceroute_set.cisco-xe.gawk","<ip source-route> is set",0,"high","error");
+	next;
 }
 
 ENDFILE {
-        if ( !pass ) print_err("snmp_v3_set.juniper-junos.gawk","snmp v3 is not set",0,"high","error");
+	if ( pass ) print_err("global_noipsourceroute_set.cisco-xe.gawk","<no ip source-route> is not set",0,"high","error");
 }
 
 END {

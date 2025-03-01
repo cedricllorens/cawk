@@ -1,0 +1,60 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if a line vty has <transport input (none|ssh)>
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function sshinput_summary() {
+	if ( sshinput == 0 ) {
+		print_err("linevty_sshinput_set.cisco-xe.gawk",linevty" : transport input (none|ssh) is missing",linenovty,"high","error");
+		pass = 0;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_vty = 0;
+	pass = 1;
+}
+
+/^line vty .*$/ {
+	if ( block_vty == 1 ) sshinput_summary();
+	linevty = $0;
+	linenovty = FNR;
+	sshinput = 0;
+        block_vty = 1;
+	next;
+}
+
+/^ transport input (none|ssh)$/ && block_vty == 1 {
+	sshinput = 1;
+	next;
+}
+
+/^!$/ && block_vty == 1 {
+	sshinput_summary();
+	block_vty = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("linevty_sshinput_set.cisco-xe.gawk","line vty transport input (none|ssh) are set",0,"high","pass");
+}
+
+END {
+}

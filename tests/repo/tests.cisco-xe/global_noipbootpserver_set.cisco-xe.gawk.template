@@ -1,0 +1,40 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <no ip bootp server> is set and <ip bottp server> is not set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^no ip bootp server/ {
+	print_err("global_noipbootpserver_set.cisco-xe.gawk",$0,FNR,"high","pass");
+	pass = 0;
+	next;
+}
+
+/^ip bootp server/ {
+	print_err("global_noipbootpserver_set.cisco-xe.gawk","<ip bootp server> is set",0,"high","error");
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("global_noipbootpserver_set.cisco-xe.gawk","<no ip bootp server> is not set",0,"high","error");
+}
+
+END {
+}

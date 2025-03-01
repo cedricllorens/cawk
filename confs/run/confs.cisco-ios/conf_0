@@ -73,6 +73,12 @@ snmp-server community private RW
 snmp-server community cawk view unknown RO
 snmp-server view unknown1 1.1.1
 snmp-server file-transfer access-group CAWK
+! Activer le service SNMP
+snmp-server community public RO
+snmp-server community private RW
+snmp-server group MON_GROUP v3 priv
+snmp-server user MON_UTILISATEUR MON_GROUPE v3 auth sha MON_MOTDEPASSE_PRIV priv aes 128 MON_MOTDEPASSE_CRYPTE
+snmp-server host 192.168.1.100 version 3 priv MON_UTILISATEUR
 !
 line con 0
  password 7 xxxxxx
