@@ -43,13 +43,13 @@ BEGINFILE {
 }
 
 # rule def ----
-/add (access-)?rule / && !/\\$/ {
+/^(add )?(access-|nat-)?rule / && !/\\$/ {
     processrule($0,ioc);
     next;
 }
 
 # multi line rule ----
-/add (access-)?rule / && /\\$/ && rule == "" {
+/^(add )?(access-|nat-)?rule / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }

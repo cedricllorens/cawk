@@ -23,7 +23,6 @@ BEGINFILE {
 
 # table def ----
 /^table/ {
-    print "DEBUG DEF "$2;
     TABLESDEF[$2] = $2;
     line_number[$2] = FNR;
     next;
@@ -33,7 +32,6 @@ BEGINFILE {
 /.*<\w+>/ && !/^table/ {
     for (i=1;i<=NF;i++) {
         if($i ~ /<\w+>/) {
-            print "DEBUG REF "$i;
             TABLESREF[$i] = $i;
             if (line_number[$i]==""){
                 line_number[$i] = FNR;

@@ -16,18 +16,23 @@ CONFS_PATH = confs
 TESTS_COMMON_PATH = common
 TESTS_PATH = tests
 TESTS_COMMON_TEMPLATE = $(wildcard $(TESTS_COMMON_PATH)/*.template)
+TESTS_COMMON_SH = $(wildcard $(TESTS_COMMON_PATH)/*.script.sh)
 TESTS_SYSTEM = system
 TESTS_TMP = tmp
 
 EXCEPTION_PATH = exceptions
 EXCEPTION_M4 = $(wildcard $(EXCEPTION_PATH)/repo/*.m4) $(wildcard $(EXCEPTION_PATH)/run*/*.m4)
 
+BACKUP_PATH = backup
+
+DATABASE_PATH = database
+
 REPORT_PATH = reports
 
 # ---------------
 
 # Define all suppliers/platforms
-SUPPLIER_SCOPE = cisco-ios juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli research
+SUPPLIER_SCOPE = cisco-ios cisco-xr juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli
 
 # Generic template for all suppliers
 define supplier_template
@@ -56,18 +61,19 @@ $(foreach supplier,$(SUPPLIER_SCOPE),$(eval $(call supplier_template,$(supplier)
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit catalog git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit run_audit archive_run archive_repo check_parallel check_update check
+.PHONY: all check_repo check_run check_run_audit tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_backup clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit catalog git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit archive_run archive_repo check_parallel check_update check sync_run sync_run_audit backup_run backup_run_audit restore_run restore_run_audit
 
 all:
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK INFO --------------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
-	@echo "# note : %SED_GAWK_PATH% must point out the right path for gawk, we set <!/usr/bin/env -S gawk -f>"
-	@echo "#        you may change it in support/tests.sed"
+	@echo "# note : %SED_GAWK_PATH% point out the gawk path, we set <!/usr/bin/env -S gawk -f> (ref support/tests.sed)"
+	@echo "# note : Makefile.support.mk contains variables that can change the cawk behavior"
 	@echo "# note : you can have several targets for a same gmake call like -> gmake clean check_repo view_repo"
 	@echo "# note : <repo> is the original cawk repository of coded tests, test's confs and exceptions"
 	@echo "# note : <run> is an empty repository used for your own tests/checks"
 	@echo "# note : <run_AUDIT_NAME> are repositories for all of your contexts or for your customers"
+	@echo "# note : please refer to the README file for further information"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK MAIN --------------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -75,22 +81,24 @@ all:
 	@echo "# gmake check : allow to run a cawk compliance check (result must be OK only after the first installation)"
 	@echo "# gmake system : allow to know if the system can run cawk"
 	@echo "# gmake supplier : provide the suppliers supported by cawk"
-	@echo "# gmake common : provide the list of functions available in the common directory"
+	@echo "# gmake common : provide the list of functions available in the common dir"
 	@echo "# gmake clean : clean tests && tmp repository"
 	@echo "# gmake clean_report_repo / clean_report_run / clean_report_run audit=AUDIT_NAME : clean reports"
 	@echo "# gmake clean_archive_repo / clean_archive_run / clean_archive_run audit=AUDIT_NAME : clean archives"
-	@echo "# gmake clean_force : (use with caution) clean all including reports, archives for all assessments"
+	@echo "# gmake clean_backup : clean all backups"
+	@echo "# gmake clean_force : (USE WITH CAUTION) clean all including reports, backups, archives for all assessments"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK TESTS -------------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
-	@echo "# gmake tests_repo : build tests associated to repo directory"
-	@echo "# gmake tests_run : build tests associated to run directory"
-	@echo "# gmake tests_run audit=AUDIT_NAME : build tests associated to AUDIT_NAME directory"
+	@echo "# gmake tests_common : build tests associated to common dir"
+	@echo "# gmake tests_repo : build tests associated to repo dir"
+	@echo "# gmake tests_run : build tests associated to run dir"
+	@echo "# gmake tests_run audit=AUDIT_NAME : build tests associated to run_audit dir"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK ASSESSMENT --------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
-	@echo "# gmake create_audit audit=AUDIT_NAME : create AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
-	@echo "# gmake delete_audit audit=AUDIT_NAME : delete AUDIT_NAME tests, exceptions, confs directories (ref run_${audit})"
+	@echo "# gmake create_audit audit=AUDIT_NAME : create AUDIT_NAME tests, exceptions, confs directories (ref run_audit)"
+	@echo "# gmake delete_audit audit=AUDIT_NAME : delete AUDIT_NAME tests, exceptions, confs directories (ref run_audit)"
 	@echo "# gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)"
 	@echo "# gmake run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -99,24 +107,52 @@ all:
 	@echo "# gmake check_repo : assess the confs with <repo> tests (build tests if not)"
 	@echo "#  or gmake clean check_repo (run all suppliers)"
 	@echo "#  or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
-	@echo "# gmake check_run  : assess the confs with <run> tests (build tests if not)"
+	@echo "# gmake check_run : assess the confs with <run> tests (build tests if not)"
 	@echo "#  or gmake check_run (run all suppliers)"
 	@echo "#  or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)"
 	@echo "#  or gmake check_run audit=AUDIT_NAME (run all suppliers)"
 	@echo "#  or gmake check_run supplier=cisco-ios audit=AUDIT_NAME (or view_juniper-junos, etc.)"
+	@echo "# gmake check_run_audit : run assessments for all the audit=AUDIT_NAMEs"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK VIEW --------------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
-	@echo "# gmake view_repo : view the repo reports (all in report/repo directory)"
+	@echo "# gmake view_repo : view the repo reports (all in report/repo dir)"
 	@echo "#  or gmake view_repo supplier=cisco-ios (or juniper-junos, etc.)"
-	@echo "# gmake view_repo_error : view the repo assessment reports errors (all in report/repo directory)"
+	@echo "# gmake view_repo_error : view the repo assessment reports errors (all in report/repo dir)"
 	@echo "#  or gmake view_repo_error supplier=cisco-ios (or juniper-junos, etc.)"
-	@echo "# gmake view_run  : view the run reports (all in report/run directory)"
+	@echo "# gmake view_run : view the run reports (all in report/run or run_audit dirs)"
 	@echo "#  or gmake view_run supplier=cisco-ios (or juniper-junos, etc.)"
 	@echo "#  or gmake view_run supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
-	@echo "# gmake view_run_error  : view the run assessment reports errors (all in report/run directory)"
-	@echo "#  or gmake view_run_error audit=AUDIT_NAME (all in report/repo directory)"
+	@echo "# gmake view_run_error : view the run assessment reports errors (all in report/run or run_audit dirs)"
+	@echo "#  or gmake view_run_error audit=AUDIT_NAME (all in report/repo dir)"
 	@echo "#  or gmake view_run_error supplier=cisco-ios audit=AUDIT_NAME (or juniper-junos, etc.)"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK DATABASE ----------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# NOTE : only available for audit=AUDIT_NAME assessments"
+	@echo "# gmake database_view : view all the databases linked to audit=AUDIT_NAME assessments"
+	@echo "# gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH_DIR regex=REGEX_PATTERN"
+	@echo "#  add/update an entry in the cawk sync database, where fields are separated by spaces :"
+	@echo "#   - 1 field is the audit name"
+	@echo "#   - 2 field is the various sync paths separated by comma (no space) like /conf/ or /conf/cawk/,/conf/cawk_2/"
+	@echo "#   - 3 field is an extended regex to select devices pattern matching like .* or .*switch.*"
+	@echo "# gmake database_sync_del audit=AUDIT_NAME : delete an entry in the cawk sync database"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK SYNC --------------------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# NOTE : only available for audit=AUDIT_NAME assessment"
+	@echo "# NOTE : it relies on the cawk sync database (i.e.README)"
+	@echo "# CAUTION : local confs files are removed during sync (confs/run_audit dir) (i.e.README)"
+	@echo "# gmake sync_run audit=AUDIT_NAME : sync confs from a central repository to confs/run_audit dir"
+	@echo "# gmake sync_run_audit : sync confs from a central repository to all run_audit dirs"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# -- CAWK BACKUP AND RESTORE ------------------------------------------------------------------------------------"
+	@echo "# ---------------------------------------------------------------------------------------------------------------"
+	@echo "# NOTE : only available for audit=AUDIT_NAME assessment"
+	@echo "# gmake backup_run audit=AUDIT_NAME : backup all data linked to audit=AUDIT_NAME in backup dir"
+	@echo "# gmake restore_run audit=AUDIT_NAME file=BACKUP_PATH_FILE : restore all data from file_path"
+	@echo "# gmake backup_run_audit : backup cawk database and all data linked to all audit=AUDIT_NAMEs in backup dir"
+	@echo "# gmake restore_run_audit file=BACKUP_PATH_FILE : restore database and all data from file_path"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
 	@echo "# -- CAWK CATALOG -----------------------------------------------------------------------------------------------"
 	@echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -127,10 +163,10 @@ all:
 
 create_audit:
 ifeq ($(strip $(audit)),)
-	@echo "cawk error: audit=AUDIT_NAME must be set ----"
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
 else
 ifneq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} already exist ----"
+	@echo "cawk error audit=${audit} already exist ----"
 else
 	@cp -r $(TESTS_PATH)/repo $(TESTS_PATH)/run_${audit}
 	@cp -r $(EXCEPTION_PATH)/repo exceptions/run_${audit}
@@ -143,10 +179,10 @@ endif
 
 delete_audit:
 ifeq ($(strip $(audit)),)
-	@echo "cawk error: audit=AUDIT_NAME must be set ----"
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 else
 	@rm -f -r $(TESTS_PATH)/run_${audit}
 	@rm -f -r $(CONFS_PATH)/run_${audit}
@@ -160,19 +196,78 @@ list_audit:
 	@find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq
 	@echo "cawk list_audit end ----"
 
-RUN_DIRS := $(shell find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq)
-run_audit:
-	@for dir in $(RUN_DIRS); do \
-		gmake check_run audit=$$dir; \
-	done
-	@echo "cawk run_audit end ----"
+# --------------------------------
+
+database_view:
+	@echo "cawk view $(DATABASE_PATH)/db_sync.txt ----"
+	@cat $(DATABASE_PATH)/db_sync.txt
+	@echo "cawk database_view done ----"
+
+database_sync_add:
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	@echo "cawk error audit=${audit} do not exist  ----"
+else
+ifeq ($(strip $(dir)),)
+	@echo "cawk error dir=SYNC_PATH_DIR must be set ----"
+else
+ifeq ($(strip $(regex)),)
+	@echo "cawk error regex=REGEX_PATTERN must be set ----"
+else
+	@echo "cawk update $(DATABASE_PATH)/db_sync.txt"
+	@echo "${audit} ${dir} ${regex}" >> $(DATABASE_PATH)/db_sync.txt
+endif
+endif
+endif
+endif
+	@gmake database_view
+	@echo "cawk database_sync_add end ----"
+
+database_sync_update:
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	@echo "cawk error audit=${audit} do not exist  ----"
+else
+ifeq ($(strip $(dir)),)
+	@echo "cawk error dir=SYNC_PATH_DIR must be set ----"
+else
+ifeq ($(strip $(regex)),)
+	@echo "cawk error regex=REGEX_PATTERN must be set ----"
+else
+	@echo "cawk update $(DATABASE_PATH)/db_sync.txt"
+	@sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_sync.txt
+	@echo "${audit} ${dir} ${regex}" >> $(DATABASE_PATH)/db_sync.txt
+endif
+endif
+endif
+endif
+	@gmake database_view
+	@echo "cawk database_sync_add end ----"
+
+database_sync_del:
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	@echo "cawk error audit=${audit} do not exist  ----"
+else
+	@echo "cawk update $(DATABASE_PATH)/db_sync.txt"
+	@sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_sync.txt
+endif
+endif
+	@gmake database_view
+	@echo "cawk database_sync_add end ----"
 
 # --------------------------------
 
 check_supplier:
 ifneq ($(strip $(supplier)),)
 ifneq ($(findstring $(supplier),$(SUPPLIER_SCOPE)),$(supplier))
-	@echo "cawk error: ($(supplier)) is not the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)) ----"
+	@echo "cawk error ($(supplier)) is not the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)) ----"
 	@exit 1
 endif
 endif
@@ -196,7 +291,9 @@ common:
 SUPPLIER_M4_REPO_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_M4:.gawk.m4=.gawk))
 SUPPLIER_TEMPLATE_REPO_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_TEMPLATE:.gawk.template=.gawk))
 
-tests_target_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) \
+tests_target_common: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) $(TESTS_COMMON_SH:.script.sh=.script)
+
+tests_target_repo: tests_target_common\
 		$(SUPPLIER_M4_REPO_FILES) \
 		$(SUPPLIER_TEMPLATE_REPO_FILES) \
 		$(EXCEPTION_M4:.m4=)
@@ -204,10 +301,13 @@ tests_target_repo: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) \
 SUPPLIER_M4_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_M4:.gawk.m4=.gawk))
 SUPPLIER_TEMPLATE_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_TEMPLATE:.gawk.template=.gawk))
 
-tests_target_run: $(TESTS_COMMON_TEMPLATE:.gawk.template=.gawk) \
+tests_target_run: tests_target_common \
 		$(SUPPLIER_M4_RUN_FILES) \
 		$(SUPPLIER_TEMPLATE_RUN_FILES) \
 		$(EXCEPTION_M4:.m4=)
+
+tests_common: tests_target_common
+	@echo "cawk tests_common done ----"
 
 tests_repo: tests_target_repo
 	@echo "cawk tests_repo done ----"
@@ -217,6 +317,10 @@ tests_run: tests_target_run
 
 %.gawk: %.gawk.template
 	@sed -f support/tests.sed $< > $@ || true
+	@chmod 750 $@
+
+%.script: %.script.sh
+	@cp $< $@ || true
 	@chmod 750 $@
 
 %.gawk: %.gawk.m4
@@ -229,9 +333,95 @@ tests_run: tests_target_run
 
 # --------------------------------
 
+sync_run: tests_target_common
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
+	@echo "cawk sync_run done ----"
+else
+	@echo "cawk cleaning local configurations before sync"
+	@find $(CONFS_PATH)/run_${audit} $(FIND_CONF_SELECT) | egrep -v '(gitkeep)' | while read file; do \
+		rm -f $$file; \
+	done
+	@echo "cawk sync files from $(DATABASE_PATH)/db_sync.txt"
+	@grep "^$(audit)" $(DATABASE_PATH)/db_sync.txt | while read line; do \
+		paths=$$(echo $$line | gawk '{print $$2}'); \
+		regex=$$(echo $$line | gawk '{print $$3}'); \
+		cd $(CONFS_PATH)/run_$(audit) && ../../common/sync_cawk_conf.gawk $$paths $$regex && cd ../.. ; \
+	done
+	@echo "cawk sync_run_audit ${audit} done ----"
+endif
+
+sync_run_audit: tests_target_common
+	@echo "cawk cleaning local configurations before sync"
+	@find $(CONFS_PATH)/run_* $(FIND_CONF_SELECT) | egrep -v '(gitkeep)' | while read file; do \
+		rm -f $$file; \
+	done
+	@echo "cawk sync files from $(DATABASE_PATH)/db_sync.txt"
+	@cat $(DATABASE_PATH)/db_sync.txt | while read line; do \
+		audit=$$(echo $$line | gawk '{print $$1}'); \
+		paths=$$(echo $$line | gawk '{print $$2}'); \
+		regex=$$(echo $$line | gawk '{print $$3}'); \
+		cd $(CONFS_PATH)/run_$$audit && ../../common/sync_cawk_conf.gawk $$paths $$regex && cd ../.. ; \
+	done
+	@gmake list_audit
+	@echo "cawk sync_run_audit all audit done ----"
+
+# --------------------------------
+
+backup_run: clean
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME must be set ----"
+	@echo "cawk backup_run done ----"
+else
+	@rm -f backup/run_audit_${audit}_$(shell date +%Y-%m-%d).tar.gz backup/run_audit_${audit}_$(shell date +%Y-%m-%d).tar
+	@find confs/run_${audit}* tests/run_${audit}* exceptions/run_${audit}* reports/run_${audit}* -type f,d -print0 | tar cvf backup/run_audit_${audit}_$(shell date +%Y-%m-%d).tar --null -T - >/dev/null 2>&1
+	@gzip backup/run_audit_${audit}_$(shell date +%Y-%m-%d).tar
+	@echo "cawk backup_run_audit ${audit} done in backup/run_audit_${audit}_$(shell date +%Y-%m-%d).tar.gz ----"
+endif
+
+backup_run_audit: clean
+	@rm -f backup/run_audit_$(shell date +%Y-%m-%d).tar backup/run_audit_$(shell date +%Y-%m-%d).tar.gz
+	@find $(DATABASE_PATH)/* confs/run_* tests/run_* exceptions/run_* reports/run_* -type f,d -print0 | tar cvf backup/run_audit_$(shell date +%Y-%m-%d).tar --null -T - >/dev/null 2>&1
+	@gzip backup/run_audit_$(shell date +%Y-%m-%d).tar
+	@gmake list_audit
+	@echo "cawk backup_run_audit all audits done in backup/run_audit_$(shell date +%Y-%m-%d).tar.gz ----"
+
+restore_run: clean
+ifeq ($(strip $(audit)),)
+	@echo "cawk error audit=AUDIT_NAME and file=BACKUP_PATH_FILE must be set ----"
+	@echo "cawk restore_run done ----"
+else
+ifeq ($(strip $(file)),)
+	@echo "cawk error audit=AUDIT_NAME and file=BACKUP_PATH_FILE must be set ----"
+	@echo "cawk restore_run done ----"
+else
+	@if [ -f ${file} ]; then \
+		tar -xzvf ${file} >/dev/null 2>&1; \
+		echo "cawk restore_run ${audit} done ----"; \
+	else \
+		echo "cawk error: file ${file} does not exist ----"; \
+	fi
+endif
+endif
+
+restore_run_audit: clean
+ifeq ($(strip $(file)),)
+	@echo "cawk error file=BACKUP_PATH_FILE must be set ----"
+	@echo "cawk restore_run_audit done ----"
+else
+	@if [ -f ${file} ]; then \
+		tar -xzvf ${file} >/dev/null 2>&1; \
+		echo "cawk restore_run_audit done ----"; \
+	else \
+		echo "cawk error: file ${file} does not exist ----"; \
+	fi
+endif
+	
+# --------------------------------
+
 check_repo: clean_report_repo clean_tmp tests_repo check_supplier
 ifneq ($(strip $(audit)),)
-	@echo "cawk error: the use of <audit=AUDIT_NAME> can only be used with check_run target ----"
+	@echo "cawk error the use of <audit=AUDIT_NAME> can only be used with check_run target ----"
 	@exit 1
 else
 ifeq ($(strip $(supplier)),)
@@ -240,7 +430,7 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 		echo "cawk compute $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/repo/assessment.$(scope).csv.swap ;\
 		$(foreach test,$(shell find $(TESTS_$(scope)_REPO_PATH) -name '*.gawk' -type f 2>/dev/null),\
-			find $(CONFIGURATION_$(scope)_REPO_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/repo/assessment.$(scope).csv.swap ;\
+			find $(CONFIGURATION_$(scope)_REPO_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/repo/assessment.$(scope).csv.swap ;\
 		) \
 		egrep -v -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort | uniq > $(REPORT_PATH)/repo/assessment.$(scope).csv || true ;\
 		egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort | uniq > $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv || true ;\
@@ -254,7 +444,7 @@ else
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk compute $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/repo/assessment.$(scope).csv.swap ;\
-		find $(CONFIGURATION_$(scope)_REPO_PATH) -type f > $(TESTS_TMP)/conf_list_files.repo.$(scope) 2>/dev/null ;\
+		find $(CONFIGURATION_$(scope)_REPO_PATH) $(FIND_CONF_SELECT)  > $(TESTS_TMP)/conf_list_files.repo.$(scope) 2>/dev/null ;\
 		find $(TESTS_$(scope)_REPO_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.repo.$(scope) 2>/dev/null ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.repo.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.repo.$(scope) > \
 		$(TESTS_TMP)/Makefile.repo.$(scope) ;\
@@ -274,7 +464,7 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 	@echo "cawk compute $(supplier) devices ----"
 	@touch $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap
 	@$(foreach test,$(shell find $(TESTS_$(supplier)_REPO_PATH) -name '*.gawk' -type f 2>/dev/null),\
-		find $(CONFIGURATION_$(supplier)_REPO_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap ;\
+		find $(CONFIGURATION_$(supplier)_REPO_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap ;\
 	)
 	@egrep -v -f $(EXCEPTION_PATH)/repo/exceptions.$(supplier) $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap | sort | uniq > $(REPORT_PATH)/repo/assessment.$(supplier).csv || true
 	@egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(supplier) $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap | sort | uniq > $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv || true
@@ -286,7 +476,7 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 else
 	@echo "cawk compute $(supplier) devices ----"
 	@touch $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap
-	@find $(CONFIGURATION_$(supplier)_REPO_PATH) -type f > $(TESTS_TMP)/conf_list_files.repo.$(supplier) 2>/dev/null
+	@find $(CONFIGURATION_$(supplier)_REPO_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.repo.$(supplier) 2>/dev/null
 	@find $(TESTS_$(supplier)_REPO_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.repo.$(supplier) 2>/dev/null
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.repo.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.repo.$(supplier) > \
 	$(TESTS_TMP)/Makefile.repo.$(supplier)
@@ -304,9 +494,8 @@ endif
 	gmake archive_repo
 	@echo "cawk check_repo done ----"
 
-# ------------------------------------
 
-check_run: clean_tmp tests_run tests_run check_supplier
+check_run: clean_tmp tests_run check_supplier
 ifeq ($(strip $(audit)),)
 	gmake clean_report_run
 else
@@ -319,7 +508,7 @@ ifeq ($(strip $(audit)),)
 		echo "cawk compute $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
 		$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PATH) -name '*.gawk' -type f 2>/dev/null),\
-			find $(CONFIGURATION_$(scope)_RUN_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
+			find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
 		) \
 		egrep -v -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort | uniq > \
 		$(REPORT_PATH)/run/assessment.$(scope).csv || true ;\
@@ -333,14 +522,14 @@ ifeq ($(strip $(audit)),)
 	)
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk compute ${audit} $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap ;\
 		$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PATH) -name '*.gawk' -type f 2>/dev/null),\
-			find $(CONFIGURATION_$(scope)_RUN_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap ;\
+			find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap ;\
 		) \
 		egrep -v -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort | uniq > \
 		$(REPORT_PATH)/run_${audit}/assessment.$(scope).csv || true ;\
@@ -358,7 +547,7 @@ ifeq ($(strip $(audit)),)
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk compute $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
-		find $(CONFIGURATION_$(scope)_RUN_PATH) -type f > $(TESTS_TMP)/conf_list_files.run.$(scope) 2>/dev/null ;\
+		find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.run.$(scope) 2>/dev/null ;\
 		find $(TESTS_$(scope)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.run.$(scope) 2>/dev/null ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 		$(TESTS_TMP)/conf_list_files.run.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.run.$(scope) > \
@@ -376,13 +565,13 @@ ifeq ($(strip $(audit)),)
 	)
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		echo "cawk compute ${audit} $(scope) devices ----" ;\
 		touch $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap ;\
-		find $(CONFIGURATION_$(scope)_RUN_PATH) -type f > $(TESTS_TMP)/conf_list_files.${audit}.$(scope) 2>/dev/null ;\
+		find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.${audit}.$(scope) 2>/dev/null ;\
 		find $(TESTS_$(scope)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.${audit}.$(scope) 2>/dev/null ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 		$(TESTS_TMP)/conf_list_files.${audit}.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.${audit}.$(scope) > \
@@ -406,7 +595,7 @@ ifeq ($(strip $(audit)),)
 	@echo "cawk compute $(supplier) devices ----"
 	@touch $(REPORT_PATH)/run/assessment.$(supplier).csv.swap
 	@$(foreach test,$(shell find  $(TESTS_$(supplier)_RUN_PATH) -name '*.gawk' -type f 2>/dev/null),\
-		find $(CONFIGURATION_$(supplier)_RUN_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/run/assessment.$(supplier).csv.swap ;\
+		find $(CONFIGURATION_$(supplier)_RUN_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/run/assessment.$(supplier).csv.swap ;\
 	)
 	@egrep -v -f $(EXCEPTION_PATH)/run/exceptions.$(supplier) $(REPORT_PATH)/run/assessment.$(supplier).csv.swap | sort | uniq > \
 	$(REPORT_PATH)/run/assessment.$(supplier).csv || true
@@ -419,13 +608,13 @@ ifeq ($(strip $(audit)),)
 	@$(TESTS_COMMON_PATH)/report_json.gawk $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv > $(REPORT_PATH)/run/assessment.$(supplier).exceptions.json
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@echo "cawk compute ${audit} $(supplier) devices ----"
 	@touch $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap
 	@$(foreach test,$(shell find  $(TESTS_$(supplier)_RUN_PATH) -name '*.gawk' -type f 2>/dev/null),\
-		find $(CONFIGURATION_$(supplier)_RUN_PATH) -type f -exec ./$(test) {} \; >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap ;\
+		find $(CONFIGURATION_$(supplier)_RUN_PATH) $(FIND_CONF_SELECT) -exec ./$(test) {} \; >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap ;\
 	)
 	@egrep -v -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(supplier) $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap | sort | uniq > \
 	$(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv || true
@@ -440,7 +629,7 @@ else
 ifeq ($(strip $(audit)),)
 	@echo "cawk compute $(supplier) devices ----"
 	@touch $(REPORT_PATH)/run/assessment.$(supplier).csv.swap
-	@find $(CONFIGURATION_$(supplier)_RUN_PATH) -type f > $(TESTS_TMP)/conf_list_files.run.$(supplier) 2>/dev/null
+	@find $(CONFIGURATION_$(supplier)_RUN_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.run.$(supplier) 2>/dev/null
 	@find $(TESTS_$(supplier)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.run.$(supplier) 2>/dev/null
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.run.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.run.$(supplier) > \
 	$(TESTS_TMP)/Makefile.run.$(supplier)
@@ -454,12 +643,12 @@ ifeq ($(strip $(audit)),)
 	@$(TESTS_COMMON_PATH)/report_json.gawk $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv > $(REPORT_PATH)/run/assessment.$(supplier).exceptions.json
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@echo "cawk compute ${audit} $(supplier) devices ----"
 	@touch $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap
-	@find $(CONFIGURATION_$(supplier)_RUN_PATH) -type f > $(TESTS_TMP)/conf_list_files.${audit}.$(supplier) 2>/dev/null
+	@find $(CONFIGURATION_$(supplier)_RUN_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.${audit}.$(supplier) 2>/dev/null
 	@find $(TESTS_$(supplier)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.${audit}.$(supplier) 2>/dev/null
 	@$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk \
 	$(TESTS_TMP)/conf_list_files.${audit}.$(supplier) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.${audit}.$(supplier) > \
@@ -482,6 +671,14 @@ else
 	gmake archive_run audit=$(audit)
 endif
 	@echo "cawk check_run done ----"
+
+
+RUN_DIRS := $(shell find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq)
+check_run_audit:
+	@for dir in $(RUN_DIRS); do \
+		gmake check_run audit=$$dir; \
+	done
+	@echo "cawk check_run_audit end ----"
 
 # --------------------------------
 
@@ -524,7 +721,7 @@ ifeq ($(strip $(audit)),)
 	)
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@$(foreach test,$(SUPPLIER_SCOPE),\
@@ -550,7 +747,7 @@ ifeq ($(strip $(audit)),)
 	@cat $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	@echo "cawk error: audit=${audit} do not exist  ----"
+	@echo "cawk error audit=${audit} do not exist  ----"
 	@exit 1
 endif
 	@echo "-----------------------------------------------"
@@ -600,9 +797,9 @@ endif
 archive_repo:
 	if [ -n "$$(find reports/repo -name '*.csv' -o -name '*.txt')" ]; then \
 		tar -czf reports/run/archives/repo_$(shell date +%Y-%m-%d).tar.gz $$(find reports/repo -name '*.csv' -o -name '*.txt') || true ;\
-		echo "build archive in reports/repo/archives/repo_$(shell date +%Y-%m-%d).tar.gz"; \
+		echo "cawk build archive in reports/repo/archives/repo_$(shell date +%Y-%m-%d).tar.gz"; \
 	else \
-		echo "cawk error: no files *.csv and *.txt found in reports/repo" ;\
+		echo "cawk error no files *.csv and *.txt found in reports/repo" ;\
 	fi	
 	echo "cawk archive_repo done ----"
 
@@ -610,16 +807,16 @@ archive_run:
 ifeq ($(strip $(audit)),)
 	@if [ -n "$$(find reports/run -name '*.csv' -o -name '*.txt')" ]; then \
 		tar -czf reports/run/archives/run_$(shell date +%Y-%m-%d).tar.gz $$(find reports/run -name '*.csv' -o -name '*.txt') || true ;\
-		echo "build archive in reports/run/archives/run_$(shell date +%Y-%m-%d).tar.gz"; \
+		echo "cawk build archive in reports/run/archives/run_$(shell date +%Y-%m-%d).tar.gz"; \
 	else \
-		echo "cawk error: no files *.csv and *.txt found in reports/run"; \
+		echo "cawk error no files *.csv and *.txt found in reports/run"; \
 	fi	
 else
 	@if [ -n "$$(find reports/run_${audit} -name '*.csv' -o -name '*.txt')" ]; then \
 		tar -czf reports/run_${audit}/archives/run_${audit}_$(shell date +%Y-%m-%d).tar.gz $$(find reports/run_${audit} -name '*.csv' -o -name '*.txt') || true ;\
-		echo "build archive in reports/run_${audit}/archives/run_${audit}_$(shell date +%Y-%m-%d).tar.gz"; \
+		echo "cawk build archive in reports/run_${audit}/archives/run_${audit}_$(shell date +%Y-%m-%d).tar.gz"; \
 	else \
-		echo "cawk error: no files *.csv and *.txt found in reports/run_${audit}"; \
+		echo "cawk error no files *.csv and *.txt found in reports/run_${audit}"; \
 	fi	
 endif
 	@echo "cawk archive_run done ----"
@@ -628,38 +825,44 @@ endif
 
 clean: clean_tmp
 	@rm -f $(TESTS_COMMON_PATH)/*.gawk || true
+	@rm -f $(TESTS_COMMON_PATH)/*.script || true
 	@$(foreach scope,$(SUPPLIER_SCOPE),\
 		rm -f $(EXCEPTION_PATH)/*/*.$(scope) || true ;\
 	)
 	@rm -f $(TESTS_PATH)/repo/*/*.gawk || true
 	@rm -f $(TESTS_PATH)/run/*/*.gawk || true
 	@rm -f $(TESTS_PATH)/run_*/*/*.gawk || true
+	@rm -f *.tar *.tar.gz || true
 	@echo "cawk clean done ----"
+
+clean_backup:
+	@rm -f $(BACKUP_PATH)/*.tar $(BACKUP_PATH)/*.tar.gz 2>/dev/null || true
+	@echo "cawk clean $(BACKUP_PATH) done ----"
 
 clean_report_repo:
 	@rm -f $(REPORT_PATH)/repo/* 2>/dev/null || true
-	@echo "cawk clean reports/repo done ----"
+	@echo "cawk clean $(REPORT_PATH)/repo done ----"
 
 clean_archive_repo:
 	@rm -f $(REPORT_PATH)/repo/archives/* 2>/dev/null || true
-	@echo "cawk clean reports/repo/archives done ----"
+	@echo "cawk clean $(REPORT_PATH)/repo/archives done ----"
 
 clean_report_run:
 ifeq ($(strip $(audit)),)
 	@rm -f $(REPORT_PATH)/run/* 2>/dev/null || true
-	@echo "cawk clean reports/run done ----"
+	@echo "cawk clean $(REPORT_PATH)/run done ----"
 else
 	@rm -f $(REPORT_PATH)/run_${audit}/* 2>/dev/null || true
-	@echo "cawk clean reports/run_${audit} done ----"
+	@echo "cawk clean $(REPORT_PATH)/run_${audit} done ----"
 endif
 
 clean_archive_run:
 ifeq ($(strip $(audit)),)
 	@rm -f $(REPORT_PATH)/run/archives/* 2>/dev/null || true
-	@echo "cawk clean reports/run/archives done ----"
+	@echo "cawk clean $(REPORT_PATH)/run/archives done ----"
 else
 	@rm -f $(REPORT_PATH)/run_${audit}/archives/* 2>/dev/null || true
-	@echo "cawk clean reports/run_${audit}/archives done ----"
+	@echo "cawk clean $(REPORT_PATH)/run_${audit}/archives done ----"
 endif
 
 RUN_DIRS := $(shell find tests -name '*run_*' -type d | awk -F'run_' '{print $$NF}' | sort | uniq)
@@ -681,7 +884,8 @@ clean_tmp:
 	@echo "cawk clean tmp done ----"
 
 clean_force:
-	@gmake clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit
+	@gmake clean clean_report_repo clean_backup clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit
+	@echo "cawk clean_force done ----"
 
 # --------------------------------
 
@@ -721,6 +925,10 @@ catalog: tests_repo tests_run
 # --------------------------------
 
 gitcheckdist:
+	echo "---- to be done : check databases"
+	ls -al $(DATABASE_PATH)/*
+	echo "---- to be done : check remaining debug code"
+	grep DEBUG tests/*/*/* || true
 	echo "---- done : call system check"
 	chmod 750 system/cawk_check_system
 	gmake system
@@ -807,10 +1015,36 @@ check:
 	@gmake view_run supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new
 	@gmake view_run supplier=cisco-ios audit=client1_skffqsfqhsf10948494 | wc -l >> checkdiff/checkdiff.new
 	@gmake view_run supplier=cisco-ios audit=client2_mqsdhqndqqos198440 | wc -l >> checkdiff/checkdiff.new
+
+	@gmake backup_run audit=client2_mqsdhqndqqos198440
+	@gmake backup_run audit=client1_skffqsfqhsf10948494
+	@gmake backup_run_audit
+	@find backup -name '*.tar.gz' | wc -l >> checkdiff/checkdiff.new
 	
 	@gmake clean
-	gmake delete_audit audit=client1_skffqsfqhsf10948494
-	gmake delete_audit audit=client2_mqsdhqndqqos198440
+	@gmake delete_audit audit=client1_skffqsfqhsf10948494
+	@gmake delete_audit audit=client2_mqsdhqndqqos198440
+	@gmake restore_run_audit file=backup/run_audit_$(shell date +%Y-%m-%d).tar.gz
+	
+	@gmake clean check_run audit=client1_skffqsfqhsf10948494
+	@cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	@gmake clean check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
+	@cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	@gmake clean
+	@gmake delete_audit audit=client1_skffqsfqhsf10948494
+	@gmake delete_audit audit=client2_mqsdhqndqqos198440
+	@gmake restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(shell date +%Y-%m-%d).tar.gz
+
+	@gmake clean check_run audit=client1_skffqsfqhsf10948494
+	@cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	@gmake clean check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
+	@cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	@gmake clean
+	@gmake delete_audit audit=client1_skffqsfqhsf10948494
+	@gmake delete_audit audit=client2_mqsdhqndqqos198440
+
 	@echo "------------------------------------------------------"
 	@echo "------------------------------------------------------"
 	@echo "CHECK MUST BE OK -------------------------------------"
@@ -820,7 +1054,7 @@ check:
 	@echo "CHECK MUST BE OK -------------------------------------"
 	@echo "------------------------------------------------------"
 	@echo "------------------------------------------------------"
-	@gmake clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit
+	@gmake clean_force
 	@echo "cawk check done ----"
 
 check_parallel:

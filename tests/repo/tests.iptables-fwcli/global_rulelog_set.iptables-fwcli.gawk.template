@@ -1,0 +1,68 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <rule log> is set globally
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function processrule(rule) {
+
+     if (rule ~ /--log-level/ || rule ~ /--log-prefix/ || rule ~ /-j LOG/) {
+        print_err("global_rulelog_set.iptables-fwcli.gawk", "rule with logging <<"rule">>", FNR, "medium", "pass");
+        pass = 0;
+    }
+
+}
+# local functions ----
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = "";
+    pass = 1;
+}
+
+# std line ----
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/{
+  processrule($0);
+  next;
+}
+# std line ----
+
+# multi line rule ----
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = rule $0;
+    next;
+}
+
+/\\$/ && rule != "" {
+    rule = rule $0;
+    next;
+}
+
+!/\\$/ && rule != "" {
+    rule = rule $0;
+    processrule(rule);
+    rule = "";
+    next;
+}
+# multi line rule ----
+
+ENDFILE {
+    if ( pass )  {
+	    print_err("global_rulelog_set.iptables-fwcli.gawk","no rule with log is set",FNR,"medium","error");
+    } 
+}
+
+END {
+}

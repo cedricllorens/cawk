@@ -43,13 +43,13 @@ BEGINFILE {
 }
 
 # rule def ----
-/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
     processrule($0,ioc);
     next;
 }
 
 # multi line rule ----
-/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }

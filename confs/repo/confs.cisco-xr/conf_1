@@ -1,0 +1,57 @@
+! IOS XR Config Version 7.5.2
+!
+hostname CORE-ROUTER-XR
+!
+interface GigabitEthernet0/0/0/0
+ description Interface externe
+ ipv4 address 192.168.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/0/0/1
+ description Interface interne
+ ipv4 address 10.1.1.1 255.255.255.0
+ no shutdown
+!
+snmp-server community public RO
+snmp-server community private RW
+snmp-server trap-source Loopback0
+snmp-server host 10.10.10.5 version 2c public
+snmp-server view all-view 1.3 included
+!
+ntp server 10.1.1.100
+ntp server 10.1.1.101
+ntp source Loopback0
+ntp authentication-key 1 md5 encrypted 095E4F071D
+ntp trusted-key 1
+!
+line console
+ exec-timeout 15 0
+ logging synchronous
+!
+line default
+ exec-timeout 15 0
+ transport input ssh
+!
+logging buffered 10000000
+logging console informational
+logging monitor informational
+logging trap informational
+logging source-interface Loopback0
+logging host 10.1.1.200
+!
+aaa authentication login default group tacacs+ local
+aaa authentication login console local
+aaa authorization exec default group tacacs+ local
+aaa authorization commands default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands default start-stop group tacacs+
+!
+tacacs-server host 10.1.1.150 key 7 095E4F071D
+tacacs-server timeout 10
+tacacs source-interface Loopback0
+!
+username admin
+ group root-system
+ group cisco-support
+ secret 10 $6$m69UO7Mv$Ug5t1Kz1f5A7qwSj8mOir1S3d5nYMFUBxUyEyUCBZjnRk7Fazm6F2b
+!

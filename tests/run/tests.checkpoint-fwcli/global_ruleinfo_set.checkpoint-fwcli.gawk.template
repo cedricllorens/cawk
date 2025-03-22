@@ -15,23 +15,27 @@
 
 # local functions ----
 function processrule(rule) {
-    # src/dst any match ----
+
     if (match(rule, /source\s+"?Any"?/) || match(rule, /destination\s+"?Any"?/)) {
         print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","whitelist/blacklist rule detected : "rule,FNR,"info","warning");
         pass = 0;
     }
     
-    # service any match ----
     if ( match(rule, /service\s+"?Any"?/) ) {
        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","service <any> rule detected : "rule,FNR,"info","warning");
        pass = 0;
     }
     
-    # check if accept is linked to src/dst any ----
     if ( match(rule, /action\s+"?Accept"?/) && (match(rule, /source\s+"?Any"?/) && match(rule, /destination\s+"?Any"?/)) ) {
         print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","src <any> dst <nay> rule detected : "rule,FNR,"info","warning"); 
         pass = 0;
     }
+
+    if (match(rule, /service\s+"?(telnet|rdp|smb|oracle|mysql|3389|23|445|1521|3306)"?/)) {
+        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk", "dangerous service rule detected : " rule, FNR, "info", "warning");
+        pass = 0;
+    }
+
 }
 # local functions ----
 
@@ -44,14 +48,14 @@ BEGINFILE {
 }
 
 # std rule ----
-/add (access-)?rule / && !/\\$/ {
+/^(add )?(access-|nat-)?rule / && !/\\$/ {
     processrule($0);
     next;
 }
 # std rule ----
 
 # multi line rule ----
-/add (access-)?rule / && /\\$/ && rule == "" {
+/^(add )?(access-|nat-)?rule / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }

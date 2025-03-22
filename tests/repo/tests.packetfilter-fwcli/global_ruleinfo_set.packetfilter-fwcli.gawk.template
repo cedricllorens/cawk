@@ -16,16 +16,34 @@
 # local functions ----
 function processrule(rule) {
 
-    # blacklist|whitelist detection ----
     if ( rule ~ /^(pass|block) (in|out )?all$/ ) {
-      print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","blacklist/whitelist rule detected : "rule,FNR,"info","warning");
+      print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","blacklist/whitelist rule detected : "rule,FNR,"low","warning");
       pass = 0;
     }
 
-    # permissive rule detection ----
     if ( rule ~ /^(pass|block) (in|out )?(inet|inet6) / ) {
-      print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","permissive rule detected : "rule,FNR,"info","warning");
+      print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","permissive rule detected : "rule,FNR,"low","warning");
       pass = 0;
+    }
+
+    if (rule ~ /^pass / && (rule ~ / (from|to) 0\.0\.0\.0\/0/ || rule ~ / (from|to) ::\/0/)) {
+        print_err("global_ruleinfo_set.packetfilter-fwcli.gawk", "rule with wide IP range <<"rule">>", FNR, "info", "warning");
+    }
+
+    if (rule ~ /^pass / && rule !~ / proto /) {
+        print_err("global_ruleinfo_set.packetfilter-fwcli.gawk", "rule without protocol specification <<"rule">>", FNR, "info", "warning");
+    }
+
+    if (rule ~ /^pass / && rule !~ / port /) {
+        print_err("global_ruleinfo_set.packetfilter-fwcli.gawk", "rule without port specification <<"rule">>", FNR, "info", "warning");
+    }
+
+    if (rule ~ /accept/ && rule ~ /quick/ && (rule ~ / from any/ || rule ~ / to any/ || rule !~ / proto / || rule !~ / port /)) {
+        print_err("global_quick_misuse.checkpoint-fwcli.gawk", "quick used in overly permissive rule <<"rule">>", FNR, "info", "warning");
+    }
+
+    if (rule ~ /log/ && rule ~ /quick/) {
+        print_err("global_quick_with_log.checkpoint-fwcli.gawk", "quick used in logging rule <<"rule">>", FNR, "info", "warning");
     }
 
 }

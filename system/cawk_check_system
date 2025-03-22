@@ -1,7 +1,11 @@
 #!/bin/sh
+
 # ------------------------------------------------------------
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
+# 
+# this program checks if the main tools are available
+# and if the system is ready to run cawk
 # ------------------------------------------------------------
 #
 

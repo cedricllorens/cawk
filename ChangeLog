@@ -5,6 +5,23 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v2.4.0 (march 2025):
+	Tests:
+ 	- update and add new tests for supplier scopes : packetfilter-fwcli, iptables-fwcli, checkpoint-fwcli
+	- add a new supplier scope : cisco-xr
+	Cawk Makefile:
+	- add new sync targets to synchronize configurations from a central confs repository to a cawk assessment audit=AUDIT_NAME
+	  it refers to sync_run, sync_run_audit targets (please refer to the README for further information)
+	- add new backup targets to backup data linked to a cawk assessment audit=AUDIT_NAME (confs, tests, exceptions, reports)
+	  it refers to backup_run, backup_run_audit targets (please refer to the README for further information)
+	- add new restore targets to restore data linked to a cawk assessment audit=AUDIT_NAME (confs, tests, exceptions, reports)
+	  it refers to restore_run, restore_run_audit targets (please refer to the README for further information)
+	- add new targets to manage the cawk sync database used for confs synchronization
+	  it refers to database_view, database_sync_(add,del,update)
+	Directory structure:
+	- add a new directory <database> in the cawk root directory to store all cawk options in flat files
+	- add a new directory <backup> in the cawk root directory to store backup and restore data
+
 v2.3.0 (march 2025):
 	Tests:
 	- add a new supplier scope cisco-xe

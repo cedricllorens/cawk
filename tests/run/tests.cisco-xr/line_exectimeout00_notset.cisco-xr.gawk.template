@@ -1,0 +1,60 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if a line vty has no <exec-timeout 0 0>
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function acl_summary() {
+	if ( exec == 1 ) {
+		print_err("line_exectimeout00_set.cisco-xr.gawk",line" : <exec-timeout 0 0> is set",linenovty,"high","error");
+		pass = 1;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block = 0;
+	pass = 0;
+}
+
+/^line .*$/ && !/console/ {
+	if ( block == 1 ) acl_summary();
+	line = $0;
+	linenovty = FNR;
+	exec = 0;
+        block = 1;
+	next;
+}
+
+/^ exec-timeout 0 0/ && block == 1 {
+	exec = 1;
+	next;
+}
+
+/^!$/ && block == 1 {
+	acl_summary();
+	block = 0;
+}
+
+ENDFILE {
+	if ( !pass ) print_err("line_exectimeout00_set.cisco-xr.gawk","line vty <exec-timeout 0 0> is not set",0,"high","pass");
+}
+
+END {
+}

@@ -16,11 +16,14 @@ packages:
 - gnu make aka gmake
 - gnu awk aka gawk
 
-These packages are very powerful today and the cawk project intends to ONLY use these
+these packages are very powerful today and the cawk project intends to ONLY use these
 packages. No other langage, no database, no configure, etc. cawk try to keep things simple 
 and understandable for the whole. The package size is very very low with a strong power :-).
 
-You can play with two predefined assessment <repo> and <run> included in cawk package, but
+All the AIs can help and build new tests because Cawk relies on well-known languages, 
+Òmaking development and maintenance easier.
+
+you can play with two predefined assessment <repo> and <run> included in cawk package, but
 you can create/delete as many different assessments as you want <run_{audit_name}> based on 
 your own different networks or customers.
 
@@ -30,7 +33,7 @@ In summary, in gawk && gmake && gm4 we trust :-)
 # ---- cawk installation
 # ----------------------
 
-jump to a specific directory and extract cawk, cd to cawk root directory and type the <gmake> 
+jump to a specific directory and extract cawk, cd to cawk root directory and execute the <gmake> 
 command in order to have help on the cawk gmake targets. 
 
 note : you may have to change the file support/tests.sed for finding the gawk path at your system 
@@ -52,6 +55,9 @@ others common useful scripts
 
 - m4 : contains a <kind of m4 libraries> (set of m4 functions) that may be used at 
 exceptions or tests level
+
+- database : contains all the flat files databases used to manage various cawk options like sync
+confs, sending emeails, etc.
 
 - tests : contains a collection of individual tests <*.gawk.template> or <*.gawk.m4> per supplier :
 
@@ -93,6 +99,9 @@ exceptions or tests level
 
 	- inside each core conf directories, you have a full set of configuration supplier directories
 
+	- inside each core conf directories, you have a sync directory allowing to sync confs with a
+	  central repository, please refer to the cawk sync section for further information
+
 - exceptions : contains a collection of exceptions per supplier applied for reporting
 
 	- there are 3 types of core exceptions directories:
@@ -120,11 +129,14 @@ exceptions or tests level
 
 	- tests.sed : used when building the tests in order to make change of the set %SED_VAR%
 
+- backup : contains tar.gz files when using cawk backup targets, please refer to the cawk backup
+           section for further information
+
 # -----------------------
 # ---- cawk gmake targets
 # -----------------------
 
-just type <gmake> in the cawk root directory and all the cawk targets are detailed
+just execute <gmake> in the cawk root directory and all the cawk targets are detailed
 
 # ------------------------
 # ---- cawk gmake parallel
@@ -164,9 +176,9 @@ cawk allows the following status codes:
 	- error   : Check failed or error occurred
 	- warning : check passed with warning
 
-# -----------------------------------
+# ---------------------------
 # ---- cawk assessment format
-# -----------------------------------
+# ---------------------------
 
 cawk follows an assessment report format consisting of six fields:
 	1) conf_name: The name of the configuration
@@ -188,7 +200,7 @@ cawk computes two key security indicators in the summary report:
 # ---- cawk first use
 # --------------------
 
-after install, cd to the cawk root directory and type:
+after install, cd to the cawk root directory, execute:
 
 	- gmake : provide all cawk gmake targets
 
@@ -222,6 +234,94 @@ after install, cd to the cawk root directory and type:
 	- gmake run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)
 
 	-- audit=AUDIT_NAME assessment --
+
+# ------------------------------------------
+# ---- cawk database
+# ------------------------------------------
+
+cawk allows to manage flat file databases in order to use cawk options like sync confs,
+sending emeails, etc. this is only available for audit=AUDIT_NAME assessment
+
+	- gmake database_view : view all the databases
+
+	sync database --
+
+	- the cawk sync database format is the following where fields are separated by spaces :
+		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
+		- 2 field is the various sync paths separated by comma (no space) 
+		    like /conf/ or /conf/cawk/,/conf/cawk_2/ (i.e. dir=SYNC_PATH_DIR)
+		- 3 field is an extended regex to select devices pattern matching 
+		    like .* or .*switch.* (i.e. regex=REGEX_PATTERN)
+
+	- gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH_DIR regex=REGEX_PATTERN: 
+	  add/update an entry in the cawk sync database
+
+	  note : regex may allow to build sub-scope of an assessment like
+		     audit=cawk_customer1_router with regex matching only routers
+			 audit=cawk_customer1_switch with regex matching only switches
+	
+	- gmake database_sync_del audit=AUDIT_NAME : delete an entry in the cawk sync database
+	
+
+# ------------------------------------------
+# ---- cawk sync audit=AUDIT_NAME assessment
+# ------------------------------------------
+
+cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of working is:
+
+	- use the gmake database_sync_(add,del,update) targets to update the cawk sync database
+	  for audit=AUDIT_NAME assessment
+
+	- gmake sync_run audit=AUDIT_NAME 	
+
+	(CAUTION) local confs of the audit=AUDIT_NAME are removed 
+
+	confs soft links from the central confs repositories to cawk confs/run_audit/confs.os 
+	are automatically built and pushed in the right confs.os directory. In fact, each conf 
+	is analyzed and os detected like cisco-ios, cisco-xe, etc.
+
+	- gmake sync_run_audit (sync all the audit=AUDIT_NAMEs)
+
+note : we do recomment that the central confs repository is owner by an different user than
+the cawk package in order to enforce that the cawk user can only read the central confs
+repository.
+
+# ---------------------------------------------
+# ---- cawk backup audit=AUDIT_NAME assessment
+# ---- cawk restore audit=AUDIT_NAME assessment
+# ---------------------------------------------
+
+cawk allows to build backup/restore only for audit=AUDIT_NAME assessments. 
+it saves all tests, exceptions, confs, reports linked to this assessment. 
+
+backup one audit assessment --
+for example, to backup an audit=cawk assessment, execute : 
+ - gmake backup_run audit=cawk
+   the backup file is stored in backup/run_cawk.<date>.tar.gz
+
+restore one audit assessment --
+copy your backup in the cawk backup directory, execute: 
+ - gmake restore_run audit=cawk file=backup_path_file 
+as such, the audit=cawk assessment is restored.
+
+backup all audit assessments --
+you can backup cawk database and all your audit=AUDIT_NAME assessments in one command, execute :
+ - gmake backup_run_audit
+   the backup file is stored in backup/run_audit.<date>.tar.gz
+
+restore all audit assessments --
+copy your backup in the cawk backup directory, execute: 
+ - gmake restore_run_audit file=backup_path_file 
+as such, all the assessments are restored.
+
+# ---------------------------
+# ---- cawk version migration
+# ---------------------------
+
+- backup all your audit=AUDIT_NAME assessments and save it in a secure directory
+- install a new version of cawk
+- copy your backup in the cawk backup directory
+- restore your all audit=AUDIT_NAME assessments
 
 # -------------------
 # ---- cawk community

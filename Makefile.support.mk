@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v2.3.0
+CAWK_RELEASE = v2.4.0
 
 # --------------- cawk parallel options
 # enable parallel : yes/no
@@ -22,3 +22,6 @@ MAKE_LOAD_AVG ?= 3
 
 # --------------- gmake in silent mode
 MAKEFLAGS += -s
+
+# --------------- find specific parameters
+FIND_CONF_SELECT = ! -type d

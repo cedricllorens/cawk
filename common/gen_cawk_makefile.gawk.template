@@ -4,9 +4,6 @@
 # please refer to the MIT licence file for further information
 #
 # it generates the makefile to parse configurations in parallel
-# mode thanks to call : gmake -j
-#
-# for future usage
 # ------------------------------------------------------------
 
 function help() {

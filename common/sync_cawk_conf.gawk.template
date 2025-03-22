@@ -1,0 +1,140 @@
+#%SED_GAWK_PATH%
+
+# ---------------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# this script allows to sync configurations from a central repository
+# to a cawk audit=AUDIT_NAME assessment. a soft link is built rather 
+# than to copy the configuration
+#
+# usage: gawk -f sync_cawk_conf.gawk "/conf/cawk/,/conf/cawk_2/"
+# note : various directories are separated by comma
+# ---------------------------------------------------------------------
+
+function check_config_type(filename) {
+    viptela = 0;
+
+    while ((getline line < filename) > 0) {
+
+        # cisco-xe
+        if (line ~ /^boot system flash bootflash:/ || line ~ /^diagnostic bootup level/ || line ~ /^platform/) { close(filename); return "cisco_xe"; }
+
+        # cisco-xr
+        if (line ~ / IOS XR Configuration /)  { close(filename); return "cisco_xr"; }
+
+        # cisco-ios
+        if (line ~ /^line vty/) { close(filename); return "cisco_ios"; }
+
+        # cisco-viptela
+        if (line ~ /^system$/) { viptela = 1; }
+        if (line ~ /^vpn 0$/) { if ( viptela == 1 ) { close(filename); return "cisco_viptela"; } }
+
+        # cisco-cedge
+        if (line ~ /^sdwan$/) { close(filename); return "cisco_cedge"; }
+
+        # juniper-junos
+        if (line ~ /^system {/) { close(filename); return "juniper_junos"; }
+
+        # paloalto-panos
+        if (line ~ /^deviceconfig/ || line ~ /^mgt-config/) { close(filename); return "paloalto_panos"; }
+
+        # nokia=sros
+        if (line ~ /^# TiMOS-/ || line ~ /^configure router/) { close(filename); return "nokia_sros"; }
+
+        # packetfilter-fwcli 
+        if (line ~ /^pass / || line ~ /^block /) { close(filename); return "packetfilter_fwcli"; }
+
+        # iptables-fwcli 
+        if (line ~ /iptables -A INPUT/) { close(filename); return "iptables_fwcli"; }
+
+        # checkpoint-fwcli 
+        if (line ~ /^add access-rule/) { close(filename); return "checkpoint_fwcli"; }
+
+        # huawei-vrp
+        if (line ~ /^sysname /) { close(filename); return "huawei_vrp"; }
+
+        # fortinet-fortios
+        if (line ~ /^config system global$/ || line ~ /^config firewall/) { close(filename); return "fortinet_fortios"; }
+
+    }
+
+    close(filename)
+    return "unknown"
+
+}
+
+BEGIN {
+
+    # Source directories / split input source directories on comma
+    if (ARGC < 2) {
+        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_pattern\"";
+        exit 0;
+    }
+
+    n = split(ARGV[1], src_prefix, ",")
+    regex_pattern = ARGV[2]
+
+    # Destination directories
+    dst_prefix_cisco_xe 		    = "confs.cisco-xe/"
+    dst_prefix_cisco_xr 		    = "confs.cisco-xr/"
+    dst_prefix_cisco_ios 		    = "confs.cisco-ios/"
+    dst_prefix_cisco_viptela 	    = "confs.cisco-viptela/"
+    dst_prefix_cisco_cedge 		    = "confs.cisco-cedge/"
+    dst_prefix_juniper_junos 	    = "confs.juniper-junos/"
+    dst_prefix_paloalto_panos 	    = "confs.paloalto-panos/"
+    dst_prefix_nokia_sros 		    = "confs.nokia-sros/"
+    dst_prefix_packetfilter_fwcli	= "confs.packetfilter-fwcli/"
+    dst_prefix_iptables_fwcli 		= "confs.iptables-fwcli/"
+    dst_prefix_checkpoint_fwcli 	= "confs.checkpoint-fwcli/"
+    dst_prefix_huawei_vrp 		    = "confs.huawei-vrp/"
+    dst_prefix_fortinet_fortios 	= "confs.fortinet-fortios/"
+
+    # Process each source directory
+    for (i = 1; i <= n; i++) {
+
+        if (src_prefix[i] == "") {
+            print "cawk empty directory"
+		    continue
+	    }
+
+	    cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_pattern "\""
+
+        while ((cmd | getline file) > 0) {
+	        
+            type = "unknown"
+            type = check_config_type(file)
+            if (type == "unknown") {
+                print "cawk unknown configuration (skipped) " file
+                continue
+            }
+
+            dst = "" 
+            if (type == "cisco_xe")                 dst = dst_prefix_cisco_xe
+            else if (type == "cisco_ios")           dst = dst_prefix_cisco_ios
+            else if (type == "cisco_viptela")       dst = dst_prefix_cisco_viptela
+            else if (type == "cisco_cedge")         dst = dst_prefix_cisco_cedge
+            else if (type == "juniper_junos")       dst = dst_prefix_juniper_junos
+            else if (type == "paloalto_panos")      dst = dst_prefix_paloalto_panos
+            else if (type == "nokia_sros")          dst = dst_prefix_nokia_sros
+            else if (type == "packetfilter_fwcli")  dst = dst_prefix_packetfilter_fwcli
+            else if (type == "iptables_fwcli")      dst = dst_prefix_iptables_fwcli
+            else if (type == "checkpoint_fwcli")    dst = dst_prefix_checkpoint_fwcli
+            else if (type == "huawei_vrp")          dst = dst_prefix_huawei_vrp
+            else if (type == "fortinet_fortios")    dst = dst_prefix_fortinet_fortios
+            else if (type == "cisco_xr")            dst = dst_prefix_cisco_xr
+
+            if ( dst != "") {
+            	system("ln -s " file " " dst)
+            	print "cawk soft link built : " type " config: " file " -> " dst
+            }
+        }
+
+        close(cmd)
+    }
+
+}
+

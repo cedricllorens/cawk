@@ -19,12 +19,16 @@ function processrule(rule) {
 
     if ( rule ~  /-j (ACCEPT|DROP|REJECT|SNAT|DNAT)/) {
 
+        if (rule ~ /-m (recent|string)/) {
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with deprecated match module <<"rule">>", FNR, "low", "warning");
+        }
+
         if ( rule !~ "-s" && rule !~ "--dport" ) {
             print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"low","warning");
         }
         
         if (rule ~ /-s 0\.0\.0\.0\/0/ || rule ~ /-s ::\/0/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with wide -s <<"rule">>", FNR, "info", "warning");
+            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with wide -s <<"rule">>", FNR, "low", "warning");
         }
 
         if (rule ~ /-m state/ && rule !~ /--state (NEW|ESTABLISHED|RELATED)/) {
@@ -72,14 +76,14 @@ BEGINFILE {
 }
 
 # std line ----
-/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/{
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/{
   processrule($0);
   next;
 }
 # std line ----
 
 # multi line rule ----
-/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }
@@ -100,7 +104,7 @@ BEGINFILE {
 ENDFILE {
 
     if ( pass )  {
-	  print_err("global_ruleinfo_set.piptables-fwcli.gawk","no permissive rules detected",FNR,"info","pass");
+	  print_err("global_ruleinfo_set.iptables-fwcli.gawk","no permissive rules detected",FNR,"info","pass");
     } 
 
 }

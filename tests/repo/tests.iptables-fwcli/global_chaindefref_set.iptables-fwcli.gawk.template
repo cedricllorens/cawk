@@ -40,13 +40,13 @@ BEGINFILE {
 }
 
 # chain def ----
-/ -N / {
+/^iptables -N / {
     chain_name = $3;
     chains_defined[chain_name] = NR;
 }
 
 # chain ref -----
-/ -j \w+/ {
+/^iptables .* -j \w+/ {
     match($0, /-j ([A-Za-z0-9_\-]+)/, arr);
     if (arr[1] != "" && !(arr[1] in default_chains)) {
         chain_name = arr[1];

@@ -35,14 +35,14 @@ BEGINFILE {
 }
 
 # std rule ----
-/add (access-)?rule / && !/\\$/ && rule == "" {
+/^(add )?(access-|nat-)?rule / && !/\\$/ && rule == "" {
     processrule($0,RULES);
     next;
 }
 # std rule ----
 
 # multi line rule ----
-/add (access-)?rule / && /\\$/ && rule == "" {
+/^(add )?(access-|nat-)?rule / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }

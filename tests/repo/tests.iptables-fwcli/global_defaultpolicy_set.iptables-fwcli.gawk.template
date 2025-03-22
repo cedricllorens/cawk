@@ -23,19 +23,19 @@ BEGINFILE {
     output_found = 1;
 }
 
-/-P INPUT/ { 
+/^iptables -P INPUT/ { 
     print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for input found <<"$0">>",FNR,"medium","pass");
     input_found = 0;
     next;
 }
 
-/-P FORWARD/ { 
+/^iptables -P FORWARD/ { 
     print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for forward found <<"$0">>",FNR,"medium","pass");
     forward_found = 0;
     next;
 }
 
-/-P OUTPUT/ { 
+/^iptables -P OUTPUT/ { 
     print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for output found <<"$0">>",FNR,"medium","pass");
     output_found = 0;
     next;

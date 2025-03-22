@@ -17,7 +17,7 @@
 # local functions ----
 function processrule(rule,chain,target,rule_dict) {
 
-    if ( rule ~ / -j (ACCEPT|DROP)$/) {
+    if ( rule ~ /^iptables .* -j (ACCEPT|DROP)$/) {
 
         # Extract the parameters of the rule (everything except chain and target)
         parameters = ""

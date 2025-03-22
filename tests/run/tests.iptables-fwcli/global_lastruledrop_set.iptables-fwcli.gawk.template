@@ -23,14 +23,14 @@ BEGINFILE {
 }
 
 # std rule ----
-/-A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
     last_rule = $0;
     next;
 }
 # std rule ----
 
 # multi line rule ----
-/-A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
     rule = rule $0;
     next;
 }
