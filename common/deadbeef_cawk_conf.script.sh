@@ -1,19 +1,42 @@
 #!/bin/sh
 
 # ---------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
-# please refer to the MIT licence file for further information
+# cawk is subject to an MIT open-source license
+# Please refer to the MIT license file for further information
 #
-# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
-# file support/tests.sed for further information
+# For %SED_VAR% like SED_GAWK_PATH, etc. please refer to
+# the file support/tests.sed for further information
 #
-# this script allows to detect configurations older than 30 days
-# such conf is called a deadbeef configuration
+# This script detects configurations older than 30 days
+# Such a configuration is called a deadbeef configuration
 #
-# usage: deadbeef_cawk_conf.gawk conf_file
+# Usage: deadbeef_cawk_conf.gawk conf_file
 # ---------------------------------------------------------------------
 
-[ -z "$1" ] && exit 1
-file_mod_date=$(stat -c %Y "$1")
-current_date=$(date +%s)
-[ $(( (current_date - file_mod_date) / 86400 )) -ge 30 ] && echo "$1"
+# Check if at least one argument is passed
+[ $# -eq 0 ] && exit 1
+
+# Iterate over each argument passed to the script
+for file in "$@"; do
+  # Check if the file exists
+  [ ! -e "$file" ] && continue
+
+  # If the file is a symbolic link, get the real target
+  if [ -L "$file" ]; then
+    real_file=$(readlink -f "$file")
+  else
+    real_file="$file"
+  fi
+
+  # Retrieve the modification date of the real file
+  file_mod_date=$(stat -c %Y "$real_file")
+  current_date=$(date +%s)
+
+  # Calculate the difference in days
+  if [ $(( (current_date - file_mod_date) / 86400 )) -ge 30 ]; then
+    echo "$file"
+  fi
+done
+
+
+

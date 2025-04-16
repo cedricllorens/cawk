@@ -1,0 +1,81 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <vrf main><ssh-server> block (port,permit-root-login,enabled true)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    enable = 1;
+    port_05 = 1;
+    permit_05 = 1;
+    pass = 1;
+    block = 0;
+}
+
+/^vrf main$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%ssh-server$/ && block {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%{2}port 22$/ && block == 2 {
+    port_05 = 0;
+    next;
+}
+
+/^%SED_BK_WIND%{2}permit-root-login no$/ && block == 2 {
+    permit_05 = 0;
+    next;
+}
+
+/^%SED_BK_WIND%{2}enabled true$/ && block == 2 {
+    enable = 0;
+    next;
+}
+
+/^%SED_BK_WIND%(\.\.|exit|[^ ])/ {
+    block = 1;
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+    next;
+}
+
+ENDFILE {
+    if (enable) {
+        print_err("global_sshcompliant_set.6wind-linux.gawk", "<vrf main><ssh-server> block not compliant / <enabled true> is not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (port_05) {
+        print_err("global_sshcompliant_set.6wind-linux.gawk", "<vrf main><ssh-server> block not compliant / <port 22> is not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (permit_05) {
+        print_err("global_sshcompliant_set.6wind-linux.gawk", "<vrf main><ssh-server> block not compliant / <permit-root-login no> is not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (pass) {
+        print_err("global_sshcompliant_set.6wind-linux.gawk", "<vrf main><ssh-server> block is compliant", FNR, "high", "pass");
+    }
+}
+
+END {
+}

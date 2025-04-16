@@ -48,7 +48,7 @@ ENDFILE {
 	# snmp def not ref ----
 	for (id in snmp_def) {
 		if ( !(id in snmp_ref) ) {
-			print_err("snmpview_defref_set.huawei-vrp.gawk",id" : def not ref :"snmp_def[id],0,"low","error");
+			print_err("snmpview_defref_set.huawei-vrp.gawk",id" : def not ref :"snmp_def[id],0,"info","error");
 			pass = 0;
 		}
 	}

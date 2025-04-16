@@ -17,6 +17,7 @@
 
 function check_config_type(filename) {
     viptela = 0;
+    wind = 0;
 
     while ((getline line < filename) > 0) {
 
@@ -60,6 +61,10 @@ function check_config_type(filename) {
         # fortinet-fortios
         if (line ~ /^config system global$/ || line ~ /^config firewall/) { close(filename); return "fortinet_fortios"; }
 
+        # 6wind
+        if (line ~ /^vrf main$/) { wind = 1; }
+        if (line ~ /^routing$/) { if ( wind == 1 ) { close(filename); return "6wind_linux"; } }
+
     }
 
     close(filename)
@@ -79,36 +84,37 @@ BEGIN {
     regex_pattern = ARGV[2]
 
     # Destination directories
-    dst_prefix_cisco_xe 		    = "confs.cisco-xe/"
-    dst_prefix_cisco_xr 		    = "confs.cisco-xr/"
-    dst_prefix_cisco_ios 		    = "confs.cisco-ios/"
-    dst_prefix_cisco_viptela 	    = "confs.cisco-viptela/"
-    dst_prefix_cisco_cedge 		    = "confs.cisco-cedge/"
-    dst_prefix_juniper_junos 	    = "confs.juniper-junos/"
-    dst_prefix_paloalto_panos 	    = "confs.paloalto-panos/"
-    dst_prefix_nokia_sros 		    = "confs.nokia-sros/"
-    dst_prefix_packetfilter_fwcli	= "confs.packetfilter-fwcli/"
-    dst_prefix_iptables_fwcli 		= "confs.iptables-fwcli/"
-    dst_prefix_checkpoint_fwcli 	= "confs.checkpoint-fwcli/"
-    dst_prefix_huawei_vrp 		    = "confs.huawei-vrp/"
-    dst_prefix_fortinet_fortios 	= "confs.fortinet-fortios/"
+    dst_prefix_cisco_xe              = "confs.cisco-xe/"
+    dst_prefix_cisco_xr              = "confs.cisco-xr/"
+    dst_prefix_cisco_ios             = "confs.cisco-ios/"
+    dst_prefix_cisco_viptela         = "confs.cisco-viptela/"
+    dst_prefix_cisco_cedge           = "confs.cisco-cedge/"
+    dst_prefix_juniper_junos         = "confs.juniper-junos/"
+    dst_prefix_paloalto_panos        = "confs.paloalto-panos/"
+    dst_prefix_nokia_sros            = "confs.nokia-sros/"
+    dst_prefix_packetfilter_fwcli    = "confs.packetfilter-fwcli/"
+    dst_prefix_iptables_fwcli 	     = "confs.iptables-fwcli/"
+    dst_prefix_checkpoint_fwcli      = "confs.checkpoint-fwcli/"
+    dst_prefix_huawei_vrp            = "confs.huawei-vrp/"
+    dst_prefix_fortinet_fortios      = "confs.fortinet-fortios/"
+    dst_prefix_6wind_linux           = "confs.6wind-linux/"
 
     # Process each source directory
     for (i = 1; i <= n; i++) {
 
         if (src_prefix[i] == "") {
-            print "cawk empty directory"
+            print "cawk error empty directory"
 		    continue
 	    }
 
 	    cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_pattern "\""
 
         while ((cmd | getline file) > 0) {
-	        
+	      
             type = "unknown"
             type = check_config_type(file)
             if (type == "unknown") {
-                print "cawk unknown configuration (skipped) " file
+                print "cawk error unknown configuration (skipped) " file
                 continue
             }
 
@@ -126,6 +132,7 @@ BEGIN {
             else if (type == "huawei_vrp")          dst = dst_prefix_huawei_vrp
             else if (type == "fortinet_fortios")    dst = dst_prefix_fortinet_fortios
             else if (type == "cisco_xr")            dst = dst_prefix_cisco_xr
+            else if (type == "6wind_linux")         dst = dst_prefix_6wind_linux
 
             if ( dst != "") {
             	system("ln -s " file " " dst)

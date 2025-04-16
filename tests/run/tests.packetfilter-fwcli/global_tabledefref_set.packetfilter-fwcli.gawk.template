@@ -49,11 +49,11 @@ ENDFILE {
     pass = 1;
     for (id in TABLESDEF) {
         if (!(id in TABLESREF)) {
-            print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table def not ref "id"",line_number[id],"low","error");
+            print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table def not ref "id"",line_number[id],"info","error");
             pass = 0;
         }
     }
-    if (pass) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table def not ref",0,"low","pass");
+    if (pass) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table def not ref",0,"info","pass");
 
     # table ref and not def ----
     pass = 1;
@@ -62,7 +62,7 @@ ENDFILE {
             print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table ref not def "id"",line_number[id],"high","error");
         }
     }
-    if ( pass ) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table ref not def",0,"low","pass");
+    if ( pass ) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table ref not def",0,"high","pass");
 }
 
 END {

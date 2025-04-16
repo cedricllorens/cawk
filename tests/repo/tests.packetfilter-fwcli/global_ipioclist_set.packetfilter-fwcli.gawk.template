@@ -25,10 +25,10 @@ function processrule(rule,ioc) {
 # local functions ----
 
 BEGIN {
-    ioc["10.0.0.0"] = 0;
 }
 
 BEGINFILE {
+    ioc["10.0.0.0"] = 0;
     rule = "";
 }
 

@@ -1,0 +1,95 @@
+vrf main
+    logging
+        syslog
+            enabled true
+            remote-server 10.10.10.10
+                protocol udp
+                port 514
+                log-filter facility auth level notice
+                log-filter facility daemon level info
+                log-filter facility authpriv level notice
+                log-filter facility kernel level info
+                ..
+            ..
+        ..
+    netconf-server
+        enabled true
+        idle-timeout 3600
+        address 10.10.10.10 port 830
+        ..
+    ntp
+        enabled true
+        time-sources
+            makestep
+                threshold 1000
+                limit 3
+                ..
+            server 10.10.10.10
+                version 4
+                association-type SERVER
+                iburst false
+                prefer false
+                ..
+            ..
+        ..
+    snmp
+        enabled true
+        community cawk_3
+            authorization read-only
+            ..
+        community cawk
+            authorization read-only
+            ..
+        community cawk_2
+            authorization read-only
+            ..
+        traps
+            destination 10.10.10.10 port 162 protocol udp notification-type TRAP2 community cawk
+            link-status-check frequency 60s enabled true
+            process-check frequency 2s enabled true
+            load-check threshold 95 enabled true
+            ..
+        ..
+    ssh-server
+        enabled true
+        port 22
+        permit-root-login no
+        ..
+system
+    hostname cawk
+    cp-mask default
+    network-stack
+        icmp
+            ignore-icmp-echo-broadcast false
+            rate-limit-icmp 1000
+            rate-mask-icmp destination-unreachable source-quench time-exceeded parameter-problem
+            ..
+        ipv4
+            forwarding true
+            send-redirects true
+            accept-redirects false
+            accept-source-route false
+            arp-announce any
+            arp-filter false
+            arp-ignore any
+            arp-proxy false
+            log-invalid-addresses false
+            ..
+        ipv6
+            forwarding true
+            autoconfiguration true
+            accept-duplicate-address-detection always
+            accept-router-advert never
+            accept-redirects false
+            accept-source-route false
+            router-solicitations -1
+            use-temporary-addresses never
+            ..
+        ..
+    auth
+        user admin
+            role admin
+            ..
+        ..
+    ..
+..

@@ -1,0 +1,90 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <system><network-stack><icmp> block (rate-limit-icmp,rate-mask-icmp destination-unreachable,ignore-icmp-echo-broadcast)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    block = 0;
+    rate_09 = 0;
+    ratemask_09 = 0;
+}
+
+/^system$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%network-stack$/ && block {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%{2}icmp$/ && block == 2 {
+    block = 3;
+    next;
+}
+
+/^%SED_BK_WIND%{3}ignore-icmp-echo-broadcast[ ]/ && block == 3 {
+    if (match($0, /true$/)) {
+        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / ignore-icmp-echo-broadcast not set to false", FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{3}rate-limit-icmp/ && block == 3 {
+    rate_09 = 1;
+    next;
+}
+
+/^%SED_BK_WIND%{3}rate-mask-icmp destination-unreachable/ && block == 3 {
+    ratemask_09 = 1;
+    next;
+}
+
+/^%SED_BK_WIND%{2}(\.\.|exit|[^ ])/ {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%(\.\.|exit|[^ ])/ {
+    block = 1;
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+    next;
+}
+
+ENDFILE {
+    if (!rate_09) {
+        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-limit-icmp not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (!ratemask_09) {
+        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-mask-icmp destination-unreachable not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (pass) {
+        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block is compliant", FNR, "high", "pass");
+    }
+}
+
+END {
+}
+

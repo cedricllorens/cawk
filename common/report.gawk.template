@@ -132,12 +132,6 @@ ENDFILE {
 	print "number_of_checks " length(files) * length(tests);
 	print "number_of_files " length(files); 
 	print "number_of_tests " length(tests);
-	asort(tests); 
-	delete tests_tri;
-    	n = asorti(tests, tests_tri, "@val_num_asc")
-    	for (i = 1; i <= n; i++) {
-        	print "\ttest "tests[tests_tri[i]];
-    	}
 
 	# ------------------------------------------------------------------
 
@@ -255,9 +249,9 @@ ENDFILE {
 	}
 	if ( (length(files)) > 0) {
 		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
-		print "error_avg_perdevice (no   warning) = " key2 " (0-0/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+		print "error_avg_perdevice (no   warning) = " key2 " (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
 	} else {
-		print "error_avg_perdevice (no   warning) = 0 (0-0/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+		print "error_avg_perdevice (no   warning) = 0 (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
 	}
 }
 

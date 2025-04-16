@@ -82,7 +82,7 @@ ENDFILE {
 	# acl def and not ref
 	for (id in acl_def) {
 		if ( !(id in acl_ref) ) {
-			print_err("acl_defref_set.cisco-cedge.gawk",id" : def not ref :"acl_def[id],0,"low","error");
+			print_err("acl_defref_set.cisco-cedge.gawk",id" : def not ref :"acl_def[id],0,"info","error");
 			pass = 0;
 		}
 	}

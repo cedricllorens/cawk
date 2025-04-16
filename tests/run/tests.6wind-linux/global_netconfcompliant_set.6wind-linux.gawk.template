@@ -1,0 +1,74 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <vrf main><netconf-server> block (address,enabled true)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    enable = 1;
+    pass = 1;
+    block = 0;
+}
+
+/^vrf main$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%netconf-server$/ && block {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%{2}address .*$/ && block == 2 {
+    if (!match($0, /^[ ]{8}address [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ ]/)) {
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad address : "$0, FNR, "high", "error");
+        pass = 0;
+    }
+    if (!match($0, /port [0-9]+$/)) {
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad port : "$0, FNR, "high","error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{2}enabled true$/ && block == 2 {
+    enable = 0;
+    next;
+}
+
+/^%SED_BK_WIND%(\.\.|exit|[^ ])/ {
+    block = 1;
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+    next;
+}
+
+ENDFILE {
+    if (enable) {
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / enabled true is not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (pass) {
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block is compliant", FNR, "high", "pass");
+    }
+}
+
+END {
+}
+

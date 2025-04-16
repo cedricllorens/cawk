@@ -71,7 +71,7 @@ ENDFILE {
 	# routing def and not ref
 	for (id in routing_def) {
 		if ( !(id in routing_ref) ) {
-			print_err("routing_defref_set.cisco-xe.gawk",id" : def not ref :"routing_def[id],0,"low","error");
+			print_err("routing_defref_set.cisco-xe.gawk",id" : def not ref :"routing_def[id],0,"info","error");
 			pass = 0;
 		}
 	}

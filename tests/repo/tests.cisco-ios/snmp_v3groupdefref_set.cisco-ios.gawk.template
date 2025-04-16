@@ -42,7 +42,7 @@ ENDFILE {
 	# snmp def and not ref
 	for (id in snmp_def) {
 		if ( !(id in snmp_ref) ) {
-			print_err("snmp_v3groupdefref_set.cisco-ios.gawk",id" : def not ref :"snmp_def[id],0,"low","error");
+			print_err("snmp_v3groupdefref_set.cisco-ios.gawk",id" : def not ref :"snmp_def[id],0,"info","error");
 			pass = 0;
 		}
 	}

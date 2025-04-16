@@ -43,7 +43,7 @@ ENDFILE {
 	# acl def and not ref ----
 	for (id in filter_def) {
 		if ( !(id in filter_ref) ) {
-			print_err("filter_defref_set.juniper-junos.gawk",id" : filter def but not ref :"filter_def[id],0,"low","error");
+			print_err("filter_defref_set.juniper-junos.gawk",id" : filter def but not ref :"filter_def[id],0,"info","error");
 			pass = 0;
 		}
 	}

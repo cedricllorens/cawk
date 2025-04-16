@@ -1,0 +1,88 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <system><network-stack><ipv4/ipv6> block (accept-redirects,accept-source-route,accept-router-advert,arp-proxy)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    block = 0;
+}
+
+/^system$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%network-stack$/ && block {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%{2}(ipv4|ipv6)$/ && block == 2 {
+    next;
+}
+
+/^%SED_BK_WIND%{3}accept-redirects[ ]/ && block == 2 {
+    if (match($0, /true$/)) {
+        print_err("global_networkstackipcompliant_set.6wind-linux.gawk", "<system><network-stackip><ipv4/ipv6> block not compliant / accept-redirects not set to false", FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{3}accept-source-route[ ]/ && block == 2 {
+    if (match($0, /true$/)) {
+        print_err("global_networkstackipcompliant_set.6wind-linux.gawk", "<system><network-stackip><ipv4/ipv6> block not compliant / accept-source-route not set to false", FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{3}accept-router-advert[ ]/ && block == 2 {
+    if (match($0, /true$/)) {
+        print_err("global_networkstackipcompliant_set.6wind-linux.gawk", "<system><network-stackip><ipv4/ipv6> block not compliant / accept-router-advert not set to false", FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{3}arp-proxy[ ]/ && block == 2 {
+    if (match($0, /true$/)) {
+        print_err("global_networkstackipcompliant_set.6wind-linux.gawk", "<system><network-stackip><ipv4/ipv6> block not compliant / arp-proxy not set to false", FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%\.\.|exit|[^ ])/ {
+    block = 1;
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+    next;
+}
+
+ENDFILE {
+    if (pass) {
+        print_err("global_networkstackipcompliant_set.6wind-linux.gawk", "<system><network-stackip><ipv4/ipv6> block is compliant", FNR, "high", "pass");
+    }
+}
+
+END {
+}
+

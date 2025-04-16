@@ -1,0 +1,77 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <vrf main><snmp> system block (trusted community,authorization,enabled true)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    block = 0;
+    enable = 1;
+}
+
+/^vrf main$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%snmp$/ && block {
+    block = 2;
+    next;
+}
+
+/^%SED_BK_WIND%{2}community[ ]/ && block == 2 {
+    if (match($0, /(public|private)$/)) {
+        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / forbidden snmp community "$0, FNR, "high","error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%{2}enabled true$/ && block == 2 {
+    enable = 0;
+    next;
+}
+
+/^%SED_BK_WIND%{3}authorization/ && block == 2 {
+    if (!match($0, /read-only$/)) {
+        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / forbidden authorization : "$0, FNR, "high", "error");
+        pass = 0;
+    }
+    next;
+}
+
+/^%SED_BK_WIND%(\.\.|exit|[^ ])/ {
+    block = 1;
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+    next;
+}
+
+ENDFILE {
+    if (enable) {
+        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / enabled true is not set", FNR, "high", "error");
+        pass = 0;
+    }
+    if (pass) {
+        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block is compliant", FNR, high, "pass");
+    }
+}
+
+END {
+}

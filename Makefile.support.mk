@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v2.4.0
+CAWK_RELEASE = v2.5.0
 
 # --------------- cawk parallel options
 # enable parallel : yes/no
@@ -25,3 +25,7 @@ MAKEFLAGS += -s
 
 # --------------- find specific parameters
 FIND_CONF_SELECT = ! -type d
+
+# --------------- json specific parameters
+# if set to yes json reporting is activated
+JSON ?= no

@@ -1,0 +1,48 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# gawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check <vrf main><services> vlock (trusted services)
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+    block = 0;
+}
+
+/^vrf main$/ {
+    block = 1;
+    next;
+}
+
+/^%SED_BK_WIND%[^ ].*$/ && block {
+    if (!match($0, /^[ ]{4}(interface|netconf-server|ntp|snmp|ssh-server|logging|\.\.)$/)) {
+        print_err("global_forbidservices_notset.6wind-linux.gawk", "<vrf main> block is not compliant / forbidden service : "$0, FNR, "high","error");
+        pass = 0;
+    }
+    next;
+}
+
+/^(\.\.|exit|[^ ])/ {
+    block = 0;
+}
+
+ENDFILE {
+    if (pass) {
+        print_err("global_forbidservices_notset.6wind-linux.gawk", "<vrf main> block is compliant", FNR, "high", "pass");
+    }
+}
+
+END {
+}

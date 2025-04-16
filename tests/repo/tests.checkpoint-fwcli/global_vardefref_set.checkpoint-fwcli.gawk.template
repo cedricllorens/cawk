@@ -45,11 +45,11 @@ ENDFILE {
     pass = 1;
     for (id in DEF) {
         if (!(id in REF)) {
-            print_err("global_vardefref_set.checkpoint-fwcli.gawk","var def not ref <<"id">>",DEF[id],"low","error");
+            print_err("global_vardefref_set.checkpoint-fwcli.gawk","var def not ref <<"id">>",DEF[id],"info","error");
             pass=0;
         }
     }
-    if (pass) print_err("global_vardefref_set.checkpoint-fwcli.gawk","no var def not ref",0,"low","pass");
+    if (pass) print_err("global_vardefref_set.checkpoint-fwcli.gawk","no var def not ref",0,"info","pass");
 
     # vars ref and not def ----
     pass = 1;
