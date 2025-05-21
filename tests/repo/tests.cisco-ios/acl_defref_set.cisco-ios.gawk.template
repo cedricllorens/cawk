@@ -30,12 +30,17 @@ BEGINFILE {
 	next;
 }
 
-/^ip(v[46])? access-list (standard|extended) [^ ]+$/ {
+/^ip(v[46])? access-list ((standard|extended) )?[^ ]+$/ {
 	acl_def[$NF] = $0;
 	next;
 }
 
 # ref ----
+
+/^[ ]*ipv6 traffic-filter [^ ]+[ ]/ {
+        acl_ref[$3] = $0;
+        next;
+}
 
 /^ ip access-group [^ ]+/ {
 	acl_ref[$3] = $0;
@@ -52,14 +57,31 @@ BEGINFILE {
 	next;
 }
 
+/^snmp-server community .* (RO|RW) ipv6 [^ ]+$/ {
+        acl_ref[$NF] = $0;
+        next;
+}
+
+/^snmp-server community .* (RO|RW) ipv6 [^ ]+ [^ ]+$/ {
+        acl_ref[$NF] = $0;
+        acl_ref[$(NF-1)] = $0;
+        next;
+}
+
 /^snmp-server group .* access [^ ]+$/ {
 	acl_ref[$NF] = $0;
 	next;
 }
 
-/^ access-class [^ ]+ / && $4 != "prefix-list" {
-	acl_ref[$2] = $0;
+/^ (ipv6 )?access-class [^ ]+ / && $4 != "prefix-list" {
+	if ( $1 == "access-class" ) acl_ref[$2] = $0;
+	if ( $1 == "ipv6" ) acl_ref[$3] = $0;
 	next;
+}
+
+/[ ]*login quiet-mode access-class [^ ]+/ {
+        acl_ref[$4] = $0;
+        next;
 }
 
 /^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" {

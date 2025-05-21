@@ -5,6 +5,29 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v2.6.0 (may 2025):
+	Tests:
+		- update cisco-ios, cisco-xe, cisco-cedge *acls*defref* tests
+		- update cisco-ios, cisco-xe, cisco-cedge, cisco-xr *routing*defref* tests
+		- update juniper-junos *filter*defref* tests
+		- fix issues for sync_run target not working properly, update Makefile and common/sync_cawk_conf.gawk.template
+	Common:
+		- add a new "error stats" section showing a sorted list of most frequent test error names by occurrence by risk level
+	Cawk Makefile:
+		- update targets create_audit and delete_audit which write or remove audit=AUDIT_NAME in the various databases
+		- add a new status code psirt : to classify the errors as psirt
+		- add new targets: 
+			- tests_run_copy audit=AUDIT_NAME supplier=SUPPLIER_NAME
+				allows copying tests from repo to run_audit (supplier scope)
+			- tests_run_audit_copy 
+				allows copying tests from repo to run_audit (all supplier scopes) for all audit=AUDIT_NAME
+			- database_postaudit_(add,del,update) 
+				allows running post-assessment tasks like creating helpdesk tickets, etc. 
+				(please refer to the README for further information)
+			- migrate file=BACKUP_PATH_FILE 
+			  allowing to migrate from a cawk version to an another one
+				(please refer to the README for further information)
+
 v2.5.0 (april 2025):
 	Tests:
 		- add a new scope : 6wind-linux

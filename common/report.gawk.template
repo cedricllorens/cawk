@@ -21,25 +21,34 @@ BEGINFILE {
 	pass = 0;
 	error = 0;
 	warning = 0;
+	psirt = 0;
 	# -------------
 	error_high = 0;
 	pass_high = 0;
 	warning_high = 0;
+	psirt_high = 0;
 	# -------------
 	error_medium = 0;
 	pass_medium = 0;
 	warning_medium = 0;
+	psirt_medium = 0;	
 	# -------------
 	error_low = 0;
 	pass_low = 0;
 	warning_low = 0;
+	psirt_low = 0;
 	# -------------
 	error_info = 0;
 	pass_info = 0;
 	warning_info = 0;
+	psirt_info = 0;
 	# -------------
 	delete files;
 	delete tests;
+	delete tests_error_count_high;
+	delete tests_error_count_medium;
+	delete tests_error_count_low;
+	delete tests_error_count_info;
 }
 
 # -------------------------------------
@@ -48,6 +57,10 @@ BEGINFILE {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
+	if ( $0 ~ /;high/ ) tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1;
+	if ( $0 ~ /;medium/ ) tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1;
+	if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
+	if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
 	error += 1;
 }
 
@@ -65,6 +78,13 @@ BEGINFILE {
 	warning += 1;
 }
 
+/;psirt$/ {
+	split($0,tmp,";");
+	files[tmp[1]];
+	tests[tmp[2]] = tmp[2];
+	psirt += 1;
+}
+
 # -------------------------------------
 
 /;info;/ && /;error$/ {
@@ -77,6 +97,10 @@ BEGINFILE {
 
 /;info;/ && /;warning$/ {
 	warning_info += 1
+}
+
+/;info;/ && /;psirt$/ {
+	psirt_info += 1
 }
 
 # -------------------------------------
@@ -93,6 +117,10 @@ BEGINFILE {
 	warning_high += 1;
 }
 
+/;high;/ && /;psirt$/ {
+	psirt_high += 1;
+}
+
 # -------------------------------------
 
 /;medium;/ && /;error$/ {
@@ -105,6 +133,10 @@ BEGINFILE {
 
 /;medium;/ && /;warning$/ {
 	warning_medium += 1;
+}
+
+/;medium;/ && /;psirt$/ {
+	psirt_medium += 1;
 }
 
 # -------------------------------------
@@ -121,6 +153,11 @@ BEGINFILE {
 	warning_low += 1;
 }
 
+/;low;/ && /;psirt$/ {
+	psirt_low += 1;
+}
+
+# -------------------------------------
 
 ENDFILE {
 
@@ -138,9 +175,12 @@ ENDFILE {
 	print "----------------------";
 	print "---- output stats ----";
 	print "----------------------";
-	print "number_of_pass_error_warning " pass + error + warning;
-	if ( ( pass + error + warning) > 0) {
-		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning))
+	print "number_of_pass_error_warning_psirt " pass + error + warning + psirt;
+
+	# ------------------------------------------------------------------
+
+	if ( ( pass + error + warning + psirt) > 0) {
+		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning + psirt))
 		print "number_of_pass " pass " (" decimal "%)";
 	} else {
 		print "number_of_pass " pass " (0.0%)";
@@ -205,8 +245,8 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
-	if ( ( pass + error + warning) > 0) {
-		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning))
+	if ( ( pass + error + warning + psirt) > 0) {
+		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning + psirt))
 		print "number_of_warning " warning " (" decimal "%)";
 	} else {
 		print "number_of_warning " warning " (0.0%)";
@@ -238,22 +278,105 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
+	if ( ( pass + error + warning + psirt) > 0) {
+		decimal = sprintf("%.1f", 100 * psirt / ( pass + error + warning + psirt))
+		print "number_of_psirt " psirt " (" decimal "%)";
+	} else {
+		print "number_of_psirt " psirt " (0.0%)";
+	}
+
+	if ( psirt > 0 ) {
+		decimal = sprintf("%.1f", 100 * psirt_high / psirt )
+		print "\tnumber_of_psirt_high " psirt_high " (" decimal "%)";
+	} else {
+		print "\tnumber_of_psirt_high " psirt_high " (0.0%)";
+	}
+
+	if ( psirt > 0 ) {
+		decimal = sprintf("%.1f", 100 * psirt_medium / psirt )
+		print "\tnumber_of_psirt_medium " psirt_medium " (" decimal "%)";
+	} else {
+		print "\tnumber_of_psirt_medium " psirt_medium " (0.0%)";
+	}
+
+	if ( psirt > 0 ) {
+		decimal = sprintf("%.1f", 100 * psirt_low / psirt )
+		print "\tnumber_of_psirt_low " psirt_low " (" decimal "%)";
+	} else {
+		print "\tnumber_of_psirt_low " psirt_low " (0.0%)";
+	}
+
+	if ( psirt > 0 ) {
+		decimal = sprintf("%.1f", 100 * psirt_info / psirt )
+		print "\tnumber_of_psirt_info " psirt_info " (" decimal "%)";
+	} else {
+		print "\tnumber_of_psirt_info " psirt_info " (0.0%)";
+	}
+
+	# ------------------------------------------------------------------
+
 	print "---------------------------------";
 	print "---- security key indicators ----";
 	print "---------------------------------";
+	
 	if ((pass_high + pass_medium + pass_low + error_high + error_medium + error_low) > 0) {
-		key1 = sprintf("%.0f", 100 - 100  * ( ((3*error_high + 2*error_medium + error_low)) / (3 * (pass_high + pass_medium + pass_low + error_high + error_medium + error_low)) ) )
-		print "security_compliance (no   warning) = " key1 "% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+		key1 = sprintf("%.1f", 100 - 100  * ( ((3*error_high + 2*error_medium + error_low)) / (3 * (pass_high + pass_medium + pass_low + error_high + error_medium + error_low)) ) )
+		print "security_compliance (scope pass/error) = " key1 "% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
 	} else {
-		print "security_compliance (no   warning) = 100% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+		print "security_compliance (scope pass/error) = 100% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
 	}
+
 	if ( (length(files)) > 0) {
 		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
-		print "error_avg_perdevice (no   warning) = " key2 " (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+		print "error_avg_perdevice (scope error) = " key2 " (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
 	} else {
-		print "error_avg_perdevice (no   warning) = 0 (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+		print "error_avg_perdevice (scope error) = 0 (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
 	}
-}
 
-END {
+	if ((error_high + error_medium + error_low + error_info) > 0) {
+		key_error = sprintf("%.1f", 100 * error_high / (error_high + error_medium + error_low + error_info))
+		print "error_high_ratio    (scope error) = " key_error "% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
+	} else {
+		print "error_high_ratio    (scope error) = 0% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
+	}
+
+	# ------------------------------------------------------------------
+
+	print "---------------------";
+	print "---- error stats ----";
+	print "---------------------";
+	
+	# Sort the test names based on their counts and print in descending order
+	asorti(tests_error_count_high, sorted_names, "@val_num_desc")
+	print "number_of_error_high "error_high;
+	for (i = 1; i <= length(sorted_names); i++) {
+		name = sorted_names[i];
+		if (tests_error_count_high[name] > 0) {
+			print "\t" tests_error_count_high[name] " " name;
+		}
+	}
+	asorti(tests_error_count_medium, sorted_names, "@val_num_desc")
+	print "number_of_error_medium "error_medium;
+	for (i = 1; i <= length(sorted_names); i++) {
+		name = sorted_names[i];
+		if (tests_error_count_medium[name] > 0) {
+			print "\t" tests_error_count_medium[name] " " name;
+		}
+	}
+	asorti(tests_error_count_low, sorted_names, "@val_num_desc")
+	print "number_of_error_low "error_low;
+	for (i = 1; i <= length(sorted_names); i++) {
+		name = sorted_names[i];
+		if (tests_error_count_low[name] > 0) {
+			print "\t" tests_error_count_low[name] " " name;
+		}
+	}
+	asorti(tests_error_count_info, sorted_names, "@val_num_desc")
+	print "number_of_error_info "error_info;
+	for (i = 1; i <= length(sorted_names); i++) {
+		name = sorted_names[i];
+		if (tests_error_count_info[name] > 0) {
+			print "\t" tests_error_count_info[name] " " name;
+		}
+	}
 }

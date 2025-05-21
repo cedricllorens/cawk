@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <no ip bootp server> is set and <ip bottp server> is not set
+# purpose : check if <no ip bootp server> is set and <ip bootp server> is not set
 # author  : cedric llorens
 # ------------------------------------------------------------
 

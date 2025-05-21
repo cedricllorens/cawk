@@ -26,15 +26,15 @@ BEGINFILE {
 
 # def ----
 
-/^[ ]+filter [^ ]+ {/ && !/inactive/ {
-	filter_def[$2] = rm_last_char(rm_blank_before($0));
+/^[ ]+(filter|policer) [^ ]+ {/ && !/inactive/ {
+	if ( $2 !~ /^"?\$/ ) filter_def[$2] = rm_last_char(rm_blank_before($0));
 	next;
 }
 
 # ref ----
 
-/^[ ]+(input|output|input-list|output-list) [^ ]+;/ && !/inactive/ {
-	filter_ref[rm_last_char($2)] = rm_last_char(rm_blank_before($0));
+/^[ ]+(input|output|input-list|output-list|policer) [^ ]+;/ && !/inactive/ {
+	if ( $2 !~ /^"?\$/ ) filter_ref[rm_last_char($2)] = rm_last_char(rm_blank_before($0));
 	next;
 }
 

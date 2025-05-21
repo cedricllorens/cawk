@@ -4,21 +4,13 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# this script allows to build, if needed, a sync inventory scope file
-# for a specific audit=AUDIT_NAME
-# 
-# this script is launched when sync_run audit=AUDIT_NAME target is 
-# called
+# this script is launched when postaudit_audit audit=AUDIT_NAME target is 
+# called. post audit tasks can be executed like create an helddesk ticket,
+# etc.
 #
-# this file may be used during the sync process to build a specific
-# inventory scope thx to "egrep -f file" during the sync process
+# usage: database_postaudit_script audit=AUDIT_NAME
 #
-# you may set in the database/sync_scopes directory a full device
-# path as only the device name will taken into consideration
-#
-# usage: database_sync_script audit=AUDIT_NAME
-#
-# THIS SCRIPTÒ IS CENTRAL FOR ALL THE audit=AUDIT_NAME
+# THIS FILE IS CENTRAL FOR ALL THE audit=AUDIT_NAME
 # ---------------------------------------------------------------------
 
 if [ -z "$1" ]; then
@@ -27,18 +19,18 @@ if [ -z "$1" ]; then
 fi
 
 # ---------------------------------------------------------------------
-# to be updated 
+# to be updated
 # ---------------------------------------------------------------------
 # if [ "$1" = "cawk" ]; then
-#	touch database/sync_scopes/$1_inventory_sync_scope.txt
+#	tasks to be done
 #	exit 0
 # fi
 
 # ---------------------------------------------------------------------
-# to be updated 
+# to be updated
 # ---------------------------------------------------------------------
 # if [ "$1" = "cawk1" ]; then
-#	touch database/sync_scopes/$1_inventory_sync_scope.txt
+#	tasks to be done
 #	exit 0
 # fi
 

@@ -37,7 +37,7 @@ BEGINFILE {
 
 # ref ----
 
-/^.+ (advertise-map|suppress-map|inject-map|exit-map|import-map|export-map|table-map|route-map) .*/ && !/^route-map / {
+/^.+ (advertise-map|suppress-map|inject-map|exit-map|import-map|export-map|table-map|route-map) .*/ && !/^route-map / && !/^[ ]*(#|remark[ ]|description[ ])/ {
 	for(i=1;i<=NF;i++) {
 		if ( $i == "route-map" || $i == "advertise-map" || $i == "suppress-map" || $i == "inject-map" || $i == "exit-map" || $i == "import-map" || $i == "export-map" || $i == "table-map") {
 			routing_ref[$(i+1)] = $0;
@@ -47,7 +47,7 @@ BEGINFILE {
 	next;
 }
 
-/^.+ prefix(-list)? .*/ && !/^ip(v4|v6)? prefix(-list)?/ {
+/^.+ prefix(-list)? .*/ && !/^ip(v4|v6)? prefix(-list)?/ && !/^[ ]*(#|remark[ ]|description[ ])/ {
 	for(i=1;i<=NF;i++) {
 		if ( $i == "prefix-list" ) {
 			if ( $(i+1) != "ip" && $(i+1) != "ipv4" && $(i+1) != "ipv6" ) {
@@ -61,7 +61,7 @@ BEGINFILE {
 	next;
 }
 
-/^ match ip address prefix-list [^ ]+/ {
+/^ match ip address prefix-list [^ ]+/ && !/^[ ]*(#|remark[ ]|description[ ])/ {
 	acl_ref[$5] = $0;
 	next;
 }

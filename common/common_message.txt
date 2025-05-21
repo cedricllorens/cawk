@@ -1,0 +1,11 @@
+This assessment is powered by CAWK and each line (csv file) has the
+following format:
+
+1) conf_name: name of the configuration
+2) test_name: name of the test
+3) error_line: output describing the error
+4) line_nb: line number
+5) risk_level: high, medium, low, info
+6) status_code: pass, error, warning, psirt
+
+You may contact the assessment team for any questions you may have

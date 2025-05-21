@@ -11,13 +11,14 @@
 # to a cawk audit=AUDIT_NAME assessment. a soft link is built rather 
 # than to copy the configuration
 #
-# usage: gawk -f sync_cawk_conf.gawk "/conf/cawk/,/conf/cawk_2/"
+# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_pattern" "file_list"
 # note : various directories are separated by comma
 # ---------------------------------------------------------------------
 
 function check_config_type(filename) {
     viptela = 0;
     wind = 0;
+    cisco_swios = 0;
 
     while ((getline line < filename) > 0) {
 
@@ -28,7 +29,8 @@ function check_config_type(filename) {
         if (line ~ / IOS XR Configuration /)  { close(filename); return "cisco_xr"; }
 
         # cisco-ios
-        if (line ~ /^line vty/) { close(filename); return "cisco_ios"; }
+        if (line ~ /^! Version /) { cisco_swios = 1; }
+        if (line ~ /^line vty/) { if ( cisco_swios == 1) { close(filename); return "cisco_swios";} else { close(filename); return "cisco_ios";} }
 
         # cisco-viptela
         if (line ~ /^system$/) { viptela = 1; }
@@ -69,19 +71,43 @@ function check_config_type(filename) {
 
     close(filename)
     return "unknown"
-
 }
 
 BEGIN {
-
     # Source directories / split input source directories on comma
     if (ARGC < 2) {
-        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_pattern\"";
+        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_pattern\" \"file_list\"";
         exit 0;
     }
 
     n = split(ARGV[1], src_prefix, ",")
     regex_pattern = ARGV[2]
+
+    # Authorise all
+    allow_all = 1
+    
+    # Check ARGV[3] explicit list of devices names
+    if (ARGC > 3 && ARGV[3] != "") {
+        file_list = ARGV[3]
+
+        if (file_list != "none") {
+        
+            allow_all = 0
+            cmd = "cat " file_list
+            while ((cmd | getline line) > 0) {
+
+                # take the name not the full path
+                split(line, path_parts, "/")
+                filename = path_parts[length(path_parts)]
+
+                # store the allowed device name
+                print "cawk loading allowed device name : " filename " in file " file_list
+                allowed_files[filename] = 1
+            }
+        
+            close(file_list)
+        }
+    }
 
     # Destination directories
     dst_prefix_cisco_xe              = "confs.cisco-xe/"
@@ -93,7 +119,7 @@ BEGIN {
     dst_prefix_paloalto_panos        = "confs.paloalto-panos/"
     dst_prefix_nokia_sros            = "confs.nokia-sros/"
     dst_prefix_packetfilter_fwcli    = "confs.packetfilter-fwcli/"
-    dst_prefix_iptables_fwcli 	     = "confs.iptables-fwcli/"
+    dst_prefix_iptables_fwcli        = "confs.iptables-fwcli/"
     dst_prefix_checkpoint_fwcli      = "confs.checkpoint-fwcli/"
     dst_prefix_huawei_vrp            = "confs.huawei-vrp/"
     dst_prefix_fortinet_fortios      = "confs.fortinet-fortios/"
@@ -101,47 +127,52 @@ BEGIN {
 
     # Process each source directory
     for (i = 1; i <= n; i++) {
-
         if (src_prefix[i] == "") {
             print "cawk error empty directory"
-		    continue
-	    }
-
-	    cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_pattern "\""
-
-        while ((cmd | getline file) > 0) {
-	      
-            type = "unknown"
-            type = check_config_type(file)
-            if (type == "unknown") {
-                print "cawk error unknown configuration (skipped) " file
-                continue
-            }
-
-            dst = "" 
-            if (type == "cisco_xe")                 dst = dst_prefix_cisco_xe
-            else if (type == "cisco_ios")           dst = dst_prefix_cisco_ios
-            else if (type == "cisco_viptela")       dst = dst_prefix_cisco_viptela
-            else if (type == "cisco_cedge")         dst = dst_prefix_cisco_cedge
-            else if (type == "juniper_junos")       dst = dst_prefix_juniper_junos
-            else if (type == "paloalto_panos")      dst = dst_prefix_paloalto_panos
-            else if (type == "nokia_sros")          dst = dst_prefix_nokia_sros
-            else if (type == "packetfilter_fwcli")  dst = dst_prefix_packetfilter_fwcli
-            else if (type == "iptables_fwcli")      dst = dst_prefix_iptables_fwcli
-            else if (type == "checkpoint_fwcli")    dst = dst_prefix_checkpoint_fwcli
-            else if (type == "huawei_vrp")          dst = dst_prefix_huawei_vrp
-            else if (type == "fortinet_fortios")    dst = dst_prefix_fortinet_fortios
-            else if (type == "cisco_xr")            dst = dst_prefix_cisco_xr
-            else if (type == "6wind_linux")         dst = dst_prefix_6wind_linux
-
-            if ( dst != "") {
-            	system("ln -s " file " " dst)
-            	print "cawk soft link built : " type " config: " file " -> " dst
-            }
+            continue
         }
 
+        cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_pattern "\""
+
+        while ((cmd | getline file) > 0) {
+
+            # take the name not the full path
+            split(file, path_parts, "/")
+            filename = path_parts[length(path_parts)]
+
+            # check if the device is allowed
+            if (allow_all || filename in allowed_files) {
+                type = "unknown"
+                type = check_config_type(file)
+                if (type == "unknown") {
+                    print "cawk error unknown configuration (skipped) " file
+                    continue
+                }
+
+                dst = "" 
+                if (type == "cisco_xe")                 dst = dst_prefix_cisco_xe
+                else if (type == "cisco_ios")           dst = dst_prefix_cisco_ios
+                else if (type == "cisco_viptela")       dst = dst_prefix_cisco_viptela
+                else if (type == "cisco_cedge")         dst = dst_prefix_cisco_cedge
+                else if (type == "juniper_junos")       dst = dst_prefix_juniper_junos
+                else if (type == "paloalto_panos")      dst = dst_prefix_paloalto_panos
+                else if (type == "nokia_sros")          dst = dst_prefix_nokia_sros
+                else if (type == "packetfilter_fwcli")  dst = dst_prefix_packetfilter_fwcli
+                else if (type == "iptables_fwcli")      dst = dst_prefix_iptables_fwcli
+                else if (type == "checkpoint_fwcli")    dst = dst_prefix_checkpoint_fwcli
+                else if (type == "huawei_vrp")          dst = dst_prefix_huawei_vrp
+                else if (type == "fortinet_fortios")    dst = dst_prefix_fortinet_fortios
+                else if (type == "cisco_xr")            dst = dst_prefix_cisco_xr
+                else if (type == "6wind_linux")         dst = dst_prefix_6wind_linux
+
+                if ( dst != "") {
+                    system("ln -s " file " " dst)
+                    print "cawk soft link built : " type " config: " file " -> " dst
+                } else {
+                    print "cawk error not supported " type " configuration (skipped) " file
+                }
+            }
+        }
         close(cmd)
     }
-
 }
-

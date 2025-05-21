@@ -62,7 +62,9 @@ $(foreach supplier,$(SUPPLIER_SCOPE),$(eval $(call supplier_template,$(supplier)
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all check_repo check_run check_run_audit tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_backup clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit catalog_repo catalog_run git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit archive_run archive_repo check_parallel check_update check sync_run sync_run_audit backup_run backup_run_audit restore_run restore_run_audit database_view database_sync_add database_sync_update database_sync_del database_email_add database_email_update database_email_del email_send email_send_audit database_target_sh
+.PHONY: all check_repo check_run check_run_audit tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_backup clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit catalog_repo catalog_run git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit archive_run archive_repo check_parallel check_update check sync_run sync_run_audit backup_run backup_run_audit restore_run restore_run_audit database_view database_sync_add database_sync_update database_sync_del database_email_add database_email_update database_email_del email_send email_send_audit database_target_sh tests_run_copy tests_run_audit_copy database_postaudit_add database_postaudit_del migrate
+
+# --------------------------------
 
 all:
 	echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -95,6 +97,12 @@ all:
 	echo "# gmake tests_repo : build tests associated to repo dir"
 	echo "# gmake tests_run : build tests associated to run dir"
 	echo "# gmake tests_run audit=AUDIT_NAME : build tests associated to run_audit dir"
+	echo "# gmake tests_run_audit : build tests associated to all audit=AUDIT_NAME run_audit dirs"
+	echo "# CAUTION : for update or migration purpose, it will replace all the same repo tests in the run_audit dir"
+	echo "# CAUTION : user specific tests will remaint in the run_audit dir"	
+	echo "# NOTE    : only available for audit=AUDIT_NAME assessments"
+	echo "# gmake tests_run_copy audit=AUDIT_NAME : copy tests from repo to audit=AUDIT_NAME (ref run_audit)"
+	echo "# gmake tests_run_audit_copy : copy tests from repo to all audit=AUDIT_NAMEs (ref all run_audit)"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
 	echo "# -- CAWK ASSESSMENT --------------------------------------------------------------------------------------------"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -106,8 +114,8 @@ all:
 	echo "# -- CAWK CHECK -------------------------------------------------------------------------------------------------"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
 	echo "# gmake check_repo : assess the confs with <repo> tests (build tests if not)"
-	echo "#  or gmake clean check_repo (run all suppliers)"
-	echo "#  or gmake clean check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
+	echo "#  or gmake check_repo (run all suppliers)"
+	echo "#  or gmake check_repo supplier=cisco-ios (or view_juniper-junos, etc.)"
 	echo "# gmake check_run : assess the confs with <run> tests (build tests if not)"
 	echo "#  or gmake check_run (run all suppliers)"
 	echo "#  or gmake check_run supplier=cisco-ios (or view_juniper-junos, etc.)"
@@ -147,17 +155,22 @@ all:
 	echo "#   - 2 field is the dst list of emails separated by comma (no space) like email1,email2,email3"
 	echo "#   - 3 field is the cc list of emails separated by comma (no space) like email1,email2,email3 or none"
 	echo "# gmake database_email_del audit=AUDIT_NAME : delete an entry in the cawk email database"
+	echo "# ---- post audit ----"
+	echo "# gmake database_postaudit_(add/del/update) audit=AUDIT_NAME"
+	echo "#  add/delete an entry in the cawk post audit database, where fields are separated by spaces :"
+	echo "#   - 1 field is the audit name"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
 	echo "# -- CAWK SYNC --------------------------------------------------------------------------------------------------"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
-	echo "# NOTE : only available for audit=AUDIT_NAME assessment"
-	echo "# NOTE : it relies on the cawk sync database (i.e.README)"
+	echo "# NOTE    : only available for audit=AUDIT_NAME assessment"
+	echo "# NOTE    : it relies on the cawk sync database (i.e.README)"
 	echo "# CAUTION : local confs files are removed during sync (confs/run_audit dir) (i.e.README)"
 	echo "# gmake sync_run audit=AUDIT_NAME : sync confs from a central repository to confs/run_audit dir"
 	echo "# gmake sync_run_audit : sync confs from a central repository to all run_audit dirs"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
 	echo "# -- CAWK EMAIL -------------------------------------------------------------------------------------------------"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
+	echo "# NOTE : only available for audit=AUDIT_NAME assessment"
 	echo "# gmake email_send audit=AUDIT_NAME : send an email to the audit list of emails"
 	echo "# gmake email_send_audit : send an email to all audits list of emails"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -168,6 +181,7 @@ all:
 	echo "# gmake restore_run audit=AUDIT_NAME file=BACKUP_PATH_FILE : restore all data from file_path"
 	echo "# gmake backup_run_audit : backup cawk database and all data linked to all audit=AUDIT_NAMEs in backup dir"
 	echo "# gmake restore_run_audit file=BACKUP_PATH_FILE : restore database and all data from file_path"
+	echo "# gmake migrate file=BACKUP_PATH_FILE : run several targets to migrate to a new cakw version (i.e.README)"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
 	echo "# -- CAWK CATALOG -----------------------------------------------------------------------------------------------"
 	echo "# ---------------------------------------------------------------------------------------------------------------"
@@ -191,6 +205,9 @@ else
 	mkdir $(REPORT_PATH)/run_${audit}
 	mkdir $(REPORT_PATH)/run_${audit}/archives
 	mkdir $(LOGS_PATH)/run_${audit}
+	gmake database_postaudit_add audit=${audit}
+	gmake database_email_add audit=${audit} dst=none cc=none
+	gmake database_sync_add audit=${audit} dir=none regex=.* scope=none
 endif
 endif
 	echo "cawk create_audit end ----"
@@ -207,6 +224,9 @@ else
 	rm -f -r $(EXCEPTION_PATH)/run_${audit}
 	rm -f -r $(REPORT_PATH)/run_${audit}
 	rm -f -r $(LOGS_PATH)/run_${audit}
+	grep "^${audit}" $(DATABASE_PATH)/db_sync.txt > /dev/null && sed -i "/^${audit}/d" $(DATABASE_PATH)/db_sync.txt || true
+	grep "^${audit}" $(DATABASE_PATH)/db_postaudit.txt > /dev/null && sed -i "/^${audit}/d" $(DATABASE_PATH)/db_postaudit.txt || true
+	grep "^${audit}" $(DATABASE_PATH)/db_email.txt > /dev/null && sed -i "/^${audit}/d" $(DATABASE_PATH)/db_email.txt || true
 endif
 endif
 	echo "cawk delete_audit end ----"
@@ -218,18 +238,26 @@ list_audit:
 # --------------------------------
 
 database_view:
+	touch $(DATABASE_PATH)/db_sync.txt
+	touch $(DATABASE_PATH)/db_email.txt
+	touch $(DATABASE_PATH)/db_postaudit.txt
 	echo "\n-------------------------------------------"
 	echo "cawk view $(DATABASE_PATH)/db_sync.txt"
 	echo "-------------------------------------------"
-	cat $(DATABASE_PATH)/db_sync.txt
+	cat $(DATABASE_PATH)/db_sync.txt | sort || true
 	echo "\n-------------------------------------------"
 	echo "cawk view $(DATABASE_PATH)/db_email.txt"
 	echo "-------------------------------------------"
-	cat $(DATABASE_PATH)/db_email.txt
-	echo "-------------------------------------------\n"
+	cat $(DATABASE_PATH)/db_email.txt | sort || true
+	echo "\n-------------------------------------------"
+	echo "cawk view $(DATABASE_PATH)/db_postaudit.txt"
+	echo "-------------------------------------------"
+	cat $(DATABASE_PATH)/db_postaudit.txt | sort || true
+	echo "\n-------------------------------------------"
 	echo "cawk database_view done ----"
 
 database_sync_add:
+	touch $(DATABASE_PATH)/db_sync.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
@@ -245,17 +273,16 @@ else
 ifeq ($(strip $(scope)),)
 	echo "cawk error scope=SCOPE_FILE/none must be set ----"
 else
-	echo "cawk update $(DATABASE_PATH)/db_sync.txt"
 	echo "${audit} ${dir} ${regex} ${scope}" >> $(DATABASE_PATH)/db_sync.txt
 endif
 endif
 endif
 endif
 endif
-	gmake database_view
 	echo "cawk database_sync_add end ----"
 
 database_sync_update:
+	touch $(DATABASE_PATH)/db_sync.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
@@ -279,10 +306,10 @@ endif
 endif
 endif
 endif
-	gmake database_view
 	echo "cawk database_sync_add end ----"
 
 database_sync_del:
+	touch $(DATABASE_PATH)/db_sync.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
@@ -293,10 +320,53 @@ else
 	sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_sync.txt
 endif
 endif
-	gmake database_view
 	echo "cawk database_sync_add end ----"
 
+database_postaudit_add:
+	touch $(DATABASE_PATH)/db_postaudit.txt
+ifeq ($(strip $(audit)),)
+	echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	echo "cawk error audit=${audit} do not exist  ----"
+else
+	echo "cawk update $(DATABASE_PATH)/db_postaudit.txt"
+	echo "${audit}" >> $(DATABASE_PATH)/db_postaudit.txt
+endif
+endif
+	echo "cawk database_postaudit_add end ----"
+
+database_postaudit_update:
+	touch $(DATABASE_PATH)/db_postaudit.txt
+ifeq ($(strip $(audit)),)
+	echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	echo "cawk error audit=${audit} do not exist  ----"
+else
+	echo "cawk update $(DATABASE_PATH)/db_postaudit.txt"
+	sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_postaudit.txt
+	echo "${audit}" >> $(DATABASE_PATH)/db_postaudit.txt
+endif
+endif
+	echo "cawk database_postaudit_add end ----"
+
+database_postaudit_del:
+	touch $(DATABASE_PATH)/db_postaudit.txt
+ifeq ($(strip $(audit)),)
+	echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
+	echo "cawk error audit=${audit} do not exist  ----"
+else
+	echo "cawk update $(DATABASE_PATH)/db_postaudit.txt"
+	sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_postaudit.txt
+endif
+endif
+	echo "cawk database_postaudit_add end ----"
+
 database_email_add:
+	touch $(DATABASE_PATH)/db_email.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
@@ -306,13 +376,13 @@ else
 	cc=$(strip $(cc))
 	if [ -z "$$cc" ]; then cc=none; fi; \
 	echo "cawk update $(DATABASE_PATH)/db_email.txt"; \
-	echo "$(audit) $(dst) $$cc" >> $(DATABASE_PATH)/db_email.txt; \
-	gmake database_view
+	echo "$(audit) $(dst) $$cc" >> $(DATABASE_PATH)/db_email.txt
 endif
 endif
 	echo "cawk email_database_add end ----"
 
 database_email_update:
+	touch $(DATABASE_PATH)/db_email.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
@@ -324,25 +394,24 @@ else
 	echo "cawk update $(DATABASE_PATH)/db_email.txt"; \
 	sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_email.txt
 	echo "${audit} ${dst} ${cc}" >> $(DATABASE_PATH)/db_email.txt
-	gmake database_view
 endif
 endif
 	echo "cawk email_database_update end ----"
 
 database_email_del:
+	touch $(DATABASE_PATH)/db_email.txt
 ifeq ($(strip $(audit)),)
 	echo "cawk error audit=AUDIT_NAME must be set ----"
 else
 	echo "cawk update $(DATABASE_PATH)/db_email.txt"
 	sed -i "/^$(audit)/d" $(DATABASE_PATH)/db_email.txt
-	gmake database_view
 endif
 	echo "cawk email_database_del end ----"
 
 # --------------------------------
 
-sync_run: clean tests_target_common database_target_sh
-	if [ ! -f $(FILE) ]; then \
+sync_run: clean_tmp tests_target_common database_target_sh
+	if [ ! -f $(DATABASE_PATH_SH)/database_sync.script ]; then \
 		echo "cawk error: $(DATABASE_PATH_SH)/database_sync.script does not exist, execution skipped ----"; \
 	else \
 		echo "cawk $(DATABASE_PATH_SH)/database_sync.script execution ----"; \
@@ -359,13 +428,13 @@ else
 	echo "cawk sync files from $(DATABASE_PATH)/db_sync.txt"
 	grep "^$(audit)" $(DATABASE_PATH)/db_sync.txt | while read line; do \
 		paths=$$(echo "$$line" | gawk '{print $$2}'); \
-		regex=$$(echo "$$line" | gawk '{print $$3}'); \
-		scope=$$(echo "$$line" | gawk '{if ( $$4 == "") { print "none"; } else { print $$4; }}'); \
-		if [ "$$scope" = "none" ]; then \
-			cd $(CONFS_PATH)/run_$(audit) && ../../$(COMMON_PATH)/sync_cawk_conf.gawk $$paths $$regex && cd ../.. ; \
+		if [ "$$paths" != "none" ]; then \
+			regex=$$(echo "$$line" | gawk '{print $$3}'); \
+			scope=$$(echo "$$line" | gawk '{if ( $$4 == "") { print "none"; } else { print $$4; }}'); \
+			cd $(CONFS_PATH)/run_$(audit) && ../../$(COMMON_PATH)/sync_cawk_conf.gawk "$$paths" "$$regex" "../../$$scope" && cd ../.. ; \
 		else \
-			cd $(CONFS_PATH)/run_$(audit) && ../../$(COMMON_PATH)/sync_cawk_conf.gawk $$paths $$regex | egrep -f ../../$$scope && cd ../.. ; \
-		fi; \
+			echo "cawk error: $(DATABASE_PATH)/db_sync.txt audit $$(echo "$$line" | gawk '{print $$1}') path does not exist, execution skipped ----"; \
+		fi \
 	done
 	echo "cawk sync_run_audit ${audit} done ----"
 endif
@@ -377,6 +446,31 @@ sync_run_audit:
 	done
 	gmake list_audit
 	echo "cawk sync_run_audit all audit done ----"
+
+# --------------------------------
+
+postaudit_run: clean tests_target_common database_target_sh
+ifeq ($(strip $(audit)),)
+	echo "cawk error audit=AUDIT_NAME must be set ----"
+	echo "cawk postaudit_run done ----"
+else
+	if [ ! -f $(DATABASE_PATH_SH)/database_postaudit.script ]; then \
+		echo "cawk error: $(DATABASE_PATH_SH)/database_postaudit.script does not exist, execution skipped ----"; \
+	else \
+		echo "cawk $(DATABASE_PATH_SH)/database_postaudit.script execution ----"; \
+		$(DATABASE_PATH_SH)/database_postaudit.script ${audit}; \
+	fi
+	echo "cawk postaudit_run ${audit} done ----"
+endif
+
+postaudit_run_audit:
+	cat $(DATABASE_PATH)/db_postaudit.txt | while read line; do \
+		echo $$line ; \
+		audit=$$line; \
+		gmake postaudit_run audit=$$audit; \
+	done
+	gmake list_audit
+	echo "cawk postaudit_run_audit all audit done ----"
 
 # --------------------------------
 
@@ -399,17 +493,17 @@ else
 			echo "cawk error no csv files found in $(REPORT_PATH)/run_${audit} ----"; \
 			exit 0; \
 		fi; \
-		zip -j -9 -q $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip $$(find $(REPORT_PATH)/run_${audit} -name '*all.full.security.csv' -o -name '*all.full.audit.csv' -o -name '*all.full.summary.txt' -type f) || true; \
+		zip -j -9 -q $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip $$(find $(REPORT_PATH)/run_${audit} -name '*all.full.security.csv' -o -name '*all.full.audit.csv' -o -name '*all.full.summary.txt' -type f -o -name '*all.full.exceptions.csv' -type f) || true; \
 		echo "cawk sending audit ${audit} to $$dst ----"; \
 		if [ "$$cc" != "none" ]; then \
 			if [ -n "$$(find $(REPORT_PATH)/run_${audit} -name '*all.full.summary.txt' -type f)" ]; then \
-				cat $(REPORT_PATH)/run_${audit}/*all.full.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt $(REPORT_PATH)/run_${audit}/*all.full.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
 			else \
 				echo "cawk reporting" | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
 			fi; \
 		else \
 			if [ -n "$$(find $(REPORT_PATH)/run_${audit} -name '*all.full.summary.txt' -type f)" ]; then \
-				cat $(REPORT_PATH)/run_${audit}/*all.full.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt $(REPORT_PATH)/run_${audit}/*all.full.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
 			else \
 				echo "cawk reporting" | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
 			fi; \
@@ -479,6 +573,16 @@ else
 	fi
 endif
 
+migrate:
+ifeq ($(strip $(file)),)
+	echo "cawk error file=BACKUP_PATH_FILE must be set ----"
+	exit 0
+endif
+	cp ${file} backup/
+	gmake restore_run_audit file=backup/$(notdir ${file})
+	gmake tests_run_audit_copy
+	gmake tests_common tests_run_audit
+
 # --------------------------------
 
 check_supplier:
@@ -531,8 +635,46 @@ tests_common: tests_target_common
 tests_repo: tests_target_repo
 	echo "cawk tests_repo done ----"
 
+tests_run_copy:
+ifeq ($(strip $(audit)),)
+	echo "cawk error audit=AUDIT_NAME must be set ----"
+else
+	@for supplier in $(SUPPLIER_SCOPE); do \
+		if [ ! -d "$(TESTS_PATH)/run_${audit}/tests.$$supplier" ]; then \
+			echo "cawk error: $(TESTS_PATH)/run_${audit}/tests.$$supplier does not exist ----"; \
+		elif [ -d "$(TESTS_PATH)/repo/tests.$$supplier" ]; then \
+			find $(TESTS_PATH)/repo/tests.$$supplier -name "*.template" -o -name "*.m4" -exec cp {} $(TESTS_PATH)/run_${audit}/tests.$$supplier/ \; 2>/dev/null || true; \
+			echo "cawk tests_repo_copy $$supplier to run_${audit} done ----"; \
+		else \
+			echo "cawk error: $(TESTS_PATH)/repo/tests.$$supplier does not exist ----"; \
+		fi \
+	done
+endif
+
+RUN_DIRS := $(shell find tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort | uniq || echo "")
+tests_run_audit_copy:
+	@for dir in $(RUN_DIRS); do \
+		audit=$$dir; \
+		for supplier in $(SUPPLIER_SCOPE); do \
+			if [ ! -d "$(TESTS_PATH)/run_$${audit}/tests.$$supplier" ]; then \
+				echo "cawk error: $(TESTS_PATH)/run_$${audit}/tests.$$supplier does not exist ----"; \
+			elif [ -d "$(TESTS_PATH)/repo/tests.$$supplier" ]; then \
+				find $(TESTS_PATH)/repo/tests.$$supplier -name "*.template" -o -name "*.m4" -exec cp {} $(TESTS_PATH)/run_$${audit}/tests.$$supplier/ \; 2>/dev/null || true; \
+				echo "cawk tests_repo_copy $$supplier to run_$${audit} done ----"; \
+			else \
+				echo "cawk error: $(TESTS_PATH)/repo/tests.$$supplier does not exist ----"; \
+			fi \
+		done \
+	done
+
 tests_run: tests_target_run
-	echo "cawk tests_run done ----"
+	echo "cawk tests_run $$audit done ----"
+
+tests_run_audit:
+	@for dir in $(RUN_DIRS); do \
+		gmake tests_run audit=$$dir; \
+	done
+	echo "cawk tests_run_audit end ----"
 
 %.gawk: %.gawk.template
 	sed -f support/tests.sed $< > $@ || true
@@ -1153,11 +1295,15 @@ ifeq ($(strip $(audit)),)
 		echo "------------------------------------" ;\
 		echo "---- Assessment $(test) devices" ;\
 		echo "------------------------------------" ;\
-		cat $(REPORT_PATH)/run/assessment.$(test).csv ;\
+		if [ -f $(REPORT_PATH)/run/assessment.$(test).csv ]; then \
+			cat $(REPORT_PATH)/run/assessment.$(test).csv; \
+		fi; \
 		echo "-------------------------" ;\
 		echo "---- Summary $(test)" ;\
 		echo "-------------------------" ;\
-		cat $(REPORT_PATH)/run/assessment.$(test).summary.txt ;\
+		if [ -f $(REPORT_PATH)/run/assessment.$(test).summary.txt ]; then \
+			cat $(REPORT_PATH)/run/assessment.$(test).summary.txt; \
+		fi; \
 	)
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
@@ -1184,11 +1330,15 @@ ifeq ($(strip $(audit)),)
 	echo "--------------------------------------"
 	echo "---- Assessment $(supplier) devices"
 	echo "--------------------------------------"
-	cat $(REPORT_PATH)/run/assessment.$(supplier).csv
+	if [ -f $(REPORT_PATH)/run/assessment.$(supplier).csv ]; then \
+		cat $(REPORT_PATH)/run/assessment.$(supplier).csv; \
+	fi
 	echo "------------------------------"
 	echo " ---- Summary $(supplier)"
 	echo "------------------------------"
-	cat $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
+	if [ -f $(REPORT_PATH)/run/assessment.$(supplier).summary.txt ]; then \
+		cat $(REPORT_PATH)/run/assessment.$(supplier).summary.txt; \
+	fi
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
 	echo "cawk error audit=${audit} do not exist  ----"
@@ -1213,10 +1363,14 @@ endif
 view_repo_error: check_supplier
 ifeq ($(strip $(supplier)),)
 	$(foreach test,$(SUPPLIER_SCOPE),\
-		cat $(REPORT_PATH)/repo/assessment.$(test).csv | grep ";error" | sort | uniq || true ;\
+		if [ -f $(REPORT_PATH)/repo/assessment.$(test).csv ]; then \
+			cat $(REPORT_PATH)/repo/assessment.$(test).csv | grep ";error" | sort | uniq; \
+		fi ;\
 	)
 else
-	cat $(REPORT_PATH)/repo/assessment.$(supplier).csv | grep ";error" | sort | uniq || true
+	if [ -f $(REPORT_PATH)/repo/assessment.$(supplier).csv ]; then \
+		cat $(REPORT_PATH)/repo/assessment.$(supplier).csv | grep ";error" | sort | uniq; \
+	fi
 endif
 	echo "cawk view_repo_error done ----"
 
@@ -1224,18 +1378,26 @@ view_run_error: check_supplier
 ifeq ($(strip $(audit)),)
 ifeq ($(strip $(supplier)),)
 	$(foreach test,$(SUPPLIER_SCOPE),\
-		cat $(REPORT_PATH)/run/assessment.$(test).csv | grep ";error" | sort | uniq || true ;\
+		if [ -f $(REPORT_PATH)/run/assessment.$(test).csv ]; then \
+			cat $(REPORT_PATH)/run/assessment.$(test).csv | grep ";error" | sort | uniq; \
+		fi ;\
 	)
 else
-	cat $(REPORT_PATH)/run/assessment.$(supplier).csv | grep ";error" | sort | uniq || true
+	if [ -f $(REPORT_PATH)/run/assessment.$(supplier).csv ]; then \
+		cat $(REPORT_PATH)/run/assessment.$(supplier).csv | grep ";error" | sort | uniq; \
+	fi
 endif
 else
 ifeq ($(strip $(supplier)),)
 	$(foreach test,$(SUPPLIER_SCOPE),\
-		cat $(REPORT_PATH)/run_${audit}/assessment.$(test).csv | grep ";error" | sort | uniq 2>/dev/null  || true ;\
+		if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(test).csv ]; then \
+			cat $(REPORT_PATH)/run_${audit}/assessment.$(test).csv | grep ";error" | sort | uniq; \
+		fi ;\
 	)
 else
-	cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv | grep ";error" | sort | uniq 2>/dev/null  || true
+	if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv ]; then \
+		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv | grep ";error" | sort | uniq; \
+	fi
 endif
 endif
 	echo "cawk view_run_error done ----"
@@ -1282,6 +1444,8 @@ clean: clean_tmp
 	rm -f $(TESTS_PATH)/run/*/*.gawk || true
 	rm -f $(TESTS_PATH)/run_*/*/*.gawk || true
 	rm -f *.tar *.tar.gz || true
+	find $(TESTS_COMMON_PATH) $(DATABASE_PATH_SH) $(EXCEPTION_PATH) $(TESTS_PATH)/repo $(TESTS_PATH)/run -type f -exec touch {} \; || true
+	if [ -d "$(TESTS_PATH)/run_*" ]; then find $(TESTS_PATH)/run_* -type f -exec touch {} \; || true; fi
 	echo "cawk clean done ----"
 
 clean_backup:
@@ -1376,7 +1540,12 @@ endif
 
 gitcheckdist:
 	echo "---- to be done : check databases"
-	ls -al $(DATABASE_PATH)/*
+	rm $(DATABASE_PATH)/db_email.txt
+	rm $(DATABASE_PATH)/db_postaudit.txt
+	rm $(DATABASE_PATH)/db_sync.txt
+	touch $(DATABASE_PATH)/db_email.txt 
+	touch $(DATABASE_PATH)/db_postaudit.txt
+	touch $(DATABASE_PATH)/db_sync.txt
 	echo "---- to be done : check remaining debug code"
 	grep DEBUG tests/*/*/* || true
 	echo "---- done : call system check"
@@ -1423,46 +1592,47 @@ gitpush:
 check:
 	rm -f  checkdiff/checkdiff.new
 	
-	gmake clean check_repo 
+	gmake check_repo 
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_repo supplier=cisco-ios
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-
-	gmake clean check_repo JSON=no MAKE_PARALLEL=no
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_repo JSON=no MAKE_PARALLEL=yes
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_repo JSON=yes MAKE_PARALLEL=yes
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_repo JSON=yes MAKE_PARALLEL=no
+	gmake check_repo supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
-	gmake clean check_run
+	gmake check_repo JSON=no MAKE_PARALLEL=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run supplier=cisco-ios
+	gmake check_repo JSON=no MAKE_PARALLEL=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	gmake check_repo JSON=yes MAKE_PARALLEL=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	gmake check_repo JSON=yes MAKE_PARALLEL=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
-	gmake clean check_run JSON=no MAKE_PARALLEL=no
+	gmake check_run
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run JSON=no MAKE_PARALLEL=yes
+	gmake check_run supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run JSON=yes MAKE_PARALLEL=yes
+
+	gmake check_run JSON=no MAKE_PARALLEL=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run JSON=yes MAKE_PARALLEL=no
+	gmake check_run JSON=no MAKE_PARALLEL=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	gmake check_run JSON=yes MAKE_PARALLEL=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	gmake check_run JSON=yes MAKE_PARALLEL=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
 	gmake create_audit audit=client1_skffqsfqhsf10948494
-	gmake clean check_run audit=client1_skffqsfqhsf10948494
+	gmake sync_run audit=client1_skffqsfqhsf10948494
+	gmake check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake delete_audit audit=client2_mqsdhqndqqos198440
 	gmake create_audit audit=client2_mqsdhqndqqos198440
-	gmake clean check_run audit=client2_mqsdhqndqqos198440
+	gmake check_run audit=client2_mqsdhqndqqos198440
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run audit=client2_mqsdhqndqqos198440 supplier=cisco-ios
+	gmake check_run audit=client2_mqsdhqndqqos198440 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 	
 	gmake clean
@@ -1494,9 +1664,9 @@ check:
 	gmake delete_audit audit=client2_mqsdhqndqqos198440
 	gmake restore_run_audit file=backup/run_audit_$(shell date +%Y-%m-%d).tar.gz
 	
-	gmake clean check_run audit=client1_skffqsfqhsf10948494
+	gmake check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake clean
@@ -1504,9 +1674,9 @@ check:
 	gmake delete_audit audit=client2_mqsdhqndqqos198440
 	gmake restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(shell date +%Y-%m-%d).tar.gz
 
-	gmake clean check_run audit=client1_skffqsfqhsf10948494
+	gmake check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake clean
@@ -1515,15 +1685,16 @@ check:
 
 	gmake create_audit audit=client1_skffqsfqhsf10948494
 	rm -r -f confs/run*client1_skffqsfqhsf10948494/*cisco-ios* tests/run*client1_skffqsfqhsf10948494/*cisco-ios* || true
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no supplier=cisco-ios
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes supplier=cisco-ios
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes supplier=cisco-ios
-	gmake clean check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no supplier=cisco-ios
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
+	gmake clean_force
 
 	echo "------------------------------------------------------"
 	echo "------------------------------------------------------"
@@ -1534,7 +1705,6 @@ check:
 	echo "CHECK MUST BE OK -------------------------------------"
 	echo "------------------------------------------------------"
 	echo "------------------------------------------------------"
-	gmake clean_force
 	echo "cawk check done ----"
 
 check_parallel:

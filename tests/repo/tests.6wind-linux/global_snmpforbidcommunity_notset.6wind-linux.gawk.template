@@ -34,7 +34,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{2}community[ ]/ && block == 2 {
     if (match($0, /(public|private)$/)) {
-        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / forbidden snmp community "$0, FNR, "high","error");
+        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block not compliant / forbidden snmp community "$0, FNR, "high","error");
         pass = 0;
     }
     next;
@@ -47,7 +47,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{3}authorization/ && block == 2 {
     if (!match($0, /read-only$/)) {
-        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / forbidden authorization : "$0, FNR, "high", "error");
+        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block not compliant / forbidden authorization : "$0, FNR, "high", "error");
         pass = 0;
     }
     next;
@@ -65,11 +65,11 @@ BEGINFILE {
 
 ENDFILE {
     if (enable) {
-        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block not compliant / enabled true is not set", FNR, "high", "error");
+        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block not compliant / enabled true is not set", FNR, "high", "error");
         pass = 0;
     }
     if (pass) {
-        print_err("global_snmpforbidcommunity_notset.gawk", "<vrf main><snmp> block is compliant", FNR, high, "pass");
+        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block is compliant", FNR, high, "pass");
     }
 }
 
