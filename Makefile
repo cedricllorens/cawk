@@ -1796,6 +1796,7 @@ gitcheckdist:
 
 git:
 	# gmake gitcheckdist
+	# find confs -type f -exec touch {} \; || true
 	# git add .
 	# git commit -m "*$(CAWK_RELEASE) ref ChangeLog"
 
@@ -1806,6 +1807,7 @@ gitpush:
 
 check:
 	gmake clean clean_force
+	find confs -type f -exec touch {} \; || true
 	rm -f  checkdiff/checkdiff.new
 	
 	gmake check_repo 
