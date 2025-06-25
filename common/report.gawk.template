@@ -163,154 +163,147 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
-	print "--------------------";
-	print "---- test stats ----";
-	print "--------------------";
-	print "number_of_checks " length(files) * length(tests);
-	print "number_of_files " length(files); 
-	print "number_of_tests " length(tests);
-
-	# ------------------------------------------------------------------
-
-	print "----------------------";
-	print "---- output stats ----";
-	print "----------------------";
-	print "number_of_pass_error_warning_psirt " pass + error + warning + psirt;
+	print "--------------------------";
+	print "---- assessment stats ----";
+	print "--------------------------";
+	print "number_of_files  = " length(files); 
+	print "number_of_checks = " pass + error + warning + psirt;
+	print "";
 
 	# ------------------------------------------------------------------
 
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning + psirt))
-		print "number_of_pass " pass " (" decimal "%)";
+		print "number_of_pass = " pass " (" decimal "%)";
 	} else {
-		print "number_of_pass " pass " (0.0%)";
+		print "number_of_pass = " pass " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_high / pass )
-		print "\tnumber_of_pass_high " pass_high " (" decimal "%)";
+		print "\tnumber_of_pass_high   = " pass_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_high " pass_high " (0.0%)";
+		print "\tnumber_of_pass_high   = " pass_high " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_medium / pass )
-		print "\tnumber_of_pass_medium " pass_medium " (" decimal "%)";
+		print "\tnumber_of_pass_medium = " pass_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_medium " pass_medium " (0.0%)";
+		print "\tnumber_of_pass_medium = " pass_medium " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_low / pass )
-		print "\tnumber_of_pass_low " pass_low " (" decimal "%)";
+		print "\tnumber_of_pass_low    = " pass_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_low " pass_low " (0.0%)";
+		print "\tnumber_of_pass_low    = " pass_low " (0.0%)";
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_info / pass )
-		print "\tnumber_of_pass_info " pass_info " (" decimal "%)";
+		print "\tnumber_of_pass_info   = " pass_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_pass_info " pass_info " (0.0%)";
+		print "\tnumber_of_pass_info   = " pass_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
 
 	if ( ( pass + error + warning) > 0) {
 		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning))
-		print "number_of_error " error " (" decimal "%)";
+		print "number_of_error = " error " (" decimal "%)";
 	} else {
-		print "number_of_error " error " (0.0%)";
+		print "number_of_error = " error " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_high / error )
-		print "\tnumber_of_error_high " error_high " (" decimal "%)";
+		print "\tnumber_of_error_high   = " error_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_high " error_high " (0.0%)";
+		print "\tnumber_of_error_high   = " error_high " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_medium / error )
-		print "\tnumber_of_error_medium " error_medium " (" decimal "%)";
+		print "\tnumber_of_error_medium = " error_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_medium " error_medium " (0.0%)";
+		print "\tnumber_of_error_medium = " error_medium " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_low / error )
-		print "\tnumber_of_error_low " error_low " (" decimal "%)";
+		print "\tnumber_of_error_low    = " error_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_low " error_low " (0.0%)";
+		print "\tnumber_of_error_low    = " error_low " (0.0%)";
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_info / error )
-		print "\tnumber_of_error_info " error_info " (" decimal "%)";
+		print "\tnumber_of_error_info   = " error_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_error_info " error_info " (0.0%)";
+		print "\tnumber_of_error_info   = " error_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
 
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning + psirt))
-		print "number_of_warning " warning " (" decimal "%)";
+		print "number_of_warning = " warning " (" decimal "%)";
 	} else {
-		print "number_of_warning " warning " (0.0%)";
+		print "number_of_warning = " warning " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_high / warning )
-		print "\tnumber_of_warning_high " warning_high " (" decimal "%)";
+		print "\tnumber_of_warning_high   = " warning_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_high " warning_high " (0.0%)";
+		print "\tnumber_of_warning_high   = " warning_high " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_medium / warning )
-		print "\tnumber_of_warning_medium " warning_medium " (" decimal "%)";
+		print "\tnumber_of_warning_medium = " warning_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_medium " warning_medium " (0.0%)";
+		print "\tnumber_of_warning_medium = " warning_medium " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_low / warning )
-		print "\tnumber_of_warning_low " warning_low " (" decimal "%)";
+		print "\tnumber_of_warning_low    = " warning_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_low " warning_low " (0.0%)";;
+		print "\tnumber_of_warning_low    = " warning_low " (0.0%)";;
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_info / warning )
-		print "\tnumber_of_warning_info " warning_info " (" decimal "%)";
+		print "\tnumber_of_warning_info   = " warning_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_info " warning_info " (0.0%)";
+		print "\tnumber_of_warning_info   = " warning_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
 
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * psirt / ( pass + error + warning + psirt))
-		print "number_of_psirt " psirt " (" decimal "%)";
+		print "number_of_psirt = " psirt " (" decimal "%)";
 	} else {
-		print "number_of_psirt " psirt " (0.0%)";
+		print "number_of_psirt = " psirt " (0.0%)";
 	}
 
 	if ( psirt > 0 ) {
 		decimal = sprintf("%.1f", 100 * psirt_high / psirt )
-		print "\tnumber_of_psirt_high " psirt_high " (" decimal "%)";
+		print "\tnumber_of_psirt_high   = " psirt_high " (" decimal "%)";
 	} else {
-		print "\tnumber_of_psirt_high " psirt_high " (0.0%)";
+		print "\tnumber_of_psirt_high   = " psirt_high " (0.0%)";
 	}
 
 	if ( psirt > 0 ) {
 		decimal = sprintf("%.1f", 100 * psirt_medium / psirt )
-		print "\tnumber_of_psirt_medium " psirt_medium " (" decimal "%)";
+		print "\tnumber_of_psirt_medium = " psirt_medium " (" decimal "%)";
 	} else {
-		print "\tnumber_of_psirt_medium " psirt_medium " (0.0%)";
+		print "\tnumber_of_psirt_medium = " psirt_medium " (0.0%)";
 	}
 
 	if ( psirt > 0 ) {
 		decimal = sprintf("%.1f", 100 * psirt_low / psirt )
-		print "\tnumber_of_psirt_low " psirt_low " (" decimal "%)";
+		print "\tnumber_of_psirt_low    = " psirt_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_psirt_low " psirt_low " (0.0%)";
+		print "\tnumber_of_psirt_low    = " psirt_low " (0.0%)";
 	}
 
 	if ( psirt > 0 ) {
 		decimal = sprintf("%.1f", 100 * psirt_info / psirt )
-		print "\tnumber_of_psirt_info " psirt_info " (" decimal "%)";
+		print "\tnumber_of_psirt_info   = " psirt_info " (" decimal "%)";
 	} else {
-		print "\tnumber_of_psirt_info " psirt_info " (0.0%)";
+		print "\tnumber_of_psirt_info   = " psirt_info " (0.0%)";
 	}
 
 	# ------------------------------------------------------------------
@@ -348,35 +341,35 @@ ENDFILE {
 	
 	# Sort the test names based on their counts and print in descending order
 	asorti(tests_error_count_high, sorted_names, "@val_num_desc")
-	print "number_of_error_high "error_high;
+	print "number_of_error_high = "error_high;
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_high[name] > 0) {
-			print "\t" tests_error_count_high[name] " " name;
+			print "\t" name " = " tests_error_count_high[name];
 		}
 	}
 	asorti(tests_error_count_medium, sorted_names, "@val_num_desc")
-	print "number_of_error_medium "error_medium;
+	print "number_of_error_medium = "error_medium;
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_medium[name] > 0) {
-			print "\t" tests_error_count_medium[name] " " name;
+			print "\t" name " = " tests_error_count_medium[name];
 		}
 	}
 	asorti(tests_error_count_low, sorted_names, "@val_num_desc")
-	print "number_of_error_low "error_low;
+	print "number_of_error_low = "error_low;
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_low[name] > 0) {
-			print "\t" tests_error_count_low[name] " " name;
+			print "\t" name " = " tests_error_count_low[name];
 		}
 	}
 	asorti(tests_error_count_info, sorted_names, "@val_num_desc")
-	print "number_of_error_info "error_info;
+	print "number_of_error_info = "error_info;
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_info[name] > 0) {
-			print "\t" tests_error_count_info[name] " " name;
+			print "\t" name " = " tests_error_count_info[name];
 		}
 	}
 }

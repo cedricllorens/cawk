@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v2.6.0
+CAWK_RELEASE = v2.7.0
 
 # --------------- cawk parallel options
 # enable parallel : yes/no
@@ -29,3 +29,8 @@ FIND_CONF_SELECT = ! -type d
 # --------------- json specific parameters
 # if set to yes json reporting is activated
 JSON ?= no
+
+# --------------- deadbeef specific parameters
+# if set to yes deadbeef support is activated
+DEADBEEF = no
+DEADBEEF_THRESHOLD_DAYS ?= 30

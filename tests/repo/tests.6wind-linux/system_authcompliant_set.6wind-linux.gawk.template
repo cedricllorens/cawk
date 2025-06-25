@@ -33,7 +33,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{2}user[ ]/ && block == 2 {
     if (!match($0, /(admin)$/)) {
-        print_err("system_authcompliant_set.6wind-linux.gawk", "<system><auth> block not compliant / bad user : "$0, FNR, "high", "error");
+        print_err("system_authcompliant_set.6wind-linux.gawk", "<system><auth> block not compliant / bad user : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;

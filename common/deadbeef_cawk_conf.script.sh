@@ -10,16 +10,17 @@
 # This script detects configurations older than 30 days
 # Such a configuration is called a deadbeef configuration
 #
-# Usage: deadbeef_cawk_conf.gawk conf_file
+# Usage: deadbeef_cawk_conf.gawk threshold_days conf_file
 # ---------------------------------------------------------------------
 
-# Define the threshold in days
-THRESHOLD_DAYS=30
+# Check if at least two arguments are passed
+[ $# -lt 2 ] && exit 1
 
-# Check if at least one argument is passed
-[ $# -eq 0 ] && exit 1
+# First argument is the threshold in days
+THRESHOLD_DAYS=$1
+shift  # Remove first argument, leaving only files
 
-# Iterate over each argument passed to the script
+# Iterate over each remaining argument (files)
 for file in "$@"; do
   # Check if the file exists
   [ ! -e "$file" ] && continue
@@ -37,7 +38,8 @@ for file in "$@"; do
 
   # Calculate the difference in days
   if [ $(( (current_date - file_mod_date) / 86400 )) -ge $THRESHOLD_DAYS ]; then
-    echo "$file;cawk_deadbeef_internal_test;configuration older than $THRESHOLD_DAYS days;;info;warning"
+    file_date=$(date -d @"$file_mod_date" "+%m/%Y")
+    echo "$file;cawk_deadbeef_internal_test;configuration older than $THRESHOLD_DAYS days ($file_date) days;;info;warning"
   fi
 done
 

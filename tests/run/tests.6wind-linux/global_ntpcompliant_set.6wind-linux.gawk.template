@@ -43,7 +43,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{3}server/ && block == 2 {
     if (!match($0, /server [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/)) {
-        print_err("global_ntpcompliant_set.6wind-linux.gawk", "<vrf main><ntp> block not compliant / bad address : $0", FNR, "high", "error");
+        print_err("global_ntpcompliant_set.6wind-linux.gawk", "<vrf main><ntp> block not compliant / bad address : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;

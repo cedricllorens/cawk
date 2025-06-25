@@ -3,7 +3,34 @@
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
-# ------------------------------------------------------------
+ ------------------------------------------------------------
+
+v2.7.0 (June 2025):
+	Makefile:
+		- in reports:
+			- rename ".all.full." substring to ".all." substring for the final reports
+			- build *.idx (index of configurations assessed)
+			- build a new final psirt report (.all(.security./.audit./.psirt./.exception./.deadbeef.)) gathering 
+			all psirt errors
+			- build a timeline report for each final report (.all(.security./.audit./.psirt./.exception./.deadbeef.))
+			that could be injected into Microsoft PowerBI, Grafana, etc. as it includes a timestamp header for each error 
+			(year, month, day, week, number of devices assessed)
+			- for the final reports, the concept of deadbeef can be activated in Makefile.support.mk or by calling 
+			gmake with DEADBEEF like (gmake check_run audit=cawk DEADBEEF=yes):
+				- if DEADBEEF is set to "yes", then the deadbeef final report is generated and deadbeef devices 
+				are removed from other final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
+				- if DEADBEEF is set to "no", then the deadbeef final report is generated and deadbeef devices 
+				are kept in other final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
+				- a device is considered deadbeef by default if its configuration is older than the days value 
+				set in DEADBEEF_THRESHOLD_DAYS (default value is 30 days)
+		- in backup_run target, enforce that logs/run_audit/AUDIT_NAME logs are also backed up in the gzipped 
+		file (needed for cawk version migration)
+		- in migrate target, enforce the copy of tests by several finds rather than a single find command which can 
+		generate issues at some systems
+	Common:
+		- update the summary format for a better readability
+	Tests:
+		- updated 6wind-linux tests (enhanced test outputs)
 
 v2.6.0 (may 2025):
 	Tests:

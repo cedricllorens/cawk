@@ -28,7 +28,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%[^ ].*$/ && block {
     if (!match($0, /^[ ]{4}(interface|netconf-server|ntp|snmp|ssh-server|logging|\.\.)$/)) {
-        print_err("global_forbidservices_notset.6wind-linux.gawk", "<vrf main> block is not compliant / forbidden service : "$0, FNR, "high","error");
+        print_err("global_forbidservices_notset.6wind-linux.gawk", "<vrf main> block is not compliant / forbidden service : "rm_blank_before($0), FNR, "high","error");
         pass = 0;
     }
     next;

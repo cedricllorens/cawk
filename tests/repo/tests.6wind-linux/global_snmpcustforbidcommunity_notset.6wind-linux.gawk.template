@@ -43,7 +43,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{3}destination/ && block == 2 {
     if (match($0, /community (public|private)$/) || !match($0, /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/) || !match($0, /port 162[ ]/)) {
-        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / destination not compliant : "$0, FNR, "high", "error");
+        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / destination not compliant : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;
@@ -51,7 +51,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{4}authorization.*$/ && block == 2 {
     if (!match($0, /read-only$/)) {
-        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden authorizationi : "$0, FNR, "high", "error");
+        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden authorizationi : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;
@@ -59,7 +59,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{4}destination.*$/ && block == 2 {
     if (!match($0, /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/)) {
-        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden ip address : "$0, FNR, "high", "error");
+        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden ip address : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;
@@ -67,7 +67,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{4}community[ ].*$/ && block == 2 {
     if (match($0, /(private|public)$/)) {
-        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden snmp community : "$0, FNR, "high", "error");
+        print_err("snmp_custforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> cust block not compliant / forbidden snmp community : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     next;

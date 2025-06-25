@@ -141,7 +141,25 @@ confs, sending emeails, etc.
 		-- audit=AUDIT_NAME assessment --
 
 	- each of these directories has a sub-directory <archives>. each time an asessment is performed
-	  a tar.gz file is built and stored in this directory including the date in filename
+	  a tar.gz file is built and stored in this directory including the date in filename 
+	  (please refer to cawk assessment format for further information)
+
+	- there are intermediary reports and final reports, the intermediary reports are generated for each supplier
+	  and the final reports have the substrings (.all(.security./.audit./.psirt./.exception./.deadbeef.))
+	
+	- for all the final reports (.all.security. or .all.audit. or .all.psirt. or .all.exception.), a timeline 
+	  report is also generated in order to be injected into microsoft powerbi, grafana, etc. as it includes a 
+	  timestamp for each error modifying the line format (day, month, year, week, number of devices assessed)
+	  (please refer to cawk assessment format for further information)
+
+	- for the final reports, the concept of deadbeef that can be also activated in Makefile.support.mk or by 
+	  calling gmake with DEADBEEF like (gmake check_run audit=cawk DEADBEEF=yes):
+		- if DEAEDBEEF is set to "yes", then the deadbeef final report is generated and the deadbeef devices 
+		  are removed from the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
+		- if DEAEDBEEF is set to "no", then the deadbeef final report is generated and the deadbeef devices 
+		  are kept in the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
+		- a device is considered by default as deadbeef if the configuration is older than the days value 
+		set in DEADBEEF_THRESHOLD_DAYS  (default value is 30 days)
 
 - support : contains files helping for building cawk:
 
@@ -199,13 +217,22 @@ cawk allows the following status codes:
 # ---- cawk assessment format
 # ---------------------------
 
-cawk follows an assessment report format consisting of six fields:
-	1) conf_name: name of the configuration
-	2) test_name: name of the test
-	3) error_line: output describing the error
-	4) line_nb: line number
-	5) risk_level: high, medium, low, info
-	6) status_code: pass, error, warning, psirt
+cawk follows an assessment report format consisting of these fields:
+	---- timeline header ----
+	- year
+	- month
+	- day
+	- week
+	- number of devices assessed
+	---- timeline header ----
+	---- generic header ---------
+	conf_name: name of the configuration
+	test_name: name of the test
+	error_line: output describing the error
+	line_nb: line number
+	risk_level: high, medium, low, info
+	status_code: pass, error, warning, psirt
+	---- generic header ---------
 
 # ---------------------------------
 # ---- cawk security key indicators

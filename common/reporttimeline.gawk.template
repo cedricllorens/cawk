@@ -1,0 +1,45 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# this script generates a cawk timeline report
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+	FS = OFS = ","
+
+	# Read the .idx file and count the number of lines
+	idx_file = ARGV[1]
+	while (getline < idx_file > 0) {
+		num_idx_lines++
+	}
+	close(idx_file)
+
+	# Remove the .idx file from arguments to process the .csv file
+	ARGV[1] = ""
+}
+
+{
+	# Extract current date
+	"date +%Y-%m-%d" | getline current_date
+	split(current_date, date, "-")
+	year = date[1]
+	month = date[2]
+	day = date[3]
+
+	# Calculate week number (ISO week)
+	cmd = sprintf("date +%%V -d %s-%s-%s", year, month, day)
+	cmd | getline week_number
+	close(cmd)
+
+	# Add new fields
+	print year";"month";"day";"week_number";"num_idx_lines";"$0
+}
+

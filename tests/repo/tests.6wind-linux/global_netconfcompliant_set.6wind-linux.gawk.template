@@ -34,11 +34,11 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{2}address .*$/ && block == 2 {
     if (!match($0, /^[ ]{8}address [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[ ]/)) {
-        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad address : "$0, FNR, "high", "error");
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad address : "rm_blank_before($0), FNR, "high", "error");
         pass = 0;
     }
     if (!match($0, /port [0-9]+$/)) {
-        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad port : "$0, FNR, "high","error");
+        print_err("global_netconfcompliant_set.6wind-linux.gawk", "<vrf main><netconf-server> block not compliant / bad port : "rm_blank_before($0), FNR, "high","error");
         pass = 0;
     }
     next;
