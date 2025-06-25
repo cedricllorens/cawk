@@ -1805,6 +1805,7 @@ gitpush:
 # --------------------------------
 
 check:
+	gmake clean clean_force
 	rm -f  checkdiff/checkdiff.new
 	
 	gmake check_repo 
@@ -1909,7 +1910,7 @@ check:
 	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes supplier=cisco-ios
 	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no supplier=cisco-ios
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
-	gmake clean_force
+	gmake clean clean_force
 
 	echo "------------------------------------------------------"
 	echo "------------------------------------------------------"
