@@ -38,7 +38,7 @@ BEGINFILE {
 	lineaux = $0;
 	linenoaux = FNR;
 	aclout = 0;
-        block_aux = 1;
+	block_aux = 1;
 	next;
 }
 
@@ -47,7 +47,7 @@ BEGINFILE {
 	next;
 }
 
-/^!$/ && block_aux == 1 {
+( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
 	acl_summary();
 	block_aux = 0;
 }

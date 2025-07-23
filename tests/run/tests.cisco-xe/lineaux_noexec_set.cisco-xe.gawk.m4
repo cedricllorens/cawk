@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a line aux has no <exec-timeout 0 0>
+# purpose : checks if a line aux has <no exec>
 # author  : cedric llorens
 # ------------------------------------------------------------
 
@@ -17,43 +17,46 @@
 # ----
 
 function acl_summary() {
-	if ( exec == 1 ) {
-		print_err("lineaux_exectimeout00_set.cisco-ios.gawk",lineaux" : <exec-timeout 0 0> is set",linenoaux,"high","error");
-		pass = 1;
+	if ( noexec == 0 ) {
+		print_err("lineaux_noexec_set.cisco-xe.gawk",lineaux" <no exec> is missing",linenoaux,"high","error");
+		pass = 0;
 	}
 }
 
 # ----
 
+include(`cawk.m4')
+
 BEGIN {
 }
 
 BEGINFILE {
+	pass = 1;
 	block_aux = 0;
-	pass = 0;
 }
 
-/^line aux .*$/ {
+dnl MACRO BEGIN --------------------------
+
+m4_cawk_parse_block(
+
+`/^line aux .*$/',`
 	if ( block_aux == 1 ) acl_summary();
+	block_aux = 1;
 	lineaux = $0;
 	linenoaux = FNR;
-	exec = 0;
-        block_aux = 1;
-	next;
-}
+	noexec = 0;
+',
+`( /^!$/ || ( /^line / && !/ aux / ) )', `acl_summary();block_aux = 0;', 
 
-/^ exec-timeout 0 0/ && block_aux == 1 {
-	exec = 1;
-	next;
-}
+`/^ no exec$/',`noexec = 1;',
+`', `'
 
-( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
-	acl_summary();
-	block_aux = 0;
-}
+)
+
+dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( !pass ) print_err("lineaux_exectimeout00_set.cisco-ios.gawk","line aux <exec-timeout 0 0> is not set",0,"high","pass");
+	if ( pass ) print_err("lineaux_noexec_set.cisco-xe.gawk","line aux <no exec> is set",0,"high","pass");
 }
 
 END {

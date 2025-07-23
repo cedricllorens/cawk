@@ -14,6 +14,6 @@ include(`cawk.m4')
 
 dnl MACRO BEGIN ------------------------
 
-dnl m4_cawk_exception(`',`',`')
+m4_cawk_exception(`',`aaa_config_set\.cisco-cedge\.gawk',`')
 
 dnl MACRO BEGIN ------------------------

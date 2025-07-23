@@ -24,9 +24,7 @@ BEGIN {
 
 	# Remove the .idx file from arguments to process the .csv file
 	ARGV[1] = ""
-}
 
-{
 	# Extract current date
 	"date +%Y-%m-%d" | getline current_date
 	split(current_date, date, "-")
@@ -38,7 +36,9 @@ BEGIN {
 	cmd = sprintf("date +%%V -d %s-%s-%s", year, month, day)
 	cmd | getline week_number
 	close(cmd)
+}
 
+{
 	# Add new fields
 	print year";"month";"day";"week_number";"num_idx_lines";"$0
 }

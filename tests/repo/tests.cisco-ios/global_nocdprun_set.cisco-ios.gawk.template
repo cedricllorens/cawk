@@ -29,11 +29,12 @@ BEGINFILE {
 
 /^(ip )?cdp run/ {
 	print_err("global_nocdprun_set.cisco-ios.gawk","<cdp run> is set",0,"high","error");
+	pass = 2;
 	next;
 }
 
 ENDFILE {
-	if ( pass ) print_err("global_nocdprun_set.cisco-ios.gawk","<no cdp run> is not set",0,"high","error");
+	if ( pass == 1 ) print_err("global_nocdprun_set.cisco-ios.gawk","<no cdp run> is set by default",0,"high","pass");
 }
 
 END {

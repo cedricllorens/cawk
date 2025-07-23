@@ -21,7 +21,7 @@ BEGINFILE {
 }
 
 /encryption-algorithm 3des-cbc/ || /authentication-algorithm md5/ || / md5(;| )/ || / 3des(;| )/ {
-	print_err("ipsec_oldercryptoalg_notset.juniper-junos.gawk",$0,FNR,"high","error");
+	print_err("ipsec_oldercryptoalg_notset.juniper-junos.gawk",rm_blank_before($0),FNR,"high","error");
         pass = 0;
 	nextfile;
 }

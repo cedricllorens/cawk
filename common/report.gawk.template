@@ -7,48 +7,79 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# this script generates a cawk report
+# this script generates a cawk report:
+#  - $1 : deadbeef file
+#  - $2 : exceptions file
+#  - $3 : assessment file
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
 
 BEGIN {
+	deadbeef_pass = 0;
+	deadbeef_error = 0;
+	deadbeef_warning = 0;
+	deadbeef_psirt = 0;
+	exception_pass = 0;
+	exception_error = 0;
+	exception_warning = 0;
+	exception_psirt = 0;
 }
 
 BEGINFILE {
 
-	# -------------
-	pass = 0;
-	error = 0;
-	warning = 0;
-	psirt = 0;
-	# -------------
-	error_high = 0;
-	pass_high = 0;
-	warning_high = 0;
-	psirt_high = 0;
-	# -------------
-	error_medium = 0;
-	pass_medium = 0;
-	warning_medium = 0;
-	psirt_medium = 0;	
-	# -------------
-	error_low = 0;
-	pass_low = 0;
-	warning_low = 0;
-	psirt_low = 0;
-	# -------------
-	error_info = 0;
-	pass_info = 0;
-	warning_info = 0;
-	psirt_info = 0;
-	# -------------
-	delete files;
-	delete tests;
-	delete tests_error_count_high;
-	delete tests_error_count_medium;
-	delete tests_error_count_low;
-	delete tests_error_count_info;
+	if (FILENAME ~ /deadbeef/ && FILENAME ~ /\.csv/) {
+		deadbeef_file = 1;
+		assessment_file = 0;
+		exceptions_file = 0;
+		deadbeef_pass = 0;
+		deadbeef_error = 0;
+		deadbeef_warning = 0;
+		deadbeef_psirt = 0;
+	} else if (FILENAME ~ /exception/ && FILENAME ~ /\.csv/) {
+		exceptions_file = 1;
+		assessment_file = 0;
+		deadbeef_file = 0;
+		exception_pass = 0;
+		exception_error = 0;
+		exception_warning = 0;
+		exception_psirt = 0;
+	} else if (FILENAME ~ /assessment/ && FILENAME ~ /\.csv/) {
+		assessment_file = 1;
+		exceptions_file = 0;
+		# -------------
+		pass = 0;
+		error = 0;
+		warning = 0;
+		psirt = 0;
+		# -------------
+		error_high = 0;
+		pass_high = 0;
+		warning_high = 0;
+		psirt_high = 0;
+		# -------------
+		error_medium = 0;
+		pass_medium = 0;
+		warning_medium = 0;
+		psirt_medium = 0;	
+		# -------------
+		error_low = 0;
+		pass_low = 0;
+		warning_low = 0;
+		psirt_low = 0;
+		# -------------
+		error_info = 0;
+		pass_info = 0;
+		warning_info = 0;
+		psirt_info = 0;
+
+		delete files;
+		delete tests;
+		delete tests_error_count_high;
+		delete tests_error_count_medium;
+		delete tests_error_count_low;
+		delete tests_error_count_info;
+	}
 }
 
 # -------------------------------------
@@ -57,126 +88,156 @@ BEGINFILE {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
-	if ( $0 ~ /;high/ ) tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1;
-	if ( $0 ~ /;medium/ ) tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1;
-	if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
-	if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
-	error += 1;
+	
+	if ( assessment_file ) {
+		if ( $0 ~ /;high/ ) tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1;
+		if ( $0 ~ /;medium/ ) tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1;
+		if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
+		if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
+		error += 1;
+	}
+	if ( deadbeef_file ) deadbeef_error += 1;
+	if ( exceptions_file ) exception_error += 1;
 }
 
 /;pass$/ {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
-	pass += 1;
+
+	if ( assessment_file ) pass += 1;
+	if ( deadbeef_file ) deadbeef_pass += 1;
+	if ( exceptions_file ) exception_pass += 1;
 }
 
 /;warning$/ {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
-	warning += 1;
+
+	if ( assessment_file ) warning += 1;
+	if ( deadbeef_file ) deadbeef_warning += 1;
+	if ( exceptions_file ) exception_warning += 1;
 }
 
 /;psirt$/ {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
-	psirt += 1;
+
+	if ( assessment_file ) psirt += 1;
+	if ( deadbeef_file ) deadbeef_psirt += 1;
+	if ( exceptions_file ) exception_psirt += 1;
 }
 
 # -------------------------------------
 
 /;info;/ && /;error$/ {
-	error_info += 1
+	if ( assessment_file ) error_info += 1
 }
 
 /;info;/ && /;pass$/ {
-	pass_info += 1
+	if ( assessment_file ) pass_info += 1
 }
 
 /;info;/ && /;warning$/ {
-	warning_info += 1
+	if ( assessment_file ) warning_info += 1
 }
 
 /;info;/ && /;psirt$/ {
-	psirt_info += 1
+	if ( assessment_file ) psirt_info += 1
 }
 
 # -------------------------------------
 
 /;high;/ && /;error$/ {
-	error_high += 1;
+	if ( assessment_file ) error_high += 1;
 }
 
 /;high;/ && /;pass$/ {
-	pass_high += 1;
+	if ( assessment_file ) pass_high += 1;
 }
 
 /;high;/ && /;warning$/ {
-	warning_high += 1;
+	if ( assessment_file ) warning_high += 1;
 }
 
 /;high;/ && /;psirt$/ {
-	psirt_high += 1;
+	if ( assessment_file ) psirt_high += 1;
 }
 
 # -------------------------------------
 
 /;medium;/ && /;error$/ {
-	error_medium += 1;
+	if ( assessment_file ) error_medium += 1;
 }
 
 /;medium;/ && /;pass$/ {
-	pass_medium += 1;
+	if ( assessment_file ) pass_medium += 1;
 }
 
 /;medium;/ && /;warning$/ {
-	warning_medium += 1;
+	if ( assessment_file ) warning_medium += 1;
 }
 
 /;medium;/ && /;psirt$/ {
-	psirt_medium += 1;
+	if ( assessment_file ) psirt_medium += 1;
 }
 
 # -------------------------------------
 
 /;low;/ && /;error$/ {
-	error_low += 1;
+	if ( assessment_file ) error_low += 1;
 }
 
 /;low;/ && /;pass$/ {
-	pass_low += 1;
+	if ( assessment_file ) pass_low += 1;
 }
 
 /;low;/ && /;warning$/ {
-	warning_low += 1;
+	if ( assessment_file ) warning_low += 1;
 }
 
 /;low;/ && /;psirt$/ {
-	psirt_low += 1;
+	if ( assessment_file ) psirt_low += 1;
 }
 
 # -------------------------------------
 
 ENDFILE {
 
+if ( assessment_file ) {
+
 	# ------------------------------------------------------------------
 
 	print "--------------------------";
 	print "---- assessment stats ----";
 	print "--------------------------";
-	print "number_of_files  = " length(files); 
-	print "number_of_checks = " pass + error + warning + psirt;
-	print "";
+	print "number_of_confs  = " length(files); 
+	print "number_of_confs_deadbeef = " deadbeef_pass + deadbeef_error + deadbeef_warning + deadbeef_psirt;
+	print "number_of_checks = " pass + error + warning + psirt + exception_error + exception_pass + exception_warning + exception_psirt + deadbeef_pass + deadbeef_error + deadbeef_warning + deadbeef_psirt;
+	print "number_of_checks_exceptions = " exception_error + exception_pass + exception_warning + exception_psirt;
 
 	# ------------------------------------------------------------------
 
+	print "";
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning + psirt))
 		print "number_of_pass = " pass " (" decimal "%)";
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0) {
+			decimal = sprintf("%.1f", 100 * exception_pass / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_pass_exceptions = " exception_pass " (" decimal "%)";
+		} else {
+			print "number_of_pass_exceptions = " exception_pass " (0.0%)";
+		}
 	} else {
 		print "number_of_pass = " pass " (0.0%)";
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0) {
+			decimal = sprintf("%.1f", 100 * exception_pass / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_pass_exceptions = " exception_pass " (" decimal "%)";
+		} else {
+			print "number_of_pass_exceptions = " exception_pass " (0.0%)";
+		}
 	}
 	if ( pass > 0 ) {
 		decimal = sprintf("%.1f", 100 * pass_high / pass )
@@ -205,11 +266,24 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
+	print "";
 	if ( ( pass + error + warning) > 0) {
 		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning))
 		print "number_of_error = " error " (" decimal "%)";
+		if ( exception_error + exception_warning + exception_psirt > 0) {
+			decimal = sprintf("%.1f", 100 * exception_error / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_error_exception = " exception_error " (" decimal "%)";
+		} else {
+			print "number_of_error_exception = " exception_error " (0.0%)";
+		}
 	} else {
 		print "number_of_error = " error " (0.0%)";
+		if ( exception_error + exception_warning + exception_psirt > 0) {
+			decimal = sprintf("%.1f", 100 * exception_error / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_error_exception = " exception_error " (" decimal "%)";
+		} else {
+			print "number_of_error_exception = " exception_error " (0.0%)";
+		}
 	}
 	if ( error > 0 ) {
 		decimal = sprintf("%.1f", 100 * error_high / error )
@@ -238,11 +312,24 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
+	print "";
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning + psirt))
 		print "number_of_warning = " warning " (" decimal "%)";
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
+			decimal = sprintf("%.1f", 100 * exception_warning / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_warning_exception = " exception_warning " (" decimal "%)";
+		} else {
+			print "number_of_warning_exception = " exception_warning " (0.0%)";
+		}
 	} else {
 		print "number_of_warning = " warning " (0.0%)";
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
+			decimal = sprintf("%.1f", 100 * exception_warning / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_warning_exception = " exception_warning " (" decimal "%)";
+		} else {
+			print "number_of_warning_exception = " exception_warning " (0.0%)";
+		}
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_high / warning )
@@ -260,7 +347,7 @@ ENDFILE {
 		decimal = sprintf("%.1f", 100 * warning_low / warning )
 		print "\tnumber_of_warning_low    = " warning_low " (" decimal "%)";
 	} else {
-		print "\tnumber_of_warning_low    = " warning_low " (0.0%)";;
+		print "\tnumber_of_warning_low    = " warning_low " (0.0%)";
 	}
 	if ( warning > 0 ) {
 		decimal = sprintf("%.1f", 100 * warning_info / warning )
@@ -271,11 +358,24 @@ ENDFILE {
 
 	# ------------------------------------------------------------------
 
+	print "";
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * psirt / ( pass + error + warning + psirt))
 		print "number_of_psirt = " psirt " (" decimal "%)";
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
+			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_psirt_exception = " exception_psirt " (" decimal "%)";
+		} else {
+			print "number_of_psirt_exception = " exception_psirt " (0.0%)";
+		}
 	} else {
 		print "number_of_psirt = " psirt " (0.0%)";
+		if ( eexception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
+			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
+			print "number_of_psirt_exception = " exception_psirt " (" decimal "%)";
+		} else {
+			print "number_of_psirt_exception = " exception_psirt " (0.0%)";
+		}
 	}
 
 	if ( psirt > 0 ) {
@@ -372,4 +472,5 @@ ENDFILE {
 			print "\t" name " = " tests_error_count_info[name];
 		}
 	}
+}
 }

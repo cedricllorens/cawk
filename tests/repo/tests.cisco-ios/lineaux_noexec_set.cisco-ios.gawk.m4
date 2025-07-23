@@ -46,7 +46,7 @@ m4_cawk_parse_block(
 	linenoaux = FNR;
 	noexec = 0;
 ',
-`/^!$/', `acl_summary();', 
+`( /^!$/ || ( /^line / && !/ aux / ) )', `acl_summary();block_aux = 0;', 
 
 `/^ no exec$/',`noexec = 1;',
 `', `'

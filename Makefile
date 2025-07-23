@@ -497,15 +497,15 @@ else
 		echo "cawk sending audit ${audit} to $$dst ----"; \
 		if [ "$$cc" != "none" ]; then \
 			if [ -n "$$(find $(REPORT_PATH)/run_${audit} -name '*all.summary.txt' -type f)" ]; then \
-				cat $(COMMON_PATH)/common_message.txt $(REPORT_PATH)/run_${audit}/*all.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/*all.summary.txt -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
 			else \
-				echo "cawk reporting" | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/*all.summary.txt -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -c $$cc -- $$dst; \
 			fi; \
 		else \
 			if [ -n "$$(find $(REPORT_PATH)/run_${audit} -name '*all.summary.txt' -type f)" ]; then \
-				cat $(COMMON_PATH)/common_message.txt $(REPORT_PATH)/run_${audit}/*all.summary.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/*all.summary.txt -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
 			else \
-				echo "cawk reporting" | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
+				cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk ${audit} assessment" -a $(REPORT_PATH)/run_${audit}/*all.summary.txt -a $(REPORT_PATH)/run_${audit}/assessment.run_${audit}.export.zip -- $$dst; \
 			fi; \
 		fi; \
 		echo "cawk email sent successfully ----"; \
@@ -643,8 +643,22 @@ else
 		if [ ! -d "$(TESTS_PATH)/run_${audit}/tests.$$supplier" ]; then \
 			echo "cawk error: $(TESTS_PATH)/run_${audit}/tests.$$supplier does not exist ----"; \
 		elif [ -d "$(TESTS_PATH)/repo/tests.$$supplier" ]; then \
-			find $(TESTS_PATH)/repo/tests.$$supplier -name "*.template" -exec cp -v {} $(TESTS_PATH)/run_${audit}/tests.$$supplier/ \; || true; \
-			find $(TESTS_PATH)/repo/tests.$$supplier -name "*.m4" -exec cp -v {} $(TESTS_PATH)/run_${audit}/tests.$$supplier/ \; || true; \
+			for file in $(TESTS_PATH)/repo/tests.$$supplier/*.template; do \
+				if [ -f "$$file" ] && [ -f "$(TESTS_PATH)/run_${audit}/tests.$$supplier/$$file" ]; then \
+					echo "cawk tests_repo_copy $$supplier to run_${audit} ----"; \
+					cp -v "$$file" $(TESTS_PATH)/run_${audit}/tests.$$supplier/; \
+				else \
+					echo "cawk tests_repo_copy $$supplier to run_${audit} skipped, file does not exist ----"; \
+				fi; \
+			done; \
+			for file in $(TESTS_PATH)/repo/tests.$$supplier/*.m4; do \
+				if [ -f "$$file" ] && [ -f "$(TESTS_PATH)/run_${audit}/tests.$$supplier/$$file" ]; then \
+					echo "cawk tests_repo_copy $$supplier to run_${audit} ----"; \
+					cp -v "$$file" $(TESTS_PATH)/run_${audit}/tests.$$supplier/; \
+				else \
+					echo "cawk tests_repo_copy $$supplier to run_${audit} skipped, file does not exist ----"; \
+				fi; \
+			done; \
 			echo "cawk tests_repo_copy $$supplier to run_${audit} done ----"; \
 		else \
 			echo "cawk error: $(TESTS_PATH)/repo/tests.$$supplier does not exist ----"; \
@@ -721,7 +735,7 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 		cat $(REPORT_PATH)/repo/assessment.$(scope).csv >> $(REPORT_PATH)/repo/assessment.all.csv.swap ;\
 		egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/repo/assessment.all.exception.csv ;\
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.$(scope).csv > $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv $(REPORT_PATH)/repo/assessment.$(scope).csv > $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt;\
 		gmake catalog_repo | egrep "tests/" | grep $(scope) | sort >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
 	)
@@ -733,8 +747,7 @@ else
 	echo "cawk deadbeef filter skipped ----"
 	mv $(REPORT_PATH)/repo/assessment.all.csv.swap $(REPORT_PATH)/repo/assessment.all.csv || true
 endif
-
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.all.exception.csv $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.security.csv || true
@@ -778,7 +791,7 @@ else
 		cat $(REPORT_PATH)/repo/assessment.$(scope).csv >> $(REPORT_PATH)/repo/assessment.all.csv.swap ;\
 		egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/repo/assessment.all.exception.csv ;\
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.$(scope).csv > $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv $(REPORT_PATH)/repo/assessment.$(scope).csv > $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt;\
 		gmake catalog_repo | egrep "tests/" | grep $(scope) | sort >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
 	)
@@ -791,7 +804,7 @@ else
 	mv $(REPORT_PATH)/repo/assessment.all.csv.swap $(REPORT_PATH)/repo/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.all.exception.csv $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.security.csv || true
@@ -834,7 +847,7 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 	cat $(REPORT_PATH)/repo/assessment.$(supplier).csv >> $(REPORT_PATH)/repo/assessment.all.csv.swap
 	egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(supplier) $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv || true
 	cat $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/repo/assessment.all.exception.csv
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.$(supplier).csv > $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/repo/assessment.$(supplier).csv > $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 	gmake catalog_repo | egrep "tests/" | grep $(supplier) | sort >> $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 
@@ -846,7 +859,7 @@ else
 	mv $(REPORT_PATH)/repo/assessment.all.csv.swap $(REPORT_PATH)/repo/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.all.exception.csv $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.security.csv || true
@@ -888,7 +901,7 @@ else
 	cat $(REPORT_PATH)/repo/assessment.$(supplier).csv >> $(REPORT_PATH)/repo/assessment.all.csv.swap || true
 	egrep -f $(EXCEPTION_PATH)/repo/exceptions.$(supplier) $(REPORT_PATH)/repo/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv || true
 	cat $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/repo/assessment.all.exception.csv
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.$(supplier).csv > $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/repo/assessment.$(supplier).csv > $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 	gmake catalog_repo | egrep "tests/" | grep $(supplier) | sort >> $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
 
@@ -900,7 +913,7 @@ else
 	mv $(REPORT_PATH)/repo/assessment.all.csv.swap $(REPORT_PATH)/repo/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.all.exception.csv $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/repo/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.security.csv || true
@@ -961,7 +974,7 @@ ifeq ($(strip $(audit)),)
 		cat $(REPORT_PATH)/run/assessment.$(scope).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap ;\
 		egrep -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run/assessment.all.exception.csv ;\
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.$(scope).csv > $(REPORT_PATH)/run/assessment.$(scope).summary.txt ;\
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.$(scope).csv > $(REPORT_PATH)/run/assessment.$(scope).summary.txt ;\
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
 		gmake catalog_run | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
 	)
@@ -974,7 +987,7 @@ else
 	mv $(REPORT_PATH)/run/assessment.all.csv.swap $(REPORT_PATH)/run/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.all.exception.csv $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.security.csv || true
@@ -1035,7 +1048,7 @@ else
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap ;\
 			egrep -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv ;\
-			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
+			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
 			echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
 			gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
 		fi; \
@@ -1049,7 +1062,7 @@ else
 	mv $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap $(REPORT_PATH)/run_${audit}/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.security.csv || true
@@ -1098,7 +1111,7 @@ ifeq ($(strip $(audit)),)
 		cat $(REPORT_PATH)/run/assessment.$(scope).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap ;\
 		egrep -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run/assessment.all.exception.csv ;\
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.$(scope).csv > $(REPORT_PATH)/run/assessment.$(scope).summary.txt ;\
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run/assessment.$(scope).csv > $(REPORT_PATH)/run/assessment.$(scope).summary.txt ;\
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
 		gmake catalog_run | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
 	)
@@ -1111,7 +1124,7 @@ else
 	mv $(REPORT_PATH)/run/assessment.all.csv.swap $(REPORT_PATH)/run/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.all.exception.csv $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
 	${TESTS_COMMON_PATH}/reporttimeline.gawk $(REPORT_PATH)/run/assessment.all.idx.swap $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.timeline.csv || true
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.all.summary.txt
@@ -1169,7 +1182,7 @@ endif
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap ;\
 			egrep -f $(EXCEPTION_PATH)/run_${audit}//exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv ;\
-			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
+			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
 			echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
 			gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
 		fi; \
@@ -1183,7 +1196,7 @@ else
 	mv $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap $(REPORT_PATH)/run_${audit}/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.security.csv || true
@@ -1233,7 +1246,7 @@ ifeq ($(strip $(audit)),)
 	cat $(REPORT_PATH)/run/assessment.$(supplier).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap
 	egrep -f $(EXCEPTION_PATH)/run/exceptions.$(supplier) $(REPORT_PATH)/run/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv || true
 	cat $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/run/assessment.all.exception.csv
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.$(supplier).csv > $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/run/assessment.$(supplier).csv > $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 	make catalog_run | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 
@@ -1245,7 +1258,7 @@ else
 	mv $(REPORT_PATH)/run/assessment.all.csv.swap $(REPORT_PATH)/run/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.all.exception.csv $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.security.csv || true
@@ -1294,7 +1307,7 @@ endif
 		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap;\
 		egrep -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(supplier) $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv || true;\
 		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv;\
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
 		gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
 	fi
@@ -1307,7 +1320,7 @@ else
 	mv $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap $(REPORT_PATH)/run_${audit}/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.security.csv || true;\
@@ -1354,7 +1367,7 @@ ifeq ($(strip $(audit)),)
 	cat $(REPORT_PATH)/run/assessment.$(supplier).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap
 	egrep -f $(EXCEPTION_PATH)/run/exceptions.$(supplier) $(REPORT_PATH)/run/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv || true
 	cat $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/run/assessment.all.exception.csv
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.$(supplier).csv > $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/run/assessment.$(supplier).csv > $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 	make catalog_run | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.$(supplier).summary.txt
 
@@ -1366,7 +1379,7 @@ else
 	mv $(REPORT_PATH)/run/assessment.all.csv.swap $(REPORT_PATH)/run/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.all.exception.csv $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.summary.txt
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	gmake catalog_repo | egrep "tests/" | sort >> $(REPORT_PATH)/run/assessment.all.summary.txt
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run/assessment.all.csv > $(REPORT_PATH)/run/assessment.all.security.csv || true
@@ -1416,7 +1429,7 @@ endif
 		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap ; \
 		egrep -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(supplier) $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv || true; \
 		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv; \
-		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt; \
+		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(supplier).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv > $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt; \
 		echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
 		gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt;\
 	fi 
@@ -1429,7 +1442,7 @@ else
 	mv $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap $(REPORT_PATH)/run_${audit}/assessment.all.csv || true
 endif
 
-	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
+	$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	echo "------------------------\n---- tests purposes ----\n------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	gmake catalog_run audit=$(audit) | grep "tests/" | sort >> $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt;\
 	egrep '(high|medium|low);error' $(REPORT_PATH)/run_${audit}/assessment.all.csv > $(REPORT_PATH)/run_${audit}/assessment.all.security.csv || true;\
@@ -1480,98 +1493,47 @@ check_run_audit:
 # --------------------------------
 
 view_repo: check_supplier
-ifeq ($(strip $(supplier)),)
-	$(foreach test,$(SUPPLIER_SCOPE),\
-		echo "------------------------------------" ;\
-		echo "---- Assessment $(test) devices" ;\
-		echo "------------------------------------" ;\
-		cat $(REPORT_PATH)/repo/assessment.$(test).csv ;\
-		echo "-------------------------" ;\
-		echo "---- Summary $(test)" ;\
-		echo "-------------------------" ;\
-		cat $(REPORT_PATH)/repo/assessment.$(test).summary.txt ;\
-	)
-else
 	echo "------------------------------------"
-	echo "---- Assessment ${audit} $(supplier) devices"
+	echo "---- Assessment all devices" ;\
 	echo "------------------------------------"
-	cat $(REPORT_PATH)/repo/assessment.$(supplier).csv
-	echo "------------------------------"
-	echo " ---- Summary ${audit} $(supplier)"
-	echo "------------------------------"
-	cat $(REPORT_PATH)/repo/assessment.$(supplier).summary.txt
-endif
+	cat $(REPORT_PATH)/repo/assessment.all.csv
+	echo "-------------------------"
+	echo "---- Summary all"
+	echo "-------------------------"
+	cat $(REPORT_PATH)/repo/assessment.all.summary.txt
 	echo "cawk view_repo done ----"
 
 view_run: check_supplier
-ifeq ($(strip $(supplier)),)
 ifeq ($(strip $(audit)),)
-	$(foreach test,$(SUPPLIER_SCOPE),\
-		echo "------------------------------------" ;\
-		echo "---- Assessment $(test) devices" ;\
-		echo "------------------------------------" ;\
-		if [ -f $(REPORT_PATH)/run/assessment.$(test).csv ]; then \
-			cat $(REPORT_PATH)/run/assessment.$(test).csv; \
-		fi; \
-		echo "-------------------------" ;\
-		echo "---- Summary $(test)" ;\
-		echo "-------------------------" ;\
-		if [ -f $(REPORT_PATH)/run/assessment.$(test).summary.txt ]; then \
-			cat $(REPORT_PATH)/run/assessment.$(test).summary.txt; \
-		fi; \
-	)
-else
-ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
-	echo "cawk error audit=${audit} do not exist  ----"
-	exit 0
-endif
-	$(foreach test,$(SUPPLIER_SCOPE),\
-		echo "------------------------------------" ;\
-		echo "---- Assessment ${audit} $(test) devices" ;\
-		echo "------------------------------------" ;\
-		if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(test).csv ]; then \
-			cat $(REPORT_PATH)/run_${audit}/assessment.$(test).csv ;\
-		fi ;\
-		echo "---------------------------------" ;\
-		echo "---- Summary ${audit} $(test)" ;\
-		echo "---------------------------------" ;\
-		if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(test).summary.txt ]; then \
-			cat $(REPORT_PATH)/run_${audit}/assessment.$(test).summary.txt ;\
-		fi ;\
-	)
-endif
-else
-ifeq ($(strip $(audit)),)
-	echo "--------------------------------------"
-	echo "---- Assessment $(supplier) devices"
-	echo "--------------------------------------"
-	if [ -f $(REPORT_PATH)/run/assessment.$(supplier).csv ]; then \
-		cat $(REPORT_PATH)/run/assessment.$(supplier).csv; \
-	fi
-	echo "------------------------------"
-	echo " ---- Summary $(supplier)"
-	echo "------------------------------"
-	if [ -f $(REPORT_PATH)/run/assessment.$(supplier).summary.txt ]; then \
-		cat $(REPORT_PATH)/run/assessment.$(supplier).summary.txt; \
+	echo "------------------------------------"
+	echo "---- Assessment all devices"
+	echo "------------------------------------"
+	if [ -f $(REPORT_PATH)/run/assessment.all.csv ]; then \
+	cat $(REPORT_PATH)/run/assessment.all.csv; \
+	fi; \
+	echo "-------------------------"
+	echo "---- Summary all"
+	echo "-------------------------"
+	if [ -f $(REPORT_PATH)/run/assessment.all.summary.txt ]; then \
+		cat $(REPORT_PATH)/run/assessment.all.summary.txt; \
 	fi
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_${audit}/.),)
 	echo "cawk error audit=${audit} do not exist  ----"
 	exit 0
 endif
-	echo "-----------------------------------------------"
-	echo "---- Assessment ${audit} $(supplier) devices"
-	echo "-----------------------------------------------"
-	if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv ]; then \
-		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).csv; \
+	echo "------------------------------------"
+	echo "---- Assessment ${audit} all devices"
+	echo "------------------------------------"
+	if [ -f $(REPORT_PATH)/run_${audit}/assessment.all.csv ]; then \
+		cat $(REPORT_PATH)/run_${audit}/assessment.all.csv ;\
 	fi
-	echo "-------------------------------------"
-	echo " ---- Summary ${audit} $(supplier)"
-	echo "-------------------------------------"
-	if [ -f $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt ]; then \
-		cat $(REPORT_PATH)/run_${audit}/assessment.$(supplier).summary.txt; \
+	echo "---------------------------------"
+	echo "---- Summary ${audit} all"
+	echo "---------------------------------"
+	if [ -f $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt ]; then \
+		cat $(REPORT_PATH)/run_${audit}/assessment.all.summary.txt ;\
 	fi
-endif
 endif
 	echo "cawk view_run done ----"
 
@@ -1810,18 +1772,14 @@ check:
 	find confs -type f -exec touch {} \;
 	rm -f  checkdiff/checkdiff.new
 	
-	gmake check_repo 
+	gmake check_repo
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 	gmake check_repo supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
-	gmake check_repo JSON=no MAKE_PARALLEL=no
+	gmake check_repo JSON=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_repo JSON=no MAKE_PARALLEL=yes
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_repo JSON=yes MAKE_PARALLEL=yes
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_repo JSON=yes MAKE_PARALLEL=no
+	gmake check_repo JSON=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake check_run
@@ -1829,13 +1787,19 @@ check:
 	gmake check_run supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
-	gmake check_run JSON=no MAKE_PARALLEL=no
+	gmake check_run JSON=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_run JSON=no MAKE_PARALLEL=yes
+	gmake check_run JSON=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_run JSON=yes MAKE_PARALLEL=yes
+
+	gmake check_run
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	gmake check_run JSON=yes MAKE_PARALLEL=no
+	gmake check_run supplier=cisco-ios
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	gmake check_run JSON=no
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	gmake check_run JSON=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
@@ -1903,14 +1867,10 @@ check:
 
 	gmake create_audit audit=client1_skffqsfqhsf10948494
 	rm -r -f confs/run*client1_skffqsfqhsf10948494/*cisco-ios* tests/run*client1_skffqsfqhsf10948494/*cisco-ios* || true
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=no supplier=cisco-ios
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no MAKE_PARALLEL=yes supplier=cisco-ios
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=yes supplier=cisco-ios
-	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes MAKE_PARALLEL=no supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=no supplier=cisco-ios
+	gmake check_run audit=client1_skffqsfqhsf10948494 JSON=yes supplier=cisco-ios
 	gmake delete_audit audit=client1_skffqsfqhsf10948494
 	gmake clean clean_force
 

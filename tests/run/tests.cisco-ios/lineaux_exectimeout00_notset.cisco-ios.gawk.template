@@ -47,7 +47,7 @@ BEGINFILE {
 	next;
 }
 
-/^!$/ && block_aux == 1 {
+( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
 	acl_summary();
 	block_aux = 0;
 }

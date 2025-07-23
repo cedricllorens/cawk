@@ -21,7 +21,7 @@ packages. No other languages, no databases, no configure, etc. cawk tries to kee
 simple and understandable for everyone. The package size is very small while maintaining 
 powerful capabilities.
 
-All developers and AIs can help build new tests because Cawk relies on well-known languages, 
+All developers and AIs can help to build new tests because Cawk relies on well-known languages, 
 making development and maintenance easier.
 
 You can work with two predefined assessments <repo> and <run> included in the cawk package, but

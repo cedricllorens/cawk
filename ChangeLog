@@ -5,6 +5,21 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
  ------------------------------------------------------------
 
+v2.8.0 (July 2025):
+	Makefile:
+	- in reports, include the number of exceptions in the summary report
+	- in reports, include the number of deadbeef configurations in the summary report
+	- in email_send target, add the summary as a file attached and only display the common/common_message.txt in the email body
+	- in view_error and view_run targets, simplify the output
+	- in targets tests_run_copy and tests_run_audit_copy, add a check to avoid copying files that already exist in run_audit
+	Tests:
+	- for the following suppliers scopes : cisco-ios, cisco-xe and cisco-cedge, update global tests to take into consideration 
+	the default commands (hidden commands), avoiding to set many exceptions for each supplier scope assessment
+	- for the following suppliers scopes : cisco-ios, cisco-xe, update line aux tests to take into consideration that other 
+	line commands can be defined for modem, etc.
+	Common:
+	- review code of timeline reporting to enhance performance
+
 v2.7.0 (June 2025):
 	Makefile:
 		- in reports:

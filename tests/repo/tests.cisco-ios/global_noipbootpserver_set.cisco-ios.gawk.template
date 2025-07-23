@@ -29,11 +29,12 @@ BEGINFILE {
 
 /^ip bootp server/ {
 	print_err("global_noipbootpserver_set.cisco-ios.gawk","<ip bootp server> is set",0,"high","error");
+	pass = 2;
 	next;
 }
 
 ENDFILE {
-	if ( pass ) print_err("global_noipbootpserver_set.cisco-ios.gawk","<no ip bootp server> is not set",0,"high","error");
+	if ( pass == 1 ) print_err("global_noipbootpserver_set.cisco-ios.gawk","<no ip bootp server> is set by default",0,"high","pass");
 }
 
 END {
