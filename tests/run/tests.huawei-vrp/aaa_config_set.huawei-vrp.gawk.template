@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <aaa config> is no set
+# purpose : check if <aaa config> is set
 # author  : cedric llorens
 # ------------------------------------------------------------
 
@@ -22,13 +22,13 @@ BEGINFILE {
 }
 
 /^aaa$/ {
-	print_err("aaa_config_notset.huawei-vrp.gawk",$0,FNR,"high","pass");
+	print_err("aaa_config_set.huawei-vrp.gawk",$0,FNR,"high","pass");
 	pass = 1;
 	nextfile;
 }
 
 ENDFILE {
-	if ( !pass ) print_err("aaa_config_notset.huawei-vrp.gawk","aaa config is not set",0,"high","error");
+	if ( !pass ) print_err("aaa_config_set.huawei-vrp.gawk","aaa config is not set",0,"high","error");
 }
 
 END {

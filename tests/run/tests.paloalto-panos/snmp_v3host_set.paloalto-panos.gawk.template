@@ -57,7 +57,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("snmp_v3host_notset.paloalto-panos.gawk","snmp v3 host is not set",0,"high","error");
+	if ( pass ) print_err("snmp_v3host_set.paloalto-panos.gawk","snmp v3 host is not set",0,"high","error");
 }
 
 END {

@@ -22,13 +22,13 @@ BEGINFILE {
 }
 
 /^(s)?ntp access-group [^ ]+/ {
-	print_err("ntp_access-group_set.cisco-xe.gawk",$0,FNR,"high","pass");
+	print_err("ntp_accessgroup_set.cisco-xe.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;
 }
 
 ENDFILE {
-	if ( pass ) print_err("ntp_access-group_set.cisco-xe.gawk","<ntp access-group> is not set",0,"high","error");
+	if ( pass ) print_err("ntp_accessgroup_set.cisco-xe.gawk","<ntp access-group> is not set",0,"high","error");
 }
 
 END {

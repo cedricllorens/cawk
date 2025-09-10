@@ -249,6 +249,8 @@ cawk computes three key security indicators in the summary report:
 
 after install, cd to the cawk root directory, execute:
 
+	- gmake version : provide the cawk version release
+	
 	- gmake : provide all cawk gmake targets
 
 	- gmake clean check_repo view_repo : it applies the test repo to conf repo 
@@ -297,7 +299,7 @@ sending emeails, etc. this is only available for audit=AUDIT_NAME assessment
 
 		each time sync_run audit=AUDIT_NAME target is called, database/scripts/database_sync.script
 		is launched allowing to update device scope files that can be used as the field number 4 described 
-		hereafter. these file scopes are/must be stored in database/sync_scopes with the name :
+		hereafter. these file inventory scopes are/must be stored in database/sync_scopes with the name :
 		audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
@@ -305,7 +307,10 @@ sending emeails, etc. this is only available for audit=AUDIT_NAME assessment
 		    like /conf/ or /conf/cawk/,/conf/cawk_2/ (i.e. dir=SYNC_PATH_DIR)
 		- 3 field is an extended regex to select devices pattern matching 
 		    like .* or .*switch.* (i.e. regex=REGEX_PATTERN)
-		 - 4 field is a file containing a list of devices matching a device scope based on internal inventory
+		- 4 field is a file containing a list of devices matching a device scope based on internal inventory
+
+		note : common/sync_cawk_conf.gawk script is in charge to apply the database configuration 
+		per audit=AUDIT_NAME
 
 	- gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH regex=REGEX_PATTERN/.* scope=SCOPE_FILE/none: 
 	  add/update an entry in the cawk sync database

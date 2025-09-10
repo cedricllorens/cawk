@@ -20,46 +20,46 @@ function processrule(rule) {
     if ( rule ~  /-j (ACCEPT|DROP|REJECT|SNAT|DNAT)/) {
 
         if (rule ~ /-m (recent|string)/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with deprecated match module <<"rule">>", FNR, "low", "warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk", "rule with deprecated match module <<"rule">>", FNR, "low", "warning");
         }
 
         if ( rule !~ "-s" && rule !~ "--dport" ) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"low","warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule without -s and --dport <<"rule">>",FNR,"low","warning");
         }
         
         if (rule ~ /-s 0\.0\.0\.0\/0/ || rule ~ /-s ::\/0/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule with wide -s <<"rule">>", FNR, "low", "warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk", "rule with wide -s <<"rule">>", FNR, "low", "warning");
         }
 
         if (rule ~ /-m state/ && rule !~ /--state (NEW|ESTABLISHED|RELATED)/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without state matching <<"rule">>",FNR,"info","warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule without state matching <<"rule">>",FNR,"info","warning");
         }
 
         if ( rule ~ "-p icmp" && rule !~ "--icmp-type") {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule without --icmp-type <<"rule">>",FNR,"info","warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule without --icmp-type <<"rule">>",FNR,"info","warning");
         }
 
         if (rule !~ /-p (tcp|udp|icmp)/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule without protocol <<"rule">>", FNR, "info", "warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk", "rule without protocol <<"rule">>", FNR, "info", "warning");
         }
 
         if (rule ~ /REJECT/ && rule !~ /--reject-with/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk", "rule without --reject-with <<"rule">>", FNR, "info", "warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk", "rule without --reject-with <<"rule">>", FNR, "info", "warning");
         }
 
         if (rule ~ "-j SNAT" || rule ~ "-j DNAT") {
             if (rule !~ /-d/ && rule !~ /--to-source/ && rule !~ /--to-destination/) {
-                print_err("nat_ruleinfo_notset.iptables-fwcli.gawk","rule nat missing destination <<"rule">>",FNR,"info","warning");
+                print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule nat missing destination <<"rule">>",FNR,"info","warning");
             }
         }
         
         if (rule ~ /--limit/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule with rate-limit <<"rule">>",FNR,"info","warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule with rate-limit <<"rule">>",FNR,"info","warning");
             pass = 0;
         }
         
         if (rule ~ /--connlimit/) {
-            print_err("global_ruleinfo_notset.iptables-fwcli.gawk","rule with connlimit <<"rule">>",FNR,"info","warning");
+            print_err("global_ruleinfo_set.iptables-fwcli.gawk","rule with connlimit <<"rule">>",FNR,"info","warning");
             pass = 0;
         }
     }

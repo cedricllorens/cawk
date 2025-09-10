@@ -24,19 +24,19 @@ BEGINFILE {
 }
 
 /^iptables -P INPUT/ { 
-    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for input found <<"$0">>",FNR,"medium","pass");
+    print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for input found <<"$0">>",FNR,"medium","pass");
     input_found = 0;
     next;
 }
 
-/^iptables -P FORWARD/ { 
-    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for forward found <<"$0">>",FNR,"medium","pass");
+ /iptables -P FORWARD/ { 
+    print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for forward found <<"$0">>",FNR,"medium","pass");
     forward_found = 0;
     next;
 }
 
 /^iptables -P OUTPUT/ { 
-    print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for output found <<"$0">>",FNR,"medium","pass");
+    print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for output found <<"$0">>",FNR,"medium","pass");
     output_found = 0;
     next;
 }
@@ -44,15 +44,15 @@ BEGINFILE {
 ENDFILE {
     
     if (input_found) {
-        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for input not found",FNR,"medium","error");
+        print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for input not found",FNR,"medium","error");
     }
 
     if (forward_found) {
-        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for forward not found",FNR,"medium","error");
+        print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for forward not found",FNR,"medium","error");
     }
     
     if (output_found) {
-        print_err("global_defaultpolicy_notset.iptables-fwcli.gawk","default policy for output not found",FNR,"medium","error");
+        print_err("global_defaultpolicy_set.iptables-fwcli.gawk","default policy for output not found",FNR,"medium","error");
     }
 
 }

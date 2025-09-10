@@ -75,9 +75,9 @@ BEGINFILE {
 
 ENDFILE {
 	if ( dst && src && service && deny ) {
-		print_err("fw_lastrule_noset.paloalto-panos.gawk","firewall has last rule src=any dst=any service=any action=deny",0,"high","pass");
+		print_err("fw_lastrule_set.paloalto-panos.gawk","firewall has last rule src=any dst=any service=any action=deny",0,"high","pass");
 	} else {
-		print_err("fw_lastrule_noset.paloalto-panos.gawk","firewall has not last rule src=any dst=any service=any action=deny",0,"high","error");
+		print_err("fw_lastrule_set.paloalto-panos.gawk","firewall has not last rule src=any dst=any service=any action=deny",0,"high","error");
 	}
 }
 

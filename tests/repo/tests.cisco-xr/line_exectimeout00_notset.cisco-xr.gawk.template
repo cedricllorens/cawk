@@ -18,7 +18,7 @@
 
 function acl_summary() {
 	if ( exec == 1 ) {
-		print_err("line_exectimeout00_set.cisco-xr.gawk",line" : <exec-timeout 0 0> is set",linenovty,"high","error");
+		print_err("line_exectimeout00_notset.cisco-xr.gawk",line" : <exec-timeout 0 0> is set",linenovty,"high","error");
 		pass = 1;
 	}
 }
@@ -53,7 +53,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( !pass ) print_err("line_exectimeout00_set.cisco-xr.gawk","line vty <exec-timeout 0 0> is not set",0,"high","pass");
+	if ( !pass ) print_err("line_exectimeout00_notset.cisco-xr.gawk","line vty <exec-timeout 0 0> is not set",0,"high","pass");
 }
 
 END {

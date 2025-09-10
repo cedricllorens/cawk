@@ -64,4 +64,5 @@ if command -v grep >/dev/null 2>&1; then
 else
     echo "NOK : grep is not available."
 fi
+
 echo "cawk check system end ------------------"

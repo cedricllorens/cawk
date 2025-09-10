@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has <ip redirects>
+# purpose : check that interface <ip redirects> is not set
 # author  : cedric llorens
 # -------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ dnl level 0 --
 ',
 `/^!$/', `
 	if ( ipredirects == 1 ) {
-		print_err("int_ipredirects_set.cisco-ios.gawk",interface" <ip redirects> is set",interfaceno,"high","error");
+		print_err("int_ipredirects_notset.cisco-ios.gawk",interface" <ip redirects> is set",interfaceno,"high","error");
 		pass = 0;
 	}
 ', 
@@ -51,7 +51,7 @@ dnl level 1 --
 dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( pass ) print_err("int_ipredirects_set.cisco-ios.gawk","interface <ip redirects> is not set",0,"high","pass");
+	if ( pass ) print_err("int_ipredirects_notset.cisco-ios.gawk","interface <ip redirects> is not set",0,"high","pass");
 }
 
 END {

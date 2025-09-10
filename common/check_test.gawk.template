@@ -1,0 +1,51 @@
+#%SED_GAWK_PATH%
+
+# This script checks that a cawk test code is compliant with 
+# internal coding rules
+#  in case of error, start print message with cawk test error: and to end with NOK
+#  in case of success, start print message with cawk test pass : and to end with OK
+
+BEGIN {
+}
+
+BEGINFILE {
+    # extract just the file name (without path)
+    n = split(FILENAME, parts, "/")
+    filename = parts[n]
+
+    error = 0
+}
+
+{
+    # skip empty lines and comments
+    if ($0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*#/) {
+        next
+    }
+}
+
+{
+    # detect the first argument of print_err("xxx", ...), it must match filename
+    if (match($0, /print_err\("([^"]+)"/, m)) {
+        arg = m[1]
+
+        if (filename != arg) {
+            print "cawk test error: file=" filename " print_err=" arg " (in "FILENAME" line "FNR") NOK"
+            error = 1
+        }
+    }
+
+    # detect if a debug trace has been left in the code
+    if (match($0, /DEBUG/, m)) {
+        print "cawk test error: debug trace has been found "$0" (in "FILENAME" line "FNR") NOK"
+        error = 1
+    }
+}
+
+ENDFILE {
+    if (error == 0) {
+        print "cawk test pass : "FILENAME" OK"
+    }
+}
+
+END {
+}

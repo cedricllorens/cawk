@@ -32,7 +32,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%{2}set service %SED_FORBIDPROTO_FORTI%/ && block_edit == 1 {
-	print_err("fw_forbidproto_noset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
+	print_err("fw_forbidproto_notset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }
@@ -47,7 +47,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("fw_forbidproto_noset.fortinet-fortios.gawk","firewall has no forbidden protocols",0,"high","pass");
+	if ( pass ) print_err("fw_forbidproto_notset.fortinet-fortios.gawk","firewall has no forbidden protocols",0,"high","pass");
 }
 
 END {

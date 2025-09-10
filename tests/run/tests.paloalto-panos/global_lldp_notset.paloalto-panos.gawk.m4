@@ -33,7 +33,7 @@ m4_cawk_parse_block(
 `/^\}$/',`',  
 
 `/^%SED_BK_PALO%{1}[ ]*lldp (enable )?yes/',`
-	print_err("int_lldp_notset.paloalto-panos.gawk",rm_blank_before(interface)" "rm_blank_before($0),FNR,"high","error");
+	print_err("global_lldp_notset.paloalto-panos.gawk",rm_blank_before(interface)" "rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 ',
 `',`'
@@ -43,7 +43,7 @@ m4_cawk_parse_block(
 dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( pass ) print_err("int_lldp_notset.paloalto-panos.gawk","global <lldp yes> is not set",0,"high","pass");
+	if ( pass ) print_err("global_lldp_notset.paloalto-panos.gawk","global <lldp yes> is not set",0,"high","pass");
 }
 
 END {

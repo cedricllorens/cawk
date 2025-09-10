@@ -7,15 +7,11 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v3 user> is set
+# purpose : check if <older crypto algorithm> is not set
 # author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
-
-# ----
-
-include(`cawk.m4')
 
 BEGIN {
 }
@@ -24,25 +20,14 @@ BEGINFILE {
 	pass = 1;
 }
 
-dnl MACRO BEGIN --------------------------
-
-m4_cawk_parse_block(
-
-`/^config system snmp user/', `',
-`/^end$/', `',
-
-`/%SED_BK_FORTI%edit/', `
-	print_err("snmp_v3user_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
-	pass = 0;
-',
-`', `'
-
-)
-
-dnl MACRO END --------------------------
+tolower($0) ~ /%SED_OLD_CRYPTO%/ {
+	print_err("global_oldercryptoalg_notset.iptables-fwcli.gawk",$0,FNR,"high","error");
+        pass = 0;
+	nextfile;
+}
 
 ENDFILE {
-	if ( pass ) print_err("snmp_v3user_set.fortinet-fortios.gawk","<snmp v3 user> is not set",0,"high","error");
+        if ( pass ) print_err("global_oldercryptoalg_notset.iptables-fwcli.gawk","<older crypto algorithm> is not set",0,"high","pass");
 }
 
 END {

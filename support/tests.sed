@@ -82,3 +82,4 @@ s/%SED_BK_WIND%/([ ][ ][ ][ ])/g
 s/%SED_SNMP_FORBID_COMMUNITY%/(private|public)/g
 s/%SED_MGNT_KW%/\(management|mgnt\)/g
 s/%SED_MGNT_BADPROTO%/\(http|telnet|ftp\)/g
+s/%SED_OLD_CRYPTO%/ \(hmac-\)?\(md5|3des|sha1|rc4|tlsv1\)\(-cbc\)?\(;| \)/g

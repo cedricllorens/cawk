@@ -20,14 +20,14 @@ BEGINFILE {
 	pass = 1;
 }
 
-/ 3des/ || / md5/ || / md5 / || / 3des / {
+tolower($0) ~ /%SED_OLD_CRYPTO%/ {
 	print_err("ipsec_oldercryptoalg_notset.paloalto-panos.gawk",$0,FNR,"high","error");
         pass = 0;
 	nextfile;
 }
 
 ENDFILE {
-        if ( pass ) print_err("ipsec_olderalgcrypto_notset.paloalto-panos.gawk","<older crypto algorithm> is not set",0,"high","pass");
+        if ( pass ) print_err("ipsec_oldercryptoalg_notset.paloalto-panos.gawk","<older crypto algorithm> is not set",0,"high","pass");
 }
 
 END {

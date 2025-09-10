@@ -18,27 +18,17 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 1 ;
-	block_ipsec = 0;
+	pass = 1;
 }
 
-/^config vpn ipsec/ {
-	block_ipsec = 1;
-	next;
-}
-
-/^%SED_BK_FORTI%[ ]*set proposal (md5|des3|md5-des3|des3-md5)/ && block_ipsec == 1 {
-	print_err("ipsec_oldercryptoalg_noset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
-	pass = 0;	
-	next;
-}
-
-/^end$/ {
-	block_ipsec = 0;
+tolower($0) ~ /%SED_OLD_CRYPTO%/ {
+	print_err("ipsec_oldercryptoalg_notset.fortinet-fortios.gawk",$0,FNR,"high","error");
+        pass = 0;
+	nextfile;
 }
 
 ENDFILE {
-	if ( pass ) print_err("ipsec_oldercryptoalg_noset.fortinet-fortios.gawk","<older crypto algorithm> is not set",0,"high","pass");
+        if ( pass ) print_err("ipsec_oldercryptoalg_notset.fortinet-fortios.gawk","<older crypto algorithm> is not set",0,"high","pass");
 }
 
 END {

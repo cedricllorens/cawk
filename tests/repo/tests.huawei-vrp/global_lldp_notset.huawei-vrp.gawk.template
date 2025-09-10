@@ -22,13 +22,13 @@ BEGINFILE {
 }
 
 /^lldp enable/ {
-	print_err("global_rcmd_notset.huawei-vrp.gawk",$0,FNR,"high","error");
+	print_err("global_lldp_notset.huawei-vrp.gawk",$0,FNR,"high","error");
 	pass = 0;
 	nextfile;
 }
 
 ENDFILE {
-	if ( pass ) print_err("global_rcmd_notset.huawei-vrp.gawk","rcmd server is not set",0,"high","pass");
+	if ( pass ) print_err("global_lldp_notset.huawei-vrp.gawk","lldp is not set",0,"high","pass");
 }
 
 END {

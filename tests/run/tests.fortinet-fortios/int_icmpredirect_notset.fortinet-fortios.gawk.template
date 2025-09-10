@@ -35,7 +35,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%{2}[ ]*set icmp-redirect enable/ && block_edit == 1 {
-	print_err("int_icmpredirect_noset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),0,"high","error");
+	print_err("int_icmpredirect_notset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),0,"high","error");
 	pass = 0;
 	next;
 }
@@ -51,7 +51,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("int_icmpredirect_noset.fortinet-fortios.gawk","no interface with <icmp-redirect>",0,"high","pass");
+	if ( pass ) print_err("int_icmpredirect_notset.fortinet-fortios.gawk","no interface with <icmp-redirect>",0,"high","pass");
 }
 
 END {

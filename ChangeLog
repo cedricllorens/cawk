@@ -3,7 +3,22 @@
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
- ------------------------------------------------------------
+# ------------------------------------------------------------
+
+v2.9.0 (September 2025):
+	Makefile:
+	- improved test execution performance by allowing multiple configuration files per test run
+	  (this option can be changed in Makefile.support.mk with the TEST_EXE variable)
+	- general performance improvements (.INTERMEDIATE and *.swap for all scopes)
+	- add a new target gmake version to display the current cawk version
+	- add two targets gmake tests_check and tests_check_nok to check the compliance validity of all tests
+	Tests:
+	- add a banner test for cisco-ios scope only (to be replicated for other scopes in future releases)
+	- updated tests for older crypto algorithms across all supplier scopes (ref support/tests.sed)
+	- fixed all inconsistent test output names and include an internal check before package release. 
+	  note that some tests names have changed to be more consistent (it could impact existing exceptions)
+	  (ref common/check_test.gawk.template will check test consistency and format compliance)
+	  (inconsisstencies can be checked directly with gmake tests_check and gmake tests_check_nok targets)
 
 v2.8.0 (July 2025):
 	Makefile:

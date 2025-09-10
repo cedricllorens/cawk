@@ -40,7 +40,7 @@ BEGINFILE {
 
 /^%SED_BK_WIND%{3}ignore-icmp-echo-broadcast[ ]/ && block == 3 {
     if (match($0, /true$/)) {
-        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / ignore-icmp-echo-broadcast not set to false", FNR, "high", "error");
+        print_err("system_networkstackicmpcompliant_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / ignore-icmp-echo-broadcast not set to false", FNR, "high", "error");
         pass = 0;
     }
     next;
@@ -73,15 +73,15 @@ BEGINFILE {
 
 ENDFILE {
     if (!rate_09) {
-        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-limit-icmp not set", FNR, "high", "error");
+        print_err("system_networkstackicmpcompliant_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-limit-icmp not set", FNR, "high", "error");
         pass = 0;
     }
     if (!ratemask_09) {
-        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-mask-icmp destination-unreachable not set", FNR, "high", "error");
+        print_err("system_networkstackicmpcompliant_set.6wind-linux.gawk", "<system><network-stack><icmp> block not compliant / rate-mask-icmp destination-unreachable not set", FNR, "high", "error");
         pass = 0;
     }
     if (pass) {
-        print_err("system_networkstackicmp_set.6wind-linux.gawk", "<system><network-stack><icmp> block is compliant", FNR, "high", "pass");
+        print_err("system_networkstackicmpcompliant_set.6wind-linux.gawk", "<system><network-stack><icmp> block is compliant", FNR, "high", "pass");
     }
 }
 

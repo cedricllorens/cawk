@@ -18,7 +18,7 @@
 
 function acl_summary() {
 	if ( exec == 1 ) {
-		print_err("lineaux_exectimeout00_set.cisco-ios.gawk",lineaux" : <exec-timeout 0 0> is set",linenoaux,"high","error");
+		print_err("lineaux_exectimeout00_notset.cisco-ios.gawk",lineaux" : <exec-timeout 0 0> is set",linenoaux,"high","error");
 		pass = 1;
 	}
 }
@@ -53,7 +53,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( !pass ) print_err("lineaux_exectimeout00_set.cisco-ios.gawk","line aux <exec-timeout 0 0> is not set",0,"high","pass");
+	if ( !pass ) print_err("lineaux_exectimeout00_notset.cisco-ios.gawk","line aux <exec-timeout 0 0> is not set",0,"high","pass");
 }
 
 END {

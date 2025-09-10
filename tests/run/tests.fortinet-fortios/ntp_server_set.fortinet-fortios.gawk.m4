@@ -36,7 +36,7 @@ m4_cawk_parse_block(
 `/^%SED_BK_FORTI%next$/', `',
 
 `/^%SED_BK_FORTI%{2}set server/', `
-	print_err("ntp_enablestatus_set.fortinet.gawk",rm_blank_before($0),FNR,"high","pass");
+	print_err("ntp_server_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
 	pass = 0;
 ',
 `', `'
@@ -46,7 +46,7 @@ m4_cawk_parse_block(
 dnl MACRO END --------------------------
 
 ENDFILE {
-	if ( pass ) print_err("ntp_enablestatus_set.fortinet.gawk","ntp server is not set",0,"high","error");
+	if ( pass ) print_err("ntp_server_set.fortinet-fortios.gawk","ntp server is not set",0,"high","error");
 }
 
 END {

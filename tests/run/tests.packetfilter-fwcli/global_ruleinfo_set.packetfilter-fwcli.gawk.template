@@ -39,11 +39,11 @@ function processrule(rule) {
     }
 
     if (rule ~ /accept/ && rule ~ /quick/ && (rule ~ / from any/ || rule ~ / to any/ || rule !~ / proto / || rule !~ / port /)) {
-        print_err("global_quick_misuse.checkpoint-fwcli.gawk", "quick used in overly permissive rule <<"rule">>", FNR, "info", "warning");
+        print_err("global_ruleinfo_set.packetfilter-fwcli.gawk", "quick used in overly permissive rule <<"rule">>", FNR, "info", "warning");
     }
 
     if (rule ~ /log/ && rule ~ /quick/) {
-        print_err("global_quick_with_log.checkpoint-fwcli.gawk", "quick used in logging rule <<"rule">>", FNR, "info", "warning");
+        print_err("global_ruleinfo_set.packetfilter-fwcli.gawk", "quick used in logging rule <<"rule">>", FNR, "info", "warning");
     }
 
 }

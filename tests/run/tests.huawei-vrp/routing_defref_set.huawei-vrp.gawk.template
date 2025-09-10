@@ -63,7 +63,7 @@ ENDFILE {
 	# routing def not ref ----
 	for (id in routing_def) {
 		if ( !(id in routing_ref) ) {
-			print_err("routing_defref_set.huawei-vrf.gawk",id" : def not ref :"routing_def[id],0,"info","error");
+			print_err("routing_defref_set.huawei-vrp.gawk",id" : def not ref :"routing_def[id],0,"info","error");
 			pass = 0;
 		}
 	}
@@ -71,12 +71,12 @@ ENDFILE {
 	# routing ref not def ----
 	for (id in routing_ref) {
 		if ( !(id in routing_def) ) {
-			print_err("routing_defref_set.huawei-vrf.gawk",id" : ref not def :"routing_ref[id],0,"high","error");
+			print_err("routing_defref_set.huawei-vrp.gawk",id" : ref not def :"routing_ref[id],0,"high","error");
 			pass = 0;
 		}
 	}
 
-	if ( pass ) print_err("routing_defref_set.huawei-vrf.gawk","all routings defs are refs and the reverse",0,"high","pass");
+	if ( pass ) print_err("routing_defref_set.huawei-vrp.gawk","all routings defs are refs and the reverse",0,"high","pass");
 }
 
 END {

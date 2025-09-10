@@ -72,12 +72,12 @@ ENDFILE {
     pass = 1;
     for (ip in ioc) {
         if (ioc[ip] == 0) {
-            print_err("global_ipioclist_set.iptables-fwcli.gawk","ioc ip not found <<"ip">>",0,"info","warning");
+            print_err("global_ipioclist_set.packetfilter-fwcli.gawk","ioc ip not found <<"ip">>",0,"info","warning");
             pass = 0;
         }
     }
     if (pass == 1) {
-        print_err("global_ipioclist_set.iptables-fwcli.gawk","all ioc ip are found ",0,"info","pass");
+        print_err("global_ipioclist_set.packetfilter-fwcli.gawk","all ioc ip are found ",0,"info","pass");
     }
 }
 

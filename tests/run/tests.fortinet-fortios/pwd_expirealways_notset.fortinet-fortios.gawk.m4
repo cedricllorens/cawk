@@ -33,7 +33,7 @@ m4_cawk_parse_block(
 `/^end$/', `',
 
 `/^%SED_BK_FORTI%[ ]*set password-expire/ && /always/', `
-	print_err("pwd_expirealways_noset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
+	print_err("pwd_expirealways_notset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;	
 ',
 `', `'
@@ -43,7 +43,7 @@ m4_cawk_parse_block(
 dnl MACRO END --------------------------
 
 ENDFILE {
-	if ( pass ) print_err("pwd_expirealways_noset.fortinet-fortios.gawk","<password-expire = always> is not set",0,"high","pass");
+	if ( pass ) print_err("pwd_expirealways_notset.fortinet-fortios.gawk","<password-expire = always> is not set",0,"high","pass");
 }
 
 END {

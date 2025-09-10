@@ -37,7 +37,7 @@ dnl level 0 --
 ',
 `/^!$/', `
 	if ( unreachable == 1 ) {
-		print_err("int_unreachable_notset.cisco-cedge.gawk",interface" <ip unreachables> is set",interfaceno,"high","error");
+		print_err("int_ipunreachables_notset.cisco-cedge.gawk",interface" <ip unreachables> is set",interfaceno,"high","error");
 		pass = 0;
 	}
 ', 
@@ -51,7 +51,7 @@ dnl level 1 --
 dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( pass ) print_err("int_unreachable_notset.cisco-cedge.gawk","interface <ip unreachables> is not set",0,"high","pass");
+	if ( pass ) print_err("int_ipunreachables_notset.cisco-cedge.gawk","interface <ip unreachables> is not set",0,"high","pass");
 }
 
 END {
