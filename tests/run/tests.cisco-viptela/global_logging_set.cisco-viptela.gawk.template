@@ -1,0 +1,53 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if logging is properly configured on cisco-viptela
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+        pass = 1;
+        in_system_block = 0;
+        logging_server_configured = 0;
+}
+
+/^system$/ {
+    in_system_block = 1;
+    next;
+}
+
+/^!$/ {
+    if (in_system_block == 1) {
+        in_system_block = 0;
+    }
+    next;
+}
+
+in_system_block == 1 && /^ logging server [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ {
+    print_err("global_logging_set.cisco-viptela.gawk",$0,FNR,"medium","pass");
+    logging_server_configured = 1;
+    pass = 0;
+    next;
+}
+
+ENDFILE {
+    if ( logging_server_configured == 0 ) {
+        print_err("global_logging_set.cisco-viptela.gawk","<system> -> <logging server> is not configured",0,"medium","error");
+    }
+}
+
+END {
+}
+

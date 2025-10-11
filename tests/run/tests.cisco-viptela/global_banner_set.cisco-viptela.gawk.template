@@ -1,0 +1,37 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <banner motd/login/exec> are set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	banner_set = 0;
+}
+
+/^banner[ \t]+(login|exec|motd)/ {
+	banner_set = 1;
+	nextfile;
+}
+
+ENDFILE {
+	if (banner_set)
+		print_err("global_banner_set.cisco-viptela.gawk", "<banner login/exec/motd> is set", 0, "high", "pass");
+	else
+		print_err("global_banner_set.cisco-viptela.gawk", "<banner login/exec/motd> is not set", 0, "high", "error");
+}
+
+END {
+}

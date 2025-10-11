@@ -11,91 +11,177 @@
 # to a cawk audit=AUDIT_NAME assessment. a soft link is built rather 
 # than to copy the configuration
 #
-# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_pattern" "file_list"
+# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_device" "file_list" "regex_os"
 # note : various directories are separated by comma
+# ---------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------
+# Function: check_config_type
+# Purpose:  Analyze configuration file content to determine device type
+# Input:    filename - path to configuration file to analyze
+# Output:   string - device type (cisco_xe, cisco_ios, cisco_cedge, etc.)
+# Logic:    - Immediate return for unique/specific device signatures
+#           - Accumulate markers for ambiguous cisco family (xe/cedge/ios)
+#           - Decision priority: cedge > xe > ios
+# Note:     Assumes uniqueness of signatures between different vendors
 # ---------------------------------------------------------------------
 
 function check_config_type(filename) {
     viptela = 0;
     wind = 0;
-    cisco_swios = 0;
+    # Variables to resolve cisco-xe vs cisco-cedge ambiguity
+    has_xe_markers = 0;
+    has_cedge_markers = 0;
+    # Variable to detect cisco-ios marker
+    has_ios_marker = 0;
 
     while ((getline line < filename) > 0) {
-
+	    # --------------------------------------------------
+        
         # cisco-xe
-        if (line ~ /^boot system flash bootflash:/ || line ~ /^diagnostic bootup level/ || line ~ /^platform/) { close(filename); return "cisco_xe"; }
+        if (line ~ /^boot system flash bootflash:/ || line ~ /^diagnostic bootup level/ || line ~ /^platform/) { 
+            has_xe_markers = 1;
+        }
+
+        # cisco-cedge
+        if (line ~ /^sdwan$/ || line ~ /^omp$/ || line ~ /^bfd$/ || line ~ /^security$/) { 
+            has_cedge_markers = 1;
+        }
+
+        # cisco-ios
+        if (line ~ /^line vty/) { has_ios_marker = 1; }
 
         # cisco-xr
         if (line ~ / IOS XR Configuration /)  { close(filename); return "cisco_xr"; }
-
-        # cisco-ios
-        if (line ~ /^! Version /) { cisco_swios = 1; }
-        if (line ~ /^line vty/) { if ( cisco_swios == 1) { close(filename); return "cisco_swios";} else { close(filename); return "cisco_ios";} }
 
         # cisco-viptela
         if (line ~ /^system$/) { viptela = 1; }
         if (line ~ /^vpn 0$/) { if ( viptela == 1 ) { close(filename); return "cisco_viptela"; } }
 
-        # cisco-cedge
-        if (line ~ /^sdwan$/) { close(filename); return "cisco_cedge"; }
+	    # --------------------------------------------------
 
         # juniper-junos
         if (line ~ /^system {/) { close(filename); return "juniper_junos"; }
 
+	    # --------------------------------------------------
+
         # paloalto-panos
         if (line ~ /^deviceconfig/ || line ~ /^mgt-config/) { close(filename); return "paloalto_panos"; }
 
-        # nokia=sros
+	    # --------------------------------------------------
+
+        # nokia-sros
         if (line ~ /^# TiMOS-/ || line ~ /^configure router/) { close(filename); return "nokia_sros"; }
+
+	    # --------------------------------------------------
 
         # packetfilter-fwcli 
         if (line ~ /^pass / || line ~ /^block /) { close(filename); return "packetfilter_fwcli"; }
 
+	    # --------------------------------------------------
+
         # iptables-fwcli 
         if (line ~ /iptables -A INPUT/) { close(filename); return "iptables_fwcli"; }
+
+	    # --------------------------------------------------
 
         # checkpoint-fwcli 
         if (line ~ /^add access-rule/) { close(filename); return "checkpoint_fwcli"; }
 
+	    # --------------------------------------------------
+
         # huawei-vrp
         if (line ~ /^sysname /) { close(filename); return "huawei_vrp"; }
+
+	    # --------------------------------------------------
 
         # fortinet-fortios
         if (line ~ /^config system global$/ || line ~ /^config firewall/) { close(filename); return "fortinet_fortios"; }
 
+	    # --------------------------------------------------
+
         # 6wind
         if (line ~ /^vrf main$/) { wind = 1; }
         if (line ~ /^routing$/) { if ( wind == 1 ) { close(filename); return "6wind_linux"; } }
+    }
+    close(filename)
 
+    # final decision logic for cisco-xe vs cisco-cedge vs cisco-ios ------
+    if (has_xe_markers && has_cedge_markers) {
+        return "cisco_cedge";
+    } else if (has_xe_markers) {
+        return "cisco_xe";
+    } else if (has_cedge_markers) {
+        return "cisco_cedge";
+    } else if (has_ios_marker) {
+        return "cisco_ios";
     }
 
-    close(filename)
     return "unknown"
 }
 
+
+# ---------------------------------------------------------------------
+# Function: matches_os_regex
+# Purpose:  Check if detected OS type matches the provided regex filter
+# Input:    config_type - detected configuration type (e.g., "cisco_xe")
+#           regex_os - regex pattern to match against (e.g., "cisco-ios|cisco-cedge")
+# Output:   1 if matches or no filter provided, 0 if doesn't match
+# Logic:    - Convert underscores to dashes for format consistency
+#           - Apply regex matching against converted type name
+# Note:     Empty regex_os means accept all types
+# ---------------------------------------------------------------------
+
+function matches_os_regex(config_type, regex_os) {
+    if (regex_os == "") return 1;  # If no regex, accept all
+
+    # Convert config type to expected format (underscore to dash)
+    gsub(/_/, "-", config_type);
+
+    # Test if type matches the regex
+    if (match(config_type, regex_os)) {
+        return 1;
+    }
+
+    return 0;
+}
+
+
+# ---------------------------------------------------------------------
+
+
 BEGIN {
-    # Source directories / split input source directories on comma
-    if (ARGC < 2) {
-        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_pattern\" \"file_list\"";
+
+    if (ARGC < 3) {
+        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_device\" \"file_list\" \"regex_os\"";
         exit 0;
     }
 
+    # match regex_device ----
     n = split(ARGV[1], src_prefix, ",")
-    regex_pattern = ARGV[2]
+    regex_device = ARGV[2]
+  
+    # match regex_os ----
+    regex_os = "none"
+    if (ARGV[4] != "none") {
+        regex_os = ARGV[4]
+        print "cawk os regex filter detected: " regex_os
+    } else {
+        regex_os = ".*"
+        print "cawk os regex filter not detected: " regex_os
+    }
 
     # Authorise all
     allow_all = 1
-    
+
     # Check ARGV[3] explicit list of devices names
     if (ARGC > 3 && ARGV[3] != "") {
         file_list = ARGV[3]
-
         if (file_list != "none") {
-        
             allow_all = 0
             cmd = "cat " file_list
             while ((cmd | getline line) > 0) {
-
                 # take the name not the full path
                 split(line, path_parts, "/")
                 filename = path_parts[length(path_parts)]
@@ -104,7 +190,7 @@ BEGIN {
                 print "cawk loading allowed device name : " filename " in file " file_list
                 allowed_files[filename] = 1
             }
-        
+
             close(file_list)
         }
     }
@@ -127,12 +213,13 @@ BEGIN {
 
     # Process each source directory
     for (i = 1; i <= n; i++) {
+
+        # check if devices exist under the directory
         if (src_prefix[i] == "") {
             print "cawk error empty directory"
             continue
         }
-
-        cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_pattern "\""
+        cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_device "\""
 
         while ((cmd | getline file) > 0) {
 
@@ -144,10 +231,20 @@ BEGIN {
             if (allow_all || filename in allowed_files) {
                 type = "unknown"
                 type = check_config_type(file)
+
+		        # skip conditions --------------------------------------------------------------------
+
                 if (type == "unknown") {
-                    print "cawk error unknown configuration (skipped) " file
+                    print "cawk soft link not built (skipped unknown configuration) == os:" type " conf:" file
                     continue
                 }
+
+                if (!matches_os_regex(type, regex_os) && regex_os != "none") {
+                    print "cawk soft link not built (skipped not match regex_os) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os
+                    continue
+                }
+
+        		# skip conditions --------------------------------------------------------------------
 
                 dst = "" 
                 if (type == "cisco_xe")                 dst = dst_prefix_cisco_xe
@@ -165,11 +262,14 @@ BEGIN {
                 else if (type == "cisco_xr")            dst = dst_prefix_cisco_xr
                 else if (type == "6wind_linux")         dst = dst_prefix_6wind_linux
 
+                # build soft links to (not skipped) configurations
+
                 if ( dst != "") {
-                    system("ln -s " file " " dst)
-                    print "cawk soft link built : " type " config: " file " -> " dst
+                    system("mkdir -p \"" dst "\"")
+                    system("ln -s \"" file "\" \"" dst "\"")
+                    print "cawk soft link built == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os
                 } else {
-                    print "cawk error not supported " type " configuration (skipped) " file
+                    print "cawk soft link not built (skipped os not supported) ==  os:" type " conf:" file
                 }
             }
         }

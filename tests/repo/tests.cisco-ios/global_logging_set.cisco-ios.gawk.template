@@ -1,0 +1,35 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : checks if <logging host> is set for centralized logging
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+}
+
+/^logging ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|(host|server) [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/ {
+    print_err("global_logging_set.cisco-ios.gawk",$0,FNR,"medium","pass");
+    pass = 0;
+    nextfile;
+}
+
+ENDFILE {
+    if ( pass == 1 ) print_err("global_logging_set.cisco-ios.gawk","<logging host> is not configured",0,"medium","error");
+}
+
+END {
+}

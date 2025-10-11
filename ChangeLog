@@ -5,6 +5,24 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v3.0.0 (October 2025):
+	Makefile:
+	- update Makefile in order to have a new type of test allowing to check advanced psirt vulnerabilities 
+	  (statements match, ios versions regex match, chassis regex match, etc.) in a future release
+	- update Makefile to support running cawk as a Docker container in a future release
+	- enforce Makefile controls during processing
+	- set a <EGREP variable> in Makefile.support.mk for pointing to <grep -E> rather than to <egrep>
+	- add a new target <clean_archive_older> to remove archive files older than the ARCHIVE_OLDER_DAYS value defined in Makefile.support.mk
+	- <sync_run target> update 
+	  - to add a new regex allowing to match os supplier during the sync
+	  (refer to README for further information)
+	  - remove the confs directories by default and create only the ones linked to existing configurations
+	  (refer to README for further information)
+	Tests:
+	- <banner> tests are now available for all cisco supplier scopes
+	- <enable password> tests are now available for all cisco supplier scopes
+	- <logging> tests are now available for all cisco supplier scopes
+
 v2.9.0 (September 2025):
 	Makefile:
 	- improved test execution performance by allowing multiple configuration files per test run
