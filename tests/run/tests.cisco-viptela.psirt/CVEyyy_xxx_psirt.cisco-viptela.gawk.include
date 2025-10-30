@@ -1,0 +1,66 @@
+# ====================================================================================
+# PSIRT VULNERABILITY ASSESSMENT TOOL
+# ====================================================================================
+# DESCRIPTION:
+#   Generic pattern-based vulnerability detection tool with configurable logic
+#   Automatically detects OS device information from inventory file
+#   Supports line patterns, block patterns, and complex boolean logic
+#
+# REQUIREMENTS:
+#   - Inventory file database/psirt_scopes/psirt_os_inventory_scope.txt
+#     with format: "device_filename os_version chassis cpu" separated by one space
+#
+# USER CONFIGURATION:
+#   - Modify ONLY the section between "USER START" and "USER END"
+#   - Define OS patterns, line patterns, block patterns, and logic
+#
+# SYNTAX REFERENCE AND LOGIC:
+#   DEVICE (regex matching filename)            -> LOGIC : not used
+#   OS (regex matching os_version chassis cpu)  -> LOGIC : not used
+#   LINE[1] (regex matching line)               -> LOGIC : LINE[1] == 1 or 0
+#   BLOCK[1]["start"] (regex matching block)    -> LOGIC : BLOCK[1] == 1 or 0
+#   BLOCK[1]["match"][1] (regex matching line)  -> LOGIC : BLOCK_LINE[1][1] == 1 or 0
+#   BLOCK[1]["match"][2] (regex matching line)  -> LOGIC : BLOCK_LINE[1][2] == 1 or 0
+#
+# VERSION: 1.0
+# ====================================================================================
+
+function load_psirt_config() {
+
+    # ==============================================================
+    # ==============================================================
+    # USER START - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+
+    # Device Patterns
+    DEVICE = "^.*"
+
+    # OS Patterns
+    OS[1] = "15\\..* .* .*"
+    OS[2] = "16\\..* .* .*"
+    
+    # Line Patterns
+    LINE[1] = "hostname"
+    LINE[2] = "line vty"
+    
+    # Block Patterns
+    BLOCK[1]["start"] = "^interface "
+    BLOCK[1]["end"] = "^!"
+    BLOCK[1]["match"][1] = "^ no shutdown"
+    BLOCK[1]["match"][2] = "^ switchport mode access"
+    
+    BLOCK[2]["start"] = "^router "
+    BLOCK[2]["end"] = "^!"
+    BLOCK[2]["match"][1] = "^  network "
+    BLOCK[2]["match"][2] = "^  redistribute"
+    
+    # Logic
+    LOGIC = "LINE[1] == 1 && LINE[2] == 1 && BLOCK[1] == 1 && BLOCK_LINE[1][1] == 0"
+
+    # ==============================================================
+    # ==============================================================
+    # USER END - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+}

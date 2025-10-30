@@ -5,6 +5,27 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v3.1.0 (October 2025):
+	Makefile:
+	- add a new script <database_sync_psirt.sh> in <database/scripts> in order to build psirt inventory
+	  (this script is runned with <sync_psirt> target)
+	  (refer to README for further information)
+	- add a new target <sync_psirt> target to build psirt inventory
+	- add a new target <database_repo_copy> allowing to update <database> directory only with missing 
+	  files (database.repo -> database), this target is runned with <migrate> target
+	  (refer to README for further information)
+	- fix a bug with $(ECHO) -e command (not portable and printing "-e" in files)
+	- fix a bug with <backup_audit_run> find command (-type f -o -type d not portable, database not fully backup)
+	- update database_sync with a new option regex_path_exclude in order to exclude configurations based on their
+	  paths, all associated cawk files have been updated
+	Tests:
+	- add advanced psirt test code allowing to match line, block, os version, etc.
+	  - one advanced psirt code has been added for cisco-ios, cisco-xe, cisco-viptela and cisco-xr
+	  - it is built over <common/test_generic_psirt.gawk.template> v1.0 code
+	  - such psirt test has <.gawk.include> suffix
+	- <username> test is now available for cisco-xe supplier scope
+	- all cisco-ios tests are now available for cisco-xe supplier scope
+
 v3.0.0 (October 2025):
 	Makefile:
 	- update Makefile in order to have a new type of test allowing to check advanced psirt vulnerabilities 

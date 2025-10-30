@@ -6,7 +6,8 @@
 # ------------------------------------------------------------
 
 # ---------------
-CAWK_RELEASE = v3.0.0
+
+CAWK_RELEASE = v3.1.0
 
 # ---------------
 
@@ -14,8 +15,10 @@ CONFS_PATH = confs
 COMMON_PATH = common
 BACKUP_PATH = backup
 DATABASE_PATH = database
+DATABASE_REPO_PATH = database.repo
 LOGS_PATH = logs
 DATABASE_PATH_SH = $(DATABASE_PATH)/scripts
+DATABASE_REPO_PATH_SH = $(DATABASE_REPO_PATH)/scripts
 DATABASE_SH = $(wildcard $(DATABASE_PATH_SH)/*.script.sh)
 REPORT_PATH = reports
 
@@ -35,6 +38,27 @@ RUN_DIRS := $(shell find tests -name '*run_*' -type d 2>/dev/null | awk -F'run_'
 
 # ---------------
 
+%.gawk: %.gawk.template
+	sed -f support/tests.sed $< > $@ || true
+	chmod 750 $@
+
+%.gawk: %.gawk.include
+	sed -e 's|CAWK_PSIRT_NAME|$(basename $@).gawk.include|g' -e 's|CAWK_PSIRT_TESTNAME|$(notdir $(basename $@))|g' -e 's|CAWK_PSIRT_OS|os|g' common/test_generic_psirt.gawk.template > $@.swap || true
+	sed -f support/tests.sed $@.swap > $@ || true
+	chmod 750 $@
+
+%.script: %.script.sh
+	cp $< $@ || true
+	chmod 750 $@
+
+%.gawk: %.gawk.m4
+	m4 -I m4 $< | sed -f support/tests.sed > $@ || true
+	chmod 750 $@
+
+%: %.m4
+	m4 -I m4 $< | sed '/^$$/d' > $@ || true
+	chmod 650 $@
+
 # Define all suppliers/platforms
 SUPPLIER_SCOPE = cisco-ios cisco-xr juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli 6wind-linux
 
@@ -47,8 +71,10 @@ SUPPLIER_TEMPLATE_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(sup
 # psirt tests
 SUPPLIER_M4_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_M4:.gawk.m4=.gawk))
 SUPPLIER_TEMPLATE_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_TEMPLATE:.gawk.template=.gawk))
+SUPPLIER_INCLUDE_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_INCLUDE:.gawk.include=.gawk))
 SUPPLIER_M4_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_M4:.gawk.m4=.gawk))
 SUPPLIER_TEMPLATE_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_TEMPLATE:.gawk.template=.gawk))
+SUPPLIER_INCLUDE_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_INCLUDE:.gawk.include=.gawk))
 
 # Configurations paths
 define supplier_template
@@ -85,8 +111,10 @@ TESTS_$(1)_RUN_M4 = $$(wildcard $$(TESTS_$(1)_RUN_PATH)/*.m4)
 
 # psirt tests files (template and m4)
 TESTS_$(1)_REPO_PSIRT_TEMPLATE = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.template)
+TESTS_$(1)_REPO_PSIRT_INCLUDE = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.include)
 TESTS_$(1)_REPO_PSIRT_M4 = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.m4)
 TESTS_$(1)_RUN_PSIRT_TEMPLATE = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.template)
+TESTS_$(1)_RUN_PSIRT_INCLUDE = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.include)
 TESTS_$(1)_RUN_PSIRT_M4 = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.m4)
 
 endef
@@ -97,7 +125,6 @@ $(foreach supplier,$(SUPPLIER_SCOPE),$(eval $(call supplier_template,$(supplier)
 # --------------- cawk specific options
 # test execution command
 TEST_EXE = -exec ./$(test) {} +
-TEST_EXE_PSIRT = -exec ./$(test) {} \;
 # egrep command
 EGREP = grep -E
 ECHO = echo

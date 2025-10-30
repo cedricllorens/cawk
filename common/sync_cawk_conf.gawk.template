@@ -11,7 +11,7 @@
 # to a cawk audit=AUDIT_NAME assessment. a soft link is built rather 
 # than to copy the configuration
 #
-# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_device" "file_list" "regex_os"
+# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_device" "file_list" "regex_os" "regex_path_exclude"
 # note : various directories are separated by comma
 # ---------------------------------------------------------------------
 
@@ -154,7 +154,7 @@ function matches_os_regex(config_type, regex_os) {
 BEGIN {
 
     if (ARGC < 3) {
-        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_device\" \"file_list\" \"regex_os\"";
+        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_device\" \"file_list\" \"regex_os\" \"regex_path_exclude\"";
         exit 0;
     }
 
@@ -169,7 +169,17 @@ BEGIN {
         print "cawk os regex filter detected: " regex_os
     } else {
         regex_os = ".*"
-        print "cawk os regex filter not detected: " regex_os
+        print "cawk os regex filter not detected: none"
+    }
+    
+    # match regex_path_exclude ----
+    regex_path_exclude = "none"
+    if (ARGV[5] != "none") {
+        regex_path_exclude = ARGV[5]
+        print "cawk os regex filter detected: " regex_path_exclude
+    } else {
+        regex_path_exclude = ""
+        print "cawk os regex filter not detected: none"
     }
 
     # Authorise all
@@ -219,7 +229,7 @@ BEGIN {
             print "cawk error empty directory"
             continue
         }
-        cmd = "find " src_prefix[i] " -maxdepth 1 -type f | egrep \"" regex_device "\""
+        cmd = "find " src_prefix[i] " -type f | egrep \"" regex_device "\""
 
         while ((cmd | getline file) > 0) {
 
@@ -240,7 +250,12 @@ BEGIN {
                 }
 
                 if (!matches_os_regex(type, regex_os) && regex_os != "none") {
-                    print "cawk soft link not built (skipped not match regex_os) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os
+                    print "cawk soft link not built (skipped not match regex_os) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
+                    continue
+                }
+
+                if (regex_path_exclude != "" && file ~ regex_path_exclude) {
+                    print "cawk soft link not built (skipped match regex_path_exclude) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
                     continue
                 }
 
@@ -267,7 +282,7 @@ BEGIN {
                 if ( dst != "") {
                     system("mkdir -p \"" dst "\"")
                     system("ln -s \"" file "\" \"" dst "\"")
-                    print "cawk soft link built == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os
+                    print "cawk soft link built == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
                 } else {
                     print "cawk soft link not built (skipped os not supported) ==  os:" type " conf:" file
                 }

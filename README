@@ -42,6 +42,76 @@ level required for buidling tests:
 	-%SED_GAWK_PATH% must point out the right path for gawk 
 	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
 
+# -----------------------
+# ---- cawk gmake targets
+# -----------------------
+
+just execute <gmake> in the cawk root directory and all the cawk targets are detailed
+
+# ------------------------
+# ---- cawk gmake parallel
+# ------------------------
+
+in standard mode, cawk performs assessment not in parallel mode. to use prarallel mode,
+you have to modify the Makefile.support.mk file thanks to these gmake VARS:
+
+	# --------------- cawk parallel options
+	# enable parallel yes/no
+	MAKE_PARALLEL = yes
+	# number of files to process per target (all targets are processed in parallel)
+	MAKE_FILES_PER_TARGET = 100
+
+	# --------------- gmake parallel options
+	# gmake number of jobs
+	MAKE_J = 4
+	# gmake load average
+	MAKE_LOAD_AVG = 3
+
+once cawk parallel mode is enabled, before performing assessment, cawk build one Makefile
+per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
+enhanced performances for a huge set of files.
+
+# --------------------
+# ---- cawk first use
+# --------------------
+
+after install, cd to the cawk root directory, execute:
+
+	- gmake version : provide the cawk version release
+	
+	- gmake : provide all cawk gmake targets
+
+	- gmake clean check_repo view_repo : it applies the test repo to conf repo 
+	and see results, you may check reports/repo assessment files 
+
+	- gmake clean check_run view_run : it applies the test run to conf run and 
+	see results, you may check reports/run assessment files
+
+	-- audit=AUDIT_NAME assessment --
+
+	- gmake create_audit audit=client1 : it creates client1 assessment, all tests 
+	from repo are copied, all exceptions from repo are copied, all confs from repo 
+	are copied. now, you may remove or/and add tests, remove and/or add true confs 
+	and run this assessment as such
+
+          	- gmake check_run audit=client1 : it applies the test run_client1 to conf 
+		run_client1,you may also check reports/run_client1 assessment files
+          
+          	- gmake check_run view_run audit=client1 : it applies the test run_client1 
+		to conf run_client1 and see results,you may also check reports/run_client1 
+		assessment files
+
+          	- gmake check_run view_run audit=client1 supplier=cisco-ios : same as previous
+		but only for cisco-ios configurations 
+
+          	- gmake delete_audit audit=client1 : remove the client1 assessment
+
+	- gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)
+
+	- gmake check_run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)
+
+	-- audit=AUDIT_NAME assessment --
+
 # ---------------------
 # ---- cawk directories
 # ---------------------
@@ -58,7 +128,7 @@ others common useful scripts
 exceptions or tests level
 
 - database : contains all the flat files databases used to manage various cawk options like sync
-confs, sending emeails, etc.
+confs, sending emails, etc.
 
 	- scripts : contains scripts used for various usages as described : generally it requires the
 	use of the internal inventory
@@ -75,7 +145,12 @@ confs, sending emeails, etc.
 
 	- post_audit : can be used by post_audit target process if needed
 
-- tests : contains a collection of individual tests <*.gawk.template> or <*.gawk.m4> per supplier :
+- database.repo : contains all the flat EMPTY files databases used to manage various cawk options 
+like sync confs, sending emails, etc. This is used during the <migrate> target to update the 
+database directory ONLY with missing files, existing files are not updated
+
+- tests : contains a collection of individual tests <*.gawk.template> or <*.gawk.m4> or 
+<*.gawk.include> per supplier :
 
 	- there are 3 types of core tests directories:
 		- tests/repo : contains the full collection of cawk coded tests, that can be used in 
@@ -85,13 +160,16 @@ confs, sending emeails, etc.
 		-- audit=AUDIT_NAME assessment --
 		- tests/run_{audit_name} : contains a full copy of repo tests when created (you can 
 		remove or add other tests or add your own tests)
+		- tests/run_{audit_name}.psirt : contains a full copy of repo psirt tests when created 
+		(you can remove or add other tests or add your own tests)
 		-- audit=AUDIT_NAME assessment --
 
 	- inside each core tests directories, you have a full set of tests supplier directories
 
-	- a test has <.template> suffix or <.m4> suffix, but the test is converted to <.gawk> with the 
-	support of support/tests.sed and the cawk root Makefile. this <step> allows to write tests more 
-	easily and to enforce env system portability, so each test may to %SED_VAR% aka:
+	- a test has <.template> suffix or <.m4> suffix or <.include> suffix, but the test is 
+	converted to <.gawk> with the 	support of support/tests.sed and the cawk root Makefile. 
+	this <step> allows to write tests more 	easily and to enforce env system portability, so 
+	each test may to %SED_VAR% aka:
 		- %SED_BLOCK_JUNIPER% : space identation used for block hierarchy
 		- %SED_COMMON_PATH% = to point out the common <kind of library>
 		- %SED_GAWK_PATH% = to point out the right path for gawk 
@@ -168,35 +246,6 @@ confs, sending emeails, etc.
 - backup : contains tar.gz files when using cawk backup targets, please refer to the cawk backup
            section for further information
 
-# -----------------------
-# ---- cawk gmake targets
-# -----------------------
-
-just execute <gmake> in the cawk root directory and all the cawk targets are detailed
-
-# ------------------------
-# ---- cawk gmake parallel
-# ------------------------
-
-in standard mode, cawk performs assessment not in parallel mode. to use prarallel mode,
-you have to modify the Makefile.support.mk file thanks to these gmake VARS:
-
-	# --------------- cawk parallel options
-	# enable parallel yes/no
-	MAKE_PARALLEL = yes
-	# number of files to process per target (all targets are processed in parallel)
-	MAKE_FILES_PER_TARGET = 100
-
-	# --------------- gmake parallel options
-	# gmake number of jobs
-	MAKE_J = 4
-	# gmake load average
-	MAKE_LOAD_AVG = 3
-
-once cawk parallel mode is enabled, before performing assessment, cawk build one Makefile
-per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
-enhanced performances for a huge set of files.
-
 # -----------------------------------
 # ---- cawk risk level && status code
 # -----------------------------------
@@ -243,47 +292,6 @@ cawk computes three key security indicators in the summary report:
 	- high risk error ratio (scope error) : expressed as a percentage between 0% and 100% (0% is best) 
 	- average errors per device (scope error) : measured from 0 upward with no upper bound (0 is best)
 
-# --------------------
-# ---- cawk first use
-# --------------------
-
-after install, cd to the cawk root directory, execute:
-
-	- gmake version : provide the cawk version release
-	
-	- gmake : provide all cawk gmake targets
-
-	- gmake clean check_repo view_repo : it applies the test repo to conf repo 
-	and see results, you may check reports/repo assessment files 
-
-	- gmake clean check_run view_run : it applies the test run to conf run and 
-	see results, you may check reports/run assessment files
-
-	-- audit=AUDIT_NAME assessment --
-
-	- gmake create_audit audit=client1 : it creates client1 assessment, all tests 
-	from repo are copied, all exceptions from repo are copied, all confs from repo 
-	are copied. now, you may remove or/and add tests, remove and/or add true confs 
-	and run this assessment as such
-
-          	- gmake check_run audit=client1 : it applies the test run_client1 to conf 
-		run_client1,you may also check reports/run_client1 assessment files
-          
-          	- gmake check_run view_run audit=client1 : it applies the test run_client1 
-		to conf run_client1 and see results,you may also check reports/run_client1 
-		assessment files
-
-          	- gmake check_run view_run audit=client1 supplier=cisco-ios : same as previous
-		but only for cisco-ios configurations 
-
-          	- gmake delete_audit audit=client1 : remove the client1 assessment
-
-	- gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)
-
-	- gmake check_run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)
-
-	-- audit=AUDIT_NAME assessment --
-
 # ------------------------------------------
 # ---- cawk database
 # ------------------------------------------
@@ -291,7 +299,12 @@ after install, cd to the cawk root directory, execute:
 cawk allows to manage flat file databases in order to use cawk options like sync confs,
 sending emeails, etc. this is only available for audit=AUDIT_NAME assessment
 
+	-- generic --
+	
 	- gmake database_view : view all the databases
+
+	- gmake database_repo_copy : update <database> directory only with missing files 
+	(database.repo -> database), this target is runned with <migrate> target
 
 	-- sync database --
 
@@ -308,10 +321,12 @@ sending emeails, etc. this is only available for audit=AUDIT_NAME assessment
 		- 3 field is an extended regex to select devices pattern matching 
 		    like .* or .*switch.* (i.e. regex=REGEX_DEVICE)
 		- 4 field is a file containing a list of devices matching a device scope based on internal inventory
-		    the file is located in database/sync!scopes directory and generated by database_postaudit.script
+		    the file is located in database/sync_scopes directory and generated by database_postaudit.script
 			audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
-		- 5 field is an extended regex to select os pattern mathcing
-		    like (cisco-ios|cisco-xr) or .* (i.e. regex=REGEX_OS)
+		- 5 field is an extended regex to select os pattern matching
+		    like (cisco-ios|cisco-xr) or .* (i.e. regexos=REGEX)
+		- 6 field is an extended regex to exclude some specific paths if required 
+		    like (_home_|_earth) or .* (i.e. regexpathexclude=REGEX)
 
 		note : common/sync_cawk_conf.gawk script is in charge to apply the database configuration 
 		per audit=AUDIT_NAME
@@ -369,6 +384,9 @@ cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of work
 
 	- gmake sync_run_audit (sync all the audit=AUDIT_NAMEs)
 
+	- gmake sync_psirt : build psirt inventory to be used by psirt tests, the file MUST BE
+	database/psirt_scopes/psirt_os_inventory_scope.txt to work well with the psirt tests
+
 note : we do recomment that the central confs repository is owner by an different user than
 the cawk package in order to enforce that the cawk user can only read the central confs
 repository.
@@ -385,6 +403,19 @@ cawk allows to email audit=AUDIT_NAME assessments in zip file format. the way of
 	- gmake email_send audit=AUDIT_NAME : send email by refering to cawk email database 	
 
 	- gmake email_send_audit (email all the audit=AUDIT_NAMEs)
+
+# -----------------------
+# ---- cawk psirt tests
+# -----------------------
+compared to standard tests, psirt tests are located in tests.<os>.psirt directories and have 
+<*.gawk.include> suffix. within a test, you can setup advanced checks like:
+	
+	- device name pattern matching
+	- os patterns matching (os_version chassis cpu) / these regex are compared with the 
+	  central psirt scope located in database/psirt_scopes/psirt_os_inventory_scope.txt 
+	- LINE(s) pattern matching
+	- BLOCK(s) pattern matching 
+	- Build a combined logic to detect vulnerable devices 
 
 # ---------------------------------------------
 # ---- cawk backup audit=AUDIT_NAME assessment
@@ -432,6 +463,7 @@ as such, all the assessments are restored.
 	tests from repo linked to your audit=AUDIT_NAME assessments :
 		- if you have have coded additional tests, we will remain there
 		- if you have have changed existing tests, they will be changed to repo tests
+
 6) gmake clean clean_common tests_run_audit
 
 the migrate target allows to reach this goal in such a way:
