@@ -7,7 +7,7 @@
 
 # ---------------
 
-CAWK_RELEASE = v3.1.0
+CAWK_RELEASE = v3.2.0
 
 # ---------------
 
@@ -159,3 +159,6 @@ DEADBEEF_THRESHOLD_DAYS ?= 30
 
 # --------------- clean specific parameters
 ARCHIVE_OLDER_DAYS ?= 120
+
+# --------------------------------
+PSIRT ?= no

@@ -418,6 +418,13 @@ compared to standard tests, psirt tests are located in tests.<os>.psirt director
 	- Build a combined logic to detect vulnerable devices 
 
 # ---------------------------------------------
+# ---- cawk Makefile.support.mk
+# ---------------------------------------------
+you may thanks to the file Makefile.support.mk control all the cawk options like PSIRT,
+DEADBEEF, etc. please note that all these options can be called with gmake like:
+gmake check_repo DEADBEEF=yes PSIRT=yes ....
+
+# ---------------------------------------------
 # ---- cawk backup audit=AUDIT_NAME assessment
 # ---- cawk restore audit=AUDIT_NAME assessment
 # ---------------------------------------------
@@ -471,6 +478,59 @@ the migrate target allows to reach this goal in such a way:
 	- gmake backup_run_audit
 2) install a new version of cawk
 3) gmake migrate file=backbup_filename_path and all the next steps above are done 3) to 6)
+
+# -------------------
+# ---- cawk docker
+# -------------------
+
+first of all, you need to install:
+- docker
+- buildx
+
+the cawk docker files:
+- Dockerfile : allow to build a cawk image
+- cawk_docker_run.sh : script runned when running the cawk container
+- Makefile.docker : contains all the commands to manage cawk container and persitent data storage
+
+to know all the available commands:
+
+- gmake -f Makefile.docker : provide all the available target commands
+	IMAGE NAME     : cawk-docker:$(CAWK_VERSION)
+	CONTAINER NAME : cawk-container-$(CAWK_VERSION)
+	VOLUME NAME    : cawk-persistent-volume-$(CAWK_VERSION)
+
+some useful commands are :
+
+- gmake -f Makefile.docker status : provide a status of the cawk container and persitent data storage
+	cawk container status ----
+	sudo docker ps -a --filter name=cawk-container-v3.2.0 || echo "No containers found"
+	CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS         PORTS     NAMES
+	2dbee2c723b3   cawk-image:v3.2.0   "/app/cawk/cawk_dock…"   9 minutes ago   Up 9 minutes             cawk-container-v3.2.0
+
+	cawk volume status ----
+	sudo docker volume ls --filter name=cawk || echo "No cawk volumes found"
+	DRIVER    VOLUME NAME
+	local     cawk-persistent-volume-v3.2.0
+
+- gmake -f Makefile.docker info-volume
+	cawk volume information ----
+	sudo docker volume inspect cawk-persistent-volume-v3.2.0 || echo "Volume cawk-persistent-volume-v3.2.0 not found"
+	[
+		{
+			"CreatedAt": "2025-12-03T18:24:02+01:00",
+			"Driver": "local",
+			"Labels": null,
+			"Mountpoint": "/var/lib/docker/volumes/cawk-persistent-volume-v3.2.0/_data",
+			"Name": "cawk-persistent-volume-v3.2.0",
+			"Options": null,
+			"Scope": "local"
+		}
+	]
+
+- to run an assessment, just launch this command and check in persitent data storage the results
+	sudo docker exec cawk-container-v3.2.0 sh -c "cd /app/cawk && gmake check_repo >> /app/cawk/logs/cawk-check.log 2>&1"
+	sudo docker exec cawk-container-v3.2.0 sh -c "cd /app/cawk && gmake check_run audit=<AUDIT_NAME> >> /app/cawk/logs/cawk-check-<AUDIT_NAME>.log 2>&1"
+	sudo ls /var/lib/docker/volumes/cawk-persistent-volume-v3.2.0/_data/
 
 # -------------------
 # ---- cawk community

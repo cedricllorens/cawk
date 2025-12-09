@@ -54,11 +54,6 @@ if command -v diff >/dev/null 2>&1; then
 else
     echo "NOK : diff is not available."
 fi
-if command -v egrep >/dev/null 2>&1; then
-    echo "OK : egrep is available."
-else
-    echo "NOK : egrep is not available."
-fi
 if command -v grep >/dev/null 2>&1; then
     echo "OK : grep is available."
 else

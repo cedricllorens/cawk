@@ -5,6 +5,20 @@
 # cawk is Copyright (C) 2024-2025 by Cedric Llorens
 # ------------------------------------------------------------
 
+v3.2.0 (December 2025):
+	Makefile:
+	- add a new variable that can be called with gmake like:
+		gmake check_run audit=<AUDIT_NAME> PSIRT=yes : only compute PSIRT tests if you intend to build an audit only for psirt purpose
+		gmake check_run audit=<AUDIT_NAME> PSIRT=no (dfault value) : compute all the tests
+		(ref Makefile.support.mk file)
+	- fix a bug in database.repo copy to database
+	Docker:
+	- 3 new files have been added to build a cawk container based on:
+		- Makefile.docker file, 
+		- Dockerfile file, 
+		- cawk_docker_run.sh script
+		(please refer to the README for further information)
+
 v3.1.0 (October 2025):
 	Makefile:
 	- add a new script <database_sync_psirt.sh> in <database/scripts> in order to build psirt inventory

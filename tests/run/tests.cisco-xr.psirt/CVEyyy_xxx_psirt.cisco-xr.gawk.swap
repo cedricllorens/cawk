@@ -1,0 +1,303 @@
+#%SED_GAWK_PATH%
+
+# ==============================================================================
+# PSIRT VULNERABILITY ASSESSMENT TOOL
+# ============================================================================== 
+# DESCRIPTION:
+#   Generic pattern-based vulnerability detection tool with configurable logic
+#   Automatically detects OS device information from inventory file
+#   Supports line patterns, block patterns, and complex boolean logic
+#
+# REQUIREMENTS:
+#   - Inventory file database/psirt_scopes/psirt_os_inventory_scope.txt
+#     with format: "device_filename os_version chassis cpu"
+#
+# USER CONFIGURATION:
+#   - Modify ONLY the section between "USER START" and "USER END"
+#   - Define OS patterns, line patterns, block patterns, and logic
+#
+# SYNTAX REFERENCE:
+#   LINE[1] == 1          -> line pattern 1 found
+#   BLOCK[1] == 1         -> block 1 exists (start + end found)
+#   BLOCK_LINE[1][1] == 1 -> line 1 of block 1 found
+#   BLOCK_LINE[1][2] == 0 -> line 2 of block 1 NOT found
+#
+# VERSION: 1.0
+# ==============================================================================
+
+@include %SED_INCLUDE_PATH%
+@include "tests/run/tests.cisco-xr.psirt/CVEyyy_xxx_psirt.cisco-xr.gawk.include"
+
+# --------------------------------------
+
+function eval_binary_logic(logic_expression) {
+    # Create a copy of the expression to work with
+    expr = logic_expression
+    
+    # Replace all array references with their actual values
+    for (i = 1; i <= config_psirt_line_patterns_count; i++) {
+        pattern_ref = "config_psirt_line_patterns_matched\\[" i "\\]"
+        gsub(pattern_ref, config_psirt_line_patterns_matched[i], expr)
+    }
+    
+    for (i = 1; i <= config_psirt_block_patterns_count; i++) {
+        # Replace with block existence
+        pattern_ref = "config_psirt_block_exists\\[" i "\\]"
+        gsub(pattern_ref, config_psirt_block_exists[i], expr)
+        
+        # Replace individual line references using the new array structure
+        for (j = 1; j <= config_psirt_block_patterns[i]["lines_count"]; j++) {
+            line_pattern_ref = "config_psirt_block_patterns_lines_matched\\[" i "\\]\\[" j "\\]"
+            gsub(line_pattern_ref, config_psirt_block_patterns_lines_matched[i][j], expr)
+        }
+    }
+    
+    # Now evaluate the expression directly using awk's evaluation
+    cmd = "echo 'BEGIN { print (" expr ") }' | awk -f -"
+    cmd | getline result
+    close(cmd)
+    return result
+}
+
+# --------------------------------------
+
+BEGIN {
+    # Load configuration
+    load_psirt_config();
+}
+
+BEGINFILE {
+
+    # Auto-detect OS device from inventory file
+    config_file = FILENAME
+    if (match(config_file, /([^\/]+)$/, filename_arr)) {
+        filename_only = filename_arr[1]
+    } else {
+        filename_only = config_file
+    }
+
+    psirt_inventory_file_error = 0
+
+    # Enforce that filename matches DEVICE (regex)
+    if (!match(filename_only, DEVICE)) {
+        print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","skipped configuration because filename " filename_only " does not match device pattern " DEVICE, FNR, "low", "psirt");
+        psirt_inventory_file_error = 1
+        nextfile
+    }
+
+    inventory_file = "database/psirt_scopes/psirt_os_inventory_scope.txt"
+    if (system("test -f " inventory_file) != 0) {
+        print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","skipped because inventory file " inventory_file " does not exist", FNR, "low", "psirt");
+        psirt_inventory_file_error = 1
+        nextfile
+    }
+
+    grep_cmd = "grep '^" filename_only " ' " inventory_file
+    if ((grep_cmd | getline os_device_line) > 0) {
+        if (match(os_device_line, "^" filename_only " (.*)", arr)) {
+            os_device = arr[1]
+        }
+    } else {
+        print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","skipped configuration because not found in " inventory_file, FNR, "low", "psirt");
+        psirt_inventory_file_error = 1
+        nextfile
+    }
+    close(grep_cmd)
+      
+    # Convert user arrays to internal format
+    os_psirt_patterns_count = 0
+    for (i in OS) { 
+        os_psirt_patterns_count++
+        os_psirt_patterns[os_psirt_patterns_count] = OS[i]
+    }
+    
+    config_psirt_line_patterns_count = 0
+    for (i in LINE) {
+        config_psirt_line_patterns_count++
+        config_psirt_line_patterns[config_psirt_line_patterns_count] = LINE[i]
+    }
+    
+    config_psirt_block_patterns_count = 0
+    for (i in BLOCK) {
+        config_psirt_block_patterns_count++
+        config_psirt_block_patterns[config_psirt_block_patterns_count]["start"] = BLOCK[i]["start"]
+        config_psirt_block_patterns[config_psirt_block_patterns_count]["end"] = BLOCK[i]["end"]
+        
+        lines_count = 0
+        for (j in BLOCK[i]["match"]) {
+            lines_count++
+            config_psirt_block_patterns[config_psirt_block_patterns_count]["lines"][lines_count] = BLOCK[i]["match"][j]
+        }
+        config_psirt_block_patterns[config_psirt_block_patterns_count]["lines_count"] = lines_count
+    }
+    
+    # Convert LOGIC to internal format
+    binary_logic = LOGIC
+
+    for (i in BLOCK) {
+        # Individual block lines
+        for (j in BLOCK[i]["match"]) {
+            line_ref = "BLOCK_LINE\\[" i "\\]\\[" j "\\]"
+            gsub(line_ref, "config_psirt_block_patterns_lines_matched[" i "][" j "]", binary_logic)
+        }
+    }
+
+    for (i in BLOCK) {
+        # Block = block existence (start + end), not the lines
+        ref = "BLOCK\\[" i "\\]"
+        gsub(ref, "config_psirt_block_exists[" i "]", binary_logic)
+    }
+
+    for (i in LINE) {
+        ref = "LINE\\[" i "\\]"
+        gsub(ref, "config_psirt_line_patterns_matched[" i "]", binary_logic)
+    }
+
+    # Tracking variables
+    device_config_file = FILENAME
+    current_block = 0
+    in_block = 0
+    
+    # Initialize pattern match tracking arrays
+    for (i = 1; i <= config_psirt_line_patterns_count; i++) {
+        config_psirt_line_patterns_matched[i] = 0
+    }
+    
+    # Initialize block tracking arrays
+    for (i = 1; i <= config_psirt_block_patterns_count; i++) {
+        block_matched_lines[i] = 0
+        config_psirt_block_patterns_matched[i] = 0
+        config_psirt_block_exists[i] = 0  # Track block existence
+        
+        # Use separate array for individual line tracking
+        for (j = 1; j <= config_psirt_block_patterns[i]["lines_count"]; j++) {
+            config_psirt_block_patterns_lines_matched[i][j] = 0
+        }
+    }
+}
+
+# --------------------------------------
+
+{
+    config_line = $0
+    
+    # Check simple line patterns
+    for (i = 1; i <= config_psirt_line_patterns_count; i++) {
+        if (config_psirt_line_patterns[i] != "" && match(config_line, config_psirt_line_patterns[i])) {
+            config_psirt_line_patterns_matched[i] = 1
+        }
+    }
+    
+    # Process configuration blocks - INLINE LOGIC
+    # Check if we're entering a new block
+    if (!in_block) {
+        for (i = 1; i <= config_psirt_block_patterns_count; i++) {
+            if (match(config_line, config_psirt_block_patterns[i]["start"])) {
+                in_block = 1
+                current_block = i
+                block_matched_lines[i] = 0
+                break
+            }
+        }
+    }
+    
+    # If we're in a block, check for end or internal patterns
+    if (in_block && current_block > 0) {
+        # Check if it's the end of the block
+        if (match(config_line, config_psirt_block_patterns[current_block]["end"])) {
+            # Mark that the block exists (start + end found)
+            config_psirt_block_exists[current_block] = 1
+            
+            # Evaluate if the block match all vulnerable lines (for legacy system)
+            if (block_matched_lines[current_block] == config_psirt_block_patterns[current_block]["lines_count"]) {
+                config_psirt_block_patterns_matched[current_block] = 1
+            }
+            
+            # Reset block variables
+            in_block = 0
+            current_block = 0
+        } else {
+            # Check line patterns within the current block AND track individual lines
+            for (j = 1; j <= config_psirt_block_patterns[current_block]["lines_count"]; j++) {
+                if (match(config_line, config_psirt_block_patterns[current_block]["lines"][j])) {
+                    block_matched_lines[current_block]++
+                    # Track individual line matches in separate array
+                    config_psirt_block_patterns_lines_matched[current_block][j] = 1
+                    break # Avoid counting the same line multiple times
+                }
+            }
+        }
+    }
+}
+
+ENDFILE {
+
+    # Check logic binary
+    final_vulnerability_detected = 0
+    if (psirt_inventory_file_error == 0) {
+        final_vulnerability_detected = eval_binary_logic(binary_logic)
+        os_pattern_matched = 0
+        matched_os_pattern = ""
+    }
+
+    # Check match against OS patterns
+    if (final_vulnerability_detected) {
+
+        split(os_device, target_parts, " ")
+        if (length(target_parts) < 3) {
+            print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","skipped because Invalid os_device format detected: "os_device, FNR, "low", "psirt");
+        } else {
+            # Check OS pattern match
+            target_os = target_parts[1]
+            target_chassis = target_parts[2] 
+            target_cpu = target_parts[3]
+            target_full = target_os " " target_chassis " " target_cpu
+            
+            for (i = 1; i <= os_psirt_patterns_count; i++) {
+                if (match(target_full, os_psirt_patterns[i])) {
+                    os_pattern_matched = 1
+                    matched_os_pattern = os_psirt_patterns[i]
+                    break
+                }
+            }
+        }
+
+        psirt_final_match = "";
+        if (os_pattern_matched) {
+
+            psirt_final_match = "vulnerable to this psirt {FILE_PATTERN=" DEVICE "} {OS_PATTERN=" matched_os_pattern "}";
+        
+            # Display line existence
+            for (i = 1; i <= config_psirt_line_patterns_count; i++) {
+                if (config_psirt_line_patterns[i] != "") {
+                    psirt_final_match = psirt_final_match" {LINE["i"]="config_psirt_line_patterns[i]" / "config_psirt_line_patterns_matched[i]"}";
+                }
+            }
+            
+            # Display block existence
+            for (i = 1; i <= config_psirt_block_patterns_count; i++) {
+                psirt_final_match = psirt_final_match" {BLOCK["i"][\"start\"]="BLOCK[i]["start"]" / "config_psirt_block_exists[i];
+                for (j = 1; j <= config_psirt_block_patterns[i]["lines_count"]; j++) {
+                    psirt_final_match = psirt_final_match" "config_psirt_block_patterns_lines_matched[i][j];
+                }
+                psirt_final_match = psirt_final_match"}"
+            }
+
+            print_err("CVEyyy_xxx_psirt.cisco-xr.gawk",psirt_final_match,FNR,"high","psirt");
+
+        } else {
+            print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","not vulnerable to this psirt (OS pattern not matched)",FNR,"info","psirt");
+        }
+    } 
+
+    # Final message if not vulnerable
+    if (final_vulnerability_detected == 0 && psirt_inventory_file_error == 0) {
+        print_err("CVEyyy_xxx_psirt.cisco-xr.gawk","not vulnerable to this psirt (line and block not matched)",FNR,"info","psirt");
+    }
+}
+
+# --------------------------------------
+
+END {
+}
+

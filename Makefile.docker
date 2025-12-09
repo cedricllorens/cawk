@@ -1,0 +1,243 @@
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+# ------------------------------------------------------------
+# Makefile used for managing cawk container 
+#
+# authors: cedric llorens, florian heitz
+# 
+# cawk docker version: 1.0
+# ------------------------------------------------------------
+
+# ---------------------------------------------
+
+SHELL := /bin/bash
+
+# ---------------------------------------------
+
+CAWK_TAG := v3.2.0
+
+# ---------------------------------------------
+
+# Container configuration
+CONTAINER_NAME := cawk-container
+CONTAINER_FULL := $(CONTAINER_NAME)-$(CAWK_TAG)
+
+# image configuration
+IMAGE_NAME := cawk-image
+IMAGE_FULL := $(IMAGE_NAME):$(CAWK_TAG)
+
+# ---------------------------------------------
+
+# Volume configuration
+CAWK_VOLUME := cawk-persistent-volume
+CAWK_VOLUME_FULL := $(CAWK_VOLUME)-$(CAWK_TAG)
+
+# ---------------------------------------------
+
+# Proxy configuration
+PROXY_URL := $(shell echo $$HTTP_PROXY)
+PROXY_URL_SECU := $(shell echo $$HTTPS_PROXY)
+
+# ---------------------------------------------
+
+# Default target
+.PHONY: help build run stop clean clean-all rebuild status images containers \
+        prune prune-all logs shell connect info pull-alpine-image \
+        create-volume info-volume remove-volume cawk-check-repo \
+	remove-image-cawk remove-image-alpine check-system
+
+# ---------------------------------------------
+
+# Default target
+help:
+	@echo "===================================================================="
+	@echo "Cawk Docker Management - Available Targets"
+	@echo "===================================================================="
+	@echo "Container Management:"
+	@echo "  build                - Build the cawk image $(IMAGE_FULL)"
+	@echo "  run                  - Run the cawk container with persistent volume $(IMAGE_FULL)"
+	@echo "  stop                 - Stop the cawk container $(IMAGE_FULL)"
+	@echo "  connect              - Connect to cawk container $(IMAGE_FULL)"
+	@echo "  rebuild              - Clean, prune, build and run (full cycle) $(IMAGE_FULL)"
+	@echo ""
+	@echo "Volume Management:"
+	@echo "  create-volume        - Create $(CAWK_VOLUME_FULL) named volume"
+	@echo "  remove-volume        - Remove $(CAWK_VOLUME_FULL) volume"
+	@echo "  info-volume          - Show $(CAWK_VOLUME_FULL) volume details"
+	@echo ""
+	@echo "Information & Monitoring:"
+	@echo "  status               - Show container status"
+	@echo "  images               - List all images"
+	@echo "  remove-image-cawk    - Remove cawk image"
+	@echo "  remove-image-alpine  - Remove alpine image"
+	@echo "  containers           - List all containers"
+	@echo "  logs                 - Show container logs"
+	@echo "  info                 - Show system information"
+	@echo ""
+	@echo "Base Images Management:"
+	@echo "  pull-alpine-image    - Pull latest alpine from docker.io"
+	@echo ""
+	@echo "Cleanup & Maintenance:"
+	@echo "  clean                - Remove container (keep volumes)"
+	@echo "  clean-all            - Remove container and volumes"
+	@echo "  prune                - Remove unused images"
+	@echo ""
+	@echo "Run:"
+	@echo "  cawk-check           - Run cawk gmake check && gmake check_parallel"
+	@echo ""
+	@echo "help                   - Show this help message"
+	@echo "check-system           - Check the cawk docker system requirements"
+	@echo "===================================================================="
+
+
+# ---------------------------------------------
+
+check-system:
+	@echo "==== cawk docker check"
+	@docker_ok=true; \
+	buildx_ok=true; \
+	proxy_ok=true; \
+	\
+	printf "Docker check: "; \
+	if command -v docker >/dev/null 2>&1; then \
+		echo "OK"; \
+	else \
+		echo "NOK"; docker_ok=false; \
+	fi; \
+	\
+	printf "BuildX check: "; \
+	if sudo docker buildx version >/dev/null 2>&1; then \
+		echo "OK"; \
+	else \
+		echo "NOK"; buildx_ok=false; \
+	fi; \
+	\
+	printf "env PROXY_HTTP check: "; \
+	if [ -n "$(PROXY_URL)" ]; then \
+		echo "OK ($(PROXY_URL))"; \
+	else \
+		echo "NOK"; proxy_ok=false; \
+	fi; \
+	\
+	printf "env PROXY_HTTPS check: "; \
+	if [ -n "$(PROXY_URL_SECU)" ]; then \
+		echo "OK ($(PROXY_URL_SECU))"; \
+	else \
+		echo "NOK"; proxy_ok=false; \
+	fi; \
+	\
+	if [ "$$docker_ok" = "true" ] && [ "$$buildx_ok" = "true" ] && [ "$$proxy_ok" = "true" ]; then \
+		echo "System: OK"; \
+	else \
+		echo "System: NOK"; \
+	fi
+	@echo "==== cawk docker check"
+
+# ---------------------------------------------
+
+create-volume:
+	@echo "cawk create volume: $(CAWK_VOLUME_FULL) ----"
+	sudo docker volume inspect $(CAWK_VOLUME_FULL) || sudo docker volume create $(CAWK_VOLUME_FULL)
+	sudo docker volume inspect $(CAWK_VOLUME_FULL)
+
+remove-volume:
+	@echo "cawk remove volume ----"
+	sudo docker volume rm $(CAWK_VOLUME_FULL) || true
+
+info-volume:
+	@echo "cawk volume information ----"
+	sudo docker volume inspect $(CAWK_VOLUME_FULL) || echo "Volume $(CAWK_VOLUME_FULL) not found"
+
+# ---------------------------------------------
+
+build: check-system
+	@echo "cawk building $(IMAGE_FULL) ----"
+	sudo docker buildx build \
+		--build-arg http_proxy=$(PROXY_URL) \
+		--build-arg https_proxy=$(PROXY_URL_SECU) \
+		--build-arg HTTP_PROXY=$(PROXY_URL) \
+		--build-arg HTTPS_PROXY=$(PROXY_URL_SECU) \
+		-t $(IMAGE_FULL) .
+
+run: create-volume
+	@echo "cawk starting $(CONTAINER_FULL) with $(CAWK_VOLUME_FULL) volume ----"
+	sudo docker run -d --name $(CONTAINER_FULL) \
+		--restart unless-stopped \
+		-v $(CAWK_VOLUME_FULL):/app/cawk/cawk-persistent-volume \
+		$(IMAGE_FULL)
+
+stop:
+	@echo "cawk stopping $(CONTAINER_FULL) ----"
+	sudo docker stop $(CONTAINER_FULL) || true
+	sudo docker rm $(CONTAINER_FULL)  || true
+
+rebuild: clean-all prune create-volume build run
+
+shell:
+	@echo "cawk opening shell in $(CONTAINER_FULL) ----"
+	sudo docker exec -it $(CONTAINER_FULL) /bin/bash
+
+connect: shell
+
+# ---------------------------------------------
+
+clean:
+	@echo "cawl cleaning $(CONTAINER_FULL) container ----"
+	sudo docker stop $(CONTAINER_FULL) || true
+	sudo docker rm $(CONTAINER_FULL) || true
+
+clean-all: clean remove-volume
+
+status:
+	@echo "cawk container status ----"
+	sudo docker ps -a --filter name=$(CONTAINER_FULL) || echo "No containers found"
+	@echo ""
+	@echo "cawk volume status ----"
+	sudo docker volume ls --filter name=cawk || echo "No cawk volumes found"
+
+images:
+	@echo "cawk all images ----"
+	sudo docker images
+
+remove-image-cawk:
+	@echo "cawk remove cawk image ----"
+	sudo docker rmi $(IMAGE_FULL)
+
+remove-image-alpine:
+	@echo "cawk remove cawk image ----"
+	sudo docker rmi alpine:latest
+
+containers:
+	@echo "cawk $(CONTAINER_FULL) container ----"
+	sudo docker ps -a
+
+logs:
+	@echo "cawk $(CONTAINER_FULL) log"
+	sudo docker logs $(CONTAINER_FULL)
+
+info:
+	@echo "cawk system information ----"
+	sudo docker system df
+	@echo ""
+	@echo "cawk version information ----"
+	sudo docker version --format "{{.Client.Version}}"
+	@echo ""
+	@echo "cawk volume information ----"
+	sudo docker volume ls --format "table {{.Name}}\t{{.Driver}}\t{{.Mountpoint}}"
+
+# ---------------------------------------------
+
+pull-alpine-image:
+	@echo "cawk pulling latest alpine image ----"
+	sudo docker pull alpine:latest
+
+prune:
+	@echo "cawk removing unused images ----"
+	sudo docker image prune -f
+
+# ---------------------------------------------
+
+cawk-check:
+	sudo docker exec $(CONTAINER_FULL) sh -c "cd /app/cawk && gmake check >> /app/cawk/logs/cawk-check.log 2>&1"
+	sudo docker exec $(CONTAINER_FULL) sh -c "cd /app/cawk && gmake check_parallel >> /app/cawk/logs/cawk-check_parallel.log 2>&1"
