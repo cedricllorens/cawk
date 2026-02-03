@@ -1,0 +1,87 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : Check that <config stateful rules> is set
+# author  : quentin gavilan
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = ""
+    statefull_rules_found = 0
+    invalid_drop_found = 0
+    statefull_rules_line = ""
+    invalid_drop_line = ""
+    statefull_rules_lineno = 0
+    invalid_drop_lineno = 0
+}
+
+# Checks one complete iptables rule line
+function check_rule(line) {
+    if (line !~ /^iptables -A (INPUT|FORWARD) /) 
+        return
+
+    # Looks for a stateful ACCEPT rule for ESTABLISHED,RELATED traffic
+    if (!statefull_rules_found && line ~ /-j *ACCEPT/ &&((line ~ /-m *conntrack/ && line ~ /--ctstate *ESTABLISHED,RELATED/) ||(line ~ /-m *state/ && line ~ /--state *ESTABLISHED,RELATED/))) {
+        statefull_rules_found = 1
+        statefull_rules_line = line
+        statefull_rules_lineno = FNR
+    }
+
+    # Looks for a DROP/REJECT rule for INVALID state traffic
+    if (!invalid_drop_found && line ~ /-j *(DROP|REJECT)/ &&((line ~ /-m *conntrack/ && line ~ /--ctstate *INVALID/) || (line ~ /-m *state/ && line ~ /--state *INVALID/))) {
+        invalid_drop_found = 1
+        invalid_drop_line = line
+        invalid_drop_lineno = FNR
+    }
+}
+
+# Handles a normal one-line iptables rule
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+    check_rule($0)
+    next
+}
+
+# Handles a multi line iptables rule
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = $0
+    next
+}
+/\\$/ && rule != "" {
+    rule = rule " " $0
+    next
+}
+!/\\$/ && rule != "" {
+    rule = rule " " $0
+    check_rule(rule)
+    rule = ""
+    next
+}
+
+ENDFILE {
+    if (statefull_rules_found) {
+        print_err("global_statefulrules_set.iptables-fwcli.gawk","<config stateful rules> ESTABLISHED,RELATED state accept rule is set : "statefull_rules_line,statefull_rules_lineno,"medium","pass")
+    } else {
+        print_err("global_statefulrules_set.iptables-fwcli.gawk","<config stateful rules> ESTABLISHED,RELATED stateaccept rule is not set (INPUT/FORWARD)", FNR, "medium", "error")
+    }
+
+    if (invalid_drop_found) {
+        print_err("global_statefulrules_set.iptables-fwcli.gawk","<config stateful rules> INVALID state drop/reject rule is set : "invalid_drop_line,invalid_drop_lineno,"high","pass")
+    } else {
+        print_err("global_statefulrules_set.iptables-fwcli.gawk","<config stateful rules> INVALID state drop/reject rule is not set (INPUT/FORWARD)", FNR, "high", "error")
+    }
+}
+
+END {
+}

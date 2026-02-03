@@ -2,7 +2,7 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2025 by Cedric Llorens
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
 # -----------------
@@ -34,11 +34,23 @@ In summary, in gawk && gmake && m4 we trust :-)
 # ---- cawk installation
 # ----------------------
 
+manually ----
 jump to a specific directory and extract cawk, cd to cawk root directory and execute the <gmake> 
 command in order to have help on the cawk gmake targets. 
 
-note : you may have to change the file support/tests.sed for finding the gawk path at your system 
-level required for buidling tests:
+Makefile.cawk.version ----
+The Makefile.cawk.version file provides installation and version management targets:
+	- install - First time installation of cawk
+		- required: `CAWK_VERSION=x.y.y`
+	- reinstall - Reinstall current cawk version with audit backup and restore
+		- required: `CAWK_VERSION=x.y.y`
+	- update - Install new cawk version with automatic backup and restore from previous version
+		- required: `CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y`
+
+	note: This Makefile must be located in the parent directory of cawk installations.
+
+important note : you may have to change the file support/tests.sed for finding the gawk path at your 
+system level required for buidling tests:
 	-%SED_GAWK_PATH% must point out the right path for gawk 
 	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
 
@@ -387,6 +399,14 @@ cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of work
 	- gmake sync_psirt : build psirt inventory to be used by psirt tests, the file MUST BE
 	database/psirt_scopes/psirt_os_inventory_scope.txt to work well with the psirt tests
 
+	- gmake sync_teststoconfs_run : to sync tests to confs for <audit=AUDIT_NAME> assessment. 
+	To be used after <sync_run> to reduce tests supplier scope to confs supplier scope. in case
+	of issue, you may copy tests sources from repo by gmake tests_run_copy audit=AUDIT_NAME
+
+	- gmake sync_teststoconfs_run_audit : to sync tests to confs for only all <audit=AUDIT_NAME> 
+	assessments. To be used after <sync_run_audit> to reduce tests supplier scope to confs supplier 
+	scope. in case of issue, you may copy tests sources from repo by gmake tests_run_audit_copy
+
 note : we do recomment that the central confs repository is owner by an different user than
 the cawk package in order to enforce that the cawk user can only read the central confs
 repository.
@@ -456,6 +476,7 @@ as such, all the assessments are restored.
 # ---- cawk version migration
 # ---------------------------
 
+manually ----
 1) backup all your audit=AUDIT_NAME assessments and save it in a secure directory 
 	- gmake backup_run_audit
 2) install a new version of cawk
@@ -478,6 +499,18 @@ the migrate target allows to reach this goal in such a way:
 	- gmake backup_run_audit
 2) install a new version of cawk
 3) gmake migrate file=backbup_filename_path and all the next steps above are done 3) to 6)
+
+Makefile.cawk.version ----
+The Makefile.cawk.version file provides installation and version management targets:
+	- install - First time installation of cawk
+		- required: `CAWK_VERSION=x.y.y`
+	- reinstall - Reinstall current cawk version with audit backup and restore
+		- required: `CAWK_VERSION=x.y.y`
+	- update - Install new cawk version with automatic backup and restore from previous version
+		- required: `CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y`
+
+	note: This Makefile must be located in the parent directory of cawk installations.
+
 
 # -------------------
 # ---- cawk docker

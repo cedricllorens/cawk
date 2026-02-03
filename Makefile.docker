@@ -3,9 +3,7 @@
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # Makefile used for managing cawk container 
-#
 # authors: cedric llorens, florian heitz
-# 
 # cawk docker version: 1.0
 # ------------------------------------------------------------
 

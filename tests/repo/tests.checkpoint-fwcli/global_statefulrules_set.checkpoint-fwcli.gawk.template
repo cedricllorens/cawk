@@ -1,0 +1,103 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% changes like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : Check that <config stateful rules> is set (Check Point)
+# author  : quentin gavilan (Check Point adaptation)
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = ""
+    statefull_rules_found = 0
+    invalid_drop_found = 0
+    statefull_rules_line = ""
+    invalid_drop_line = ""
+    statefull_rules_lineno = 0
+    invalid_drop_lineno = 0
+}
+
+# Checks one complete Check Point rule line
+#
+# Assumes text export / CLI-style rules like:
+#   set access-rule layer Network position 1 name "Allow ESTABLISHED" \
+#       action accept connection-state established,related ...
+#
+#   set access-rule layer Network position 2 name "Drop INVALID" \
+#       action drop connection-state invalid ...
+#
+function check_rule(line) {
+    # Only look at access-rule commands
+    if (line !~ /^(set|add)[ \t]+access-rule[ \t]/)
+        return
+
+    # Looks for a stateful ACCEPT rule for ESTABLISHED,RELATED traffic
+    # (connection-state field contains established and related)
+    if (!statefull_rules_found &&
+        line ~ /action[ \t]+accept/ &&
+        line ~ /connection-state[ \t]+[A-Za-z,]*established[A-Za-z,]*/ &&
+        line ~ /connection-state[ \t]+[A-Za-z,]*related[A-Za-z,]*/) {
+
+        statefull_rules_found = 1
+        statefull_rules_line = line
+        statefull_rules_lineno = FNR
+    }
+
+    # Looks for a DROP/REJECT rule for INVALID state traffic
+    if (!invalid_drop_found &&
+        (line ~ /action[ \t]+drop/ || line ~ /action[ \t]+reject/) &&
+        line ~ /connection-state[ \t]+[A-Za-z,]*invalid[A-Za-z,]*/) {
+
+        invalid_drop_found = 1
+        invalid_drop_line = line
+        invalid_drop_lineno = FNR
+    }
+}
+
+# Single-line rule
+/^(set|add)[ \t]+access-rule[ \t]/ && !/\\$/ {
+    check_rule($0)
+    next
+}
+
+# Multi-line rule handling (ending with \)
+/^(set|add)[ \t]+access-rule[ \t]/ && /\\$/ && rule == "" {
+    rule = $0
+    next
+}
+/\\$/ && rule != "" {
+    rule = rule " " $0
+    next
+}
+!/\\$/ && rule != "" {
+    rule = rule " " $0
+    check_rule(rule)
+    rule = ""
+    next
+}
+
+ENDFILE {
+    if (statefull_rules_found) {
+        print_err("global_statefulrules_set.checkpoint-fwcli.gawk","<config stateful rules> ESTABLISHED,RELATED state accept rule is set (connection-state established,related) : "statefull_rules_line,statefull_rules_lineno,"medium","pass")
+    } else {
+        print_err("global_statefulrules_set.checkpoint-fwcli.gawk","<config stateful rules> ESTABLISHED,RELATED state accept rule is not set (access-rule with action accept and connection-state established,related)",FNR,"medium","error")
+    }
+
+    if (invalid_drop_found) {
+        print_err("global_statefulrules_set.checkpoint-fwcli.gawk","<config stateful rules> INVALID state drop/reject rule is set (connection-state invalid) : "invalid_drop_line,invalid_drop_lineno,"high","pass")
+    } else {
+        print_err("global_statefulrules_set.checkpoint-fwcli.gawk","<config stateful rules> INVALID state drop/reject rule is not set (access-rule with action drop/reject and connection-state invalid)",FNR,"high","error")
+    }
+}
+
+END {
+}

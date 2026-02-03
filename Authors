@@ -2,13 +2,18 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2025 by Cedric Llorens
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
 Founder : 
 	cedric llorens
 
 Authors :
+
+	2026 ---- iptables, ekinops-oneos
+	quentin gavilan
+	julien lair
+
 	2025 ---- docker 
 	floriant heitz
 

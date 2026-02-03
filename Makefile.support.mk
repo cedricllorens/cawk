@@ -2,12 +2,12 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2025 by Cedric Llorens
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
 # ---------------
 
-CAWK_RELEASE = v3.2.0
+CAWK_RELEASE = v3.3.0
 
 # ---------------
 
@@ -60,7 +60,7 @@ RUN_DIRS := $(shell find tests -name '*run_*' -type d 2>/dev/null | awk -F'run_'
 	chmod 650 $@
 
 # Define all suppliers/platforms
-SUPPLIER_SCOPE = cisco-ios cisco-xr juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli 6wind-linux
+SUPPLIER_SCOPE = cisco-ios cisco-xr juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli 6wind-linux ekinops-oneos
 
 # standard tests
 SUPPLIER_M4_REPO_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_M4:.gawk.m4=.gawk))

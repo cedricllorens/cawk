@@ -7,39 +7,27 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a <aaa config> is set
+# purpose : check if <no ip source-route> is set
 # author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
 
-# ----
-
-include(`cawk.m4')
-
 BEGIN {
 }
 
 BEGINFILE {
-	pass = 1;
+    pass = 0;
 }
 
-dnl MACRO BEGIN --------------------------
-
-m4_cawk_parse_block(
-
-`/^config user (tacacs|radius)/',`
-	print_err("aaa_config_set.fortinet.gawk",$0,FNR,"high","pass");
-	pass = 0;
-',
-`', `'
-
-)
-
-dnl MACRO END --------------------------
+/^no ip source-route$/{
+    print_err("global_noipsourceroute_set.ekinops-oneos.gawk","<no ip source-route> is set : "$0,FNR,"high","pass");
+    pass = 1;
+    nextfile;
+}
 
 ENDFILE {
-	if ( pass ) print_err("aaa_config_set.fortinet.gawk","<aaa config> is not set",0,"high","error");
+    if (pass == 0) print_err("global_noipsourceroute_set.ekinops-oneos.gawk","<no ip source-route> is not set",0,"high","error");
 }
 
 END {

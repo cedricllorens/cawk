@@ -1,0 +1,67 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <ntp authenticate> is not set
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass_authenticate = 0;
+    pass_key = 0;
+    pass_server = 0;
+    delete sntp_key;
+}
+
+/^sntp authenticate$/{
+    print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> is set : "$0,FNR,"high","pass");
+    pass_authenticate = 1;
+    next;
+}
+
+/^sntp trusted-key .*$/ {
+    if ( $3 ~ /[0-9]+/ ) sntp_key[int($3)] = 1;
+    if ( $4 == "-" && $5 ~ /[0-9]+/) {
+        for(i = int($3); i <= int($5); i++) {
+           sntp_key[i] = 1;
+        }
+    }
+    pass_key = 1;
+    next;
+}
+
+/^sntp server .*$/ && !/ key / {
+    print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> sntp server key is not defined : "$0,FNR,"high","error");
+    pass_server = 1;
+    next;
+}
+
+/^sntp server .* key [0-9]+$/ {
+   if ( sntp_key[int($NF)] != 1 ) {
+       print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> sntp server key is not valid : "$0,FNR,"high","error");
+       pass_server = 1;
+   } else {
+       print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> sntp server is defined with trusted key : "$0,FNR,"high","pass");
+       pass_server = 1;
+       next;
+   }
+}
+
+ENDFILE {
+    if (pass_authenticate == 0) print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> is not set",0,"high","error");
+    if (pass_key == 0) print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> sntp trusted-key is not set",0,"high","error");
+    if (pass_server == 0) print_err("ntp_authenticate_set.ekinops-oneos.gawk","<ntp authenticate> sntp server is not defined with key",0,"high","error");
+}
+
+END {
+}

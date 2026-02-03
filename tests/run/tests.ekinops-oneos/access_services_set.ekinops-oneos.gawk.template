@@ -1,0 +1,109 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <telnet, ssh, http et ftp/tftp> are configured properly
+# author  : julien lair
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    telnet = 0
+    sshEnable = 0
+    sshTimeout = 0
+    httpServer = 0
+    ftp = 0
+    tftp = 0
+}
+
+# ----
+/^ip telnet .*$/{
+    telnet = 1
+    if($3 == "disable"){
+        telnet = 2
+    }
+   next;
+}
+
+# ----
+/^ip ssh .*$/ && !/ timeout / {
+    if($3 == "enable"){
+        sshEnable = 1
+    }
+    next;
+}
+/^ip ssh timeout [0-9]+.*$/{
+    sshTimeout = 1
+    next;
+}
+
+# ----
+/^http-server .*$/{
+    httpServer = 1
+    if($2 == "disabled"){
+        httpServer = 2
+    }
+    next;
+}
+
+# ----
+/^ip ftp .*$/{
+    ftp = 1
+    next;
+}
+/^ip tftp .*$/{
+    tftp = 1
+    next;
+}
+
+ENDFILE {
+
+    # ----
+    if (telnet == 1){
+        print_err("access_services_set.ekinops-oneos.gawk","<telnet> need to be disabled : ip telnet disable",0,"high","error");
+    } else {
+        print_err("access_services_set.ekinops-oneos.gawk","<telnet> is disabled",0,"high","pass");
+    }
+    
+    # ----
+    if (sshEnable == 1 && sshTimeout == 0){
+        print_err("access_services_set.ekinops-oneos.gawk","<ssh> timeout is not configured",0,"high","error");
+    } else if (sshEnable == 1 && sshTimeout == 1){
+        print_err("access_services_set.ekinops-oneos.gawk","<ssh> is enabled with timeout",0,"high","pass");
+    } else {
+        print_err("access_services_set.ekinops-oneos.gawk","<ssh> is disabled",0,"high","error");
+    }
+    
+    # ----
+    if (httpServer == 1){
+        print_err("access_services_set.ekinops-oneos.gawk","<http server> is not disabled",0,"high","error");
+    } else {
+        print_err("access_services_set.ekinops-oneos.gawk","<http server> is disabled",0,"high","pass");
+    }
+
+    # ----
+    if (ftp == 0){
+        print_err("access_services_set.ekinops-oneos.gawk","<ftp> is not configured",0,"high","pass");
+    } else {
+        print_err("access_services_set.ekinops-oneos.gawk","<ftp> is configured",0,"high","error");
+    }
+
+    # ----
+    if (tftp == 0){
+        print_err("access_services_set.ekinops-oneos.gawk","<tftp> is not configured on loopback",0,"high","pass");
+    } else {
+        print_err("access_services_set.ekinops-oneos.gawk","<tftp> is configured",0,"high","error");
+    }
+}
+
+END {
+}

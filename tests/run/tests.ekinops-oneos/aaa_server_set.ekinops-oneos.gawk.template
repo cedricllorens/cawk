@@ -1,0 +1,64 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <tacacs server> is set
+# author  : julien lair
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 1;
+}
+
+/^tacacs-server .*$/ {
+    # check ip validity
+    if (!(match($2, /^(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})){3}$/))) {
+        print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server>  ip is not valid: " $2,FNR,"high","error");
+        pass = 0;
+    }
+
+    # strore key
+    key = $3
+    sizeKey = length(key)
+        
+    # check alphabet used
+    alphabetUse = 0
+    delete alreadyseen
+    for (i = 1; i <= sizeKey; i++) {
+        caractere = substr(key, i, 1)
+        if (!(caractere in alreadyseen)) {
+            alreadyseen[caractere] = 1
+            alphabetUse++
+        }
+    }
+        
+   # calculate entropy
+   entropie = sizeKey * log(alphabetUse)/log(2)
+   if(entropie < 128){ # only 128 bits or more are accepted
+       print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> encryption key used should be longer and use more varied characters, it is too weak",FNR,"high","error");
+       pass = 0;
+   }
+
+    # check if encrypted method is used
+    if($4 != "encrypted"){
+        print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> need to use <encrypted> method to tacacs-server",FNR,"high","error");
+        pass = 0;
+    }
+}
+
+ENDFILE {
+    if (pass == 1) print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> found and properly set",0,"high","pass");
+}
+
+END {
+}

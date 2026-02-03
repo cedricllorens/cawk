@@ -7,39 +7,27 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a <aaa config> is set
+# purpose : check if <snmp v1v2> is not set
 # author  : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
 
-# ----
-
-include(`cawk.m4')
-
 BEGIN {
 }
 
 BEGINFILE {
-	pass = 1;
+    pass = 1;
 }
 
-dnl MACRO BEGIN --------------------------
-
-m4_cawk_parse_block(
-
-`/^config user (tacacs|radius)/',`
-	print_err("aaa_config_set.fortinet.gawk",$0,FNR,"high","pass");
-	pass = 0;
-',
-`', `'
-
-)
-
-dnl MACRO END --------------------------
+/^snmp set-[^ ]+-community .*[ ]?.*$/{
+    print_err("snmp_v1v2_notset.ekinops-oneos.gawk","<snmp v1v2> is set : "$0,FNR,"high","error");
+    pass = 0;
+    next;
+}
 
 ENDFILE {
-	if ( pass ) print_err("aaa_config_set.fortinet.gawk","<aaa config> is not set",0,"high","error");
+    if (pass == 1) print_err("snmp_v1v2_notset.ekinops-oneos.gawk","<snmp v1v2> is not set",0,"high","pass");
 }
 
 END {

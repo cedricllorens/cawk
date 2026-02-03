@@ -1,0 +1,49 @@
+ip telnet disable
+bind scp acl access-list-ssh
+bind ssh acl access-list-ssh
+bind ssh loopback
+clock timezone UTC 0
+hostname conf0
+ip ftp source-interface loopback
+ip tftp source-interface loopback
+no ip icmp redirects
+no ip source-route
+ip ssh enable
+ip ssh timeout 500
+banner_extension exec sequence 1 Access forbidden
+banner_extension motd sequence 1 Access forbidden
+ip access-list standard access-list-ssh
+ permit 10.10.10.0 0.0.0.255
+ deny any log
+exit
+ip access-list standard access-list-snmp
+ permit 10.10.10.0 0.0.0.255
+ deny any log
+exit
+interface gigabitethernet 1/0
+ sfp duplex full
+ sfp no negotiation
+ ethernet oam active
+exit
+interface gigabitethernet 2/0
+ encapsulation dot1Q 2900
+exit
+interface loopback
+ ip address 10.100.10.10 255.255.255.255
+exit
+tacacs-server 10.100.10.100 keyword-XBGLPDSQDFQSJ12244w-xjbf00001111222bbbbbdddggggjjjjj encrypted loopback
+aaa authentication login default tacacs
+aaa authentication enable default tacacs
+aaa authorization command 0 local tacacs
+aaa authorization command 15 local tacacs
+aaa accounting exec default start-stop tacacs
+aaa accounting commands 0 default stop-only tacacs
+snmp set-read-community backdoor access-list-simp
+snmp set-read-community backdoor1 access-list-snmp v2group snmp_group_v2
+snmp group snmp_group_v2 v2c read view_mib
+snmp view view_mib 1.1 included 
+http-server disabled
+login on-failure log
+login on-success log
+ip scp server enable
+exit

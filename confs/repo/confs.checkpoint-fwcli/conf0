@@ -35,3 +35,13 @@ add access-rule name "Allow_Internal_Comms" layer "Network" position 8 source "I
 add access-rule name "Block_Finance_to_HR" layer "Network" position 9 source "Finance_Department" destination "HR_Department" action "Drop" track "Log"
 add access-rule name "Allow_Internal_DNS" layer "Network" position 10 source "Internal_Network" destination "DNS_Servers" service "dns" action "Accept" track "Log"
 add access-rule name "Deny_All_Other" layer "Network" position 99 source "Any" destination "Any" action "Drop" track "Log"
+# Ajoutez en position 1 (avant toutes les autres règles)
+add access-rule name "Allow_Loopback" layer "Network" position 1 \
+  action accept source 127.0.0.0/8 destination 127.0.0.0/8 \
+  service "Any" track "None"
+# Ajoutez en position 2 (juste après la règle loopback)
+add access-rule name "Drop_Loopback_Spoofing" layer "Network" position 2 \
+  action drop source 127.0.0.0/8 destination ! 127.0.0.0/8 \
+  track "Alert"
+add access-rule action accept connection-state established,related
+add access-rule action drop connection-state invalid

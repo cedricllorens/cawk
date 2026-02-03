@@ -15,7 +15,6 @@
 #        data to cawk <persistent> volume (cawk-persistent-volume)
 #
 # authors : cedric llorens, florian heitz
-#
 # cawk docker version: 1.0
 # ---------------------------------------------------------------------
 

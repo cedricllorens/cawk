@@ -1,0 +1,85 @@
+# ----------------------------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+# ----------------------------------------------------------------------------------
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
+# ----------------------------------------------------------------------------------
+# NOTE: This Makefile must be located in the parent directory of cawk installations
+#        you may refer to the README for further information
+# ----------------------------------------------------------------------------------
+
+.PHONY: all update reinstall
+CURRENT_DATE := $(shell date +%Y-%m-%d)
+
+# --------------------
+
+all:
+	@echo "Available targets:"
+	@echo ""
+	@echo "  install - Install for the first time a cawk version"
+	@echo "    Required: CAWK_VERSION=x.y.y"
+	@echo ""
+	@echo "  reinstall - Reinstall a cawk current version (with audit backup && restore)"
+	@echo "    Required: CAWK_VERSION=x.y.y"
+	@echo ""
+	@echo "  update - Install a new cawk version ( with audit backup && restore from previous version)"
+	@echo "    Required: CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y"
+	@echo ""
+	@echo " NOTE : This Makefile must be located in the parent directory of cawk installations"
+
+# --------------------
+
+install:
+ifeq ($(CAWK_VERSION),)
+		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+else
+ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
+		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+else
+	tar zxvf cawk-$(CAWK_VERSION).tar.gz
+	ln -s cawk-$(CAWK_VERSION) cawk
+	cd cawk-$(CAWK_VERSION) && rm -r -f .git && cd ..
+endif
+endif
+
+# --------------------
+
+reinstall:
+ifeq ($(CAWK_VERSION),)
+		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+else
+ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
+		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+else
+	rm -r -f cawk-$(CAWK_VERSION).old
+	cd cawk-$(CAWK_VERSION) && gmake backup_run_audit && cp backup/run_audit_$(CURRENT_DATE).tar.gz .. && cd ..
+	rm -f cawk 
+	mv cawk-$(CAWK_VERSION) cawk-$(CAWK_VERSION).old
+	tar zxvf cawk-$(CAWK_VERSION).tar.gz
+	ln -s cawk-$(CAWK_VERSION) cawk
+	cd cawk-$(CAWK_VERSION) && rm -r -f .git && gmake migrate file=../run_audit_$(CURRENT_DATE).tar.gz && cd ..
+endif
+endif
+
+# --------------------
+
+update:
+ifeq ($(CAWK_VERSION),)
+		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+else
+ifeq ($(CAWK_NEXT_VERSION),)
+		@echo "CAWK_NEXT_VERSION=x.y.y must be defined within the target call"
+else
+ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
+		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+else
+	rm -r -f cawk-$(CAWK_VERSION).old
+	cd cawk-$(CAWK_VERSION) && gmake backup_run_audit && cp backup/run_audit_$(CURRENT_DATE).tar.gz .. && cd ..
+	rm -f cawk 
+	mv cawk-$(CAWK_VERSION) cawk-$(CAWK_VERSION).old
+	tar zxvf cawk-$(CAWK_NEXT_VERSION).tar.gz
+	ln -s cawk-$(CAWK_NEXT_VERSION) cawk
+	cd cawk-$(CAWK_NEXT_VERSION) && rm -r -f .git && gmake migrate file=../run_audit_$(CURRENT_DATE).tar.gz && cd ..
+endif
+endif
+endif

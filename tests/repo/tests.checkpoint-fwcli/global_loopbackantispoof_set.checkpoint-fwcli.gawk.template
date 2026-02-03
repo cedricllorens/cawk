@@ -1,0 +1,94 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% changes like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <loopback 127/8 rules> are set to accept and
+#           drop packets appropriately (Check Point)
+# author  : quentin gavilan (Check Point adaptation)
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# Checks one complete Check Point rule line
+#
+# Assumes text export / CLI-style rules like:
+#   set access-rule layer Network position 1 name "Allow loopback" \
+#       action accept source 127.0.0.0/8 destination 127.0.0.0/8 ...
+#
+#   set access-rule layer Network position 2 name "Drop loopback spoofing" \
+#       action drop source 127.0.0.0/8 destination !127.0.0.0/8 ...
+#
+function processrule(line) {
+    # Detect "allow loopback" rule
+    # Accept traffic where both source and destination are 127.0.0.0/8
+    if ( !lo_accept_found && line ~ /action[ \t]+accept/ && line ~ /source[ \t]+127\.0\.0\.0[/]8/ && line ~ /destination[ \t]+127\.0\.0\.0[/]8/) {
+        lo_accept_found = 1
+        lo_accept_lineno = FNR
+        lo_accept_line = line
+    }
+
+    # Detect drop/reject packets from 127.0.0.0/8 not going to 127.0.0.0/8
+    # (loopback spoofing from non-loopback networks)
+    if ( !spoof_drop_found && (line ~ /action[ \t]+drop/ || line ~ /action[ \t]+reject/) && line ~ /source[ \t]+127\.0\.0\.0\/8/ && (line ~ /destination[ \t]+![ \t]*127\.0\.0\.0\/8/ || line !~ /destination[ \t]+127\.0\.0\.0\/8/)) {
+        spoof_drop_found = 1
+        spoof_drop_lineno = FNR
+        spoof_drop_line = line
+    }
+}
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = ""
+    lo_accept_found = 0
+    spoof_drop_found = 0
+    lo_accept_line = ""
+    spoof_drop_line = ""
+    lo_accept_lineno = 0
+    spoof_drop_lineno = 0
+}
+
+# Single-line rule
+/^(set|add)[ \t]+access-rule[ \t]/ && !/\\$/ {
+    processrule($0)
+    next
+}
+
+# Multi-line rule handling
+/^(set|add)[ \t]+access-rule[ \t]/ && /\\$/ && rule == "" {
+    rule = rule $0
+    next
+}
+/\\$/ && rule != "" {
+    rule = rule $0
+    next
+}
+!/\\$/ && rule != "" {
+    rule = rule $0
+    processrule(rule)
+    rule = ""
+    next
+}
+
+ENDFILE {
+    if (lo_accept_found) {
+        print_err("global_loopbackantispoof_set.checkpoint-fwcli.gawk","<loopback 127/8 rules> accept found <<" lo_accept_line ">>",lo_accept_lineno,"medium","pass")
+    } else {
+        print_err("global_loopbackantispoof_set.checkpoint-fwcli.gawk","<loopback 127/8 rules> accept missing (access-rule action accept source 127.0.0.0/8 destination 127.0.0.0/8)",FNR,"medium","error")
+    }
+
+    if (spoof_drop_found) {
+        print_err("global_loopbackantispoof_set.checkpoint-fwcli.gawk","<loopback 127/8 rules> drop/reject found <<" spoof_drop_line ">>",spoof_drop_lineno,"high","pass")
+    } else {
+        print_err("global_loopbackantispoof_set.checkpoint-fwcli.gawk","<loopback 127/8 rules> drop/reject missing (access-rule action drop/reject source 127.0.0.0/8 destination !127.0.0.0/8)",FNR,"high","error")
+    }
+}
+
+END {
+}

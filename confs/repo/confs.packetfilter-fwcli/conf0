@@ -35,3 +35,6 @@ antispoof quick for { $int_if, $dmz_if }
 block in quick from urpf-failed
 block in quick from urpf-failed
 block in quick on $ext_if from { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } to any
+block drop in quick on em0 proto tcp flags S/SA
+pass quick on lo
+block drop in quick on egress from 127.0.0.0/8 to any

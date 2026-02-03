@@ -1,4 +1,0 @@
-iptables -A INPUT -p tcp --dport 22 -s <source_ip_address> -j ACCEPT
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -p icmp -m icmp --icmp-type echo-request -s <source_ip_address> -d <destination_ip_address> -j ACCEPT
-iptables -A INPUT -j LOG --log-level alert --log-prefix "REJECTED "

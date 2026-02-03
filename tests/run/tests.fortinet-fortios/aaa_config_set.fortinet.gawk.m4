@@ -4,7 +4,6 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-#
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #

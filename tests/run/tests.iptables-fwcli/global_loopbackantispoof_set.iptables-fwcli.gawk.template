@@ -1,0 +1,86 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <loopback 127/8 rules> are set on lo accept and drop packets
+# author  : quentin gavilan
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# Checks one complete iptables rule line
+function processrule(line) {
+    if (line !~ /^iptables -A INPUT /) 
+        return
+
+    # Detects "allow loopback" rule
+    if (line ~ /-i *lo/ && line ~ /-j *ACCEPT/) {
+        lo_accept_found = 1
+        lo_accept_lineno = FNR
+        lo_accept_line = line
+    }
+
+    # Detects drop/reject packets from 127.0.0.0/8 not coming from lo
+    if (line ~ /-s *127\.0\.0\.0\/8/ && (line ~ /! *-i *lo/ || line ~ /-i *! *lo/ || line ~ /! * -i *lo/) && line ~ /-j *(DROP|REJECT)/) {
+        spoof_drop_found = 1;
+        spoof_drop_lineno = FNR
+        spoof_drop_line = line
+    }
+}
+
+BEGIN {
+}
+
+BEGINFILE {
+    rule = ""
+    lo_accept_found = 0
+    spoof_drop_found = 0
+    lo_accept_line = ""
+    spoof_drop_line = ""
+    lo_accept_lineno = 0
+    spoof_drop_lineno = 0
+}
+
+# Handles a normal one-line iptables rule
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && !/\\$/ {
+    processrule($0)
+    next
+}
+
+# Handles a multi line iptables rule
+/^iptables -A (INPUT|FORWARD|OUTPUT) / && /\\$/ && rule == "" {
+    rule = rule $0
+    next
+}
+/\\$/ && rule != "" {
+    rule = rule $0
+    next
+}
+!/\\$/ && rule != "" {
+    rule = rule $0
+    processrule(rule)
+    rule = ""
+    next
+}
+
+ENDFILE {
+    if (lo_accept_found) {
+        print_err("global_loopbackantispoof_set.iptables-fwcli.gawk","<loopback 127/8 rules> accept found <<" lo_accept_line ">>",lo_accept_lineno, "medium", "pass")
+    } else {
+        print_err("global_loopbackantispoof_set.iptables-fwcli.gawk","<loopback 127/8 rules> accept missing (INPUT -i lo -j ACCEPT)",FNR, "medium", "error")
+    }
+
+    if (spoof_drop_found) {
+        print_err("global_loopbackantispoof_set.iptables-fwcli.gawk","<loopback 127/8 rules> drop found <<" spoof_drop_line ">>",spoof_drop_lineno, "high", "pass")
+    } else {
+        print_err("global_loopbackantispoof_set.iptables-fwcli.gawk","<loopback 127/8 rules> drop missing (INPUT -s 127.0.0.0/8 ! -i lo -j DROP/REJECT)",FNR, "high", "error")
+    }
+}
+
+END {
+}

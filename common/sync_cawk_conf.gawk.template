@@ -37,7 +37,13 @@ function check_config_type(filename) {
     has_ios_marker = 0;
 
     while ((getline line < filename) > 0) {
-	    # --------------------------------------------------
+
+        # --------------------------------------------------
+
+        # ekinops-oneos
+        if (line ~ /^bind .* acl .*$/) { close(filename); return "ekinops_oneos"; }
+  
+        # --------------------------------------------------
         
         # cisco-xe
         if (line ~ /^boot system flash bootflash:/ || line ~ /^diagnostic bootup level/ || line ~ /^platform/) { 
@@ -59,27 +65,27 @@ function check_config_type(filename) {
         if (line ~ /^system$/) { viptela = 1; }
         if (line ~ /^vpn 0$/) { if ( viptela == 1 ) { close(filename); return "cisco_viptela"; } }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # juniper-junos
         if (line ~ /^system {/) { close(filename); return "juniper_junos"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # paloalto-panos
         if (line ~ /^deviceconfig/ || line ~ /^mgt-config/) { close(filename); return "paloalto_panos"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # nokia-sros
         if (line ~ /^# TiMOS-/ || line ~ /^configure router/) { close(filename); return "nokia_sros"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # packetfilter-fwcli 
         if (line ~ /^pass / || line ~ /^block /) { close(filename); return "packetfilter_fwcli"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # iptables-fwcli 
         if (line ~ /iptables -A INPUT/) { close(filename); return "iptables_fwcli"; }
@@ -89,17 +95,17 @@ function check_config_type(filename) {
         # checkpoint-fwcli 
         if (line ~ /^add access-rule/) { close(filename); return "checkpoint_fwcli"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # huawei-vrp
         if (line ~ /^sysname /) { close(filename); return "huawei_vrp"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # fortinet-fortios
         if (line ~ /^config system global$/ || line ~ /^config firewall/) { close(filename); return "fortinet_fortios"; }
 
-	    # --------------------------------------------------
+        # --------------------------------------------------
 
         # 6wind
         if (line ~ /^vrf main$/) { wind = 1; }
@@ -174,6 +180,7 @@ BEGIN {
     
     # match regex_path_exclude ----
     regex_path_exclude = "none"
+    regex_path_exclude_orig = ARGV[5]
     if (ARGV[5] != "none") {
         regex_path_exclude = ARGV[5]
         print "cawk os regex filter detected: " regex_path_exclude
@@ -188,7 +195,8 @@ BEGIN {
     # Check ARGV[3] explicit list of devices names
     if (ARGC > 3 && ARGV[3] != "") {
         file_list = ARGV[3]
-        if (file_list != "none") {
+        if (file_list !~ /\/none$/) {
+            print "cawk os list of devices detected : " file_list
             allow_all = 0
             cmd = "cat " file_list
             while ((cmd | getline line) > 0) {
@@ -200,12 +208,18 @@ BEGIN {
                 print "cawk loading allowed device name : " filename " in file " file_list
                 allowed_files[filename] = 1
             }
-
             close(file_list)
-        }
+        } else {
+            file_list = "none"
+            print "cawk os list of devices not detected : " file_list
+	}
+    } else {
+            file_list = "none"
+            print "cawk os list of devices not detected : " file_list
     }
 
     # Destination directories
+    dst_prefix_ekinops_oneos         = "confs.ekinops-oneos/"
     dst_prefix_cisco_xe              = "confs.cisco-xe/"
     dst_prefix_cisco_xr              = "confs.cisco-xr/"
     dst_prefix_cisco_ios             = "confs.cisco-ios/"
@@ -242,7 +256,7 @@ BEGIN {
                 type = "unknown"
                 type = check_config_type(file)
 
-		        # skip conditions --------------------------------------------------------------------
+                # skip conditions --------------------------------------------------------------------
 
                 if (type == "unknown") {
                     print "cawk soft link not built (skipped unknown configuration) == os:" type " conf:" file
@@ -250,19 +264,20 @@ BEGIN {
                 }
 
                 if (!matches_os_regex(type, regex_os) && regex_os != "none") {
-                    print "cawk soft link not built (skipped not match regex_os) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
+                    print "cawk soft link not built (skipped not match regex_os) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude_orig
                     continue
                 }
 
                 if (regex_path_exclude != "" && file ~ regex_path_exclude) {
-                    print "cawk soft link not built (skipped match regex_path_exclude) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
+                    print "cawk soft link not built (skipped match regex_path_exclude) == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude_orig
                     continue
                 }
 
-        		# skip conditions --------------------------------------------------------------------
+                # skip conditions --------------------------------------------------------------------
 
                 dst = "" 
-                if (type == "cisco_xe")                 dst = dst_prefix_cisco_xe
+                if (type == "ekinops_oneos")            dst = dst_prefix_ekinops_oneos
+                else if (type == "cisco_xe")            dst = dst_prefix_cisco_xe
                 else if (type == "cisco_ios")           dst = dst_prefix_cisco_ios
                 else if (type == "cisco_viptela")       dst = dst_prefix_cisco_viptela
                 else if (type == "cisco_cedge")         dst = dst_prefix_cisco_cedge
@@ -282,7 +297,7 @@ BEGIN {
                 if ( dst != "") {
                     system("mkdir -p \"" dst "\"")
                     system("ln -s \"" file "\" \"" dst "\"")
-                    print "cawk soft link built == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude
+                    print "cawk soft link built == os:" type " conf:" file " regex_device:" regex_device " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude_orig
                 } else {
                     print "cawk soft link not built (skipped os not supported) ==  os:" type " conf:" file
                 }

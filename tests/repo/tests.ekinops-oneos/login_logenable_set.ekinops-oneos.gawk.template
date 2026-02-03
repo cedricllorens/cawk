@@ -1,0 +1,39 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check if <login log enable> is set
+# author  : julien lair
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    pass = 0;
+}
+
+/^login on-(failure|success).*$/{
+    if($3 == "log") {
+        print_err("login_logenable_set.ekinops-oneos.gawk","<login log enable> found : "$0,FNR,"high","pass");
+        pass = 1;
+    } else {
+        print_err("login_logenable_set.ekinops-oneos.gawk","<login log enable> need to add log in : "$0,FNR,"high","error");
+        pass = 1;
+    }
+    next;
+}
+
+ENDFILE {
+    if ( pass == 0) print_err("login_logenable_set.ekinops-oneos.gawk","<login log enable> not configured : "$0,FNR,"high","pass");
+}
+
+END {
+}

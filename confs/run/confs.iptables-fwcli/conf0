@@ -5,6 +5,7 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 iptables -A OUTPUT -o lo -j ACCEPT
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
@@ -17,6 +18,7 @@ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p udp --dport 53 -j ACCEPT
 iptables -A INPUT -p tcp --dport 53 -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s -j ACCEPT
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s -j ACCEPT
 iptables -A INPUT -p tcp --syn -m limit --limit 1/s -j ACCEPT
 iptables -A INPUT -j LOG --log-prefix "IPTables-Dropped: " --log-level 4

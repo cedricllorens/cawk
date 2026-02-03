@@ -2,8 +2,20 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2025 by Cedric Llorens
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
+
+v3.3.0 (January 2025):
+	Makefile:
+	- add new supplier <ekinops-oneos>
+	- add a new target <sync_teststoconfs_run> : sync tests to confs for <audit=AUDIT_NAME> assessment
+	- add a new target <sync_teststoconfs_run_audit> : sync tests to confs for only all <audit=AUDIT_NAME> assessments
+	- optimize Makefile to avoid reaching Unix shell maximum line length
+	Tests:
+	- add new tests for <iptables-fwcli> and <ekinops-oneos> (ref new authors)
+	Makefile.cawk.version:
+	- This is a specific Makefile used to manage the cawk version packages (please refer to the README for further information)
+	  (this Makefile must be located in the parent directory of cawk installations)
 
 v3.2.0 (December 2025):
 	Makefile:

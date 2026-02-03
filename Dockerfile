@@ -3,9 +3,7 @@
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # alpine-based image for building a cawk application container
-#
 # authors: cedric llorens, florian heitz
-#
 # cawk docker version: 1.0
 # ------------------------------------------------------------
 

@@ -2,7 +2,7 @@
 # cawk is subjet to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2025 by Cedric Llorens
+# cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
 # ---------------
@@ -11,7 +11,7 @@ include Makefile.support.mk
 
 # --------------- GNU MAKE TARGETS
 
-.PHONY: all version check_repo check_run check_run_audit tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_backup clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_older clean_archive_repo clean_archive_run clean_archive_run_audit catalog_repo catalog_run git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit archive_run archive_repo check_parallel check_update check sync_run sync_run_audit backup_run backup_run_audit restore_run restore_run_audit database_view database_sync_add database_sync_update database_sync_del database_email_add database_email_update database_email_del email_send email_send_audit database_target_sh tests_check tests_run_copy tests_run_audit_copy database_postaudit_add database_postaudit_del migrate database_postaudit_update database_scripts_copy database_repo_copy sync_run_audit_psirt
+.PHONY: all version check_repo check_run check_run_audit tests tests_target view_repo view_run view_repo_error view_run_error clean_force clean_report clean_backup clean_tmp clean clean clean_report_repo clean_report_run clean_report_run_audit clean_archive_older clean_archive_repo clean_archive_run clean_archive_run_audit catalog_repo catalog_run git gitpush gitcheckdist supplier check_supplier system common create_audit delete_audit list_audit archive_run archive_repo check_parallel check_update check sync_run sync_run_audit backup_run backup_run_audit restore_run restore_run_audit database_view database_sync_add database_sync_update database_sync_del database_email_add database_email_update database_email_del email_send email_send_audit database_target_sh tests_check tests_run_copy tests_run_audit_copy database_postaudit_add database_postaudit_del migrate database_postaudit_update database_scripts_copy database_repo_copy sync_run_audit_psirt sync_teststoconfs_run_audit sync_teststoconfs_run
 
 # --------------------------------
 
@@ -127,6 +127,8 @@ all:
 	$(ECHO) "# gmake sync_run audit=AUDIT_NAME : build inventory and sync confs from a central repository to confs/run_audit dir"
 	$(ECHO) "# gmake sync_run_audit : build inventory and sync confs from a central repository to all confs/run_audit dirs"
 	$(ECHO) "# gmake sync_psirt : build psirt inventory to be used by psirt tests"
+	$(ECHO) "# gmake sync_teststoconfs_run : sync tests to confs for audit=AUDIT_NAME assessment"
+	$(ECHO) "# gmake sync_teststoconfs_run_audit : sync tests to confs for only all audit=AUDIT_NAME assessments"
 	$(ECHO) "# ---------------------------------------------------------------------------------------------------------------"
 	$(ECHO) "# -- CAWK EMAIL -------------------------------------------------------------------------------------------------"
 	$(ECHO) "# ---------------------------------------------------------------------------------------------------------------"
@@ -460,6 +462,7 @@ sync_run_audit:
 		gmake sync_run audit=$$audit; \
 	done
 	gmake list_audit
+	$(ECHO) "cawk you may launch <gmake sync_teststoconfs_run_audit> to sync tests supplier scope to tests supplier scope ----"
 	$(ECHO) "cawk sync_run_audit all audit done ----"
 
 sync_psirt:
@@ -470,6 +473,80 @@ sync_psirt:
 		$(DATABASE_PATH_SH)/database_sync_psirt.script ${audit}; \
 	fi
 	$(ECHO) "cawk sync_run_audit_psirt done ----"
+
+sync_teststoconfs_run:
+ifeq ($(strip $(audit)),)
+	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk sync_teststoconfs_run done ----"
+else
+	$(ECHO) "\ncawk sync_teststoconfs_run: processing audit $(audit) ----"
+	if [ ! -d "$(CONFS_PATH)/run_$(audit)" ]; then \
+		$(ECHO) "cawk sync_teststoconfs_run: confs/run_$(audit) not found, skip ----"; \
+		exit 0; \
+	fi; \
+	keep=""; \
+	for s in $(SUPPLIER_SCOPE); do \
+		if [ -d "$(CONFS_PATH)/run_$(audit)/confs.$$s" ]; then \
+			keep="$$keep $$s"; \
+		fi; \
+	done; \
+	if [ -z "$$keep" ]; then \
+		$(ECHO) "cawk sync_teststoconfs_run: no suppliers found in confs/run_$(audit), skip ----"; \
+		exit 0; \
+	fi; \
+	for t in $(TESTS_PATH)/run_$(audit)/*; do \
+		if [ ! -e "$$t" ]; then continue; fi; \
+		name=$$(basename $$t); \
+		sup=$$(echo $$name | sed -e 's/^tests\.//' -e 's/\.psirt$$//' ); \
+		found=no; \
+		for ks in $$keep; do \
+			if [ "$$ks" = "$$sup" ]; then found=yes; break; fi; \
+		done; \
+		if [ "$$found" = "no" ]; then \
+			$(ECHO) "cawk sync_teststoconfs_run: removing $$t (supplier=$$sup not present in confs/run_$(audit)) ----"; \
+			rm -rf "$$t" || true; \
+		else \
+			$(ECHO) "cawk sync_teststoconfs_run: keep $$t (supplier=$$sup)"; \
+		fi; \
+	done; \
+	$(ECHO) "cawk sync_teststoconfs_run $(audit) done ----"
+endif
+	$(ECHO) "cawk sync_teststoconfs_run done ----"
+
+sync_teststoconfs_run_audit:
+	@for audit in $(RUN_DIRS); do \
+		$(ECHO) "\ncawk sync_teststoconfs_run_audit: processing audit $$audit ----"; \
+		if [ ! -d "$(CONFS_PATH)/run_$$audit" ]; then \
+			$(ECHO) "cawk sync_teststoconfs_run_audit: confs/run_$$audit not found, skip ----"; \
+			continue; \
+		fi; \
+		keep=""; \
+		for s in $(SUPPLIER_SCOPE); do \
+			if [ -d "$(CONFS_PATH)/run_$$audit/confs.$$s" ]; then \
+				keep="$$keep $$s"; \
+			fi; \
+		done; \
+		if [ -z "$$keep" ]; then \
+			continue; \
+		fi; \
+		for t in $(TESTS_PATH)/run_$$audit/*; do \
+			if [ ! -e "$$t" ]; then continue; fi; \
+			name=$$(basename $$t); \
+			# normalize tests directory name to supplier (tests.<supplier> or tests.<supplier>.psirt) \
+			sup=$$(echo $$name | sed -e 's/^tests\.//' -e 's/\.psirt$$//' ); \
+			found=no; \
+			for ks in $$keep; do \
+				if [ "$$ks" = "$$sup" ]; then found=yes; break; fi; \
+			done; \
+			if [ "$$found" = "no" ]; then \
+				$(ECHO) "cawk sync_teststoconfs_run_audit: removing $$t (supplier=$$sup not present in confs/run_$$audit) ----"; \
+				rm -rf "$$t" || true; \
+			else \
+				$(ECHO) "cawk sync_teststoconfs_run_audit: keep $$t (supplier=$$sup)"; \
+			fi; \
+		done; \
+	done; \
+	$(ECHO) "cawk sync_teststoconfs_run_audit done ----"
 
 # --------------------------------
 
@@ -760,7 +837,6 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
         awk -v scope=$(scope) '{print $$0,scope}' $(REPORT_PATH)/repo/assessment.$(scope).idx >> $(REPORT_PATH)/repo/assessment.all.idx.swap ;\
 	)
 	awk 'BEGIN { FS = ";" } { print $$1; }' $(REPORT_PATH)/repo/assessment.all.deadbeef.csv > $(REPORT_PATH)/repo/assessment.all.deadbeef.idx
-	
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(ECHO) "cawk compute repo $(scope) devices ----" ;\
 		\
@@ -773,12 +849,15 @@ ifeq ($(strip $(MAKE_PARALLEL)),no)
 		$(foreach test,$(shell find $(TESTS_$(scope)_REPO_PSIRT_PATH) -name '*.gawk' -type f 2>/dev/null || true),\
 			find $(CONFIGURATION_$(scope)_REPO_PATH) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(REPORT_PATH)/repo/assessment.$(scope).csv.swap 2>/dev/null || true ;\
 		) \
-		\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(EGREP) -v -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).csv || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).csv | sort -u >> $(REPORT_PATH)/repo/assessment.all.csv.swap ;\
 		$(EGREP) -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv | sort -u >> $(REPORT_PATH)/repo/assessment.all.exception.csv ;\
 		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/repo/assessment.all.deadbeef.csv $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv $(REPORT_PATH)/repo/assessment.$(scope).csv > $(REPORT_PATH)/repo/assessment.$(scope).summary.txt ;\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(ECHO) "------------------------" >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt;\
 		$(ECHO) "---- tests purposes ----" >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt;\
 		$(ECHO) "------------------------" >> $(REPORT_PATH)/repo/assessment.$(scope).summary.txt;\
@@ -821,6 +900,7 @@ else
 	$(ECHO) "cawk json reporting skipped ----"
 endif
 else
+
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		find $(CONFIGURATION_$(scope)_REPO_PATH) $(FIND_CONF_SELECT) -exec ./$(TESTS_COMMON_PATH)/deadbeef_cawk_conf.script $(DEADBEEF_THRESHOLD_DAYS) {} \; > $(REPORT_PATH)/repo/assessment.$(scope).deadbeef.csv 2>/dev/null || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).deadbeef.csv >> $(REPORT_PATH)/repo/assessment.all.deadbeef.csv ;\
@@ -828,7 +908,6 @@ else
         awk -v scope=$(scope) '{print $$0,scope}' $(REPORT_PATH)/repo/assessment.$(scope).idx >> $(REPORT_PATH)/repo/assessment.all.idx.swap ;\
 	)
 	awk 'BEGIN { FS = ";" } { print $$1; }' $(REPORT_PATH)/repo/assessment.all.deadbeef.csv > $(REPORT_PATH)/repo/assessment.all.deadbeef.idx
-
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(ECHO) "cawk compute repo $(scope) devices (parallel mode) ----" ;\
 		find $(CONFIGURATION_$(scope)_REPO_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.repo.$(scope) 2>/dev/null || true ;\
@@ -840,10 +919,13 @@ else
 			, \
 			touch $(REPORT_PATH)/repo/assessment.$(scope).csv.swap ;\
 		) \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		find $(TESTS_$(scope)_REPO_PSIRT_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.repo.psirt.$(scope) 2>/dev/null || true ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.psirt.gawk $(TESTS_TMP)/conf_list_files.repo.$(scope) $(MAKE_FILES_PER_TARGET_PSIRT) $(TESTS_TMP)/conf_list_tests.repo.psirt.$(scope) > $(TESTS_TMP)/Makefile.repo.psirt.$(scope) 2>/dev/null || true ;\
 		gmake -f $(TESTS_TMP)/Makefile.repo.psirt.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/repo/assessment.$(scope).csv.swap 2>/dev/null || true ;\
-		\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(EGREP) -v -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).csv || true ;\
 		cat $(REPORT_PATH)/repo/assessment.$(scope).csv | sort -u >> $(REPORT_PATH)/repo/assessment.all.csv.swap ;\
 		$(EGREP) -f $(EXCEPTION_PATH)/repo/exceptions.$(scope) $(REPORT_PATH)/repo/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/repo/assessment.$(scope).exceptions.csv || true ;\
@@ -874,7 +956,7 @@ endif
 	$(TESTS_COMMON_PATH)/reporttimeline.gawk $(REPORT_PATH)/repo/assessment.all.idx.swap $(REPORT_PATH)/repo/assessment.all.audit.csv > $(REPORT_PATH)/repo/assessment.all.audit.timeline.csv || true
 	$(TESTS_COMMON_PATH)/reporttimeline.gawk $(REPORT_PATH)/repo/assessment.all.idx.swap $(REPORT_PATH)/repo/assessment.all.csv > $(REPORT_PATH)/repo/assessment.all.timeline.csv
 	$(TESTS_COMMON_PATH)/reporttimeline.gawk $(REPORT_PATH)/repo/assessment.all.idx.swap $(REPORT_PATH)/repo/assessment.all.exception.csv > $(REPORT_PATH)/repo/assessment.all.exception.timeline.csv || true
-	 $(TESTS_COMMON_PATH)/reporttimeline.gawk $(REPORT_PATH)/repo/assessment.all.idx.swap $(REPORT_PATH)/repo/assessment.all.deadbeef.csv > $(REPORT_PATH)/repo/assessment.all.deadbeef.timeline.csv || true
+	$(TESTS_COMMON_PATH)/reporttimeline.gawk $(REPORT_PATH)/repo/assessment.all.idx.swap $(REPORT_PATH)/repo/assessment.all.deadbeef.csv > $(REPORT_PATH)/repo/assessment.all.deadbeef.timeline.csv || true
 	sort -u $(REPORT_PATH)/repo/assessment.all.idx.swap > $(REPORT_PATH)/repo/assessment.all.idx; \
 
 ifeq ($(strip $(JSON)),yes)
@@ -955,6 +1037,7 @@ else
 	$(ECHO) "cawk json reporting skipped ----"
 endif
 else
+
 	$(ECHO) "cawk repo compute $(supplier) devices (parallel mode) ----"
 	find $(CONFIGURATION_$(supplier)_REPO_PATH) $(FIND_CONF_SELECT) -exec ./$(TESTS_COMMON_PATH)/deadbeef_cawk_conf.script $(DEADBEEF_THRESHOLD_DAYS) {} \; > $(REPORT_PATH)/repo/assessment.$(supplier).deadbeef.csv 2>/dev/null || true ;\
 	cat $(REPORT_PATH)/repo/assessment.$(supplier).deadbeef.csv >> $(REPORT_PATH)/repo/assessment.all.deadbeef.csv ;\
@@ -1046,20 +1129,21 @@ ifeq ($(strip $(audit)),)
         awk -v scope=$(scope) '{print $$0,scope}' $(REPORT_PATH)/run/assessment.$(scope).idx >> $(REPORT_PATH)/run/assessment.all.idx.swap ;\
 	)
 	awk 'BEGIN { FS = ";" } { print $$1; }' $(REPORT_PATH)/run/assessment.all.deadbeef.csv > $(REPORT_PATH)/run/assessment.all.deadbeef.idx
-
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(ECHO) "cawk compute run $(scope) devices ----" ;\
-		\
 		$(if $(filter no,$(PSIRT)),\
 			$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PATH) -name '*.gawk' -type f  2>/dev/null || true),\
 				find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(REPORT_PATH)/run/assessment.$(scope).csv.swap 2>/dev/null || true ;\
 			),\
 			touch $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
 		) \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PSIRT_PATH) -name '*.gawk' -type f 2>/dev/null || true),\
 			find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(REPORT_PATH)/run/assessment.$(scope).csv.swap 2>/dev/null || true ;\
 		) \
-		\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(EGREP) -v -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).csv || true ;\
 		cat $(REPORT_PATH)/run/assessment.$(scope).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap ;\
 		$(EGREP) -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv || true ;\
@@ -1127,14 +1211,15 @@ else
 		fi; \
 	)
 	awk 'BEGIN { FS = ";" } { print $$1; }' $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv > $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.idx
-
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		if [ ! -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] || ([ ! -d "$(TESTS_$(scope)_RUN_PATH)" ] && [ ! -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(ECHO) "cawk $(CONFIGURATION_$(scope)_RUN_PATH) or $(TESTS_$(scope)_RUN_PATH) do not exist, skip the ${audit} $(scope) assessment ----"; \
 			touch $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv; \
-		else \
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(ECHO) "cawk compute run_${audit} $(scope) devices ----" ;\
-			\
 			$(if $(filter no,$(PSIRT)),\
 				$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PATH) -name '*.gawk' -type f  2>/dev/null || true),\
 					find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap 2>/dev/null || true ;\
@@ -1144,11 +1229,18 @@ else
 			$(foreach test,$(shell find $(TESTS_$(scope)_RUN_PSIRT_PATH) -name '*.gawk' -type f 2>/dev/null || true),\
 				find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap 2>/dev/null || true ;\
 			) \
-			\
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(EGREP) -v -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap ;\
 			$(EGREP) -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv ;\
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
 			$(ECHO) "------------------------" >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
 			$(ECHO) "---- tests purposes ----" >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt;\
@@ -1215,13 +1307,19 @@ ifeq ($(strip $(audit)),)
 			, \
 			touch $(REPORT_PATH)/run/assessment.$(scope).csv.swap ;\
 		) \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		find $(TESTS_$(scope)_RUN_PSIRT_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.run.psirt.$(scope) 2>/dev/null || true ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.psirt.gawk $(TESTS_TMP)/conf_list_files.run.$(scope) $(MAKE_FILES_PER_TARGET_PSIRT) $(TESTS_TMP)/conf_list_tests.run.psirt.$(scope) > $(TESTS_TMP)/Makefile.run.psirt.$(scope) 2>/dev/null || true ;\
 		gmake -f $(TESTS_TMP)/Makefile.run.psirt.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/run/assessment.$(scope).csv.swap 2>/dev/null || true ;\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(EGREP) -v -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).csv || true ;\
 		cat $(REPORT_PATH)/run/assessment.$(scope).csv >> $(REPORT_PATH)/run/assessment.all.csv.swap ;\
 		$(EGREP) -f $(EXCEPTION_PATH)/run/exceptions.$(scope) $(REPORT_PATH)/run/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv || true ;\
 		cat $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run/assessment.all.exception.csv ;\
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
 		$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run/assessment.all.deadbeef.csv $(REPORT_PATH)/run/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run/assessment.$(scope).csv > $(REPORT_PATH)/run/assessment.$(scope).summary.txt ;\
 		$(ECHO) "------------------------" >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
 		$(ECHO) "---- tests purposes ----" >> $(REPORT_PATH)/run/assessment.$(scope).summary.txt;\
@@ -1281,7 +1379,6 @@ endif
 		fi; \
 	)
 	awk 'BEGIN { FS = ";" } { print $$1; }' $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv > $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.idx
-
 	$(foreach scope,$(SUPPLIER_SCOPE),\
 		if [ ! -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] || ([ ! -d "$(TESTS_$(scope)_RUN_PATH)" ] && [ ! -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(ECHO) "cawk $(CONFIGURATION_$(scope)_RUN_PATH) or $(TESTS_$(scope)_RUN_PATH) do not exist, skip the ${audit} $(scope) assessment ----"; \
@@ -1289,18 +1386,30 @@ endif
 		else \
 			$(ECHO) "cawk compute run_${audit} $(scope) devices (parallel mode) ----" ;\
 			find $(CONFIGURATION_$(scope)_RUN_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.${audit}.$(scope) 2>/dev/null || true ;\
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(if $(filter no,$(PSIRT)),\
-				find $(TESTS_$(scope)_RUN_PATH) -type f -name '*.gawk'  > $(TESTS_TMP)/conf_list_tests.${audit}.$(scope) 2>/dev/null || true ;\
+				find $(TESTS_$(scope)_RUN_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.${audit}.$(scope) 2>/dev/null || true ;\
 				$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.${audit}.$(scope) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.${audit}.$(scope) > $(TESTS_TMP)/Makefile.${audit}.$(scope) 2>/dev/null || true ;\
 				gmake -f $(TESTS_TMP)/Makefile.${audit}.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all > $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap 2>/dev/null || true ;\
 				, \
 				touch $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap ;\
 			) \
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			find $(TESTS_$(scope)_RUN_PSIRT_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.${audit}.psirt.$(scope) 2>/dev/null || true ;\
 			$(TESTS_COMMON_PATH)/gen_cawk_makefile.psirt.gawk $(TESTS_TMP)/conf_list_files.${audit}.$(scope) $(MAKE_FILES_PER_TARGET_PSIRT) $(TESTS_TMP)/conf_list_tests.${audit}.psirt.$(scope) > $(TESTS_TMP)/Makefile.${audit}.psirt.$(scope) 2>/dev/null || true ;\
 			gmake -f $(TESTS_TMP)/Makefile.${audit}.psirt.$(scope) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap 2>/dev/null || true;\
 			$(EGREP) -v -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv >> $(REPORT_PATH)/run_${audit}/assessment.all.csv.swap ;\
+		fi; \
+	)
+	$(foreach scope,$(SUPPLIER_SCOPE),\
+		if [ -d "$(CONFIGURATION_$(scope)_RUN_PATH)" ] && ([ -d "$(TESTS_$(scope)_RUN_PATH)" ] || [ -d "$(TESTS_$(scope)_RUN_PSIRT_PATH)" ]); then \
 			$(EGREP) -f $(EXCEPTION_PATH)/run_${audit}/exceptions.$(scope) $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv.swap | sort -u > $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv || true ;\
 			cat $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv >> $(REPORT_PATH)/run_${audit}/assessment.all.exception.csv ;\
 			$(TESTS_COMMON_PATH)/report.gawk $(REPORT_PATH)/run_${audit}/assessment.all.deadbeef.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).exceptions.csv $(REPORT_PATH)/run_${audit}/assessment.$(scope).csv > $(REPORT_PATH)/run_${audit}/assessment.$(scope).summary.txt ;\
