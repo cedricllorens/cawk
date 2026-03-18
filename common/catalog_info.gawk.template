@@ -1,0 +1,46 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# it lists the tests of a supplier with all the database information
+# ------------------------------------------------------------
+
+BEGIN {
+    FS = "|"
+    db_file = "database/db_info.txt"
+    
+    if (ARGC < 3) {
+        print "Usage: gawk -f report_generator.awk [audit] [supplier]"
+        exit 1
+    }
+    
+    target_audit = ARGV[1]
+    target_supplier = ARGV[2]
+    delete ARGV[1]
+    delete ARGV[2]
+    
+    detailed_report(target_audit,target_supplier)
+}
+
+function detailed_report(audit,supplier) {
+    print "=== audit:" audit " supplier:" supplier " list of tests ==="
+    print ""
+    
+    while ((getline line < db_file) > 0) {
+        split(line, fields, "|")
+        
+        if (tolower(fields[1]) == tolower(audit) && tolower(fields[2]) == tolower(supplier)) {
+            printf "audit/test_name: %s/%-30s\n", fields[1], fields[3]
+            printf "\t%-20s: %s\n", "supplier", fields[2]
+            printf "\t%-20s: %s\n", "purpose", fields[4]
+            printf "\t%-20s: %s\n", "description", fields[5]
+            printf "\t%-20s: %s\n", "actions", fields[6]
+            printf "\t%-20s: %s\n", "CIS Benchmark Ref", fields[7]
+            printf "\t%-20s: %s\n", "authors", fields[8]
+            print ""
+        }
+    }
+    close(db_file)
+}

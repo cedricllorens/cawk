@@ -40,7 +40,7 @@ acl number 3000
 #
 acl number 5000
  rule 5 permit tcp source 10.168.1.0 0.0.0.255 destination any
- rule 10 deny ip source any destination any
+ rule 10 deny tcp source 10.168.1.0 0.0.0.255 destination any
 #
 interface Vlanif10
  packet-filter inbound acl 8000

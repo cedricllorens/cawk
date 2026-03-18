@@ -1,0 +1,78 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# it generates the cawk info database from the test files
+# ------------------------------------------------------------
+
+BEGIN {
+    FS = "|"
+    OFS = "|"
+    db_file = "database/db_info.txt"
+    
+    if (ARGC < 3) {
+        print "Usage: gawk -f build_database.awk audit [test_file_path]"
+        exit 1
+    }
+    
+    audit = ARGV[1]
+    test_file = ARGV[2]
+    delete ARGV[1]
+    delete ARGV[2]
+    
+    # Create header if file doesn't exist
+    if ((getline < db_file) <= 0) {
+        print "supplier|test_name|purpose|description|actions|cis_benchmark_ref" > db_file
+    }
+    close(db_file)
+    
+    parse_test_file(audit,test_file)
+}
+
+function parse_test_file(audit,file) {
+    supplier = ""
+    test_name = ""
+    purpose = ""
+    description = ""
+    actions = ""
+    cis_ref = ""
+    
+    while ((getline line < file) > 0) {
+        gsub(/^[ \t]+|[ \t]+$/, "", line)
+        
+        if (tolower(line) ~ /^#[ \t]+@supplier[ \t]*:/) {
+            gsub(/^#[ \t]+@supplier[ \t]*:[ \t]*/, "", line)
+            supplier = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@test_name[ \t]*:/) {
+            gsub(/^#[ \t]+@test_name[ \t]*:[ \t]*/, "", line)
+            test_name = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@purpose[ \t]*:/) {
+            gsub(/^#[ \t]+@purpose[ \t]*:[ \t]*/, "", line)
+            purpose = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@description[ \t]*:/) {
+            gsub(/^#[ \t]+@description[ \t]*:[ \t]*/, "", line)
+            description = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@actions[ \t]*:/) {
+            gsub(/^#[ \t]+@actions[ \t]*:[ \t]*/, "", line)
+            actions = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@cis_benchmark_ref[ \t]*:/) {
+            gsub(/^#[ \t]+@cis_benchmark_ref[ \t]*:[ \t]*/, "", line)
+            cis_ref = tolower(line)
+        }
+        else if (tolower(line) ~ /^#[ \t]+@authors[ \t]*:/) {
+            gsub(/^#[ \t]+@authors[ \t]*:[ \t]*/, "", line)
+            authors = tolower(line)
+        }
+    }
+    close(file)
+    
+    # Add to database
+    print audit "|" supplier "|" test_name "|" purpose "|" description "|" actions "|" cis_ref "|" authors >> db_file
+}

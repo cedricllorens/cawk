@@ -54,7 +54,7 @@ RUN apk update && apk upgrade && \
 # ----
 RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     echo "Europe/Paris" > /etc/timezone && \
-    mkdir -p /app/cawk /app/cawk/checkdiff /app/cawk/common /app/cawk/m4 /app/cawk/system /app/cawk/support /app/cawk/database.repo /app/cawk/tmp
+    mkdir -p /app/cawk /app/cawk/checkdiff /app/cawk/common /app/cawk/m4 /app/cawk/system /app/cawk/support /app/cawk/tmp
 
 # ----
 # Copy non-persistent data locally
@@ -73,7 +73,6 @@ COPY Makefile /app/cawk
 COPY LICENSE /app/cawk
 COPY Dockerfile /app/cawk
 COPY cawk_docker_run.sh /app/cawk
-COPY database.repo /app/cawk/database.repo
 
 # ----
 # Copy <persistent> data in tmp directory, cawk_docker_run.sh program will link all these data

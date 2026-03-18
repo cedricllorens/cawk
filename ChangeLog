@@ -5,7 +5,22 @@
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
-v3.3.0 (January 2025):
+v3.4.0 (March 2026):
+	Makefile:
+	- (beta) You may add an environment variable CAWK_SYSNAME to use special common functions implemented in database/common/special_common.gawk.template
+	  instead of common/common.gawk.template (refer to the README for further information)
+	- Added a new TMP_ASSESSMENT_FILES variable used to clean all intermediate supplier assessment files, set to <yes> by default
+	 (remain onlu *all* report files) (see Makefile.support.mk)
+	- Updated Makefile for performance enhancements
+	Package Integrity:
+	- Added an additional sha521sum check to verify the integrity of the package before running an assessment
+	Makefile.docker:	
+	- Updated to inherit variables from Makefile.support.mk (see: CAWK_VERSION in Makefile.support.mk)
+	Tests:
+	- Reviewed all existing tests for ACL consistency and added new supplier ones: <packetfilter-fwcli>, <ekinops-oneos>
+	- The ACL consistency library has been thoroughly reviewed (ref. common/common_hypercube-lib.gawk.template)
+
+v3.3.0 (January 2026):
 	Makefile:
 	- add new supplier <ekinops-oneos>
 	- add a new target <sync_teststoconfs_run> : sync tests to confs for <audit=AUDIT_NAME> assessment

@@ -8,8 +8,13 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <aaa forbidden users> are not set
-# author  : cedric llorens
+# @test_name : aaa_user_notset.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if <aaa users> are not set locally
+# @description : local users can endanger the security of the system by allowing unauthorized access
+# @actions : remove local users or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : to be defined
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

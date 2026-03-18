@@ -1,0 +1,1147 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# purpose : check that PacketFilter rules have inconsistent/redundant rules
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+# rule format ----------------------------------
+# 1  rule_name          : string
+# 2  rule_description   : string
+# 3  action             : permit/deny
+# 4  ingress/outgress   : "none","in","out","all"
+# 5  interface          : "none",string
+# 6  family             : "all", inet, inet6
+# 7  src@               : ip
+# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 9  port_src           : port_src			set 0 if empty
+# 10 port_src_range     : port_src_range	set 0 if empty
+# 11 dst@               : ip				set 0 if empty
+# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 13 port_dst           : port_dst			set 0 if empty
+# 14 port_dst_range     : port_dst_range	set 0 if empty
+# 15 protocol           : protocol			set "none" if empty
+# rule format ----------------------------------
+
+@include %SED_INCLUDE_PATH%
+@include %SED_INCLUDE_PATH_FWLIB%
+
+# ---------------------------------------------------------
+# START
+# ---------------------------------------------------------
+
+BEGIN {
+}
+
+BEGINFILE {
+
+	# clean cube ----
+	cawk_init_hypercube_rules();
+	check = 0;
+	
+	# initialize vars ----
+	delete pf_variables;
+	delete pf_tables;
+	table_build = 0;
+	table_raw = "";
+
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# UNWANTED LINES
+# ---------------------------------------
+# ---------------------------------------
+
+# Skip comments and empty lines
+/^#/ { next }
+/^$/ { next }
+
+# ---------------------------------------
+# ---------------------------------------
+# VARIABLES
+# ---------------------------------------
+# ---------------------------------------
+
+/^[a-zA-Z0-9_]*[ \t]+=[ \t]+".*"$/ {
+
+	var_name = $1;
+
+	# check if it is a list ----
+	if ( $0 ~ /\{/ ) {
+		match($0, /\{(.*)\}/, content_match);
+		var_value = "list "content_match[1];
+	} else {
+		var_value = "unique "$3;
+	}
+	
+	# clean and store ----
+	gsub(/ +/," ",var_value);
+	gsub(/"/, "", var_value);
+	pf_variables[var_name] = var_value;
+
+	if ( trace == 1 ) print "TRACE = VARIABLE : ",var_name,var_value
+
+	next;
+}
+
+# specific function
+function resolve_address(addr) {
+	if (addr ~ /^\$/) {
+		var_name = substr(addr, 2);
+		if (var_name in pf_variables) {
+			return pf_variables[var_name];
+		}
+	}
+	return addr;
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# TABLES
+# ---------------------------------------
+# ---------------------------------------
+
+/^table[ \t]+<[a-zA-Z0-9_]+>[ \t]+.*\{.*\}$/ || ( table_build == 1 && /\}/ ) {
+
+	# manage splitted tables ----
+	if ( table_build == 1 ) {
+		table_raw = table_oneline "" $0;
+		table_build = 0;
+	} else {
+		table_raw = $0;
+	}
+
+	# extract table data ----
+	match(table_raw, /<([a-zA-Z0-9_]+)>/, table_match);
+	table_name = table_match[1];
+	match(table_raw, /\{(.*)\}/, content_match);
+	table_content = content_match[1];
+
+	# clean and store ips ----
+	gsub(/[,\t]/, "", table_content);
+	gsub(/ +/, " ", table_content);
+	split(table_content, ips, " ");
+
+	for ( id in ips ) {
+
+		negative = 0;
+		variable = 0;
+
+		# check if negative ----
+		if ( ips[id] ~ /^!/ ) {
+			negative = 1;
+			gsub(/!/,"",ips[id])
+		}
+
+		# check if variable ----
+		if ( ips[id] ~ /^\$/ ) {
+			ips[id] = resolve_address(ips[id]);
+			variable = 1;
+		}
+
+		# process ----
+		if ( negative == 0) {
+			if ( variable == 0 ) {
+				pf_tables["<"table_name">"][id] = "unique "ips[id];
+			} else {
+				pf_tables["<"table_name">"][id] = ips[id];
+			}
+		} else {
+			if ( variable == 0 ) {
+				pf_tables["<"table_name">"][id] = "negative unique "ips[id];
+			} else {
+				pf_tables["<"table_name">"][id] = "negative "ips[id];
+			}
+		}
+
+		if ( trace == 1 ) print "TRACE = TABLE :","<"table_name">",pf_tables["<"table_name">"][id]
+	}
+
+	next;
+}
+
+# to build in one line splitted table
+/^table <[a-zA-Z0-9_]+> .*\{.*/ && !/\}/ {
+	table_build = 1;
+	table_oneline = $0
+	next;
+}
+
+table_build == 1 && !/\}/ {
+	table_oneline = table_oneline "" $0
+	next;
+}
+
+# specific function
+function ip_in_table(ip, table_name) {
+	if (table_name in pf_tables) {
+		return (ip in pf_tables[table_name]);
+	}
+	return 0;
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# PASS/BLOCK SUPPORT FUNCTIONS
+# ---------------------------------------
+# ---------------------------------------
+
+function build_dst_addr_net(dst_addr,state) {
+
+	# table case ----
+	if (dst_addr ~ /^<.*>$/) {
+		dst_ip = dst_addr;
+		dst_net = "any";
+
+		for( ip in pf_tables[dst_addr] ) {
+
+			# unique ----
+			if ( pf_tables[dst_addr][ip] ~ /unique/ && pf_tables[dst_addr][ip] !~ /negative/ ) {
+							
+				number_of_parts = split(pf_tables[dst_addr][ip],parts," ");
+				if ( parts[2] ~ /\// ) {
+					split(parts[2], parts_net, "/")
+					dst_ip = parts_net[1];
+					dst_net = parts_net[2];
+				} else {
+					dst_ip = parts[2];
+					dst_net = "host";
+				}
+				dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+			}
+
+			# list ----
+			if ( pf_tables[dst_addr][ip] ~ /list/ && pf_tables[dst_addr][ip] !~ /negative/ ) {
+							
+				number_of_parts = split(pf_tables[dst_addr][ip],parts," ");
+				for(k=2;k<=number_of_parts;k++) {
+					if ( parts[k] ~ /\// ) {
+						split(parts[k] , parts_net, "/")
+						dst_ip = parts_net[1];
+						dst_net = parts_net[2];
+					} else {
+						dst_ip = parts[k];
+						dst_net = "host";
+					}
+					dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+				}
+			}
+		}
+
+	# any case ----
+	} else if (dst_addr == "any") {
+
+		dst_ip = "any";
+		dst_net = "any";
+		dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+
+	# direct ip value ----
+	} else if ( dst_addr !~/(list|unique|negative)/ ) {
+
+		if ( dst_addr ~ /\// ) {
+			split(dst_addr, parts_net, "/")
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+		} else {
+			dst_ip = dst_addr;
+			dst_net = "host";
+		}
+		dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+
+	# ip value coming from variables ----
+	} else {
+
+		# unique ----
+		if ( dst_addr ~ /unique/ && dst_addr !~ /negative/ ) {
+
+			split(dst_addr, words, " ")
+			if ( words[2] ~ /\// ) {
+				split(words[2], parts_net, "/")
+				dst_ip = parts_net[1];
+				dst_net = parts_net[2];
+			} else {
+				dst_ip = words[2];
+				dst_net = "host";
+			}
+			dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+					
+		# list ----
+		} else if ( dst_addr ~ /list/ && dst_addr !~ /negative/ ) {
+
+			number_of_words = split(dst_addr, words, " ")
+			for(k=2;k<=number_of_words;k++) {
+				if ( words[k] ~ /\// ) {
+					split(words[k], parts_net, "/")
+					dst_ip = parts_net[1];
+					dst_net = parts_net[2];
+				} else {
+					dst_ip = words[k];
+					dst_net = "host";
+				}
+				dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+			}
+		}
+	}
+}
+
+# ---------------------------------------
+
+function build_src_addr_net(src_addr,state) {
+
+	# table case ----
+	if (src_addr ~ /^<.*>$/) {
+
+		src_ip = src_addr;
+		src_net = "any";
+
+		for( ip in pf_tables[src_addr] ) {
+
+			# unique ----
+			if ( pf_tables[src_addr][ip] ~ /unique/ && pf_tables[src_addr][ip] !~ /negative/ ) {
+							
+				number_of_parts = split(pf_tables[src_addr][ip],parts," ");
+				if ( parts[2] ~ /\// ) {
+					split(parts[2], parts_net, "/")
+					src_ip = parts_net[1];
+					src_net = parts_net[2];
+				} else {
+					src_ip = parts[2];
+					src_net = "host";
+				}
+				src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+			}
+
+			# list ----
+			if ( pf_tables[src_addr][ip] ~ /list/ && pf_tables[src_addr][ip] !~ /negative/ ) {
+					
+				number_of_parts = split(pf_tables[src_addr][ip],parts," ");
+				for(k=2;k<=number_of_parts;k++) {
+					if ( parts[k] ~ /\// ) {
+						split(parts[k] , parts_net, "/")
+						src_ip = parts_net[1];
+						src_net = parts_net[2];
+					} else {
+						src_ip = parts[k];
+						src_net = "host";
+					}
+					src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+				}
+			}
+		}
+
+	# any case ----
+	} else if (src_addr == "any") {
+
+		src_ip = "any";
+		src_net = "any";
+		src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+
+	# direct ip value ----
+	} else if ( src_addr !~/(list|unique|negative)/ && src_addr !~/\$/ ) {
+
+		if ( src_addr ~ /\// ) {
+			split(src_addr, parts_net, "/")
+			src_ip = parts_net[1];
+			src_net = parts_net[2];
+		} else {
+			src_ip = src_addr;
+			src_net = "host";
+		}
+		src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+
+	# ip value coming from variables ----
+	} else {
+
+		# unique ----
+		if ( src_addr ~ /unique/ && src_addr !~ /negative/ ) {
+	
+			split(src_addr, words, " ")
+			if ( words[2] ~ /\// ) {
+				split(words[2], parts_net, "/")
+				src_ip = parts_net[1];
+				src_net = parts_net[2];
+			} else {
+				src_ip = words[2];
+				src_net = "host";
+			}
+			src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+					
+		# list ----
+		} else if ( src_addr ~ /list/ && src_addr !~ /negative/ ) {
+
+			number_of_words = split(src_addr, words, " ")
+			for(k=2;k<=number_of_words;k++) {
+				if ( words[k] ~ /\// ) {
+					split(words[k], parts_net, "/")
+					src_ip = parts_net[1];
+					src_net = parts_net[2];
+				} else {
+					src_ip = words[k];
+					src_net = "host";
+				}
+				src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+			}
+		}
+	}
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# PASS/BLOCK RULE
+# ---------------------------------------
+# ---------------------------------------
+
+/^(pass|block)/ {
+
+	check = 1;
+	
+	action = $1;
+	
+	inoutgress = "all"
+	
+	interface = "none";
+
+	from_found = 0;
+	to_found = 0;
+
+	family = "all";
+
+	src_ip = "0";
+	src_net = "none";
+	src_port = 0;
+	src_port_range = 0;
+	delete src_table_port
+	delete src_table_port_range
+	delete src_table_ip
+
+	dst_ip = "0";
+	dst_net = "none";
+	dst_port = 0;
+	dst_port_range = 0;
+	delete dst_table_port
+	delete dst_table_port_range
+	delete dst_table_ip
+	
+	protocol = "none";
+	delete table_protocol;
+	
+	found_port_src = 0
+	found_port_dst = 0
+	found_protocol = 0
+
+	# rule name ----
+	rule_desc = "packetfilter rule_line_"FNR" <"$0">";
+
+	# ------------------------------
+	# start of the rule parsing ----
+	# ------------------------------
+
+	for (i = 1; i <= NF; i++) {
+
+		# ----------------------
+		# INOUTGRESS ----
+		# ----------------------
+
+		if ($i == "in") {
+			inoutgress = $i;
+		}
+
+		if ($i == "out") {
+			inoutgress = $i;
+		}
+
+		if ($i == "all") {
+			inoutgress = $i;
+		}
+
+		# ----------------------
+		# ON ----
+		# ----------------------
+
+		if ($i == "on") {
+			
+			interface = resolve_address($(i+1));
+
+			# consider only unique ----
+			if ( interface ~ /unique/ ) {
+				split(interface,tmp," ");
+				interface = tmp[2];
+
+			# direct ----
+			} else {
+				interface = $(i+1);
+			}
+		}
+
+		# ----------------------
+		# FAMILY ----
+		# ----------------------
+
+		if ($i == "inet" || $i == "inet6") family = $i
+
+		# ----------------------
+		# FROM ----
+		# ----------------------
+
+		if ($i == "from") {
+
+			from_found = 1;
+			to_found = 0;
+
+			delete src_table_ip;
+
+			# set of src_addr ----
+			if ( $(i+1) ~ /{/ ) {
+
+				onefield = 0;
+					
+				# first field is badly formatted ----
+				if ( $(i+1) != "{" && $(i+1) ~/{/ ) {
+					if ( $(i+1) ~/}/ ) onefield = 1;
+					gsub(/[{}]/, "", $(i+1))
+					src_addr = resolve_address($(i+1))
+					build_src_addr_net(src_addr,"set begin")
+				}
+					
+				if ( onefield == 0 ) {
+					j = 1
+					while ( $(i+1+j) != "}" && $(i+1+j) !~/}/ ) {
+						src_addr = resolve_address($(i+1+j))
+						build_src_addr_net(src_addr,"set middle")
+						j = j + 1
+					}
+
+					# last field is badly formatted ----
+					if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
+						gsub(/[{}]/, "", $(i+1+j))
+						src_addr = resolve_address($(i+1+j))
+						build_src_addr_net(src_addr,"set end")
+					}
+				}	
+
+			# no set of src_addr ----
+			} else {
+
+				src_addr = resolve_address($(i+1));
+				build_src_addr_net(src_addr,"no set")
+
+			}
+		}
+
+		# ----------------------
+		# TO ----
+		# ----------------------
+
+		if ($i == "to") {
+
+			to_found = 1;
+			from_found = 0;
+
+			delete dst_table_ip;
+
+			# set of dst_addr ----
+			if ( $(i+1) ~ /{/ ) {
+
+				onefield = 0;
+					
+				# first field is badly formatted ----
+				if ( $(i+1) != "{" && $(i+1) ~/{/ ) {
+					if ( $(i+1) ~/}/ ) onefield = 1;
+					gsub(/[{}]/, "", $(i+1))
+					dst_addr = resolve_address($(i+1))
+					build_dst_addr_net(dst_addr,"set begin")
+				}
+					
+				if ( onefield == 0 ) {
+					j = 1
+					while ( $(i+1+j) != "}" && $(i+1+j) !~/}/ ) {
+						dst_addr = resolve_address($(i+1+j))
+						build_dst_addr_net(dst_addr,"set middle")
+						j = j + 1
+					}
+
+					# last field is badly formatted ----
+					if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
+						gsub(/[{}]/, "", $(i+1+j))
+						dst_addr = resolve_address($(i+1+j))
+						build_dst_addr_net(dst_addr,"set end")
+					}
+				}	
+
+			# no set of dst_addr ----
+			} else {
+
+				dst_addr = resolve_address($(i+1));
+				build_dst_addr_net(dst_addr,"no set")	
+
+			}
+		}
+
+		# ----------------------
+		# PORT ----
+		# ----------------------
+
+		if ($i == "port") {
+
+			# port dst ----
+			if (to_found) {
+
+				delete dst_table_port;
+				delete dst_table_port_range;
+				$(i+1) = resolve_address($(i+1));
+
+				# unique ----
+				if ( $(i+1) ~ /unique/ ) {
+
+					split($(i+1),port_list," ");
+					if ( port_list[2] ~ /:/ ) {
+						split(port_list[2],port_parts,":");
+						dst_table_port[port_list[2]] = port_parts[1];	
+						dst_table_port_range[port_list[2]] = port_parts[2];							
+					} else {
+						if ( port_list[2] in table_port ) {
+							dst_table_port[port_list[2]] = table_port[port_list[2]];	
+						} else {
+							dst_table_port[port_list[2]] = port_list[2];	
+						}
+						dst_table_port_range[port_list[2]] = 0;
+					}
+					found_port_dst = 1;
+
+				# list ----
+				} else if ( $(i+1) ~ /list/ ) {
+
+					number_of_ports = split($(i+1),port_list," ");
+					for(j=2;j<=number_of_ports;j++) {
+						if ( port_list[j] ~ /:/ ) {
+							split(port_list[j],port_parts,":");
+							dst_table_port[port_list[j]] = port_parts[1];	
+							dst_table_port_range[port_list[j]] = port_parts[2];							
+						} else {
+							if ( port_list[j] in table_port ) {
+								dst_table_port[port_list[j]] = table_port[port_list[j]];	
+							} else {
+								dst_table_port[port_list[j]] = port_list[j];
+							}
+							dst_table_port_range[port_list[j]] = 0;
+						}
+					}
+					found_port_dst = 1;
+
+				# direct or list of direct ----
+				} else if ( $(i+1) != "{" && $(i+1) !~ /{/ ) {
+
+					endline = 0;
+					
+					# check the keyword = and > ----
+					if ( $(i+1) != "=" ) {
+						
+						if ( $(i+1) == ">" ) {
+							
+							dst_table_port[$(i+1)] = $(i+2)+1;
+							dst_table_port_range[$(i+1)] = 65536;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;							
+
+						} else if ( $(i+1) == ">=" ) {
+							
+							dst_table_port[$(i+1)] = $(i+2);
+							dst_table_port_range[$(i+1)] = 65536;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;	
+
+						} else if ( $(i+1) == "<" ) {
+
+							dst_table_port[$(i+1)] = 0;
+							dst_table_port_range[$(i+1)] = $(i+2)-1;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;		
+
+						} else if ( $(i+1) == "<=" ) {
+
+							dst_table_port[$(i+1)] = 0;
+							dst_table_port_range[$(i+1)] = $(i+2);
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;
+
+						} else if ( $(i+1) == "!=" ) {
+
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;
+
+						} else {
+							k = i + 1;
+						}
+
+					} else {
+						k = i + 2;
+					}
+
+					# check the keyword >< and ----
+					if ( $(i+2) == "><" ) {
+						
+						dst_table_port[$(i+2)] = $(i+1);
+						dst_table_port_range[$(i+2)] = $(i+3);
+						if ( $(i+3) == $NF ) endline = 1;
+						k = i + 4;
+					
+					}
+
+					# parse the other values ----
+					while ( $k !~ /(flags|keep|modulate|synproxy|no|max-src-conn|queue|tag|label|route-to|proto|port)/ && endline == 0 ) {
+
+						if ( $(k) in table_port ) {
+							dst_table_port[$(k)] = table_port[$(k)];
+							dst_table_port_range[$(k)] = 0;
+						} else {
+							if ( $(k) ~ /:/ ) {
+								split($(k),port_parts,":");
+								dst_table_port[$(k)] = port_parts[1];	
+								dst_table_port_range[$(k)] = port_parts[2];							
+							} else {
+								dst_table_port[$(k)] = $(k);	
+								dst_table_port_range[$(k)] = 0;
+							}
+						}
+
+						if ( $k == $NF ) break;
+					
+						k = k +1
+					}
+					
+
+					found_port_dst = 1;
+
+				} else {
+
+					onefield = 0;
+					
+					# first field is badly formatted ----
+					if ( $(i+1) != "{" && $(i+1) ~/{/ ) {
+						if ( $(i+1) ~/}/ ) onefield = 1;
+						gsub(/[{}]/, "", $(i+1))
+						if ( $(i+1) in table_port ) {
+							dst_table_port[$(i+1)] = table_port[$(i+1)];
+							dst_table_port_range[$(i+1)] = 0;
+						} else {
+							if ( $(i+1) ~/:/ ) {
+								split($(i+1),port_parts,":");
+								dst_table_port[$(i+1)] = port_parts[1];	
+								dst_table_port_range[$(i+1)] = port_parts[2];							
+							} else {
+								dst_table_port[$(i+1)] = $(i+1);	
+								dst_table_port_range[$(i+1)] = 0;
+							}
+						}
+						found_port_dst = 1;
+					}
+					
+					if ( onefield == 0 ) {
+						j = 1
+						while ( $(i+1+j) != "}" && $(i+1+j) !~/}/ ) {
+							if ( $(i+1+j) in table_port ) {
+								dst_table_port[$(i+1+j)] = table_port[$(i+1+j)];
+								dst_table_port_range[$(i+1+j)] = 0;
+							} else {
+								if ( $(i+1+j) ~/:/ ) {
+									split($(i+1+j),port_parts,":");
+									dst_table_port[$(i+1+j)] = port_parts[1];	
+									dst_table_port_range[$(i+1+j)] = port_parts[2];							
+								} else {
+									dst_table_port[$(i+1+j)] = $(i+1+j);	
+									dst_table_port_range[$(i+1+j)] = 0;
+								}
+							}
+							found_port_dst = 1;
+							j = j + 1;
+						}
+
+						# last field is badly formatted ----
+						if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
+							gsub(/[{}]/, "", $(i+1+j))
+							if ( $(i+1+j) in table_port ) {
+								dst_table_port[$(i+1+j)] = table_port[$(i+1+j)];
+								dst_table_port_range[$(i+1+j)] = 0;
+							} else {
+								if ( $(i+1+j) ~/:/ ) {
+									split($(i+1+j),port_parts,":");
+									dst_table_port[$(i+1+j)] = port_parts[1];	
+									dst_table_port_range[$(i+1+j)] = port_parts[2];							
+								} else {
+									dst_table_port[$(i+1+j)] = $(i+1+j);	
+									dst_table_port_range[$(i+1+j)] = 0;
+								}
+							}
+							found_port_dst = 1;
+						}
+					}			
+				}
+
+			# port src ----
+			} else if (from_found) {
+
+				delete src_table_port;
+				delete src_table_port_range;
+				$(i+1) = resolve_address($(i+1));
+
+				# unique ----
+				if ( $(i+1) ~ /unique/ ) {
+
+					split($(i+1),port_list," ");
+					if ( port_list[2] ~ /:/ ) {
+						split(port_list[2],port_parts,":");
+						src_table_port[port_list[2]] = port_parts[1];	
+						src_table_port_range[port_list[2]] = port_parts[2];							
+					} else {
+						if ( port_list[2] in table_port ) {
+							src_table_port[port_list[2]] = table_port[port_list[2]];	
+						} else {
+							src_table_port[port_list[2]] = port_list[2];	
+						}
+						src_table_port_range[port_list[2]] = 0;
+					}
+					found_port_src = 1;
+
+				# list ----
+				} else if ( $(i+1) ~ /list/ ) {
+
+					number_of_ports = split($(i+1),port_list," ");
+					for(j=2;j<=number_of_ports;j++) {
+						if ( port_list[j] ~ /:/ ) {
+							split(port_list[j],port_parts,":");
+							src_table_port[port_list[j]] = port_parts[1];	
+							src_table_port_range[port_list[j]] = port_parts[2];							
+						} else {
+							if ( port_list[j] in table_port ) {
+								src_table_port[port_list[j]] = table_port[port_list[j]];	
+							} else {
+								src_table_port[port_list[j]] = port_list[j];	
+							}
+							src_table_port_range[port_list[j]] = 0;
+						}
+					}
+					found_port_src = 1;
+
+				# direct or list of direct ----
+				} else if ( $(i+1) != "{" && $(i+1) !~ /{/ ) {
+
+					endline = 0;
+
+					# check the keyword = and > ----
+					if ( $(i+1) != "=" ) {
+
+						if ( $(i+1) == ">" ) {
+							
+							src_table_port[$(i+1)] = $(i+2)+1;
+							src_table_port_range[$(i+1)] = 65536;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;							
+
+						} else if ( $(i+1) == ">=" ) {
+							
+							src_table_port[$(i+1)] = $(i+2);
+							src_table_port_range[$(i+1)] = 65536;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;	
+
+						} else if ( $(i+1) == "<" ) {
+
+							src_table_port[$(i+1)] = 0;
+							src_table_port_range[$(i+1)] = $(i+2)-1;
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;		
+
+						} else if ( $(i+1) == "<=" ) {
+
+							src_table_port[$(i+1)] = 0;
+							src_table_port_range[$(i+1)] = $(i+2);
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;	
+
+						} else if ( $(i+1) == "!=" ) {
+
+							if ( $(i+2) == $NF ) endline = 1;
+							k = i + 3;
+
+						} else {
+							k = i + 1;
+						}
+
+					} else {
+						k = i + 2;
+					}
+
+					# check the keyword >< and ----
+					if ( $(i+2) == "><" ) {
+						
+						src_table_port[$(i+2)] = $(i+1);
+						src_table_port_range[$(i+2)] = $(i+3);
+						if ( $(i+3) == $NF ) endline = 1;
+						k = i + 4;
+					
+					}
+					
+					# parse the other values ----
+					while ( $k !~ /(flags|keep|modulate|synproxy|no|max-src-conn|queue|tag|label|route-to|to|proto|port)/ && endline == 0 ) {
+
+						if ( $(k) in table_port ) {
+							src_table_port[$(k)] = table_port[$(k)];
+							src_table_port_range[$(k)] = 0;
+						} else {
+							if ( $(k) ~ /:/ ) {
+								split($(k),port_parts,":");
+								src_table_port[$(k)] = port_parts[1];	
+								src_table_port_range[$(k)] = port_parts[2];							
+							} else {
+								src_table_port[$(k)] = $(k);	
+								src_table_port_range[$(k)] = 0;
+							}
+						}
+
+						if ( $k == $NF ) break;
+
+						k = k +1
+					}
+
+					found_port_src = 1;
+
+				} else {
+
+					onefield = 0;
+
+					# first field is badly formatted ----
+					if ( $(i+1) != "{" && $(i+1) ~/{/ ) {
+						if ( $(i+1) ~ /}/ ) onefield = 1;
+						gsub(/[{}]/, "", $(i+1))
+						if ( $(i+1) in table_port ) {
+							src_table_port[$(i+1)] = table_port[$(i+1)];
+							src_table_port_range[$(i+1)] = 0;
+						} else {
+							if ( $(i+1) ~ /:/ ) {
+								split($(i+1),port_parts,":");
+								src_table_port[$(i+1)] = port_parts[1];	
+								src_table_port_range[$(i+1)] = port_parts[2];							
+							} else {
+								src_table_port[$(i+1)] = $(i+1);	
+								src_table_port_range[$(i+1)] = 0;
+							}
+						}
+						found_port_src = 1;
+					}
+
+					j = 1
+					if ( onefield == 0 ) {
+						while ( $(i+1+j) != "}" && $(i+1+j) !~/}/ ) {
+							if ( $(i+1+j) in table_port ) {
+								src_table_port[$(i+1+j)] = table_port[$(i+1+j)];
+								src_table_port_range[$(i+1+j)] = 0;
+							} else {
+								if ( $(i+1+j) ~/:/ ) {
+									split($(i+1+j),port_parts,":");
+									src_table_port[$(i+1+j)] = port_parts[1];	
+									src_table_port_range[$(i+1+j)] = port_parts[2];							
+								} else {
+									src_table_port[$(i+1+j)] = $(i+1+j);	
+									src_table_port_range[$(i+1+j)] = 0;
+								}
+							}
+							found_port_src = 1;
+							j = j + 1;
+						}
+
+						# last field is badly formatted ----
+						if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
+							gsub(/[{}]/, "", $(i+1+j))
+							if ( $(i+1+j) in table_port ) {
+								src_table_port[$(i+1+j)] = table_port[$(i+1+j)];
+								src_table_port_range[$(i+1+j)] = 0;
+							} else {
+								if ( $(i+1+j) ~/:/ ) {
+									split($(i+1+j),port_parts,":");
+									src_table_port[$(i+1+j)] = port_parts[1];	
+									src_table_port_range[$(i+1+j)] = port_parts[2];							
+								} else {
+									src_table_port[$(i+1+j)] = $(i+1+j);	
+									src_table_port_range[$(i+1+j)] = 0;
+								};
+							}
+							found_port_src = 1;
+						}
+					}
+				}
+			}
+		}
+
+		# ----------------------
+		# PROTO ----
+		# ----------------------
+
+		if ($i == "proto") {
+
+			protocol = $(i+1);
+			delete table_protocol;
+			$(i+1) = resolve_address($(i+1));
+
+			if ( $(i+1) ~ /unique/ ) {
+
+				split($(i+1),protocol_list," ");
+				table_protocol[protocol_list[2]] = protocol_list[2];	
+				found_protocol = 1;
+
+			} else if ( $(i+1) ~ /list/ ) {
+
+				number_of_protocols = split($(i+1),protocol_list," ");
+				for(j=2;j<=number_of_protocols;j++) {
+					table_protocol[protocol_list[j]] = protocol_list[j];	
+				}
+				found_protocol = 1;
+
+			} else if ( $(i+1) != "{" && $(i+1) !~ /{/ ) {
+
+				table_protocol[$(i+1)] = $(i+1);	
+				found_protocol = 1;
+
+			} else {
+
+				onefield = 0;
+					
+				# first field is badly formatted ----
+				if ( $(i+1) != "{" && $(i+1) ~/{/ ) {
+					if ( $(i+1) ~/}/ ) onefield = 1;
+					gsub(/[{}]/, "", $(i+1))
+					table_protocol[$(i+1)] = $(i+1);	
+					found_protocol = 1;
+				}
+					
+				if ( onefield == 0 ) {
+					j = 1
+					while ( $(i+1+j) != "}" && $(i+1+j) !~/}/ ) {
+						table_protocol[$(i+1+j)] = $(i+1+j);	
+						found_protocol = 1;
+						j = j + 1;
+					}
+
+					# last field is badly formatted ----
+					if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
+						gsub(/[{}]/, "", $(i+1+j))
+						table_protocol[$(i+1+j)] = $(i+1+j);	
+						found_protocol = 1;
+					}
+				}			
+			}
+		}
+	}
+
+    # --------------------
+	# Build all rules ----
+	# --------------------
+
+	# filter exceptions ----
+	if (\
+			src_ip == "no-route" || src_ip == "urpf-failed" || dst_ip == "no-route" || dst_ip == "urpf-failed" || \
+			( src_ip == "self" && dst_ip != "self" ) || \
+			( src_ip != "self" && dst_ip == "self" ) \
+	) {
+		if ( trace ==1 ) {
+			print "TRACE EXCEPTION RULE = descr:"rule_desc" action:"action" inout:"inoutgress" int:"interface" src_ip:"src" src_net:"src_net" port_src:"port_src" port_src_range:" port_src_range" dst_ip:"dst" dst_net:"dst_net" port_dst:"port_dst" dst_port_range:"port_dst_range" proto:"protocol
+		}
+		next;
+	}
+	
+	# compute all the rules ----
+	for (id in src_table_ip) {
+
+		# src addr ----
+		split(src_table_ip[id], parts_net, " ")
+		src_ip = parts_net[1];
+		src_net = parts_net[2];
+
+		for (id1 in dst_table_ip) {
+
+			# dst addr ----
+			split(dst_table_ip[id1], parts_net, " ")
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+			# port : parse all the src && dst port combinatory ------
+			if ( found_port_src == 0 ) src_table_port["none"]="none";
+			if ( found_port_dst == 0 ) dst_table_port["none"]="none";
+			if ( found_protocol == 0 ) table_protocol["none"]="none";
+
+			# compute all the possible rules ----
+			for (id in src_table_port) {
+
+				# src port ----
+				if ( id == "none" ) {
+					src_port = 0;
+					src_port_range = 0;
+				} else {
+					src_port = src_table_port[id];
+					src_port_range = src_table_port_range[id];
+				}
+
+				# dst port ----
+				for (id1 in dst_table_port) {
+
+					if ( id1 == "none" ) {
+						
+						dst_port = 0;
+						dst_port_range = 0;
+
+						for(id2 in table_protocol) {
+
+							if ( id2 == "none" ) {
+								protocol = "none";
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+							} else {
+								protocol = table_protocol[id2];
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+							}
+						}
+
+					} else {
+
+						dst_port = dst_table_port[id1];
+						dst_port_range = dst_table_port_range[id1];
+
+						for(id2 in table_protocol) {
+
+							if ( id2 == "none" ) {
+								protocol = "none";
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+							} else {
+								protocol = table_protocol[id2];
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+							}
+						}
+
+					}
+				}
+			}
+
+		}
+	}
+}
+
+# ---------------------------------------------------------
+# END
+# ---------------------------------------------------------
+
+ENDFILE { 
+	if (cawk_hypercube_rules_assessment()) {
+		print_err("acl_configconsistency_set.packetfilter-fwcli.gawk", "PacketFilter rules have no redundant/inconsistent rules", FNR, "info", "pass");
+	}
+	
+	if (check == 0) {
+		print_err("acl_configconsistency_set.packetfilter-fwcli.gawk", "no PacketFilter rules found", FNR, "info", "pass");
+	}
+}
+
+END {
+}
+
+

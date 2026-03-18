@@ -1,0 +1,192 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# purpose : check that <ip access-list standard ...> have inconsistent/redundant rules
+# author  : cedric llorens
+# ------------------------------------------------------------
+
+# rule format ----------------------------------
+# 1  rule_name          : string
+# 2  rule_description   : string
+# 3  action             : permit/deny
+# 4  ingress/outgress   : "none","in","out","all"
+# 5  interface          : "none",string
+# 6  family             : "all", inet, inet6
+# 7  src@               : ip
+# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 9  port_src           : port_src			set 0 if empty
+# 10 port_src_range     : port_src_range	set 0 if empty
+# 11 dst@               : ip				set 0 if empty
+# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 13 port_dst           : port_dst			set 0 if empty
+# 14 port_dst_range     : port_dst_range	set 0 if empty
+# 15 protocol           : protocol			set "none" if empty
+# rule format ----------------------------------
+
+@include %SED_INCLUDE_PATH%
+@include %SED_INCLUDE_PATH_FWLIB%
+
+# -----------------------------------------------------------
+# START
+# -----------------------------------------------------------
+
+BEGIN {
+}
+
+BEGINFILE {
+	cawk_init_hypercube_rules();
+	acl = "";
+	check = 0;
+
+	block_acl = 0;
+
+}
+
+# -----------------------------------------------------------
+# STANDARD BLOCK ACL
+# -----------------------------------------------------------
+
+/^ip access-list (extended|standard) [^ ]+$/ {
+
+	if ( cawk_hypercube_rules_assessment() && acl != "" ) {
+		print_err("acl_configconsistency_set.ekinops-oneos.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+
+	cawk_init_hypercube_rules();
+	acl = $4;
+	block_acl = 1;
+	check = 1;
+}
+
+# std rule ----
+/^[ ](permit|deny) ([0-9\.]+ [0-9\.]+|any)([ ]+log)?$/ && block_acl == 1 {
+	rule_desc = "rule_line_"FNR" <"$0">";
+	if ( $2 == "any" ) { 
+		
+		local_src = $2
+		local_src_net = $2
+
+	} else {
+
+		if ( $2 == "0.0.0.0" && $3 == "255.255.255.255" ) {
+			local_src = "any"
+			local_src_net = "any"
+		} else {
+			local_src = $2
+			local_src_net = cawk_netMaskInv($3) 		
+		}
+
+	}
+
+	cawk_add_hypercube_rules("acl_configconsistency_set.ekinops-oneos.gawk","access-list "acl" "rule_desc,$1,"none","none","all",local_src,local_src_net,0,0,0,0,0,0,"none")
+	next;
+}
+
+# extended rule ----
+/^[ ](permit|deny) [^ ]+ ([0-9\.]+ [0-9\.]+|any)( [0-9]+)? ([0-9\.]+ [0-9\.]+|any)( [0-9]+)?([ ]+log)?$/ && block_acl == 1 {
+	rule_desc = "rule_line_"FNR" <"$0">";
+	
+	# protocol ----
+	if (  $2 == "ip" ) {
+		local_protocol = "none";
+	} else {
+		local_protocol = $2;
+	}
+	local_current = 3;
+
+	# src address ----
+	if ( $local_current == "any" ) {
+
+		local_src = $(local_current)
+		local_src_net = $(local_current)
+		local_current = local_current + 1;
+
+	} else {
+
+		if ( $(local_current) == "0.0.0.0" && $(local_current+1) == "255.255.255.255" ) {
+			local_src = "any"
+			local_src_net = "any"
+			local_current = local_current + 2;
+		} else {
+			local_src = $(local_current)
+			local_src_net = cawk_netMaskInv($(local_current+1))
+			local_current = local_current + 2;
+		}
+
+	}
+
+	# port src ----
+	if ( $local_current ~ /^[0-9]+$/ && $local_current !~/\./ ) {
+
+		local_port_src = $(local_current);
+		local_port_src_range = 0;
+		local_current = local_current + 1;
+
+	} else {
+		
+		local_port_src = 0;
+		local_port_src_range = 0;
+	
+	}
+
+	# dst address ----
+	if ( $local_current == "any" ) {
+
+		local_dst = $local_current
+		local_dst_net = $local_current
+		local_current = local_current + 1;
+
+	} else {
+
+		if ( $(local_current) == "0.0.0.0" && $(local_current+1) == "255.255.255.255" ) {
+			local_dst = "any"
+			local_dst_net = "any"
+			local_current = local_current + 2;
+		} else {
+			local_dst = $local_current
+			local_dst_net = cawk_netMaskInv($(local_current+1))
+			local_current = local_current + 2;
+		}
+	}
+
+	# port dst ----
+	if ( $local_current ~ /^[0-9]+$/ && $local_current !~/\./ ) {
+
+		local_port_dst = $(local_current);
+		local_port_dst_range = 0;
+		local_current = local_current + 1;
+
+	} else {
+		
+		local_port_dst = 0;
+		local_port_dst_range = 0;
+	
+	}
+
+	cawk_add_hypercube_rules("acl_configconsistency_set.ekinops-oneos.gawk","access-list "acl" "rule_desc,$1,"none","none","all",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol)
+	next;
+}
+
+/^(exit)$/ && block_acl == 1 {
+	if ( cawk_hypercube_rules_assessment() && acl != "" ) {
+		print_err("acl_configconsistency_set.ekinops-oneos.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+
+	cawk_init_hypercube_rules();
+	block_acl = 0;
+	acl = "";
+}
+
+# ---------------------------------------------------------
+# END
+# ---------------------------------------------------------
+
+ENDFILE { 
+	if ( check == 0 ) print_err("acl_configconsistency_set.ekinops-oneos.gawk","no <ip access-list standard> found",FNR,"info","pass");
+}

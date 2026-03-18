@@ -1,0 +1,32 @@
+# -------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# all the common functions to all tests are put there
+# -------------------------------------------------------------
+
+# purpose : ----
+# purpose : function print_err_special(test_name, test_msg, linenu, test_risk, test_status)
+# purpose : generic print error function for cawk
+# ----
+
+function print_err_special(test_name, test_msg, linenu, test_risk, test_status) {
+	print FILENAME";"test_name";"test_msg";"linenu";"test_risk";"test_status;
+}
+
+# purpose : ----
+# purpose : function rm_last_char_special(str)
+# purpose : remove the last char of a string (used for juniper tests for removing <;> character)
+# ----
+function rm_last_char_special(str) { 
+	return substr(str, 1, length(str)-1) 
+}
+
+# purpose : ----
+# purpose : function rm_blank_before_special(str)
+# purpose : remove the blank character of s tring prefix (used for hierarchical configurations)
+# ----
+function rm_blank_before_special(str) { 
+	sub(/^ +/, "", str)
+	return str
+}

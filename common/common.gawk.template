@@ -9,8 +9,18 @@
 # purpose : function print_err(test_name, test_msg, linenu, test_risk, test_status)
 # purpose : generic print error function for cawk
 # ----
+
+@include "database/common/special_common.gawk.template"
+
 function print_err(test_name, test_msg, linenu, test_risk, test_status) {
-	print FILENAME";"test_name";"test_msg";"linenu";"test_risk";"test_status;
+
+	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
+	if (cawk_sysname == "") {
+		print FILENAME";"test_name";"test_msg";"linenu";"test_risk";"test_status;
+	} else {
+		print_err_special(test_name, test_msg, linenu, test_risk, test_status);
+	} 
+
 }
 
 # purpose : ----
@@ -18,7 +28,14 @@ function print_err(test_name, test_msg, linenu, test_risk, test_status) {
 # purpose : remove the last char of a string (used for juniper tests for removing <;> character)
 # ----
 function rm_last_char(str) { 
-	return substr(str, 1, length(str)-1) 
+
+	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
+	if (cawk_sysname == "") {
+		return substr(str, 1, length(str)-1) 
+	} else {
+		return rm_last_char_special(str);
+	}	
+	
 }
 
 # purpose : ----
@@ -26,6 +43,13 @@ function rm_last_char(str) {
 # purpose : remove the blank character of s tring prefix (used for hierarchical configurations)
 # ----
 function rm_blank_before(str) { 
-	sub(/^ +/, "", str)
-	return str
+
+	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
+	if (cawk_sysname == "") {
+		sub(/^ +/, "", str);
+		return str;
+	} else {
+		return rm_blank_before_special(str);
+	}
+
 }

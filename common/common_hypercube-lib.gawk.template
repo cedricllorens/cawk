@@ -1,0 +1,562 @@
+# -------------------------------------------------------------
+# cawk is subjet to a MIT open-source licence
+# please refer to the MIT licence file for further information
+# -------------------------------------------------------------
+
+# -----------------------------------------------
+# -----------------------------------------------
+# CUBE SUPPORT FUNCTIONS
+# -----------------------------------------------
+# -----------------------------------------------
+
+function cawk_cidrNetworkMask(cidr) {
+    prefix_length = int(cidr)
+    binary_mask = ""
+
+    for (cidrnet_i = 1; cidrnet_i <= 32; cidrnet_i++) {
+        if (cidrnet_i <= prefix_length) {
+            binary_mask = binary_mask "1"
+        } else {
+            binary_mask = binary_mask "0"
+        }
+    }
+    return binary_mask
+}
+
+function cawk_cidrHostMask(cidr) {
+    prefix_length = 32-int(cidr)
+    binary_mask = ""
+
+    for (cidrHostMask_i = 1; cidrHostMask_i <= prefix_length; cidrHostMask_i++) {
+            binary_mask = binary_mask "1"
+    }
+    while (length(binary_mask) < 32) {
+        binary_mask = "0" binary_mask
+    }
+    return binary_mask
+}
+
+function cawk_netMaskToBinary(netmask) {
+    split(netmask, octets, ".")
+    binary = ""
+    for (netmask_j = 1; netmask_j <= 4; netmask_j++) {
+        binary = binary cawk_decToBin(octets[netmask_j])
+    }
+    return binary
+}
+
+function cawk_netMaskInv(netmask) {
+    if ( netmask == "any" ) return netmask
+    if ( netmask == "" ) return "any"
+	if ( netmask == "0.0.0.0" ) return "host"
+    n = split(netmask, octets, ".")
+    delete maskInv
+    for (netmaskinv_j = 1; netmaskinv_j <= 4; netmaskinv_j++) {
+	maskInv[netmaskinv_j] = 255 - octets[netmaskinv_j]
+    }
+    return maskInv[1] "." maskInv[2] "." maskInv[3] "." maskInv[4]
+}
+
+function cawk_hostMaskToBinary(netmask) {
+    split(netmask, octets, ".")
+    binary = ""
+    for (hostmask_j = 1; hostmask_j <= 4; hostmask_j++) {
+        binary = binary cawk_decToBin(255-octets[hostmask_j])
+    }
+    return binary
+}
+
+function cawk_ipToBinary(ip_address) {
+    split(ip_address, octets, ".")
+    binary = ""
+    for (ipToBinary_i = 1; ipToBinary_i <= 4; ipToBinary_i++) {
+        binary = binary cawk_decToBin(octets[ipToBinary_i])
+    }
+    return binary
+}
+
+function cawk_binaryToIP(binary) {
+    ip_address = ""
+    for (binaryToIP_i = 1; binaryToIP_i <= length(binary); binaryToIP_i = binaryToIP_i + 8) {
+        octet = substr(binary, binaryToIP_i, 8)
+	ip_address = ip_address cawk_binToDec(octet);
+        if (binaryToIP_i < length(binary) - 7) {
+            ip_address = ip_address "."
+        }
+    }
+    return ip_address
+}
+
+function cawk_binaryAND(binary1, binary2) {
+    result = ""
+    for (binaryAND_i = 1; binaryAND_i <= length(binary1); binaryAND_i++) {
+        digit1 = substr(binary1, binaryAND_i, 1)
+        digit2 = substr(binary2, binaryAND_i, 1)
+        if (digit1 == 1 && digit2 == 1) {
+            result = result "1"
+        } else {
+            result = result "0"
+        }
+    }
+    return result
+}
+
+function cawk_binaryOR(binary1, binary2) {
+    result = ""
+    for (binaryOR_i = 1; binaryOR_i <= length(binary1); binaryOR_i++) {
+        digit1 = substr(binary1, binaryOR_i, 1)
+        digit2 = substr(binary2, binaryOR_i, 1)
+        if ((digit1 == 1 && digit2 == 0) || (digit1 == 0 && digit2 == 1)) {
+            result = result "1"
+        } else {
+            result = result "0"
+        }
+    }
+    return result
+}
+
+function cawk_binToDec(binary) {
+    decimal = 0
+    power = length(binary) - 1
+    for (binToDec_i = 1; binToDec_i <= length(binary); binToDec_i++) {
+        digit = substr(binary, binToDec_i, 1)
+        decimal += digit * 2^power
+        power--
+    }
+    return decimal
+}
+
+function cawk_decToBin(decimal) {
+    binary = ""
+    while (decimal > 0) {
+        remainder = decimal % 2
+        binary = remainder binary
+        decimal = int(decimal / 2)
+    }
+    while (length(binary) < 8) {
+        binary = "0" binary
+    }
+    return binary
+}
+
+function cawk_max(x, y) { return (x > y) ? x : y }
+function cawk_min(x, y) { return (x < y) ? x : y }
+
+# -----------------------------------------------
+# -----------------------------------------------
+# CUBE INIT RULES
+# -----------------------------------------------
+# -----------------------------------------------
+
+function cawk_init_hypercube_rules() {
+
+	# rule format ----------------------------------
+	# 1  rule_name          : string
+	# 2  rule_description   : string
+	# 3  action             : permit/deny
+	# 4  ingress/outgress   : "none","in","out","all"
+	# 5  interface          : "none",string
+	# 6  src@               : ip
+	# 7  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 8  port_src           : port_src			set 0 if empty
+	# 10 port_src_range     : port_src_range	set 0 if empty
+	# 11 dst@               : ip				set 0 if empty
+	# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 13 port_dst           : port_dst			set 0 if empty
+	# 14 port_dst_range     : port_dst_range	set 0 if empty
+	# 15 protocol           : protocol			set "none" if empty
+	# rule format ----------------------------------
+
+	# init ----
+	delete cawk_cube
+	cawk_current_rule = 0
+
+	# build port int ----
+	# Web
+	table_port["http"] = 80;
+	table_port["https"] = 443;           
+	table_port["http-alt"] = 8080;    
+	table_port["https-alt"] = 8443;  
+
+	# remote
+	table_port["ssh"] = 22;
+	table_port["telnet"] = 23;
+	table_port["rdp"] = 3389; 
+	table_port["vnc"] = 5900;
+
+	# mail
+	table_port["smtp"] = 25;
+	table_port["pop3"] = 110;
+	table_port["imap"] = 143;
+	table_port["submission"] = 587;    
+	table_port["smtps"] = 465;       
+	table_port["imaps"] = 993;     
+	table_port["pop3s"] = 995;     
+
+	# dns and network
+	table_port["dns"] = 53;    
+	table_port["dhcp-server"] = 67;   
+	table_port["dhcp-client"] = 68;  
+	table_port["snmp"] = 161;          
+	table_port["snmp-trap"] = 162;
+	table_port["syslog"] = 514;
+
+	# ftp
+	table_port["ftp"] = 21;        
+	table_port["ftp-data"] = 20; 
+	table_port["ftps"] = 990;         
+
+	# db
+	table_port["mysql"] = 3306;
+	table_port["postgresql"] = 5432;
+	table_port["mongodb"] = 27017;
+	table_port["redis"] = 6379;
+	table_port["mssql"] = 1433;       
+	table_port["oracle"] = 1521;
+
+	# authentication
+	table_port["ldap"] = 389;
+	table_port["ldaps"] = 636;     
+	table_port["kerberos"] = 88;
+	table_port["tacacs"] = 49;          
+	table_port["tacacs+"] = 49;      
+	table_port["radius"] = 1812;       
+	table_port["radius-acct"] = 1813;  
+
+	# proxy
+	table_port["squid"] = 3128;
+	table_port["proxy"] = 8080;
+
+	# communicate
+	table_port["xmpp-client"] = 5222;    
+	table_port["xmpp-server"] = 5269;
+	table_port["irc"] = 6667;
+	table_port["ircs"] = 6697;     
+
+	# files
+	table_port["smb"] = 445;          
+	table_port["nfs"] = 2049;        
+	table_port["afp"] = 548;      
+
+	# vpn
+	table_port["openvpn"] = 1194;
+	table_port["ipsec-nat-t"] = 4500; 
+	table_port["ipsec-ike"] = 500;   
+
+	# monitoring
+	table_port["nagios"] = 5666;    
+	table_port["zabbix-agent"] = 10050;
+	table_port["zabbix-server"] = 10051;
+	table_port["grafana"] = 3000;
+	table_port["prometheus"] = 9090;
+
+	# applications
+	table_port["tomcat"] = 8080;
+	table_port["jenkins"] = 8080;
+	table_port["gitlab"] = 80;         
+	table_port["elasticsearch"] = 9200;
+	table_port["kibana"] = 5601;
+
+	# streaming
+	table_port["rtsp"] = 554;            
+	table_port["rtmp"] = 1935;  
+
+	# crypto         
+	table_port["isakmp"] = 500;            
+	table_port["non500-isakmp"] = 501; 
+	
+	# others
+	table_port["git"] = 9418;
+	table_port["svn"] = 3690;            
+	table_port["docker"] = 2375;       
+	table_port["docker-ssl"] = 2376;    
+	table_port["kubernetes"] = 6443;    
+	table_port["etcd-client"] = 2379;
+	table_port["etcd-peer"] = 2380;
+	table_port["ntp"] = 123;
+	table_port["cvsup"] = 5999; 
+	table_port["cvsup"] = 3690; 
+}
+
+# -----------------------------------------------
+# -----------------------------------------------
+# CUBE ADD RULES
+# -----------------------------------------------
+# -----------------------------------------------
+
+function cawk_add_hypercube_rules(rule_name,rule_description,action,inoutgress,interface,family,src,src_net,port_src,port_src_range,dst,dst_net,port_dst,port_dst_range,protocol) {
+
+	# rule format ----------------------------------
+	# 1  rule_name          : string
+	# 2  rule_description   : string
+	# 3  action             : permit/deny
+	# 4  ingress/outgress   : "none","in","out","all"
+	# 5  interface          : "none",string
+	# 6  family             : "all", inet, inet6
+	# 7  src@               : ip
+	# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 9  port_src           : port_src			set 0 if empty
+	# 10 port_src_range     : port_src_range	set 0 if empty
+	# 11 dst@               : ip				set 0 if empty
+	# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 13 port_dst           : port_dst			set 0 if empty
+	# 14 port_dst_range     : port_dst_range	set 0 if empty
+	# 15 protocol           : protocol			set "none" if empty
+	# rule format ----------------------------------
+
+
+	cawk_current_rule += 1
+
+	# trace ----
+	if ( trace ==1 ) {
+		print "TRACE RULE = rule_desc:"rule_description" action:"action" inout:"inoutgress" int:"interface" family:"family" src_ip:"src" src_net:"src_net" port_src:"port_src" port_src_range:" port_src_range" dst_ip:"dst" dst_net:"dst_net" port_dst:"port_dst" dst_port_range:"port_dst_range" proto:"protocol
+	}
+
+	# ---------
+	# NAME ----
+	# ---------
+	cawk_cube[cawk_current_rule]["name"] = rule_name
+	cawk_cube[cawk_current_rule]["description"] = rule_description
+
+	# -----------
+	# ACTION ----
+	# -----------
+	cawk_cube[cawk_current_rule]["action"] = action
+
+	# --------------
+	# INOUTGRESS ---
+	# --------------
+	cawk_cube[cawk_current_rule]["inoutgress"] = inoutgress
+
+	# ----------
+	# FAMILY ---
+	# ----------
+	cawk_cube[cawk_current_rule]["family"] = family
+
+	# --------------
+	# INTERFACE ----
+	# --------------
+	cawk_cube[cawk_current_rule]["interface"] = interface
+
+	# --------
+	# SRC ----
+	# --------
+	cawk_cube[cawk_current_rule]["src_orig"] = src"/"src_net
+	ip_address = src
+	cidr = src_net
+
+ 	if ( cidr == "none" ) {
+		cawk_cube[cawk_current_rule]["dst"] = -1
+		cawk_cube[cawk_current_rule]["dst_net"] = -1
+ 	} else if ( cidr == "host" ) {
+		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_ipToBinary(ip_address))
+		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_ipToBinary(ip_address))
+	} else if ( cidr == "any" ) {
+		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_ipToBinary("0.0.0.0"))
+		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_ipToBinary("255.255.255.255"))
+	} else if (cidr ~ /^[0-9]+$/) {
+		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr)))
+		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_binaryOR(cawk_cidrHostMask(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr))))
+	} else {
+		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
+		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_binaryOR(cawk_hostMaskToBinary(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr))))
+	}
+	
+	# -------------
+	# PORT SRC ----
+	# -------------
+	cawk_cube[cawk_current_rule]["port_src"] = port_src
+	cawk_cube[cawk_current_rule]["port_src_range"] = port_src_range
+
+	# --------
+	# DST ----
+	# --------
+	cawk_cube[cawk_current_rule]["dst_orig"] = dst"/"dst_net
+	ip_address = dst
+	cidr = dst_net
+ 	if ( cidr == "none" ) {
+		cawk_cube[cawk_current_rule]["dst"] = -1
+		cawk_cube[cawk_current_rule]["dst_net"] = -1
+ 	} else if ( cidr == "host" ) {
+		cawk_cube[cawk_current_rule]["dst"] = cawk_binToDec(cawk_ipToBinary(ip_address))
+		cawk_cube[cawk_current_rule]["dst_net"] = cawk_binToDec(cawk_ipToBinary(ip_address))
+	} else if ( cidr == "any" ) {
+		cawk_cube[cawk_current_rule]["dst"] = cawk_binToDec(cawk_ipToBinary("0.0.0.0"))
+		cawk_cube[cawk_current_rule]["dst_net"] = cawk_binToDec(cawk_ipToBinary("255.255.255.255"))
+	} else if (cidr ~ /^[0-9]+$/) {
+		cawk_cube[cawk_current_rule]["dst"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr)))
+		cawk_cube[cawk_current_rule]["dst_net"] = cawk_binToDec(cawk_binaryOR(cawk_cidrHostMask(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr))))
+	} else {
+		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
+		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_binaryOR(cawk_hostMaskToBinary(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr))))
+	}
+	
+	# -------------
+	# PORT DST ----
+	# -------------
+	cawk_cube[cawk_current_rule]["port_dst"] = port_dst
+	cawk_cube[cawk_current_rule]["port_dst_range"] = port_dst_range
+
+	# -------------
+	# PROTOCOL ----
+	# -------------
+	cawk_cube[cawk_current_rule]["protocol"] = protocol
+}
+
+# -----------------------------------------------
+# -----------------------------------------------
+# CUBE RULES ASSESSMENT
+# -----------------------------------------------
+# -----------------------------------------------
+
+function port_ranges_overlap(port1, range1, port2, range2) {
+
+    # 0 value case for range ----
+    end1 = (range1 == 0) ? port1 : range1
+    end2 = (range2 == 0) ? port2 : range2
+    
+    # 0/0 value case ----
+    if (port1 == 0 && range1 == 0) return 1
+    if (port2 == 0 && range2 == 0) return 1
+    
+    # check overlap ----
+    return (port1 <= end2 && port2 <= end1)
+}
+
+# -----------------------------------------------
+
+function cawk_hypercube_rules_assessment() {
+
+	# rule format ----------------------------------
+	# 1  rule_name          : string
+	# 2  rule_description   : string
+	# 3  action             : permit/deny
+	# 4  ingress/outgress   : "none","in","out","all"
+	# 5  interface          : "none",string
+	# 6  family             : "all", inet, inet6
+	# 7  src@               : ip
+	# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 9  port_src           : port_src			set 0 if empty
+	# 10 port_src_range     : port_src_range	set 0 if empty
+	# 11 dst@               : ip				set 0 if empty
+	# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+	# 13 port_dst           : port_dst			set 0 if empty
+	# 14 port_dst_range     : port_dst_range	set 0 if empty
+	# 15 protocol           : protocol			set "none" if empty
+	# rule format ----------------------------------
+
+	res_hypercube_assessment = 1;
+
+	for(r=1;r<cawk_current_rule;r++) {
+
+		for(s=r;s<cawk_current_rule;s++) {
+
+		   	if ( cawk_dst[r] >= 0 && cawk_dst_net[r] >= 0 && cawk_src[s+1] >= 0 && cawk_dst_net[s+1] >= 0) {
+
+				# gather numbers to compute intersection ----
+				x_1_0 = cawk_cube[r]["src"]; x_1_1 = cawk_cube[r]["src_net"]; 
+				y_1_0 = cawk_cube[r]["dst"]; y_1_1 = cawk_cube[r]["dst_net"];
+				x_2_0 = cawk_cube[s+1]["src"]; x_2_1 = cawk_cube[s+1]["src_net"]; 
+				y_2_0 = cawk_cube[s+1]["dst"]; y_2_1 = cawk_cube[s+1]["dst_net"];
+
+				# keep only max values for intersection computation ----
+				x1 = cawk_max(x_1_0,x_2_0)
+				y1 = cawk_max(y_1_0,y_2_0)
+				x2 = cawk_min(x_1_1,x_2_1)
+				y2 = cawk_min(y_1_1,y_2_1)
+
+				# address intersection ---- 
+				if ( x1 <= x2 && y1 <= y2) {
+
+					# action equal ---- 
+					if ( cawk_cube[r]["action"] == cawk_cube[s+1]["action"] ) {
+						rule_analysis ="redundant rules";
+					} else {
+						rule_analysis ="inconsistent rules";
+					}
+
+					# inoutgress equal ----
+					if ( \
+							( \
+								( cawk_cube[r]["inoutgress"] == "in" && cawk_cube[s+1]["inoutgress"] == "in" ) || \
+								( cawk_cube[r]["inoutgress"] == "in" && cawk_cube[s+1]["inoutgress"] == "all" ) \
+							) \
+							|| \
+							( \
+								( cawk_cube[r]["inoutgress"] == "out" && cawk_cube[s+1]["inoutgress"] == "out" ) || \
+								( cawk_cube[r]["inoutgress"] == "out" && cawk_cube[s+1]["inoutgress"] == "all" ) \
+							) \
+							|| \
+							( \
+								( cawk_cube[r]["inoutgress"] == "all" && cawk_cube[s+1]["inoutgress"] == "in" ) || \
+								( cawk_cube[r]["inoutgress"] == "all" && cawk_cube[s+1]["inoutgress"] == "out" ) || \
+								( cawk_cube[r]["inoutgress"] == "all" && cawk_cube[s+1]["inoutgress"] == "all" ) \
+							 ) \
+							 || \
+							( \
+								( cawk_cube[r]["inoutgress"] == "none" || cawk_cube[s+1]["inoutgress"] == "none" ) \
+							) \
+				 	) {
+
+						# interface equal ----
+						if ( \
+							cawk_cube[r]["interface"] == cawk_cube[s+1]["interface"] || \
+							cawk_cube[r]["interface"] == "none" || \
+							cawk_cube[s+1]["interface"] == "none"\
+						) {
+
+							# family equal ----
+							if ( \
+								cawk_cube[r]["family"] == cawk_cube[s+1]["family"] || \
+								cawk_cube[r]["family"] == "all" || \
+								cawk_cube[s+1]["family"] == "all"\
+							) {
+
+								# protocol equal ---- 
+								if ( \
+										cawk_cube[r]["protocol"] == cawk_cube[s+1]["protocol"] || \
+										cawk_cube[r]["protocol"] == "none" || \
+										cawk_cube[s+1]["protocol"] == "none"\
+								) {
+								
+									# port match ----
+									if (\
+										(\
+										cawk_cube[r]["port_src"] == cawk_cube[s+1]["port_src"] && cawk_cube[r]["port_src_range"] == cawk_cube[s+1]["port_src_range"] &&\
+										cawk_cube[r]["port_dst"] == cawk_cube[s+1]["port_dst"] && cawk_cube[r]["port_dst_range"] == cawk_cube[s+1]["port_dst_range"]\
+										)\
+										||\
+										cawk_cube[r]["port_src"] == 0 && cawk_cube[r]["port_src_range"] == 0 && cawk_cube[r]["port_dst"] == 0 && cawk_cube[r]["port_dst_range"] == 0\
+										||\
+										cawk_cube[s+1]["port_src"] == 0 && cawk_cube[s+1]["port_dst_range"] == 0 && cawk_cube[s+1]["port_dst"] == 0 && cawk_cube[s+1]["port_dst_range"] == 0\
+										||\
+										(\
+											port_ranges_overlap(cawk_cube[r]["port_src"], cawk_cube[r]["port_src_range"], cawk_cube[s+1]["port_src"], cawk_cube[s+1]["port_src_range"]) &&\
+    										port_ranges_overlap(cawk_cube[r]["port_dst"], cawk_cube[r]["port_dst_range"], cawk_cube[s+1]["port_dst"], cawk_cube[s+1]["port_dst_range"])\
+										)\
+									) {
+										# here all the dimensions have matched in order to find errors ----
+										res_hypercube_assessment = 0;
+										print_err(\
+										cawk_cube[r]["name"],\
+										" == "cawk_cube[r]["description"]" == action("cawk_cube[r]["action"]") inoutgress("cawk_cube[r]["inoutgress"]") int("cawk_cube[r]["interface"]") family("cawk_cube[r]["family"]") "\
+										"src("cawk_cube[r]["src_orig"]") src_port("cawk_cube[r]["port_src"]"/"cawk_cube[r]["port_src_range"]") "\
+										"dst("cawk_cube[r]["dst_orig"]") dst_port("cawk_cube[r]["port_dst"]"/"cawk_cube[r]["port_dst_range"]") "\
+										"protocol("cawk_cube[r]["protocol"]\
+										") == "cawk_cube[s+1]["description"]" == action("cawk_cube[s+1]["action"]") inoutgress("cawk_cube[s+1]["inoutgress"]") int("cawk_cube[s+1]["interface"]") family("cawk_cube[s+1]["family"]") "\
+										"src("cawk_cube[s+1]["src_orig"]") src_port("cawk_cube[s+1]["port_src"]"/"cawk_cube[s+1]["port_src_range"]") "\
+										"dst("cawk_cube[s+1]["dst_orig"]") dst_port("cawk_cube[s+1]["port_dst"]"/"cawk_cube[s+1]["port_dst_range"]") "\
+										"protocol("cawk_cube[s+1]["protocol"]\
+										") == "rule_analysis,FNR,"info","error");
+									}
+								}
+							}
+						}
+					}
+				}
+	   		}
+		}
+	}
+
+	return res_hypercube_assessment;
+}

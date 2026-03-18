@@ -31,6 +31,13 @@ your own different networks or customers.
 In summary, in gawk && gmake && m4 we trust :-)
 
 # ----------------------
+# ---- cawk check
+# ----------------------
+Before installing the application, extract it to a temporary directory and launch <gmake check>.
+A full set of tests will be performed and a hash computed to ensure the distribution has not been 
+Òaltered
+
+# ----------------------
 # ---- cawk installation
 # ----------------------
 
@@ -511,7 +518,6 @@ The Makefile.cawk.version file provides installation and version management targ
 
 	note: This Makefile must be located in the parent directory of cawk installations.
 
-
 # -------------------
 # ---- cawk docker
 # -------------------
@@ -565,9 +571,21 @@ some useful commands are :
 	sudo docker exec cawk-container-v3.2.0 sh -c "cd /app/cawk && gmake check_run audit=<AUDIT_NAME> >> /app/cawk/logs/cawk-check-<AUDIT_NAME>.log 2>&1"
 	sudo ls /var/lib/docker/volumes/cawk-persistent-volume-v3.2.0/_data/
 
-# -------------------
+# --------------------------
+# ---- cawk specific system
+# --------------------------
+
+The CAWK_SYSNAME environment variable can be set to implement cawk <_special> function calls. Below is a list of 
+<_special> functions that can be called:
+
+If CAWK_SYSNAME environment variable is set, all functions related to these files call their <_special> functions:
+
+	- common/common.gawk.template functions are replaced by special functions in database/common/special_common.gawk.template
+ 	  (special functions can be coded specifically for your system and will be backed up and restored)
+
+# ---------------------
 # ---- cawk community
-# -------------------
+# ---------------------
 
 if someone intends to submit a test and a configuration associated to, if approved, then the 
 test will added to the package and the name of author will be added to the AUTHORS list.

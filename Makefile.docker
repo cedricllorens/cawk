@@ -13,23 +13,23 @@ SHELL := /bin/bash
 
 # ---------------------------------------------
 
-CAWK_TAG := v3.2.0
+include Makefile.support.mk
 
 # ---------------------------------------------
 
 # Container configuration
 CONTAINER_NAME := cawk-container
-CONTAINER_FULL := $(CONTAINER_NAME)-$(CAWK_TAG)
+CONTAINER_FULL := $(CONTAINER_NAME)-$(CAWK_RELEASE)
 
 # image configuration
 IMAGE_NAME := cawk-image
-IMAGE_FULL := $(IMAGE_NAME):$(CAWK_TAG)
+IMAGE_FULL := $(IMAGE_NAME):$(CAWK_RELEASE)
 
 # ---------------------------------------------
 
 # Volume configuration
 CAWK_VOLUME := cawk-persistent-volume
-CAWK_VOLUME_FULL := $(CAWK_VOLUME)-$(CAWK_TAG)
+CAWK_VOLUME_FULL := $(CAWK_VOLUME)-$(CAWK_RELEASE)
 
 # ---------------------------------------------
 
@@ -181,7 +181,7 @@ connect: shell
 # ---------------------------------------------
 
 clean:
-	@echo "cawl cleaning $(CONTAINER_FULL) container ----"
+	@echo "cawk cleaning $(CONTAINER_FULL) container ----"
 	sudo docker stop $(CONTAINER_FULL) || true
 	sudo docker rm $(CONTAINER_FULL) || true
 

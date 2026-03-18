@@ -7,7 +7,7 @@
 
 # ---------------
 
-CAWK_RELEASE = v3.3.0
+CAWK_RELEASE = v3.4.0
 
 # ---------------
 
@@ -15,10 +15,8 @@ CONFS_PATH = confs
 COMMON_PATH = common
 BACKUP_PATH = backup
 DATABASE_PATH = database
-DATABASE_REPO_PATH = database.repo
 LOGS_PATH = logs
 DATABASE_PATH_SH = $(DATABASE_PATH)/scripts
-DATABASE_REPO_PATH_SH = $(DATABASE_REPO_PATH)/scripts
 DATABASE_SH = $(wildcard $(DATABASE_PATH_SH)/*.script.sh)
 REPORT_PATH = reports
 
@@ -160,5 +158,8 @@ DEADBEEF_THRESHOLD_DAYS ?= 30
 # --------------- clean specific parameters
 ARCHIVE_OLDER_DAYS ?= 120
 
-# --------------------------------
+# ----------------- PSIRT only computationÒ
 PSIRT ?= no
+
+# ---------------- clean temporary files
+TMP_ASSESSMENT_FILES = yes

@@ -59,5 +59,10 @@ if command -v grep >/dev/null 2>&1; then
 else
     echo "NOK : grep is not available."
 fi
+if command -v sha512sum >/dev/null 2>&1; then
+    echo "OK : sha512sum is available."
+else
+    echo "NOK : sha512sum is not available."
+fi
 
 echo "cawk check system end ------------------"
