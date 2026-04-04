@@ -8,23 +8,23 @@
 # ------------------------------------------------------------
 
 BEGIN {
-    FS = "|"
-    OFS = "|"
+    FS = ";"
+    OFS = ";"
     db_file = "database/db_info.txt"
-    
+
     if (ARGC < 3) {
         print "Usage: gawk -f build_database.awk audit [test_file_path]"
         exit 1
     }
-    
+
     audit = ARGV[1]
     test_file = ARGV[2]
     delete ARGV[1]
     delete ARGV[2]
-    
+
     # Create header if file doesn't exist
     if ((getline < db_file) <= 0) {
-	    print "audit|supplier|test_name|purpose|description|actions|cis_benchmark_ref|authors" > db_file
+	    print "audit;supplier;test_name;purpose;description;actions;cis_benchmark_ref;authors" > db_file
     }
     close(db_file)
     
@@ -75,6 +75,6 @@ function parse_test_file(audit,file) {
     
     # Add to database
     if (supplier != "" || test_name != "") {
-        print audit "|" supplier "|" test_name "|" purpose "|" description "|" actions "|" cis_ref "|" authors >> db_file
+        print audit ";" supplier ";" test_name ";" purpose ";" description ";" actions ";" cis_ref ";" authors >> db_file
     }
 }

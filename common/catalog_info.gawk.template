@@ -8,19 +8,19 @@
 # ------------------------------------------------------------
 
 BEGIN {
-    FS = "|"
+    FS = ";"
     db_file = "database/db_info.txt"
-    
+
     if (ARGC < 3) {
         print "Usage: gawk -f report_generator.awk [audit] [supplier]"
         exit 1
     }
-    
+
     target_audit = ARGV[1]
     target_supplier = ARGV[2]
     delete ARGV[1]
     delete ARGV[2]
-    
+
     detailed_report(target_audit,target_supplier)
 }
 
@@ -29,7 +29,7 @@ function detailed_report(audit,supplier) {
     print ""
     
     while ((getline line < db_file) > 0) {
-        split(line, fields, "|")
+        split(line, fields, ";")
         
         if (tolower(fields[1]) == tolower(audit) && tolower(fields[2]) == tolower(supplier)) {
             printf "audit/test_name: %s/%-30s\n", fields[1], fields[3]

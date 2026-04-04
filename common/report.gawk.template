@@ -76,7 +76,7 @@ BEGINFILE {
 					first_line = 0
 					continue
 				}
-				split(line, fields, "|")
+				split(line, fields, ";")
 				test_name_full = trim(fields[3])
 				cis_ref = trim(fields[7])
 				if (cis_ref && cis_ref != "" && cis_ref !~ /to be defined/ && cis_ref ~ /^[0-9]/) {
@@ -133,7 +133,7 @@ BEGINFILE {
 
 # Parse db_info.txt to load CIS mappings
 db_info_file && FNR > 1 {
-	split($0, fields, "|")
+	split($0, fields, ";")
 	test_name_full = trim(fields[3])
 	cis_ref = trim(fields[7])
 

@@ -185,7 +185,7 @@
 2026;04;04;14;31;confs/repo/confs.cisco-xr/conf_1;ssh_setup_set.cisco-xr.gawk;<ssh server> is not set;0;high;error
 2026;04;04;14;31;confs/repo/confs.cisco-xr/conf_1;ssh_versionv1_notset.cisco-xr.gawk;<ssh version 1> is not set;0;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;aaa_config_set.juniper-junos.gawk;radius-server {;63;high;pass
-2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;aaa_rightorder_set.juniper-junos.gawk;auth-order [ radius password ] ;62;high;pass
+2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;aaa_rightorder_set.juniper-junos.gawk;auth-order [ radius password ];62;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;aaa_user_notset.juniper-junos.gawk;user MonUtilisateur {;54;high;error
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;strust-to-trust : filter ref but not def :input strust-to-trust;0;high;error
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;filter_defref_set.juniper-junos.gawk;trust-to-trust : filter def but not ref :filter trust-to-trust ;0;info;error
@@ -197,7 +197,7 @@
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;int_redirects_notset.juniper-junos.gawk;interface <redirects> is not set;0;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;int_unreachables_notset.juniper-junos.gawk;interface <unreachables> is not set;0;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;ipsec_oldercryptoalg_notset.juniper-junos.gawk;<older crypto algorithm> is not set;0;high;pass
-2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;ntp_ip_set.juniper-junos.gawk;server 192.168.1.100 prefer ;70;high;pass
+2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;ntp_ip_set.juniper-junos.gawk;server 192.168.1.100 prefer;70;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;protocols_bgpgroupauth_set.juniper-junos.gawk;group cawk1  authentication-key x;30;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;protocols_bgpgroupauth_set.juniper-junos.gawk;group cawk  authentication-key x;27;high;pass
 2026;04;04;14;31;confs/repo/confs.juniper-junos/conf_0;protocols_bgpneighborauth_set.juniper-junos.gawk;neighbor 10.168.1.2  authentication-key x;33;high;pass
@@ -417,10 +417,10 @@
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;fw_forbidproto_notset.paloalto-panos.gawk;firewall has no forbidden protocols;0;high;pass
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;fw_lastrule_set.paloalto-panos.gawk;firewall has last rule src=any dst=any service=any action=deny;0;high;pass
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;global_lldp_notset.paloalto-panos.gawk;global <lldp yes> is not set;0;high;pass
-2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes ;69;high;error
-2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes ;70;high;error
+2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes;69;high;error
+2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes;70;high;error
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_lldp_notset.paloalto-panos.gawk;interface <lldp yes> is not set;0;high;pass
-2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes ;71;high;error
+2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes;71;high;error
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;ipsec_oldercryptoalg_notset.paloalto-panos.gawk;<older crypto algorithm> is not set;0;high;pass
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk;community public {;44;high;error
 2026;04;04;14;31;confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2_notset.paloalto-panos.gawk;community public {;44;high;error

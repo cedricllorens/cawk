@@ -167,9 +167,9 @@ confs/repo/confs.nokia-sros/conf_1;ntp_ip_set.nokia-sros.gawk;<ntp server ip> is
 confs/repo/confs.nokia-sros/conf_1;snmp_v3host_set.nokia-sros.gawk;snmp v3 host is not set;0;high;error
 confs/repo/confs.nokia-sros/conf_1;snmp_v3user_set.nokia-sros.gawk;snmp v3 user is not set;0;high;error
 confs/repo/confs.paloalto-panos/conf_0;fw_anyany_notset.paloalto-panos.gawk;firewall has rule src=any dst=any service=any action=allow;115;high;error
-confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes ;69;high;error
-confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes ;70;high;error
-confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes ;71;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_icmpredirect_notset.paloalto-panos.gawk;ethernet1/1 { icmp-redirect yes;69;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_icmpunreachable_notset.paloalto-panos.gawk;ethernet1/1 { icmp-unreachable yes;70;high;error
+confs/repo/confs.paloalto-panos/conf_0;int_proxyarp_notset.paloalto-panos.gawk;ethernet1/1 { proxy-arp yes;71;high;error
 confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2forbidcommunity_notset.paloalto-panos.gawk;community public {;44;high;error
 confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2_notset.paloalto-panos.gawk;community public {;44;high;error
 confs/repo/confs.paloalto-panos/conf_0;snmp_v1v2rw_notset.paloalto-panos.gawk;access write;45;high;error

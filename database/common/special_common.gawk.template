@@ -37,6 +37,6 @@ function rm_blank_before_special(str) {
 # purpose : remove semicolons and replace with space (prevents CSV parsing issues)
 # ----
 function rm_semicolon_special(str) {
-	gsub(/;/, " ", str)
+	gsub(/;/, "", str)
 	return str
 }
