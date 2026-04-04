@@ -62,8 +62,9 @@ BEGINFILE {
 		delete cis_pass;
 		delete cis_fail;
 		delete cis_warning;
-		delete cis_control;
-		delete cis_category;
+		# Note: cis_control and cis_category are loaded once and reused, so don't delete them
+		# delete cis_control;
+		# delete cis_category;
 		cis_total_pass = 0;
 		cis_total_fail = 0;
 		cis_total_warning = 0;
@@ -596,7 +597,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_high[name] > 0) {
-			print "\t" name " = " tests_error_count_high[name];
+			cis_ref = "";
+			if (name in cis_map) {
+				cis_id = cis_map[name];
+				cis_msg = cis_control[cis_id];
+				cis_ref = " (" cis_id " " cis_msg ")";
+			}
+			print "\t" name cis_ref " = " tests_error_count_high[name];
 		}
 	}
 	asorti(tests_error_count_medium, sorted_names, "@val_num_desc")
@@ -604,7 +611,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_medium[name] > 0) {
-			print "\t" name " = " tests_error_count_medium[name];
+			cis_ref = "";
+			if (name in cis_map) {
+				cis_id = cis_map[name];
+				cis_msg = cis_control[cis_id];
+				cis_ref = " (" cis_id " " cis_msg ")";
+			}
+			print "\t" name cis_ref " = " tests_error_count_medium[name];
 		}
 	}
 	asorti(tests_error_count_low, sorted_names, "@val_num_desc")
@@ -612,7 +625,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_low[name] > 0) {
-			print "\t" name " = " tests_error_count_low[name];
+			cis_ref = "";
+			if (name in cis_map) {
+				cis_id = cis_map[name];
+				cis_msg = cis_control[cis_id];
+				cis_ref = " (" cis_id " " cis_msg ")";
+			}
+			print "\t" name cis_ref " = " tests_error_count_low[name];
 		}
 	}
 	asorti(tests_error_count_info, sorted_names, "@val_num_desc")
@@ -620,7 +639,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_info[name] > 0) {
-			print "\t" name " = " tests_error_count_info[name];
+			cis_ref = "";
+			if (name in cis_map) {
+				cis_id = cis_map[name];
+				cis_msg = cis_control[cis_id];
+				cis_ref = " (" cis_id " " cis_msg ")";
+			}
+			print "\t" name cis_ref " = " tests_error_count_info[name];
 		}
 	}
 }
