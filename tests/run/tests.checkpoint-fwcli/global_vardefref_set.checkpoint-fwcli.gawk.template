@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_vardefref_set.checkpoint-fwcli
+# @test_name : global_vardefref_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check vars def not ref and ref not def
 # @description : undefined variable references or unused variable definitions indicate configuration inconsistencies that may lead to unexpected security policy behavior

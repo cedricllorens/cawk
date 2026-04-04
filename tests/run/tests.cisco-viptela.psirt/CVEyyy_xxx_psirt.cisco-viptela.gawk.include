@@ -24,7 +24,7 @@
 #
 # VERSION: 1.0
 #
-# @test_name : CVEyyy_xxx_psirt.cisco-viptela
+# @test_name : CVEyyy_xxx_psirt.cisco-viptela.gawk
 # @supplier : cisco-viptela
 # @purpose : PSIRT vulnerability assessment template for cisco-viptela
 # @description : generic pattern-based vulnerability detection tool for cisco-viptela devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section

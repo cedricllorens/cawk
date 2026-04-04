@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_http_notset.huawei-vrp
+# @test_name : global_http_notset.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if <http(s) server> is not set
 # @description : enabled http or https server exposes the device management interface to web-based attacks

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : login_logenable_set.ekinops-oneos
+# @test_name : login_logenable_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <login log enable> is set
 # @description : login logging can be used to track authentication events and potential security incidents

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v1v2rw_notset.nokia-sros
+# @test_name : snmp_v1v2rw_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <snmp v1v2 write> is not set
 # @description : snmp v1v2 read-write community strings allow configuration changes via an insecure protocol

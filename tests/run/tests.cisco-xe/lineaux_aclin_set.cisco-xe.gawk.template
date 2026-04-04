@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : lineaux_aclin_set.cisco-xe
+# @test_name : lineaux_aclin_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if a line aux has <access-class xx in>
 # @description : line aux without inbound ACL can allow unauthorized management access to the device

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_lldp_notset.paloalto-panos
+# @test_name : int_lldp_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if an interface has no <lldp>
 # @description : lldp enabled on interfaces discloses topology information to adjacent devices and may be exploited

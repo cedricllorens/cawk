@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_noipicmpredirect_set.ekinops-oneos
+# @test_name : global_noipicmpredirect_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <no ip icmp redirect> is set
 # @description : ip icmp redirect may trigger attacks

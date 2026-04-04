@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : lineaux_noexec_set.cisco-xe
+# @test_name : lineaux_noexec_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if a line aux has <no exec>
 # @description : line aux without <no exec> can allow unauthorized console-like access if the aux port is connected

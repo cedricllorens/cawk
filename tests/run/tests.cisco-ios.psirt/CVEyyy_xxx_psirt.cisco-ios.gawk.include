@@ -24,7 +24,7 @@
 #
 # VERSION: 1.0
 #
-# @test_name : CVEyyy_xxx_psirt.cisco-ios
+# @test_name : CVEyyy_xxx_psirt.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : PSIRT vulnerability assessment template for cisco-ios
 # @description : generic pattern-based vulnerability detection tool for cisco-ios devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section

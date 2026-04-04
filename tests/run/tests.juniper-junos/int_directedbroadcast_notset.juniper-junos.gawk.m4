@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_directedbroadcast_notset.juniper-junos
+# @test_name : int_directedbroadcast_notset.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if an interface has no <directed-broadcast>
 # @description : directed broadcast enabled on interfaces can be exploited for amplification attacks such as smurf

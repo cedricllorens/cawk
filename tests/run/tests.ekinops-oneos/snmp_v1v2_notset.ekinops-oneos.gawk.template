@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v1v2_notset.ekinops-oneos
+# @test_name : snmp_v1v2_notset.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <snmp v1v2> is not set
 # @description : snmp v1 and v2c use clear-text community strings and lack strong authentication and encryption

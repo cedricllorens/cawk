@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3host_set.juniper-junos
+# @test_name : snmp_v3host_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <snmp v3 host> is set
 # @description : missing snmp v3 host configuration means trap notifications are not sent to a secure management destination

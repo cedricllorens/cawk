@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : userinterfacevty_aaa_set.huawei-vrp
+# @test_name : userinterfacevty_aaa_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if each user-interface vty has <authentication-mode aaa>
 # @description : vty lines without aaa authentication-mode allow access without centralized authentication enforcement

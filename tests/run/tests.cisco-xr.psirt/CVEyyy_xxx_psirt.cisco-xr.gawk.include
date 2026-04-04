@@ -24,7 +24,7 @@
 #
 # VERSION: 1.0
 #
-# @test_name : CVEyyy_xxx_psirt.cisco-xr
+# @test_name : CVEyyy_xxx_psirt.cisco-xr.gawk
 # @supplier : cisco-xr
 # @purpose : PSIRT vulnerability assessment template for cisco-xr
 # @description : generic pattern-based vulnerability detection tool for cisco-xr devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section

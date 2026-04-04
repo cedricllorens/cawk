@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : routing_defref_set.huawei-vrp
+# @test_name : routing_defref_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check when an <routing> is def and not ref / check when an <routing> is ref and not def
 # @description : routing policy defined but not referenced represents dead configuration; routing policy referenced but not defined causes forwarding errors

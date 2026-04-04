@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : access_services_set.ekinops-oneos
+# @test_name : access_services_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <telnet, ssh, http and ftp/tftp> are configured properly
 # @description : improperly configured access services may expose insecure protocols or allow unauthorized remote access

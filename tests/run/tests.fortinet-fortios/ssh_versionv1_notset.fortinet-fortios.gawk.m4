@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ssh_versionv1_notset.fortinet-fortios
+# @test_name : ssh_versionv1_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <ssh version 1> is not set
 # @description : ssh version 1 has known cryptographic vulnerabilities and must not be used for remote management

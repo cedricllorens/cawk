@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_user_notset.juniper-junos
+# @test_name : aaa_user_notset.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check that <aaa forbidden users> are not set
 # @description : presence of forbidden aaa users indicates unauthorized or default accounts that should be removed

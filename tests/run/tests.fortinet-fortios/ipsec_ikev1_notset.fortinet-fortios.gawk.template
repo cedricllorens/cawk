@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ipsec_ikev1_notset.fortinet-fortios
+# @test_name : ipsec_ikev1_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <ikev1> is not set
 # @description : ikev1 has known cryptographic weaknesses and should not be used for ipsec tunnels

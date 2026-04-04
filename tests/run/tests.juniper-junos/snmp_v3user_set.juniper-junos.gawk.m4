@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3user_set.juniper-junos
+# @test_name : snmp_v3user_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <snmp v3 user> is set
 # @description : missing snmp v3 user configuration means authenticated snmp access is not configured

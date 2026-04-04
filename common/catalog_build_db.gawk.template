@@ -38,7 +38,8 @@ function parse_test_file(audit,file) {
     description = ""
     actions = ""
     cis_ref = ""
-    
+    authors = ""
+
     while ((getline line < file) > 0) {
         gsub(/^[ \t]+|[ \t]+$/, "", line)
         
@@ -75,6 +76,13 @@ function parse_test_file(audit,file) {
     
     # Add to database
     if (supplier != "" || test_name != "") {
+        # Remove semicolons from data fields to prevent CSV parsing issues
+        gsub(/;/, " ", purpose)
+        gsub(/;/, " ", description)
+        gsub(/;/, " ", actions)
+        gsub(/;/, " ", cis_ref)
+        gsub(/;/, " ", authors)
+
         print audit ";" supplier ";" test_name ";" purpose ";" description ";" actions ";" cis_ref ";" authors >> db_file
     }
 }

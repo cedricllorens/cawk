@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : acl_defref_set.huawei-vrp
+# @test_name : acl_defref_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check when an <acl> is def and not ref / check when an <acl> is ref and not def
 # @description : acl defined but not referenced represents dead configuration; acl referenced but not defined causes policy errors

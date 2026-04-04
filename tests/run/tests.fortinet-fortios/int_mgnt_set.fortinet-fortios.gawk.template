@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_mgnt_set.fortinet-fortios
+# @test_name : int_mgnt_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if a <management interface> is set
 # @description : missing dedicated management interface may expose management services on production interfaces

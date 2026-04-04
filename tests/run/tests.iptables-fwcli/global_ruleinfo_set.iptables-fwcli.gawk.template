@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_ruleinfo_set.iptables-fwcli
+# @test_name : global_ruleinfo_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : perform a basic set of checks on the rules
 # @description : basic rule quality checks detect common misconfigurations and policy gaps in the iptables ruleset

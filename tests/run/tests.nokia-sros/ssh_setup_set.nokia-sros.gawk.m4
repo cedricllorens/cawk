@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ssh_setup_set.nokia-sros
+# @test_name : ssh_setup_set.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <ssh server> is set
 # @description : missing ssh server configuration means secure remote management is not available

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_oldercryptoalg_notset.packetfilter-fwcli
+# @test_name : global_oldercryptoalg_notset.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check if <older crypto algorithm> is not set
 # @description : use of older or weak cryptographic algorithms exposes encrypted traffic to known attacks

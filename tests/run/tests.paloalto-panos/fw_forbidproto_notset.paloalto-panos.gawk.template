@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_forbidproto_notset.paloalto-panos
+# @test_name : fw_forbidproto_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if firewall does not implement <forbidden protocols>
 # @description : firewall rules permitting forbidden protocols allow insecure or dangerous services through the security policy

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_allowall_notset.cisco-viptela
+# @test_name : int_allowall_notset.cisco-viptela.gawk
 # @supplier : cisco-viptela
 # @purpose : check if <allow-service all> is not set on tunnel interfaces
 # @description : allow-service all on tunnel interfaces exposes unnecessary services and expands the attack surface

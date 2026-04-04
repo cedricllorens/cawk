@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# @test_name : acl_defref_set.cisco-cedge
+# @test_name : acl_defref_set.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if <acl> definitions are referenced
 # @description : unreferenced ACLs can lead to security vulnerabilities

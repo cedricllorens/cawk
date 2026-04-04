@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_ntp_set.checkpoint-fwcli
+# @test_name : global_ntp_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check <ntp statements> is set
 # @description : missing or misconfigured ntp synchronization leads to log timestamp inconsistencies, impeding incident response and forensic analysis

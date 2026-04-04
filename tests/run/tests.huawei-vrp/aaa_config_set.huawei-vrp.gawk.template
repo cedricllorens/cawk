@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_config_set.huawei-vrp
+# @test_name : aaa_config_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if <aaa config> is set
 # @description : missing aaa configuration means authentication, authorization, and accounting are not properly enforced

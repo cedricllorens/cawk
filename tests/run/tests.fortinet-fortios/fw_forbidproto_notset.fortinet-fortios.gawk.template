@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_forbidproto_notset.fortinet-fortios
+# @test_name : fw_forbidproto_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if a <firewall rule> implements forbidden protocols
 # @description : firewall rules allowing forbidden protocols expand the attack surface and could expose the device to security risks

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_server_set.fortinet-fortios
+# @test_name : ntp_server_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <ntp server> is set
 # @description : missing ntp server configuration can lead to time synchronization issues affecting log correlation and security auditing

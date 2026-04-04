@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_forbidservices_notset.6wind-linux
+# @test_name : global_forbidservices_notset.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <vrf main> block only contains trusted services
 # @description : unauthorized or unexpected services running in vrf main expand the attack surface and could expose the device to security risks

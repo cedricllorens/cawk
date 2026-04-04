@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_mgntforbidallow_notset.fortinet-fortios
+# @test_name : int_mgntforbidallow_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if a <management interface> allows forbidden protocols
 # @description : management interface allowing forbidden protocols expands the attack surface and could expose the device to security risks

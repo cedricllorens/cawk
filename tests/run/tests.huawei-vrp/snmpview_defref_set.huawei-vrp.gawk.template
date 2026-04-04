@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmpview_defref_set.huawei-vrp
+# @test_name : snmpview_defref_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check when a <snmp view> is def and not ref / check when a <snmp view> is ref and not def
 # @description : snmp view defined but not referenced represents dead configuration; snmp view referenced but not defined causes access control errors

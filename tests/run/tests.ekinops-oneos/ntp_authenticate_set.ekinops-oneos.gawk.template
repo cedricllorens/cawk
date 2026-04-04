@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_authenticate_set.ekinops-oneos
+# @test_name : ntp_authenticate_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <ntp authenticate> is set
 # @description : ntp without authentication can allow unauthorized ntp synchronization and time manipulation

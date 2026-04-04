@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3host_set.cisco-viptela
+# @test_name : snmp_v3host_set.cisco-viptela.gawk
 # @supplier : cisco-viptela
 # @purpose : check if <snmp v3 host> is set
 # @description : missing snmp v3 trap host configuration means security events and traps may not be forwarded to the monitoring system

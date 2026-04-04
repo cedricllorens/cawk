@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_lastruledrop_set.packetfilter-fwcli
+# @test_name : global_lastruledrop_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check <last drop rule> is set
 # @description : missing last drop rule means traffic not matched by any explicit rule may be allowed by implicit accept

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_defaultpolicy_set.packetfilter-fwcli
+# @test_name : global_defaultpolicy_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : list and monitor default policies
 # @description : missing or permissive default policies means traffic not matched by explicit rules may be allowed by default instead of denied

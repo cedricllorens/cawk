@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : linevty_exectimeout00_notset.cisco-ios
+# @test_name : linevty_exectimeout00_notset.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if a line vty has no <exec-timeout 0 0>
 # @description : exec-timeout 0 0 disables session timeout and can leave an unattended vty session active indefinitely

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_user_notset.cisco-xr
+# @test_name : aaa_user_notset.cisco-xr.gawk
 # @supplier : cisco-xr
 # @purpose : check if <aaa users> are not set locally
 # @description : local users can endanger the security of the system by allowing unauthorized access

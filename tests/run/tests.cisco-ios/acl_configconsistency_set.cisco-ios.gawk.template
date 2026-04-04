@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : acl_configconsistency_set.cisco-ios
+# @test_name : acl_configconsistency_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <acl rules> are consistent
 # @description : inconsistent or redundant ACL rules can lead to security vulnerabilities

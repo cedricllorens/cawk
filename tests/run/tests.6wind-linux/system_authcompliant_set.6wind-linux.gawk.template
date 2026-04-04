@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : system_authcompliant_set.6wind-linux
+# @test_name : system_authcompliant_set.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <system><auth> block is compliant (trusted users)
 # @description : non-compliant authentication configuration allowing untrusted users could grant unauthorized access to the device

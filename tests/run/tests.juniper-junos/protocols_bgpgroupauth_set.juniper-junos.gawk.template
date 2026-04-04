@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : protocols_bgpgroupauth_set.juniper-junos
+# @test_name : protocols_bgpgroupauth_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <bgp/group block> has authentication-key
 # @description : bgp group without authentication-key allows unauthenticated bgp sessions which can be exploited for route injection

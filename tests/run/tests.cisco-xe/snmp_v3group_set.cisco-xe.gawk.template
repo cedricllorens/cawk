@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3group_set.cisco-xe
+# @test_name : snmp_v3group_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <snmp v3 group priv> is set
 # @description : missing snmp v3 group with priv security level means snmp v3 authentication and encryption are not enforced at the group level, weakening snmp access control

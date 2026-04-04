@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : routing_ribgroupdefref_set.juniper-junos
+# @test_name : routing_ribgroupdefref_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : Check when routing rib-group definitions are referenced and vice versa
 # @description : Validates that all routing rib-group definitions have corresponding references and all references have definitions

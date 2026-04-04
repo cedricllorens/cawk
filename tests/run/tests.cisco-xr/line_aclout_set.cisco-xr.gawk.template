@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : line_aclout_set.cisco-xr
+# @test_name : line_aclout_set.cisco-xr.gawk
 # @supplier : cisco-xr
 # @purpose : check if a line vty has <access-class xx out>
 # @description : line vty without outbound ACL can allow unauthorized outgoing remote management connections from the device

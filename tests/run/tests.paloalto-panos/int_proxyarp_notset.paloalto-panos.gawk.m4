@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_proxyarp_notset.paloalto-panos
+# @test_name : int_proxyarp_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if an interface has no <proxy-arp yes>
 # @description : proxy-arp enabled on interfaces can lead to arp spoofing and man-in-the-middle attacks

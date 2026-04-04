@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3_set.juniper-junos
+# @test_name : snmp_v3_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <snmp v3> is set
 # @description : missing snmp v3 configuration means secure snmp management with authentication and encryption is not in place

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_timestamps_set.cisco-ios
+# @test_name : global_timestamps_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <service timestamps log datetime> is set
 # @description : without timestamp configuration, log entries lack date and time information, making security incident correlation and forensic analysis unreliable

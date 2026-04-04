@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_chaindefref_set.iptables-fwcli
+# @test_name : global_chaindefref_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check <-N chains> ref not def and def not ref
 # @description : custom chains defined but not referenced represent dead configuration; chains referenced but not defined cause rule processing errors

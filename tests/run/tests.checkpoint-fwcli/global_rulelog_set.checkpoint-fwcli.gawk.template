@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_rulelog_set.checkpoint-fwcli
+# @test_name : global_rulelog_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <rule log> is set globally
 # @description : rules without logging prevent detection of security incidents and make forensic analysis impossible

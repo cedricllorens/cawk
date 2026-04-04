@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : userinterfacevty_aclout_set.huawei-vrp
+# @test_name : userinterfacevty_aclout_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if each user-interface vty has <acl outbound>
 # @description : vty lines without outbound acl allow unrestricted outbound connections from the device

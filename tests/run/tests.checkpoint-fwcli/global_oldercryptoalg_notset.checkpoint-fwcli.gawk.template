@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_oldercryptoalg_notset.checkpoint-fwcli
+# @test_name : global_oldercryptoalg_notset.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check if <older crypto algorithm> is not set
 # @description : older or deprecated cryptographic algorithms expose encrypted communications to known attacks and compromise data confidentiality

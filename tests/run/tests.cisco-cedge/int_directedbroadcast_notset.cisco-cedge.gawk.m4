@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_directedbroadcast_notset.cisco-cedge
+# @test_name : int_directedbroadcast_notset.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if an interface has no <ip directed-broadcast>
 # @description : ip directed-broadcast may trigger attacks

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ssh_versionv1_notset.paloalto-panos
+# @test_name : ssh_versionv1_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if <ssh version v1> is not set
 # @description : ssh version 1 is cryptographically weak and should not be enabled on any device

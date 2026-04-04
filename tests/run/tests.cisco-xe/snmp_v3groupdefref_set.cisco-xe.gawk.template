@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3groupdefref_set.cisco-xe
+# @test_name : snmp_v3groupdefref_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <snmp v3 group> definitions are referenced and references are defined
 # @description : snmp v3 groups defined but not referenced by users (or vice versa) indicate configuration inconsistencies

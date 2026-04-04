@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_rcmd_notset.cisco-xe
+# @test_name : global_rcmd_notset.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <rcmd> is not set
 # @description : rcmd can be used to gain unauthorized access to the device

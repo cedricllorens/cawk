@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_lldp_notset.fortinet-fortios
+# @test_name : global_lldp_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <lldp> is not set
 # @description : lldp can be used to gain unauthorized access to the device or reveal sensitive information

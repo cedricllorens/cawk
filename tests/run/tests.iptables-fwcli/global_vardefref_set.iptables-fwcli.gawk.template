@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_vardefref_set.iptables-fwcli
+# @test_name : global_vardefref_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check <vars> def not ref and ref not def
 # @description : variables defined but not referenced represent dead configuration; variables referenced but not defined cause rule processing errors

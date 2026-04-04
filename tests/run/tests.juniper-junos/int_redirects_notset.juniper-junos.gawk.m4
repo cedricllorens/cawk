@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_redirects_notset.juniper-junos
+# @test_name : int_redirects_notset.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if an interface has no <redirects>
 # @description : icmp redirects enabled on interfaces can be exploited to redirect traffic through unauthorized gateways

@@ -9,7 +9,7 @@
 #
 # purpose : check if an interface has no <ip directed-broadcast>
 # author  : cedric llorens
-# @test_name : int_directedbroadcast_notset.cisco-ios
+# @test_name : int_directedbroadcast_notset.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if an interface has no <ip directed-broadcast>
 # @description : ip directed-broadcast may trigger attacks

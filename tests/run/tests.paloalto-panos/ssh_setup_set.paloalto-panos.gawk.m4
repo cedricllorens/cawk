@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ssh_setup_set.paloalto-panos
+# @test_name : ssh_setup_set.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if <ssh server> is set
 # @description : missing ssh server configuration means secure remote management is not available

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_tabledefref_set.packetfilter-fwcli
+# @test_name : global_tabledefref_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check <tables> def not ref and ref not def
 # @description : tables defined but not referenced represent dead configuration; tables referenced but not defined cause rule processing errors

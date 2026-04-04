@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_accounting_set.nokia-sros
+# @test_name : aaa_accounting_set.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <aaa accounting> is set
 # @description : missing aaa accounting means user actions are not logged for audit and forensic purposes

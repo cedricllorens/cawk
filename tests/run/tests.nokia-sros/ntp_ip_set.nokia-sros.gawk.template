@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_ip_set.nokia-sros
+# @test_name : ntp_ip_set.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <ntp server ip> is set
 # @description : missing ntp server configuration means the device clock may drift, causing log timestamp inconsistencies and authentication issues

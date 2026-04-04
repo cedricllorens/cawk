@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_rightorder_set.juniper-junos
+# @test_name : aaa_rightorder_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <aaa auth order> starts with radius/tacacs
 # @description : aaa authentication order not starting with radius or tacacs means centralized authentication may be bypassed

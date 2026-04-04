@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_rcmd_notset.huawei-vrp
+# @test_name : global_rcmd_notset.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if <rcmd server> is not set
 # @description : rcmd server enables insecure remote command execution services that should not be active on network devices

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_basicrulecheck_set.packetfilter-fwcli
+# @test_name : global_basicrulecheck_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check basic tests on rules
 # @description : basic rule quality checks detect common misconfigurations and policy gaps in the packetfilter ruleset

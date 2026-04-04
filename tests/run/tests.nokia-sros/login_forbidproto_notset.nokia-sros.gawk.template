@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : login_forbidproto_notset.nokia-sros
+# @test_name : login_forbidproto_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if login forbidden forbidprotos are not set
 # @description : forbidden login protocols such as telnet or ftp expose management access to cleartext interception

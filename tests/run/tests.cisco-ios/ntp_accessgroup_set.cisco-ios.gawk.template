@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_accessgroup_set.cisco-ios
+# @test_name : ntp_accessgroup_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <ntp access-group> is set
 # @description : ntp without access-group restriction can allow unauthorized ntp synchronization requests to or from any host

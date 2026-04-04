@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_directbroadcast_notset.huawei-vrp
+# @test_name : int_directbroadcast_notset.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if an interface has no <direct-broadcast>
 # @description : directed broadcast enabled on interfaces can be exploited for amplification attacks such as smurf

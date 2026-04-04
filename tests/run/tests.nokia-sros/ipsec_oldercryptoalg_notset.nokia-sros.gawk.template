@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ipsec_oldercryptoalg_notset.nokia-sros
+# @test_name : ipsec_oldercryptoalg_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <older crypto algorithm> is not set
 # @description : use of older or weak cryptographic algorithms in ipsec exposes vpn tunnels to known attacks

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3host_set.fortinet-fortios
+# @test_name : snmp_v3host_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <snmp v3 host> is set
 # @description : missing snmp v3 trap host configuration means security events and traps may not be forwarded to the monitoring system

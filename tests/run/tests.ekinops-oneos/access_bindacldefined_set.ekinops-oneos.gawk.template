@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : access_bindacldefined_set.ekinops-oneos
+# @test_name : access_bindacldefined_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <bind acl defined> is set
 # @description : missing bind acl configuration may allow unrestricted access to management services

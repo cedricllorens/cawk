@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : system_networkstackicmpcompliant_set.6wind-linux
+# @test_name : system_networkstackicmpcompliant_set.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <system><network-stack><icmp> block is compliant (rate-limit-icmp, rate-mask-icmp destination-unreachable, ignore-icmp-echo-broadcast)
 # @description : non-compliant ICMP network stack settings could expose the device to ICMP flood or amplification attacks and information leakage via broadcast echo

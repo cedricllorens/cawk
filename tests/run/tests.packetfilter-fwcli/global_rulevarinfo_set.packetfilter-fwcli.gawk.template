@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_rulevarinfo_set.packetfilter-fwcli
+# @test_name : global_rulevarinfo_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : provide rule <var> information
 # @description : variable information checks provide visibility into macro/variable usage and help identify undefined or unused references

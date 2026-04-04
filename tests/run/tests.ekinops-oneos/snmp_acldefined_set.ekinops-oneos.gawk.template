@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_acldefined_set.ekinops-oneos
+# @test_name : snmp_acldefined_set.ekinops-oneos.gawk
 # @supplier : ekinops-oneos
 # @purpose : check if <snmp acl defined> is set
 # @description : snmp without acl restriction may allow unauthorized snmp access from any host

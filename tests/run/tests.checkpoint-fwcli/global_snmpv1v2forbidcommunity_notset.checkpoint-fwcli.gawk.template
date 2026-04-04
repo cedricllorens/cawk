@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_snmpv1v2forbidcommunity_notset.checkpoint-fwcli
+# @test_name : global_snmpv1v2forbidcommunity_notset.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <snmp v1v2 forbidden communities> are not set
 # @description : well-known or forbidden snmp community strings expose the device to unauthorized monitoring and potential information disclosure

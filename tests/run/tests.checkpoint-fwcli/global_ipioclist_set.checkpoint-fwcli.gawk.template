@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_ipioclist_set.checkpoint-fwcli
+# @test_name : global_ipioclist_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <ip_ioc_list> is set
 # @description : missing ioc ip addresses in access rules may allow known malicious sources to communicate with the device

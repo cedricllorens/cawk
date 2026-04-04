@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_sourcerouting_notset.fortinet-fortios
+# @test_name : global_sourcerouting_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <source-routing> is not set
 # @description : ip source-route can be used to trigger attacks or can be used for unusual routing paths

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_anyany_notset.paloalto-panos
+# @test_name : fw_anyany_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if firewall does not implement <src=all dst=all service=any action=allow>
 # @description : any-any allow rules permit all traffic between all sources and destinations, completely bypassing firewall controls

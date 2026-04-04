@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_lldp_notset.paloalto-panos
+# @test_name : global_lldp_notset.paloalto-panos.gawk
 # @supplier : paloalto-panos
 # @purpose : check if <lldp> is not set (global)
 # @description : lldp enabled globally discloses network topology information to adjacent devices and may be exploited

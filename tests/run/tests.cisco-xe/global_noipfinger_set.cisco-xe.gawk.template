@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_noipfinger_set.cisco-xe
+# @test_name : global_noipfinger_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <no ip finger> is set and <ip finger> is not set
 # @description : ip finger can be used to gain unauthorized access to the device or reveal sensitive information

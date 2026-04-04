@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_enablestatus_set.fortinet
+# @test_name : ntp_enablestatus_set.fortinet.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <ntp enable status> is set
 # @description : missing ntp enable status configuration can lead to time synchronization issues affecting log correlation and security auditing

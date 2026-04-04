@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_defaultpolicy_set.iptables-fwcli
+# @test_name : global_defaultpolicy_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check that <-P default policy> is set
 # @description : missing default policy means traffic not matched by explicit rules may be allowed by default instead of denied

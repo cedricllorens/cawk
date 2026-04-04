@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_config_set.fortinet
+# @test_name : aaa_config_set.fortinet.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <aaa config> is set
 # @description : partial aaa configuration setup could endanger device security (authentication, authorization, and accounting must be configured)

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v1v2rw_notset.fortinet-fortios
+# @test_name : snmp_v1v2rw_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <snmp v1v2 rw> is not set
 # @description : snmp v1/v2c read-write community string allows unauthorized configuration changes to the device

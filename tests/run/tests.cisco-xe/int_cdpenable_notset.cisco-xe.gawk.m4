@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_cdpenable_notset.cisco-xe
+# @test_name : int_cdpenable_notset.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if an interface has no <cdp enable>
 # @description : cdp may disclose sensitive information or trigger vulnerabilities

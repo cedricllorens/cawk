@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_ipunreachables_notset.cisco-ios
+# @test_name : int_ipunreachables_notset.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if an interface has no <ip unreachables>
 # @description : ip unreachables may trigger attacks

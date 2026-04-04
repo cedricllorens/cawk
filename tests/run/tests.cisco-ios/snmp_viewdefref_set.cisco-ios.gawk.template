@@ -7,7 +7,7 @@
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# @test_name : snmp_viewdefref_set.cisco-ios
+# @test_name : snmp_viewdefref_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <snmp view> definitions are referenced and references are defined
 # @description : snmp views defined but not referenced in groups (or vice versa) indicate configuration inconsistencies

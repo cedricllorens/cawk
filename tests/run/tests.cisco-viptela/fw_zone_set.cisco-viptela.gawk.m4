@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_zone_set.cisco-viptela
+# @test_name : fw_zone_set.cisco-viptela.gawk
 # @supplier : cisco-viptela
 # @purpose : check if a <fw zone> is set
 # @description : missing firewall zone security configuration may allow unrestricted traffic between network zones

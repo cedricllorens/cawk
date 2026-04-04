@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : firewall_enable_set.juniper-junos
+# @test_name : firewall_enable_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <firewall> is set
 # @description : missing firewall configuration means no packet filtering is applied and the device is exposed to unrestricted traffic

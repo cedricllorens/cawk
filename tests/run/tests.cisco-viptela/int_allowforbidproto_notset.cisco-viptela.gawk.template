@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_allowforbidproto_notset.cisco-viptela
+# @test_name : int_allowforbidproto_notset.cisco-viptela.gawk
 # @supplier : cisco-viptela
 # @purpose : check if <allow-service forbidden protocols> are not set on tunnel interfaces
 # @description : enabling forbidden protocols on tunnel interfaces expands the attack surface and could expose the device to security risks

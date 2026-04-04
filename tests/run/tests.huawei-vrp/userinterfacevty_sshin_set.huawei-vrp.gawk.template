@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : userinterfacevty_sshin_set.huawei-vrp
+# @test_name : userinterfacevty_sshin_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check if each user-interface vty has <ssh inbound>
 # @description : vty lines without ssh inbound protocol restriction may allow insecure protocols such as telnet for inbound connections

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_http_notset.cisco-xe
+# @test_name : global_http_notset.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <http statement> is not set
 # @description : http statement can be used to gain privileged access to the device

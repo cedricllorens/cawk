@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : lldp_system_notset.nokia-sros
+# @test_name : lldp_system_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <lldp> at system is not set
 # @description : lldp enabled at the system level discloses network topology information to adjacent devices and may be exploited

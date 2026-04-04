@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v1v2forbidcommunity_notset.cisco-cedge
+# @test_name : snmp_v1v2forbidcommunity_notset.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if <snmp v1v2 forbidden communities> are not set
 # @description : default or trivial snmp community strings (public, private) can be easily guessed and allow unauthorized device access

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_authorization_set.nokia-sros
+# @test_name : aaa_authorization_set.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <aaa authorization> is set
 # @description : missing aaa authorization means privilege levels and command access are not centrally controlled

@@ -9,7 +9,7 @@
 #
 # purpose : check if <no cdp run> is set and <cdp run> is not set
 # author  : cedric llorens
-# @test_name : global_nocdprun_set.cisco-ios
+# @test_name : global_nocdprun_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <no cdp run> is set and <cdp run> is not set
 # @description : cdp can be used to gain unauthorized access to the device or reveal sensitive information

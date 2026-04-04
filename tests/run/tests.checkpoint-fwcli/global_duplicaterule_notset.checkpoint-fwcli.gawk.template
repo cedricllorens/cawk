@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_duplicaterule_notset.checkpoint-fwcli
+# @test_name : global_duplicaterule_notset.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <duplicate rules> are not set
 # @description : duplicate firewall rules indicate policy inconsistencies, increase rule base complexity, and may hide unintended access permissions

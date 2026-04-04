@@ -7,7 +7,7 @@
 # for %SED_VAR% changes like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_statefulrules_set.checkpoint-fwcli
+# @test_name : global_statefulrules_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <config stateful rules> is set
 # @description : missing stateful inspection rules for established/related and invalid connection states may allow unauthorized traffic and connection hijacking attacks

@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_config_set.cisco-xe
+# @test_name : aaa_config_set.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if <aaa config> is set
 # @description : partial aaa configuration setup could endanger device security (authentication, authorization, and accounting must be configured)

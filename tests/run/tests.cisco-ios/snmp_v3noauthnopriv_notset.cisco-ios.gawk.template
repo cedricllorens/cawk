@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v3noauthnopriv_notset.cisco-ios
+# @test_name : snmp_v3noauthnopriv_notset.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <snmp v3 group noauth> is not set
 # @description : snmp v3 group configured with noauth uses noauthnopriv security level, meaning no authentication and no encryption, equivalent to snmp v1/v2 security

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : linevty_aclin_set.cisco-ios
+# @test_name : linevty_aclin_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if a line vty has <access-class xx in>
 # @description : line vty without inbound ACL can allow unauthorized remote management access from any source

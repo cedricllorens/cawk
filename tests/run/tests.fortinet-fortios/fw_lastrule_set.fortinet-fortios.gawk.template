@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_lastrule_set.fortinet-fortios
+# @test_name : fw_lastrule_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <firewall last rule> implements src=all dst=all service=all action=deny
 # @description : missing implicit deny-all as last firewall rule may allow unmatched traffic to pass through

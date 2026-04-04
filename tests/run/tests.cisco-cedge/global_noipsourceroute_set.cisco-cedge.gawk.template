@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_noipsourceroute_set.cisco-cedge
+# @test_name : global_noipsourceroute_set.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if <no ip source-route> is set and <ip source-route> is not set
 # @description : ip source-route can be used to trigger attacks or can be used for unusual routing paths

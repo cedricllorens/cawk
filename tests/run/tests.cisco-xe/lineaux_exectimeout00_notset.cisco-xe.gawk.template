@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : lineaux_exectimeout00_notset.cisco-xe
+# @test_name : lineaux_exectimeout00_notset.cisco-xe.gawk
 # @supplier : cisco-xe
 # @purpose : check if a line aux has no <exec-timeout 0 0>
 # @description : exec-timeout 0 0 disables session timeout and can leave an unattended session active indefinitely

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_snmpcustforbidcommunity_notset.6wind-linux
+# @test_name : global_snmpcustforbidcommunity_notset.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <vrf main><snmp> custom block is compliant (trusted communities, authorization, destination)
 # @description : non-compliant SNMP custom community configuration (forbidden communities, read-write access, or invalid destination) could expose the device to unauthorized access or information disclosure

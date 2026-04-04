@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_logging_set.cisco-cedge
+# @test_name : global_logging_set.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if <logging host> is set for centralized logging
 # @description : logging can be used to track system events and potential security incidents

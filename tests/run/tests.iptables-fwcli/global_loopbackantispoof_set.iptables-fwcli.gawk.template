@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_loopbackantispoof_set.iptables-fwcli
+# @test_name : global_loopbackantispoof_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check if <loopback 127/8 rules> are set on lo accept and drop packets
 # @description : missing loopback anti-spoofing rules allows packets with 127/8 source addresses arriving on non-loopback interfaces

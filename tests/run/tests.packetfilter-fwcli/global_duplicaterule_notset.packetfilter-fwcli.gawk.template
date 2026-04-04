@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_duplicaterule_notset.packetfilter-fwcli
+# @test_name : global_duplicaterule_notset.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check that <duplicate rules> are not set
 # @description : duplicate rules in packetfilter add unnecessary complexity and may indicate configuration drift or errors

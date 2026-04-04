@@ -4,7 +4,7 @@
 # cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# @test_name : acl_configconsistency_set.packetfilter-fwcli
+# @test_name : acl_configconsistency_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check that PacketFilter rules have inconsistent/redundant rules
 # @description : inconsistent or redundant packetfilter rules reduce security effectiveness and complicate policy management

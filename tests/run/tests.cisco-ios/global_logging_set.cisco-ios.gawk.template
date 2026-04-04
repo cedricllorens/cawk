@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_logging_set.cisco-ios
+# @test_name : global_logging_set.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if <logging host> is set for centralized logging
 # @description : logging can be used to track system events and potential security incidents

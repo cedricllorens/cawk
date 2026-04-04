@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : snmp_v1v2forbidcommunity_notset.nokia-sros
+# @test_name : snmp_v1v2forbidcommunity_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if <snmp v1v2 forbidden communities> are not set
 # @description : use of well-known or default snmp community strings such as public or private exposes the device to unauthorized access

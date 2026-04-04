@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ssh_setup_set.cisco-cedge
+# @test_name : ssh_setup_set.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if <ssh server> is set
 # @description : missing ssh server configuration means secure remote management is not available and the device may fall back to insecure protocols

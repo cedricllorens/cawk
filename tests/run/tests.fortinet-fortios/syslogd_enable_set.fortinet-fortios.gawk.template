@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : syslogd_enable_set.fortinet-fortios
+# @test_name : syslogd_enable_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <syslogd> is set
 # @description : logging can be used to track system events and potential security incidents

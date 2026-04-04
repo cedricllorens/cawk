@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : linevty_transportoutputssh_set.cisco-cedge
+# @test_name : linevty_transportoutputssh_set.cisco-cedge.gawk
 # @supplier : cisco-cedge
 # @purpose : check if a line vty has <transport output ssh>
 # @description : vty without restricting transport output to ssh or none allows insecure protocols for outbound connections

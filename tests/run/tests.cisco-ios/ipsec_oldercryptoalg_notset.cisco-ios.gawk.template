@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ipsec_oldercryptoalg_notset.cisco-ios
+# @test_name : ipsec_oldercryptoalg_notset.cisco-ios.gawk
 # @supplier : cisco-ios
 # @purpose : check if older crypto algorithms are not set
 # @description : older crypto algorithms (md5, 3des, sha1, rc4, tlsv1) are weak and may expose IPsec tunnels to cryptographic attacks

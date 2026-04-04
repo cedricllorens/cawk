@@ -42,16 +42,16 @@ error_high_ratio    (scope error) = 71.9% (0-10%/excellent;10-30%/good;30-50%/av
 -------------------------------------
 ---- CIS benchmark key indicators----
 -------------------------------------
-cis_overall_compliance = 48.8%
-cis_pass = 478
-cis_fail = 427
+cis_overall_compliance = 47.7%
+cis_pass = 488
+cis_fail = 459
 cis_warning = 75
 
 ---- weakest CIS controls ----
 	1.3.4: 6.7% (5 pass, 2 fail, 68 warning)
-	1.3.5: 15.0% (3 pass, 17 fail, 0 warning)
+	1.3.1: 22.2% (14 pass, 49 fail, 0 warning)
+	1.3.5: 24.3% (9 pass, 28 fail, 0 warning)
 	3.2.2: 25.0% (2 pass, 6 fail, 0 warning)
-	1.3.1: 25.5% (12 pass, 35 fail, 0 warning)
 	3.2.1: 28.6% (8 pass, 20 fail, 0 warning)
 ---------------------
 ---- error stats ----
@@ -2255,10 +2255,10 @@ audit/test_name: repo/ipsec_oldercryptoalg_notset.huawei-vrp.gawk
 audit/test_name: repo/acl_defref_set.huawei-vrp.gawk
 	supplier            : huawei-vrp
 	purpose             : check when an <acl> is def and not ref / check when an <acl> is ref and not def
-	description         : acl defined but not referenced represents dead configuration
-	actions             :  acl referenced but not defined causes policy errors
-	CIS Benchmark Ref   : align acl definitions and references to ensure all acls are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.1 | ensure acl definitions are referenced | access control
+	description         : acl defined but not referenced represents dead configuration  acl referenced but not defined causes policy errors
+	actions             : align acl definitions and references to ensure all acls are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.1 | ensure acl definitions are referenced | access control
+	authors             : cedric llorens
 
 audit/test_name: repo/global_rcmd_notset.huawei-vrp.gawk
 	supplier            : huawei-vrp
@@ -2343,18 +2343,18 @@ audit/test_name: repo/int_lldp_notset.huawei-vrp.gawk
 audit/test_name: repo/routing_defref_set.huawei-vrp.gawk
 	supplier            : huawei-vrp
 	purpose             : check when an <routing> is def and not ref / check when an <routing> is ref and not def
-	description         : routing policy defined but not referenced represents dead configuration
-	actions             :  routing policy referenced but not defined causes forwarding errors
-	CIS Benchmark Ref   : align routing policy definitions and references to ensure consistency (please refer to engineering/operations guidelines for further information)
-	authors             : 4.1.1 | ensure routing protocols are secured | routing
+	description         : routing policy defined but not referenced represents dead configuration  routing policy referenced but not defined causes forwarding errors
+	actions             : align routing policy definitions and references to ensure consistency (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 4.1.1 | ensure routing protocols are secured | routing
+	authors             : cedric llorens
 
 audit/test_name: repo/snmpview_defref_set.huawei-vrp.gawk
 	supplier            : huawei-vrp
 	purpose             : check when a <snmp view> is def and not ref / check when a <snmp view> is ref and not def
-	description         : snmp view defined but not referenced represents dead configuration
-	actions             :  snmp view referenced but not defined causes access control errors
-	CIS Benchmark Ref   : align snmp view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.0.0 | review and classify | general security
+	description         : snmp view defined but not referenced represents dead configuration  snmp view referenced but not defined causes access control errors
+	actions             : align snmp view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.0.0 | review and classify | general security
+	authors             : cedric llorens
 
 audit/test_name: repo/userinterfacevty_aclout_set.huawei-vrp.gawk
 	supplier            : huawei-vrp
@@ -2370,10 +2370,10 @@ audit/test_name: repo/userinterfacevty_aclout_set.huawei-vrp.gawk
 audit/test_name: repo/global_chaindefref_set.iptables-fwcli.gawk
 	supplier            : iptables-fwcli
 	purpose             : check <-n chains> ref not def and def not ref
-	description         : custom chains defined but not referenced represent dead configuration
-	actions             :  chains referenced but not defined cause rule processing errors
-	CIS Benchmark Ref   : align chain definitions and references to ensure all custom chains are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.1 | ensure firewall chains are properly defined | firewall policy
+	description         : custom chains defined but not referenced represent dead configuration  chains referenced but not defined cause rule processing errors
+	actions             : align chain definitions and references to ensure all custom chains are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.1 | ensure firewall chains are properly defined | firewall policy
+	authors             : wael elsingaby
 
 audit/test_name: repo/global_rulelog_set.iptables-fwcli.gawk
 	supplier            : iptables-fwcli
@@ -2434,10 +2434,10 @@ audit/test_name: repo/global_ruleinfo_set.iptables-fwcli.gawk
 audit/test_name: repo/global_vardefref_set.iptables-fwcli.gawk
 	supplier            : iptables-fwcli
 	purpose             : check <vars> def not ref and ref not def
-	description         : variables defined but not referenced represent dead configuration
-	actions             :  variables referenced but not defined cause rule processing errors
-	CIS Benchmark Ref   : align variable definitions and references to ensure all vars are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.5 | ensure variables are properly defined | configuration management
+	description         : variables defined but not referenced represent dead configuration  variables referenced but not defined cause rule processing errors
+	actions             : align variable definitions and references to ensure all vars are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.5 | ensure variables are properly defined | configuration management
+	authors             : pierre bertrand
 
 audit/test_name: repo/global_oldercryptoalg_notset.iptables-fwcli.gawk
 	supplier            : iptables-fwcli
@@ -2565,10 +2565,10 @@ audit/test_name: repo/snmp_v1v2rw_notset.juniper-junos.gawk
 audit/test_name: repo/filter_defref_set.juniper-junos.gawk
 	supplier            : juniper-junos
 	purpose             : check when <filter> def and not ref / check when <filter> ref and not def
-	description         : filter defined but not referenced represents dead configuration
-	actions             :  filter referenced but not defined causes policy errors
-	CIS Benchmark Ref   : align filter definitions and references to ensure all filters are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.1 | ensure filter definitions are referenced | access control
+	description         : filter defined but not referenced represents dead configuration  filter referenced but not defined causes policy errors
+	actions             : align filter definitions and references to ensure all filters are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.1 | ensure filter definitions are referenced | access control
+	authors             : cedric llorens
 
 audit/test_name: repo/snmp_v3_set.juniper-junos.gawk
 	supplier            : juniper-junos
@@ -2907,10 +2907,10 @@ audit/test_name: repo/global_rulevarinfo_set.packetfilter-fwcli.gawk
 audit/test_name: repo/global_vardefref_set.packetfilter-fwcli.gawk
 	supplier            : packetfilter-fwcli
 	purpose             : check <vars> def not ref and ref not def
-	description         : variables defined but not referenced represent dead configuration
-	actions             :  variables referenced but not defined cause rule processing errors
-	CIS Benchmark Ref   : align variable definitions and references to ensure all vars are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.5 | ensure variables are properly defined | configuration management
+	description         : variables defined but not referenced represent dead configuration  variables referenced but not defined cause rule processing errors
+	actions             : align variable definitions and references to ensure all vars are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.5 | ensure variables are properly defined | configuration management
+	authors             : pierre bertrand
 
 audit/test_name: repo/global_duplicaterule_notset.packetfilter-fwcli.gawk
 	supplier            : packetfilter-fwcli
@@ -2931,10 +2931,10 @@ audit/test_name: repo/acl_configconsistency_set.packetfilter-fwcli.gawk
 audit/test_name: repo/global_tabledefref_set.packetfilter-fwcli.gawk
 	supplier            : packetfilter-fwcli
 	purpose             : check <tables> def not ref and ref not def
-	description         : tables defined but not referenced represent dead configuration
-	actions             :  tables referenced but not defined cause rule processing errors
-	CIS Benchmark Ref   : align table definitions and references to ensure all tables are used and all references are valid (please refer to engineering/operations guidelines for further information)
-	authors             : 1.3.5 | ensure variables are properly defined | configuration management
+	description         : tables defined but not referenced represent dead configuration  tables referenced but not defined cause rule processing errors
+	actions             : align table definitions and references to ensure all tables are used and all references are valid (please refer to engineering/operations guidelines for further information)
+	CIS Benchmark Ref   : 1.3.5 | ensure variables are properly defined | configuration management
+	authors             : pierre bertrand
 
 audit/test_name: repo/global_forbidbeforerule_notset.packetfilter-fwcli.gawk
 	supplier            : packetfilter-fwcli

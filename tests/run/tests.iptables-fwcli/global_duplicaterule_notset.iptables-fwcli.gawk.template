@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_duplicaterule_notset.iptables-fwcli
+# @test_name : global_duplicaterule_notset.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check that <duplicate rules> are not set
 # @description : duplicate rules in iptables add unnecessary complexity and may indicate configuration drift or errors

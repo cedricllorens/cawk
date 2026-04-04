@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : int_icmpunreachable_notset.nokia-sros
+# @test_name : int_icmpunreachable_notset.nokia-sros.gawk
 # @supplier : nokia-sros
 # @purpose : check if an interface has no <ip icmp-unreachable>
 # @description : icmp unreachables enabled on interfaces may reveal network topology information to potential attackers

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_ntpcompliant_set.6wind-linux
+# @test_name : global_ntpcompliant_set.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <vrf main><ntp> block is compliant (time-sources, enabled true)
 # @description : non-compliant NTP configuration could affect time synchronization and undermine log integrity and audit trail reliability

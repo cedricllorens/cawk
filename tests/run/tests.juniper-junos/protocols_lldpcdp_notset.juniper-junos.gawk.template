@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : protocols_lldpcdp_notset.juniper-junos
+# @test_name : protocols_lldpcdp_notset.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <lldp|cdp> is not set
 # @description : lldp or cdp enabled globally discloses network topology information to adjacent devices and may be exploited

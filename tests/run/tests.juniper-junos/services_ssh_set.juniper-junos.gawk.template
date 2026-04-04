@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : services_ssh_set.juniper-junos
+# @test_name : services_ssh_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <services block> has set ssh protocol
 # @description : missing ssh in the services block means secure remote management is not configured

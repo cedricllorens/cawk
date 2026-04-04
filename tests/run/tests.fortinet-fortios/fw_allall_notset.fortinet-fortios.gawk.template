@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : fw_allall_notset.fortinet-fortios
+# @test_name : fw_allall_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if a <firewall rule> implements src=all dst=all service=all action=accept
 # @description : a firewall rule accepting all sources, destinations and services creates a security bypass and exposes the device to attacks

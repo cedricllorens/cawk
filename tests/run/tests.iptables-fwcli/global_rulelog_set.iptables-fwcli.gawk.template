@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_rulelog_set.iptables-fwcli
+# @test_name : global_rulelog_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check that <rule log> is set globally
 # @description : missing logging on firewall rules prevents tracking of allowed and denied traffic for security monitoring

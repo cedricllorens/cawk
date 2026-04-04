@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : system_networkstackipcompliant_set.6wind-linux
+# @test_name : system_networkstackipcompliant_set.6wind-linux.gawk
 # @supplier : 6wind-linux
 # @purpose : check if <system><network-stack><ipv4/ipv6> block is compliant (accept-redirects, accept-source-route, accept-router-advert, arp-proxy)
 # @description : non-compliant IP network stack settings could expose the device to IP-based attacks such as ICMP redirects, source routing abuse, rogue router advertisements, or ARP proxy spoofing

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : global_lastruledrop_set.checkpoint-fwcli
+# @test_name : global_lastruledrop_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check <last drop rule> is set
 # @description : a missing implicit deny-all last rule may allow unintended traffic to pass through the firewall policy

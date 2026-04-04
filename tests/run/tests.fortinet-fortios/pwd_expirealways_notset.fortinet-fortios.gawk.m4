@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : pwd_expirealways_notset.fortinet-fortios
+# @test_name : pwd_expirealways_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <password-expire = always> is not set
 # @description : password set to never expire weakens the security posture by allowing indefinitely valid credentials

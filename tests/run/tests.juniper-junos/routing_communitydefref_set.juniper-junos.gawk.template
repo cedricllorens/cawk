@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : routing_communitydefref_set.juniper-junos
+# @test_name : routing_communitydefref_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : Check when routing community definitions are referenced and vice versa
 # @description : Validates that all routing community definitions have corresponding references and all references have definitions (pelase refer to engineering/operations guidelines for further information)

@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : root_authentication_set.juniper-junos
+# @test_name : root_authentication_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check if <root-authentication> is set
 # @description : missing root-authentication means the root account has no password, allowing unrestricted console access without any credential check
