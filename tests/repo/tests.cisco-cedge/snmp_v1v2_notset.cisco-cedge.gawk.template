@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v1v2> is set
-# author  : cedric llorens
+# @test_name : snmp_v1v2_notset.cisco-cedge.gawk
+# @supplier : cisco-cedge
+# @purpose : check if <snmp v1v2> is not set
+# @description : snmp v1 and v2c use clear-text community strings and lack strong authentication and encryption
+# @actions : disable snmp v1/v2c community strings and migrate to snmp v3 (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.1 | Ensure SNMPv3 is used | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

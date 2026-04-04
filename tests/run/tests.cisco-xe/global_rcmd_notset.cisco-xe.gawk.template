@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a <rcmd statement> is not set
-# author  : cedric llorens
+# @test_name : global_rcmd_notset.cisco-xe
+# @supplier : cisco-xe
+# @purpose : check if <rcmd> is not set
+# @description : rcmd can be used to gain unauthorized access to the device
+# @actions : set <no rcmd> or remove <rcmd> (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.5 | Ensure RCMD is disabled | Network Protocols
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

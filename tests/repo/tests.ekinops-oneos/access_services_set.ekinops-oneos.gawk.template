@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <telnet, ssh, http et ftp/tftp> are configured properly
-# author  : julien lair
+# @test_name : access_services_set.ekinops-oneos.gawk
+# @supplier : ekinops-oneos
+# @purpose : check if <telnet, ssh, http and ftp/tftp> are configured properly
+# @description : improperly configured access services may expose insecure protocols or allow unauthorized remote access
+# @actions : disable insecure services (telnet, http, ftp/tftp) and enforce ssh only (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.1 | Ensure only necessary services are accessible | Services
+# @authors : julien lair
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -17,12 +22,12 @@ BEGIN {
 }
 
 BEGINFILE {
-    telnet = 0
-    sshEnable = 0
-    sshTimeout = 0
-    httpServer = 0
-    ftp = 0
-    tftp = 0
+    telnet = 0;
+    sshEnable = 0;
+    sshTimeout = 0;
+    httpServer = 0;
+    ftp = 0;
+    tftp = 0;
 }
 
 # ----

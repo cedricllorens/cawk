@@ -1,16 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check when a <snmp view> is def and not ref
-# purpose : check when a <snmp view> is ref and not def
-# author  : cedric llorens
+# @test_name : snmpview_defref_set.huawei-vrp
+# @supplier : huawei-vrp
+# @purpose : check when a <snmp view> is def and not ref / check when a <snmp view> is ref and not def
+# @description : snmp view defined but not referenced represents dead configuration; snmp view referenced but not defined causes access control errors
+# @actions : align snmp view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.0.0 | Review and classify | General Security
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

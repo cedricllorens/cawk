@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v1v2 rw> is not set
-# author  : cedric llorens
+# @test_name : snmp_v1v2rw_notset.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <snmp v1v2 rw> is not set
+# @description : snmp v1v2 read-write community strings allow configuration changes via an insecure protocol
+# @actions : disable snmp v1v2 read-write access and use snmp v3 with appropriate privileges (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.2 | Ensure SNMPv3 with authentication | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

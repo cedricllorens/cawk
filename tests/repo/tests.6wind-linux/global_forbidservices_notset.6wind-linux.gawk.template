@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# gawk is subject to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check <vrf main><services> vlock (trusted services)
-# author  : cedric llorens
+# @test_name : global_forbidservices_notset.6wind-linux.gawk
+# @supplier : 6wind-linux
+# @purpose : check if <vrf main> block only contains trusted services
+# @description : unauthorized or unexpected services running in vrf main expand the attack surface and could expose the device to security risks
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.1 | Ensure unnecessary services are disabled | Services
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

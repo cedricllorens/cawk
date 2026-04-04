@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <lldp> is not set (global)
-# author  : cedric llorens
+# @test_name : global_lldp_notset.paloalto-panos.gawk
+# @supplier : paloalto-panos
+# @purpose : check if <lldp> is not set (global)
+# @description : lldp enabled globally discloses network topology information to adjacent devices and may be exploited
+# @actions : disable lldp globally if not required for network operations (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.1 | Ensure LLDP is disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

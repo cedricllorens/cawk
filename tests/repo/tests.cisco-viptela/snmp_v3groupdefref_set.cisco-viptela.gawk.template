@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : check when a <snmp v3 group> is def and not ref
-# purpose : check when a <snmp v3 group> is ref and not def
-# author  : cedric llorens
+# @test_name : snmp_v3groupdefref_set.cisco-viptela.gawk
+# @supplier : cisco-viptela
+# @purpose : check if <snmp v3 group> definitions are referenced and references are defined
+# @description : snmp v3 groups defined but not referenced (or vice versa) indicate configuration inconsistencies
+# @actions : ensure all snmp v3 group definitions are used and all group references have a matching group definition (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.5 | Ensure SNMPv3 group references | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <aaa config> is set
-# author  : cedric llorens
+# @test_name : aaa_config_set.huawei-vrp
+# @supplier : huawei-vrp
+# @purpose : check if <aaa config> is set
+# @description : missing aaa configuration means authentication, authorization, and accounting are not properly enforced
+# @actions : configure aaa with proper authentication and authorization settings (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.1 | Ensure AAA is configured | System Administration
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

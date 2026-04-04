@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ssh version v1> is not set
-# author  : cedric llorens
+# @test_name : ssh_versionv1_notset.paloalto-panos
+# @supplier : paloalto-panos
+# @purpose : check if <ssh version v1> is not set
+# @description : ssh version 1 is cryptographically weak and should not be enabled on any device
+# @actions : disable ssh version 1 and enforce ssh version 2 only (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.5.2 | Ensure SSH version 2 is used | SSH
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

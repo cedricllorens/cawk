@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if a line aux has <no exec>
-# author  : cedric llorens
+# @test_name : lineaux_noexec_set.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if a line aux has <no exec>
+# @description : line aux without <no exec> can allow unauthorized console-like access if the aux port is connected
+# @actions : set <no exec> on line aux to prevent exec sessions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.3 | Ensure no exec on auxiliary lines | Console and Line Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

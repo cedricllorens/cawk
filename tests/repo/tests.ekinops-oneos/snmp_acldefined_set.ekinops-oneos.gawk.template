@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp acl defined> is set
-# author  : julien lair
+# @test_name : snmp_acldefined_set.ekinops-oneos.gawk
+# @supplier : ekinops-oneos
+# @purpose : check if <snmp acl defined> is set
+# @description : snmp without acl restriction may allow unauthorized snmp access from any host
+# @actions : define and apply an ACL to restrict snmp access to authorized hosts only (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.1 | Ensure SNMP has access controls | SNMP
+# @authors : julien lair
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

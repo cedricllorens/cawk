@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-#
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <no ip source-route> is set and <ip source-route> is not set
-# author  : cedric llorens
+# @test_name : global_noipsourceroute_set.cisco-ios
+# @supplier : cisco-ios
+# @purpose : check if <no ip source-route> is set and <ip source-route> is not set
+# @description : ip source-route can be used to trigger attacks or can be used for unusual routing paths
+# @actions : set <no ip source-route> or remove <ip source-route> (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.1 | Ensure IP source-route is disabled | Network Protocols
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

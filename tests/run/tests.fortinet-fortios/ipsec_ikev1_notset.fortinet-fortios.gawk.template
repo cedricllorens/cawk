@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ikev1> is set
-# author  : cedric llorens
+# @test_name : ipsec_ikev1_notset.fortinet-fortios
+# @supplier : fortinet-fortios
+# @purpose : check if <ikev1> is not set
+# @description : ikev1 has known cryptographic weaknesses and should not be used for ipsec tunnels
+# @actions : migrate ipsec tunnels to ikev2 (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.7.2 | Ensure IKEv2 is used | Cryptography
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

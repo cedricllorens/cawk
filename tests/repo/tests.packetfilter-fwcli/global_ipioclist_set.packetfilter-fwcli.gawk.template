@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check that <ip_ioc_list> is set
-# author  : wael elsingaby
+# @test_name : global_ipioclist_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <ip_ioc_list> is set
+# @description : missing ip ioc list means known malicious ip indicators of compromise are not blocked at the firewall level
+# @actions : configure ip_ioc_list with current threat intelligence feeds to block known malicious addresses (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.1.1 | Ensure IOC lists are configured | Threat Prevention
+# @authors : wael elsingaby
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

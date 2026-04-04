@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-#
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ntp server ip> is set
-# author  : cedric llorens
+# @test_name : ntp_ip_set.cisco-viptela
+# @supplier : cisco-viptela
+# @purpose : check if <ntp server> is set
+# @description : missing ntp server configuration can lead to time synchronization issues affecting log correlation and security auditing
+# @actions : set <ntp server> with a trusted ntp source (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.2.1 | Ensure NTP is configured | Logging and Timestamping
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

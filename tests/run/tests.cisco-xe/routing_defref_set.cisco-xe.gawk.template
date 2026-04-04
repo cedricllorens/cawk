@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : check when a <routing> is def and not ref
-# purpose : check when a <routing> is ref and not def
-# author  : cedric llorens
+# @test_name : routing_defref_set.cisco-xe
+# @supplier : cisco-xe
+# @purpose : check if <routing> definitions are referenced and references are defined
+# @description : route-maps or prefix-lists defined but not referenced (or vice versa) indicate dead configuration and potential routing inconsistencies
+# @actions : remove unused route-maps and prefix-lists or fix missing references (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 4.1.1 | Ensure routing protocols are secured | Routing
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -62,7 +66,7 @@ BEGINFILE {
 }
 
 /^ match ip address prefix-list [^ ]+/ && !/^[ ]*(#|remark[ ]|description[ ])/ {
-	acl_ref[$5] = $0;
+	routing_ref[$5] = $0;
 	next;
 }
 

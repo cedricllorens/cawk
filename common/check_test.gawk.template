@@ -1,11 +1,44 @@
 #%SED_GAWK_PATH%
 
-# This script checks that a cawk test code is compliant with 
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# This script checks that a cawk test code is compliant with
 # internal coding rules
 #  in case of error, start print message with cawk test error: and to end with NOK
 #  in case of success, start print message with cawk test pass : and to end with OK
+# ------------------------------------------------------------
 
-BEGIN {
+# FIX 1: removed dead code (delete function_defs / function_calls that were never used)
+
+# FIX 4: count arguments in a function call handling nested parentheses
+function count_func_args(line, open_paren_pos,    depth, i, char, count, len, content) {
+    depth = 1
+    count = 0
+    content = ""
+    len = length(line)
+    for (i = open_paren_pos + 1; i <= len; i++) {
+        char = substr(line, i, 1)
+        if (char == "(") {
+            depth++
+            content = content char
+        } else if (char == ")") {
+            depth--
+            if (depth == 0) break
+            content = content char
+        } else if (char == "," && depth == 1) {
+            count++
+            content = content char
+        } else {
+            content = content char
+        }
+    }
+    # if content between parens is empty or whitespace only, no arguments
+    if (content ~ /^[[:space:]]*$/) {
+        return 0
+    }
+    return count + 1
 }
 
 BEGINFILE {
@@ -14,6 +47,15 @@ BEGINFILE {
     filename = parts[n]
 
     error = 0
+
+    # tracking for Point 2, 4, 5
+    delete vars_initialized_in_beginfile
+    delete arrays_in_beginfile
+    delete arrays_deleted_in_beginfile
+    delete func_defs_in_file
+    delete func_calls_in_file
+
+    in_beginfile_block = 0
 }
 
 {
@@ -21,13 +63,12 @@ BEGINFILE {
     if ($0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*#/) {
         next
     }
-}
 
-{
+    # ========== MAIN VALIDATION RULES ==========
+
     # detect the first argument of print_err("xxx", ...), it must match filename
     if (match($0, /print_err\("([^"]+)"/, m)) {
         arg = m[1]
-
         if (filename != arg) {
             print "cawk test error: file=" filename " print_err=" arg " (in "FILENAME" line "FNR") NOK"
             error = 1
@@ -39,9 +80,106 @@ BEGINFILE {
         print "cawk test error: debug trace has been found "$0" (in "FILENAME" line "FNR") NOK"
         error = 1
     }
+
+    # detect comparison instead of assignation (== instead of =)
+    # pattern: word == digit; (standalone statement)
+    if (match($0, /^\s*(\w+)\s*==\s*[0-9];\s*$/, m)) {
+        print "cawk test error: comparison instead of assignation: "$0" (in "FILENAME" line "FNR") NOK"
+        error = 1
+    }
+
+    # detect typos in variable names (eexception_*, ppass_*, etc.)
+    if (match($0, /(eexception|ppass|eextra|aarray|bblock|pprint|nnext|ddelete)/, m)) {
+        print "cawk test error: typo in variable name: "$0" (in "FILENAME" line "FNR") NOK"
+        error = 1
+    }
+
+    # detect regex pattern without block (pattern { missing)
+    # pattern: /^regex$/ && /^regex$/ without following {
+    if (match($0, /\/\^[^\/]+\/\$\s*&&\s*\/\^[^\/]+\/\$\s*[^{]*$/, m)) {
+        print "cawk test error: regex pattern without block { : "$0" (in "FILENAME" line "FNR") NOK"
+        error = 1
+    }
+
+    # Point 2: detect variables used without initialization in BEGINFILE
+    if (match($0, /\b(pass|block_\w+)\b/, m)) {
+        var_used = m[1]
+        if (!(var_used in vars_initialized_in_beginfile)) {
+            print "cawk test warning: variable '"var_used"' may be used without initialization in BEGINFILE (in "FILENAME" line "FNR")"
+        }
+    }
+
+    # Point 5: track function definitions
+    if (match($0, /^[[:space:]]*function\s+([a-zA-Z_]\w*)\s*\(/, m)) {
+        func_name = m[1]
+        paren_pos = RSTART + RLENGTH - 1
+        func_defs_in_file[func_name] = count_func_args($0, paren_pos)
+    }
+
+    # Point 5: track function calls (FIX 4: use count_func_args for nested parens)
+    if (match($0, /([a-zA-Z_]\w*)\s*\(/, m)) {
+        func_name = m[1]
+        paren_pos = RSTART + RLENGTH - 1
+
+        # skip built-in functions
+        if (func_name !~ /^(print|printf|sprintf|length|substr|index|split|sub|gsub|match|tolower|toupper|sin|cos|atan2|exp|log|sqrt|int|rand|srand|asort|asorti|close|system|print_err|nextfile|exit|strtonum|delete|getline)$/) {
+            arg_count = count_func_args($0, paren_pos)
+            call_sig = func_name ":" arg_count
+            if (call_sig in func_calls_in_file) {
+                func_calls_in_file[call_sig]++
+            } else {
+                func_calls_in_file[call_sig] = 1
+            }
+        }
+    }
 }
 
 ENDFILE {
+    # Point 4: check if arrays used in BEGINFILE are properly deleted
+    for (array_name in arrays_in_beginfile) {
+        # skip known internal arrays
+        if (array_name ~ /^(parts|args_array|sig_parts|other_parts)$/) {
+            continue
+        }
+        if (!(array_name in arrays_deleted_in_beginfile)) {
+            print "cawk test error: array '"array_name"' is used in BEGINFILE but not deleted (in "FILENAME") NOK"
+            error = 1
+        }
+    }
+
+    # Point 5: check for function definition/call mismatches
+    for (call_sig in func_calls_in_file) {
+        split(call_sig, sig_parts, ":")
+        func_name = sig_parts[1]
+        call_arg_count = sig_parts[2]
+
+        if (func_name in func_defs_in_file) {
+            def_arg_count = func_defs_in_file[func_name]
+            if (def_arg_count != call_arg_count) {
+                print "cawk test error: function '"func_name"' defined with "def_arg_count" args but called with "call_arg_count" args (in "FILENAME") NOK"
+                error = 1
+            }
+        }
+    }
+
+    # Point 5: check for inconsistent calls of the same function
+    for (call_sig in func_calls_in_file) {
+        split(call_sig, sig_parts, ":")
+        func_name = sig_parts[1]
+        call_arg_count = sig_parts[2]
+
+        found_mismatch = 0
+        for (other_call in func_calls_in_file) {
+            split(other_call, other_parts, ":")
+            if (other_parts[1] == func_name && other_parts[2] != call_arg_count && !found_mismatch) {
+                print "cawk test error: function '"func_name"' called with different argument counts ("call_arg_count" and "other_parts[2]") (in "FILENAME") NOK"
+                error = 1
+                found_mismatch = 1
+                break
+            }
+        }
+    }
+
     if (error == 0) {
         print "cawk test pass : "FILENAME" OK"
     }

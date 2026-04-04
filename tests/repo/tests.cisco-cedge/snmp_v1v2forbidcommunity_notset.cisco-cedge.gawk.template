@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : checks if <snmp v1v2> forbidden communities are set
-# author  : cedric llorens
+# @test_name : snmp_v1v2forbidcommunity_notset.cisco-cedge.gawk
+# @supplier : cisco-cedge
+# @purpose : check if <snmp v1v2 forbidden communities> are not set
+# @description : default or trivial snmp community strings (public, private) can be easily guessed and allow unauthorized device access
+# @actions : remove forbidden community strings and replace with non-trivial values or migrate to snmp v3 (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.3 | Ensure SNMPv1/v2 communities are restricted | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

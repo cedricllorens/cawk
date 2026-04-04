@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip proxy-arp>
-# author  : cedric llorens
+# @test_name : int_proxyarp_notset.nokia-sros
+# @supplier : nokia-sros
+# @purpose : check if an interface has no <ip proxy-arp>
+# @description : ip proxy-arp enabled on interfaces can lead to arp spoofing and man-in-the-middle attacks
+# @actions : disable ip proxy-arp on all interfaces where it is not explicitly required (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.3.2 | Ensure proxy-arp is disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

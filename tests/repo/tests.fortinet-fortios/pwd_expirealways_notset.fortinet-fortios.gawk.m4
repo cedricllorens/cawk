@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <password-expire = always> is not set
-# author  : cedric llorens
+# @test_name : pwd_expirealways_notset.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check if <password-expire = always> is not set
+# @description : password set to never expire weakens the security posture by allowing indefinitely valid credentials
+# @actions : configure password expiration policy (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.2.1 | Ensure password expiration is enforced | Authentication
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

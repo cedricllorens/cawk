@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to 
 # file support/tests.sed for further information
 #
-# purpose : check when a <snmp view> is def and not ref
-# purpose : check when a <snmp view> is ref and not def
-# author  : cedric llorens
+# @test_name : snmp_viewdefref_set.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if <snmp view> definitions are referenced and references are defined
+# @description : snmp views defined but not referenced in groups (or vice versa) indicate configuration inconsistencies
+# @actions : ensure all snmp view definitions are used in a group and all group view references have a matching view definition (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.8 | Ensure SNMPv3 view references | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <older crypto algorithm> is not set
-# author  : cedric llorens
+# @test_name : global_oldercryptoalg_notset.checkpoint-fwcli.gawk
+# @supplier : checkpoint-fwcli
+# @purpose : check if <older crypto algorithm> is not set
+# @description : older or deprecated cryptographic algorithms expose encrypted communications to known attacks and compromise data confidentiality
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.7.1 | Ensure strong encryption algorithms are used | Cryptography
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

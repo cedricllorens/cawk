@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a line aux has <access-class xx in>
-# author  : cedric llorens
+# @test_name : lineaux_aclin_set.cisco-xe
+# @supplier : cisco-xe
+# @purpose : check if a line aux has <access-class xx in>
+# @description : line aux without inbound ACL can allow unauthorized management access to the device
+# @actions : set <access-class xx in> on line aux (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.1 | Ensure auxiliary lines have ACLs | Console and Line Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

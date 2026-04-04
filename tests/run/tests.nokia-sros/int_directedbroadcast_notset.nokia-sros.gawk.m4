@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip directed-broadcast>
-# author  : cedric llorens
+# @test_name : int_directedbroadcast_notset.nokia-sros
+# @supplier : nokia-sros
+# @purpose : check if an interface has no <ip directed-broadcast>
+# @description : directed broadcast enabled on interfaces can be exploited for amplification attacks such as smurf
+# @actions : disable ip directed-broadcast on all interfaces (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.3.3 | Ensure directed broadcast is disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

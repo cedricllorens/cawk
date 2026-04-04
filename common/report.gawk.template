@@ -1,7 +1,7 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
@@ -24,12 +24,22 @@ BEGIN {
 	exception_error = 0;
 	exception_warning = 0;
 	exception_psirt = 0;
+	# CIS compliance counters
+	cis_total_pass = 0;
+	cis_total_fail = 0;
+	cis_total_warning = 0;
 }
 
 BEGINFILE {
 
-	if (FILENAME ~ /deadbeef/ && FILENAME ~ /\.csv/) {
+	if (FILENAME ~ /db_info/ && FILENAME ~ /\.txt/) {
+		db_info_file = 1;
+		deadbeef_file = 0;
+		assessment_file = 0;
+		exceptions_file = 0;
+	} else if (FILENAME ~ /deadbeef/ && FILENAME ~ /\.csv/) {
 		deadbeef_file = 1;
+		db_info_file = 0;
 		assessment_file = 0;
 		exceptions_file = 0;
 		deadbeef_pass = 0;
@@ -46,7 +56,46 @@ BEGINFILE {
 		exception_psirt = 0;
 	} else if (FILENAME ~ /assessment/ && FILENAME ~ /\.csv/) {
 		assessment_file = 1;
+		db_info_file = 0;
 		exceptions_file = 0;
+		# CIS compliance initialization
+		delete cis_pass;
+		delete cis_fail;
+		delete cis_warning;
+		delete cis_control;
+		delete cis_category;
+		cis_total_pass = 0;
+		cis_total_fail = 0;
+		cis_total_warning = 0;
+		# Load CIS mappings from db_info.txt if not already loaded
+		if (length(cis_map) == 0) {
+			first_line = 1
+			db_file_path = (DATABASE_CIS_INFO != "") ? DATABASE_CIS_INFO : "database/db_info.txt"
+			while ((getline line < db_file_path) > 0) {
+				if (first_line) {
+					first_line = 0
+					continue
+				}
+				split(line, fields, "|")
+				test_name_full = trim(fields[3])
+				cis_ref = trim(fields[7])
+				if (cis_ref && cis_ref != "" && cis_ref !~ /to be defined/ && cis_ref ~ /^[0-9]/) {
+					split(cis_ref, parts, "|")
+					cis_id = trim(parts[1])
+					control = trim(parts[2])
+					category = trim(parts[3])
+					cis_map[test_name_full] = cis_id
+					cis_control[cis_id] = control
+					cis_category[cis_id] = category
+					if (!(cis_id in cis_pass)) {
+						cis_pass[cis_id] = 0
+						cis_fail[cis_id] = 0
+						cis_warning[cis_id] = 0
+					}
+				}
+			}
+			close(db_file_path)
+		}
 		# -------------
 		pass = 0;
 		error = 0;
@@ -82,19 +131,55 @@ BEGINFILE {
 	}
 }
 
+# Parse db_info.txt to load CIS mappings
+db_info_file && FNR > 1 {
+	split($0, fields, "|")
+	test_name_full = trim(fields[3])
+	cis_ref = trim(fields[7])
+
+	if (cis_ref && cis_ref != "" && cis_ref !~ /to be defined/ && cis_ref ~ /^[0-9]/) {
+		split(cis_ref, parts, "|")
+		cis_id = trim(parts[1])
+		control = trim(parts[2])
+		category = trim(parts[3])
+
+		cis_map[test_name_full] = cis_id
+		cis_control[cis_id] = control
+		cis_category[cis_id] = category
+
+		if (!(cis_id in cis_pass)) {
+			cis_pass[cis_id] = 0
+			cis_fail[cis_id] = 0
+			cis_warning[cis_id] = 0
+		}
+	}
+}
+
+# Trim whitespace function
+function trim(str) {
+	gsub(/^[ \t]+|[ \t]+$/, "", str)
+	return str
+}
+
 # -------------------------------------
 
 /;error$/ {
 	split($0,tmp,";");
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
-	
+
 	if ( assessment_file ) {
 		if ( $0 ~ /;high/ ) tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1;
 		if ( $0 ~ /;medium/ ) tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1;
 		if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
 		if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
 		error += 1;
+		# CIS compliance count
+		if (tmp[2] in cis_map) {
+			cis_id = cis_map[tmp[2]];
+			cis_fail[cis_id]++;
+			cis_total_fail++;
+		}
 	}
 	if ( deadbeef_file ) deadbeef_error += 1;
 	if ( exceptions_file ) exception_error += 1;
@@ -105,7 +190,15 @@ BEGINFILE {
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
 
-	if ( assessment_file ) pass += 1;
+	if ( assessment_file ) {
+		pass += 1;
+		# CIS compliance count
+		if (tmp[2] in cis_map) {
+			cis_id = cis_map[tmp[2]];
+			cis_pass[cis_id]++;
+			cis_total_pass++;
+		}
+	}
 	if ( deadbeef_file ) deadbeef_pass += 1;
 	if ( exceptions_file ) exception_pass += 1;
 }
@@ -115,7 +208,15 @@ BEGINFILE {
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
 
-	if ( assessment_file ) warning += 1;
+	if ( assessment_file ) {
+		warning += 1;
+		# CIS compliance count
+		if (tmp[2] in cis_map) {
+			cis_id = cis_map[tmp[2]];
+			cis_warning[cis_id]++;
+			cis_total_warning++;
+		}
+	}
 	if ( deadbeef_file ) deadbeef_warning += 1;
 	if ( exceptions_file ) exception_warning += 1;
 }
@@ -125,7 +226,15 @@ BEGINFILE {
 	files[tmp[1]];
 	tests[tmp[2]] = tmp[2];
 
-	if ( assessment_file ) psirt += 1;
+	if ( assessment_file ) {
+		psirt += 1;
+		# CIS compliance count
+		if (tmp[2] in cis_map) {
+			cis_id = cis_map[tmp[2]];
+			cis_warning[cis_id]++;
+			cis_total_warning++;
+		}
+	}
 	if ( deadbeef_file ) deadbeef_psirt += 1;
 	if ( exceptions_file ) exception_psirt += 1;
 }
@@ -370,7 +479,7 @@ if ( assessment_file ) {
 		}
 	} else {
 		print "number_of_psirt = " psirt " (0.0%)";
-		if ( eexception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
+		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_psirt_exception = " exception_psirt " (" decimal "%)";
 		} else {
@@ -431,6 +540,48 @@ if ( assessment_file ) {
 		print "error_high_ratio    (scope error) = " key_error "% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
 	} else {
 		print "error_high_ratio    (scope error) = 0% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
+	}
+
+	print "-------------------------------------";
+	print "---- CIS benchmark key indicators----";
+	print "-------------------------------------";
+
+	cis_total = cis_total_pass + cis_total_fail + cis_total_warning;
+	if (cis_total > 0) {
+
+		cis_compliance = sprintf("%.1f", 100 * cis_total_pass / cis_total);
+		print "cis_overall_compliance = " cis_compliance "%";
+		print "cis_pass = " cis_total_pass;
+		print "cis_fail = " cis_total_fail;
+		print "cis_warning = " cis_total_warning;
+		print "";
+
+		# Aggregate by category
+		delete cat_pass;
+		delete cat_fail;
+		for (cis_id in cis_pass) {
+			cat = cis_category[cis_id];
+			cat_pass[cat] += cis_pass[cis_id];
+			cat_fail[cat] += cis_fail[cis_id];
+		}
+
+		# Print top 5 weakest controls
+		print "---- weakest CIS controls ----";
+		delete weak_controls;
+		for (cis_id in cis_pass) {
+			ctotal = cis_pass[cis_id] + cis_fail[cis_id] + cis_warning[cis_id];
+			if (ctotal > 0) {
+				comp = cis_pass[cis_id] / ctotal;
+				weak_controls[cis_id] = comp;
+			}
+		}
+		asorti(weak_controls, sorted_ids, "@val_num_asc");
+		for (i = 1; i <= 5 && i <= length(sorted_ids); i++) {
+			cis_id = sorted_ids[i];
+			ctotal = cis_pass[cis_id] + cis_fail[cis_id] + cis_warning[cis_id];
+			comp = sprintf("%.1f", 100 * weak_controls[cis_id]);
+			printf "\t%s: %s%% (%d pass, %d fail, %d warning)\n", cis_id, comp, cis_pass[cis_id], cis_fail[cis_id], cis_warning[cis_id];
+		}
 	}
 
 	# ------------------------------------------------------------------

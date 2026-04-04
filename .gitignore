@@ -1,0 +1,16 @@
+# Claude Code workspace
+.claude/
+
+# CLAUDE.md instructions (project-specific)
+CLAUDE.md
+
+# Generated files
+*.gawk
+*.o
+*.a
+
+# Temporary files
+*.swp
+*.swo
+*~
+.DS_Store

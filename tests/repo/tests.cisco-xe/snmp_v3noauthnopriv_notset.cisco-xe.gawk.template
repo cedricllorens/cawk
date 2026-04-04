@@ -1,0 +1,39 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : snmp_v3noauthnopriv_notset.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if <snmp v3 group noauth> is not set
+# @description : snmp v3 group configured with noauth uses noauthnopriv security level, meaning no authentication and no encryption, equivalent to snmp v1/v2 security
+# @risk_level : high
+# @actions : remove <snmp-server group> with noauth and reconfigure using priv security level to enforce authentication and encryption (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.7 | Ensure SNMPv3 has authentication | SNMP
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^snmp-server group \w+ v3 [Nn][Oo][Aa][Uu][Tt][Hh]/ {
+	print_err("snmp_v3noauthnopriv_notset.cisco-xe.gawk",$0,FNR,"high","error");
+	pass = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("snmp_v3noauthnopriv_notset.cisco-xe.gawk","no snmp v3 group with noauth is set",0,"high","pass");
+}
+
+END {
+}

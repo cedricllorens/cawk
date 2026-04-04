@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# gawk is subject to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check <vrf main><ntp> block (time-sources,enabled true)
-# author  : cedric llorens
+# @test_name : global_ntpcompliant_set.6wind-linux.gawk
+# @supplier : 6wind-linux
+# @purpose : check if <vrf main><ntp> block is compliant (time-sources, enabled true)
+# @description : non-compliant NTP configuration could affect time synchronization and undermine log integrity and audit trail reliability
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.1 | Ensure NTP is properly configured | Logging and Timestamping
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

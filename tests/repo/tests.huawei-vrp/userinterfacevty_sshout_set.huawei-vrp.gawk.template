@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if each user-interface vty has <ssh outbound>
-# author  : cedric llorens
+# @test_name : userinterfacevty_sshout_set.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if each user-interface vty has <ssh outbound>
+# @description : vty lines without ssh outbound protocol restriction may allow insecure protocols for outbound connections
+# @actions : configure protocol outbound ssh on all user-interface vty lines (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.1 | Ensure user access is properly controlled | Access Control
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

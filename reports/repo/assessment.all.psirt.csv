@@ -1,0 +1,10 @@
+confs/repo/confs.cisco-ios/conf_0;CVEyyy_xxx_psirt.cisco-ios.gawk;vulnerable to this psirt {FILE_PATTERN=^.*} {OS_PATTERN=15\..* .* .*} {LINE[1]=hostname / 1} {LINE[2]=line vty / 1} {BLOCK[1]["start"]=^interface  / 1 0 0} {BLOCK[2]["start"]=^router  / 1 0 0};101;high;psirt
+confs/repo/confs.cisco-ios/conf_1;CVEyyy_xxx_psirt.cisco-ios.gawk;skipped configuration because not found in database/psirt_scopes/psirt_os_inventory_scope.txt;0;low;psirt
+confs/repo/confs.cisco-xr/conf_0;CVEyyy_xxx_psirt.cisco-xr.gawk;not vulnerable to this psirt (line and block not matched);58;info;psirt
+confs/repo/confs.cisco-xr/conf_1;CVEyyy_xxx_psirt.cisco-xr.gawk;skipped configuration because not found in database/psirt_scopes/psirt_os_inventory_scope.txt;0;low;psirt
+confs/repo/confs.cisco-viptela/conf_0;CVEyyy_xxx_psirt.cisco-viptela.gawk;not vulnerable to this psirt (line and block not matched);69;info;psirt
+confs/repo/confs.cisco-viptela/conf_1;CVEyyy_xxx_psirt.cisco-viptela.gawk;skipped configuration because not found in database/psirt_scopes/psirt_os_inventory_scope.txt;0;low;psirt
+confs/repo/confs.cisco-cedge/conf_0;CVEyyy_xxx_psirt.cisco-ios.gawk;not vulnerable to this psirt (line and block not matched);9;info;psirt
+confs/repo/confs.cisco-cedge/conf_1;CVEyyy_xxx_psirt.cisco-ios.gawk;skipped configuration because not found in database/psirt_scopes/psirt_os_inventory_scope.txt;0;low;psirt
+confs/repo/confs.cisco-xe/conf_0;CVEyyy_xxx_psirt.cisco-xe.gawk;vulnerable to this psirt {FILE_PATTERN=^.*} {OS_PATTERN=15\..* .* .*} {LINE[1]=hostname / 1} {LINE[2]=line vty / 1} {BLOCK[1]["start"]=^interface  / 1 0 0} {BLOCK[2]["start"]=^router  / 1 0 0};101;high;psirt
+confs/repo/confs.cisco-xe/conf_1;CVEyyy_xxx_psirt.cisco-xe.gawk;skipped configuration because not found in database/psirt_scopes/psirt_os_inventory_scope.txt;0;low;psirt

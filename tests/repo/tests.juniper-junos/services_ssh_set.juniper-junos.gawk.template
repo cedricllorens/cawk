@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <services block> has set ssh protocol
-# author  : cedric llorens
+# @test_name : services_ssh_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check if <services block> has set ssh protocol
+# @description : missing ssh in the services block means secure remote management is not configured
+# @actions : configure ssh protocol in the services block for secure management access (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.5.1 | Ensure SSH is enabled | SSH
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

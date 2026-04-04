@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v3 user> is set
-# author  : cedric llorens
+# @test_name : snmp_v3user_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check if <snmp v3 user> is set
+# @description : missing snmp v3 user with auth and priv means snmp v3 authentication and encryption are not properly configured
+# @actions : set <snmp-server user> with proper auth and priv settings (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.4 | Ensure SNMPv3 users are configured | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

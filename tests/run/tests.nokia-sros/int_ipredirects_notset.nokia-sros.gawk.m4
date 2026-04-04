@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip redirects>
-# author  : cedric llorens
+# @test_name : int_ipredirects_notset.nokia-sros
+# @supplier : nokia-sros
+# @purpose : check if an interface has no <ip redirects>
+# @description : ip redirects enabled on interfaces can be exploited to redirect traffic through unauthorized gateways
+# @actions : disable ip redirects on all interfaces (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.3.4 | Ensure ICMP redirects are disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

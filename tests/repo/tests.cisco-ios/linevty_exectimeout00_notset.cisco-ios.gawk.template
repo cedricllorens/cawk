@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-#
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a line vty has no <exec-timeout 0 0>
-# author  : cedric llorens
+# @test_name : linevty_exectimeout00_notset.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if a line vty has no <exec-timeout 0 0>
+# @description : exec-timeout 0 0 disables session timeout and can leave an unattended vty session active indefinitely
+# @actions : set a proper exec-timeout value on line vty and remove <exec-timeout 0 0> (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.5 | Ensure exec-timeout is set on VTY lines | Console and Line Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -19,7 +23,7 @@
 function acl_summary() {
 	if ( exec == 1 ) {
 		print_err("linevty_exectimeout00_notset.cisco-ios.gawk",linevty" : <exec-timeout 0 0> is set",linenovty,"high","error");
-		pass = 1;
+		pass = 0;
 	}
 }
 
@@ -30,7 +34,7 @@ BEGIN {
 
 BEGINFILE {
 	block_vty = 0;
-	pass = 0;
+	pass = 1;
 }
 
 /^line vty .*$/ {
@@ -53,7 +57,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( !pass ) print_err("linevty_exectimeout00_notset.cisco-ios.gawk","line vty <exec-timeout 0 0> is not set",0,"high","pass");
+	if ( pass ) print_err("linevty_exectimeout00_notset.cisco-ios.gawk","line vty <exec-timeout 0 0> is not set",0,"high","pass");
 }
 
 END {

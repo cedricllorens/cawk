@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <older crypto algorithm> is not set
-# author  : cedric llorens
+# @test_name : ipsec_oldercryptoalg_notset.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <older crypto algorithm> is not set
+# @description : use of older or weak cryptographic algorithms in ipsec exposes vpn tunnels to known attacks
+# @actions : replace older crypto algorithms with strong modern equivalents in ipsec profiles (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.7.1 | Ensure IPSec uses strong encryption | Cryptography
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

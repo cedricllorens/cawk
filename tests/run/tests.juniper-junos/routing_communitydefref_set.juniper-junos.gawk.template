@@ -1,0 +1,121 @@
+#%SED_GAWK_PATH%
+
+# -----------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : routing_communitydefref_set.juniper-junos
+# @supplier : juniper-junos
+# @purpose : Check when routing community definitions are referenced and vice versa
+# @description : Validates that all routing community definitions have corresponding references and all references have definitions (pelase refer to engineering/operations guidelines for further information)
+# @actions : Check community definitions, Check community references
+# @cis_benchmark_ref : 4.1.1 | Ensure routing is properly configured | Routing
+# @risk_level : high
+# -----------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_routing = 0;
+	delete routing_ref;
+	delete routing_ref_lineno;
+	delete routing_def;
+	delete routing_def_lineno;
+}
+
+# def ----
+
+/^[ ]+community [^ ]+ members/ && !/community [0-9]+[:][0-9]+/ {
+	routing_def[$2] = rm_last_char(rm_blank_before($0));
+	routing_def_lineno[$2] = FNR;
+	next;
+}
+
+/^[ ]*(community|policy-statement) [^ ]+ {/ {
+	routing_def[$2] = rm_last_char(rm_blank_before($0));
+	routing_def_lineno[$2] = FNR;
+	next;
+}
+
+# ref ----
+
+/^[ ]*label substitution [^ ]+;/ {
+	routing_ref[rm_last_char($3)] = rm_last_char(rm_blank_before($0));
+	routing_ref_lineno[rm_last_char($3)] = FNR;
+	next;
+}
+
+/^[ ]+community (add|set|-|+|delete) [^ ]+;/ && !/community (add|set|-|+|delete) [0-9]+[:][0-9]+/ {
+	routing_ref[rm_last_char($3)] = rm_last_char(rm_blank_before($0));
+	routing_ref_lineno[rm_last_char($3)] = FNR;
+	next;
+}
+
+/^[ ]+(from )?community .*;/ && !/ (add|set|-|+|delete) /&& !/community authorization/ && !/community no-export/ && !/community no-advertise/ && !/community [0-9]+[:][0-9]+/ {
+	i = 2;
+	if ( $1 == "from" ) i = 3;
+
+	if ( $i != "[" ) {
+		routing_ref[rm_last_char($i)] = rm_last_char(rm_blank_before($0));
+		routing_ref_lineno[rm_last_char($i)] = FNR;
+	} else {
+		i = i + 1;
+		while ( $i != "]" && $i !~ /;/ ) {
+			if ( $i !~ /[0-9]+[:][0-9]+/ ) {
+				routing_ref[$i] = rm_last_char(rm_blank_before($0));
+				routing_ref_lineno[$i] = FNR;
+			}
+			i = i + 1;
+		}
+	}
+	next;
+}
+
+/^[ ]+(import|export|vrf-import|vrf-export|egress-policy|import-policy|export-policy) \[ (.*) \]/ && !/(import|export) target/ {
+	i = 3;
+	while ( $i != "]" && $i !~ /;/ ) {
+		if ( $i != "default" ) {
+			routing_ref[$i] = rm_last_char(rm_blank_before($0));
+			routing_ref_lineno[$i] = FNR;
+			i = i + 1;
+		}
+	}
+	next;
+}
+
+/^[ ]+(import|export|vrf-import|vrf-export|egress-policy|import-policy|export-policy) / && !/(import|export) target/ && !/\[/ && /;$/ && !/default/ {
+	routing_ref[rm_last_char($2)] = rm_last_char(rm_blank_before($0));
+	routing_ref_lineno[rm_last_char($2)] = FNR;
+	next;
+}
+
+ENDFILE {
+
+	# routing def and not ref ----
+	for (id in routing_def) {
+		if ( !(id in routing_ref) ) {
+			print_err("routing_communitydefref_set.juniper-junos.gawk",id" : routing def but not ref :"routing_def[id],routing_def_lineno[id],"info","error");
+			pass = 0;
+		}
+	}
+
+	# routing ref and not def ----
+	for (id in routing_ref) {
+		if ( !(id in routing_def) ) {
+			print_err("routing_communitydefref_set.juniper-junos.gawk",id" : routing ref but not def :"routing_ref[id],routing_ref_lineno[id],"high","error");
+			pass = 0;
+		}
+	}
+
+	if ( pass ) print_err("routing_communitydefref_set.juniper-junos.gawk","all routings defs are refs and the reverse",0,"high","pass");
+}
+
+END {
+}

@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ntp server> is set
-# author  : cedric llorens
+# @test_name : ntp_ip_set.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if <ntp server> is set
+# @description : missing ntp server configuration can lead to time synchronization issues affecting log correlation and security auditing
+# @actions : set <ntp server> with a trusted ntp source (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.2.1 | Ensure NTP is configured | Logging and Timestamping
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -18,17 +23,17 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 1;
+	pass = 0;
 }
 
 /^(s)?ntp server ([^ ]+ )?[0-9\.]+/ {
 	print_err("ntp_ip_set.cisco-ios.gawk",$0,FNR,"high","pass");
-	pass = 0;
+	pass = 1;
 	nextfile;
 }
 
 ENDFILE {
-	if ( pass ) print_err("ntp_ip_set.cisco-ios.gawk","<ntp server> is not set",0,"high","error");
+	if ( !pass ) print_err("ntp_ip_set.cisco-ios.gawk","<ntp server> is not set",0,"high","error");
 }
 
 END {

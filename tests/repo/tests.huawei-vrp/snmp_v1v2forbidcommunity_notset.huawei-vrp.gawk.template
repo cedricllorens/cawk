@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <snmp v1v2 forbidden communities> is not set
-# author  : cedric llorens
+# @test_name : snmp_v1v2forbidcommunity_notset.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <snmp v1v2 forbidden communities> is not set
+# @description : use of well-known or default snmp community strings such as public or private exposes the device to unauthorized access
+# @actions : remove or replace forbidden snmp community strings with strong unique values (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.3 | Ensure SNMPv1/v2 communities are restricted | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

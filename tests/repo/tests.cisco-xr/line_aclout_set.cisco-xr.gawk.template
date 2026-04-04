@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a line vty has <access-class xx out>
-# author  : cedric llorens
+# @test_name : line_aclout_set.cisco-xr.gawk
+# @supplier : cisco-xr
+# @purpose : check if a line vty has <access-class xx out>
+# @description : line vty without outbound ACL can allow unauthorized outgoing remote management connections from the device
+# @actions : set <access-class xx out> on line vty (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.1 | Ensure terminal lines have ACLs | Console and Line Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

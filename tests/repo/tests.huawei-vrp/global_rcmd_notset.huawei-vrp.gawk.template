@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <rcmd server> is not set
-# author  : cedric llorens
+# @test_name : global_rcmd_notset.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <rcmd server> is not set
+# @description : rcmd server enables insecure remote command execution services that should not be active on network devices
+# @actions : disable rcmd server to prevent insecure remote access (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.5 | Ensure RCMD is disabled | Network Protocols
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

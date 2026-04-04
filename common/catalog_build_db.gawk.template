@@ -1,7 +1,7 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # it generates the cawk info database from the test files
@@ -24,7 +24,7 @@ BEGIN {
     
     # Create header if file doesn't exist
     if ((getline < db_file) <= 0) {
-        print "supplier|test_name|purpose|description|actions|cis_benchmark_ref" > db_file
+	    print "audit|supplier|test_name|purpose|description|actions|cis_benchmark_ref|authors" > db_file
     }
     close(db_file)
     
@@ -74,5 +74,7 @@ function parse_test_file(audit,file) {
     close(file)
     
     # Add to database
-    print audit "|" supplier "|" test_name "|" purpose "|" description "|" actions "|" cis_ref "|" authors >> db_file
+    if (supplier != "" || test_name != "") {
+        print audit "|" supplier "|" test_name "|" purpose "|" description "|" actions "|" cis_ref "|" authors >> db_file
+    }
 }

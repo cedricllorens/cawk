@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check <ntp statements> is set
-# author  : maxime souris
+# @test_name : global_ntp_set.checkpoint-fwcli.gawk
+# @supplier : checkpoint-fwcli
+# @purpose : check <ntp statements> is set
+# @description : missing or misconfigured ntp synchronization leads to log timestamp inconsistencies, impeding incident response and forensic analysis
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.1.1 | Ensure NTP is configured | Logging and Timestamping
+# @authors : maxime souris
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

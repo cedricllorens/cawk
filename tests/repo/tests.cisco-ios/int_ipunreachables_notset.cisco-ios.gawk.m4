@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-#
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip unreachables>
-# author  : cedric llorens
+# @test_name : int_ipunreachables_notset.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if an interface has no <ip unreachables>
+# @description : ip unreachables may trigger attacks
+# @actions : set <no ip unreachables> on interfaces (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.3.5 | Ensure ICMP unreachables are disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

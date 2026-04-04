@@ -1,0 +1,86 @@
+#%SED_GAWK_PATH%
+
+# -----------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : routing_ribgroupdefref_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : Check when routing rib-group definitions are referenced and vice versa
+# @description : Validates that all routing rib-group definitions have corresponding references and all references have definitions
+# @actions : Check rib-group definitions, Check rib-group references (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 4.1.1 | Ensure routing is properly configured | Routing
+# @risk_level : high
+# -----------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_rib = 0;
+	delete routing_ref;
+	delete routing_ref_lineno;
+	delete routing_def;
+	delete routing_def_lineno;
+}
+
+# def ----
+
+/^%SED_BK_JUNI%rib-groups {/ {
+        block_rib = 1;
+        next;
+}
+
+/^%SED_BK_JUNI%[ ]+[^ ]+ {/ && block_rib {
+        routing_def[$1] = rm_last_char(rm_blank_before($0));
+        routing_def_lineno[$1] = FNR;
+        next;
+}
+
+/^%SED_BK_JUNI%}/ && block_rib {
+        block_rib = 0;
+}
+
+# ref ----
+
+/^[ ]+(inet|inet6|rib-group) ((inet|inet6) )?[^ ]+;/ {
+	if ( $2 == "inet" || $2 == "inet6" ) {
+        	routing_ref[rm_last_char($3)] = rm_last_char(rm_blank_before($0));
+        	routing_ref_lineno[rm_last_char($3)] = FNR;
+        	next;
+	} else {
+        	routing_ref[rm_last_char($2)] = rm_last_char(rm_blank_before($0));
+        	routing_ref_lineno[rm_last_char($2)] = FNR;
+        	next;
+	}
+}
+
+ENDFILE {
+
+	# routing def and not ref ----
+	for (id in routing_def) {
+		if ( !(id in routing_ref) ) {
+			print_err("routing_ribgroupdefref_set.juniper-junos.gawk",id" : routing def but not ref :"routing_def[id],routing_def_lineno[id],"info","error");
+			pass = 0;
+		}
+	}
+
+	# routing ref and not def ----
+	for (id in routing_ref) {
+		if ( !(id in routing_def) ) {
+			print_err("routing_ribgroupdefref_set.juniper-junos.gawk",id" : routing ref but not def :"routing_ref[id],routing_ref_lineno[id],"high","error");
+			pass = 0;
+		}
+	}
+
+	if ( pass ) print_err("routing_ribgroupdefref_set.juniper-junos.gawk","all routings defs are refs and the reverse",0,"high","pass");
+}
+
+END {
+}

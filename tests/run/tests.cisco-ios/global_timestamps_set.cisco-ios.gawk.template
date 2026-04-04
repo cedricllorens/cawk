@@ -1,0 +1,40 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_timestamps_set.cisco-ios
+# @supplier : cisco-ios
+# @purpose : check if <service timestamps log datetime> is set
+# @description : without timestamp configuration, log entries lack date and time information, making security incident correlation and forensic analysis unreliable
+# @risk_level : medium
+# @actions : set <service timestamps log datetime msec> and <service timestamps debug datetime msec> (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.1.2 | Ensure logging timestamps are set | Logging
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^service timestamps log datetime/ {
+	print_err("global_timestamps_set.cisco-ios.gawk",$0,FNR,"medium","pass");
+	pass = 0;
+	nextfile;
+}
+
+ENDFILE {
+	if ( pass ) print_err("global_timestamps_set.cisco-ios.gawk","<service timestamps log datetime> is not set",0,"medium","error");
+}
+
+END {
+}

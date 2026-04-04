@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <aaa auth order> starts with radius/tacacs
-# author  : cedric llorens
+# @test_name : aaa_rightorder_set.juniper-junos
+# @supplier : juniper-junos
+# @purpose : check if <aaa auth order> starts with radius/tacacs
+# @description : aaa authentication order not starting with radius or tacacs means centralized authentication may be bypassed
+# @actions : configure aaa authentication order to prioritize radius or tacacs before local (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.1.1 | Ensure AAA order is properly configured | Authentication, Authorization & Accounting
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

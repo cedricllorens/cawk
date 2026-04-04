@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ntp authenticate> is not set
-# author  : cedric llorens
+# @test_name : ntp_authenticate_set.ekinops-oneos
+# @supplier : ekinops-oneos
+# @purpose : check if <ntp authenticate> is set
+# @description : ntp without authentication can allow unauthorized ntp synchronization and time manipulation
+# @actions : set <ntp authenticate> with appropriate keys (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.2.1 | Ensure NTP authentication is enabled | Logging and Timestamping
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

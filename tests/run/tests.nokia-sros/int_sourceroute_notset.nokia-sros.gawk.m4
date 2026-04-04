@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip source-route>
-# author  : cedric llorens
+# @test_name : int_sourceroute_notset.nokia-sros
+# @supplier : nokia-sros
+# @purpose : check if an interface has no <ip source-route>
+# @description : ip source-route enabled on interfaces allows attackers to specify routing paths and bypass network controls
+# @actions : disable ip source-route on all interfaces (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.1 | Ensure IP source-route is disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

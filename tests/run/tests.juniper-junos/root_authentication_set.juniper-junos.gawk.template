@@ -1,0 +1,50 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : root_authentication_set.juniper-junos
+# @supplier : juniper-junos
+# @purpose : check if <root-authentication> is set
+# @description : missing root-authentication means the root account has no password, allowing unrestricted console access without any credential check
+# @risk_level : high
+# @actions : configure root-authentication with an encrypted-password or ssh-rsa key under system root-authentication (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.1.1 | Ensure authentication is properly configured | Authentication, Authorization & Accounting
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+	block_system = 0;
+}
+
+/^system {/ && block_system == 0 {
+	block_system = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%root-authentication {/ && block_system == 1 {
+	print_err("root_authentication_set.juniper-junos.gawk",rm_blank_before($0),FNR,"high","pass");
+	pass = 1;
+	nextfile;
+}
+
+/^}$/ && block_system == 1 {
+	block_system = 0;
+}
+
+ENDFILE {
+	if ( !pass ) print_err("root_authentication_set.juniper-junos.gawk","root-authentication is not set",0,"high","error");
+}
+
+END {
+}

@@ -1,9 +1,21 @@
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
+
+v3.5.0 (March 2026):
+	Package:
+	- cawk is now managed under Claude Code
+	Tests:
+	- update test regex for some cisco-ios, cisco-xe and cisco-xr suppliers
+	- update all test banners to include @metadata in order to build a full detailed catalog
+	- add new routing consistency tests for juniper-junos
+	Makefile:
+	- update catalog targets and add new catalog targets
+	Exceptions:
+	- add a suggested traceability format for each exception
 
 v3.4.0 (March 2026):
 	Makefile:

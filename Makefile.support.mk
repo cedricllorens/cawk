@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
@@ -7,7 +7,7 @@
 
 # ---------------
 
-CAWK_RELEASE = v3.4.0
+CAWK_RELEASE = v3.5.0
 
 # ---------------
 
@@ -15,6 +15,7 @@ CONFS_PATH = confs
 COMMON_PATH = common
 BACKUP_PATH = backup
 DATABASE_PATH = database
+DATABASE_CIS_INFO = $(DATABASE_PATH)/db_info.txt
 LOGS_PATH = logs
 DATABASE_PATH_SH = $(DATABASE_PATH)/scripts
 DATABASE_SH = $(wildcard $(DATABASE_PATH_SH)/*.script.sh)

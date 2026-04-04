@@ -1,15 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-#
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ntp access-group> is set
-# author  : cedric llorens
+# @test_name : ntp_accessgroup_set.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if <ntp access-group> is set
+# @description : ntp without access-group restriction can allow unauthorized ntp synchronization requests to or from any host
+# @actions : set <ntp access-group> with appropriate ACL to restrict ntp access (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.2.2 | Ensure NTP access is restricted | Logging and Timestamping
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

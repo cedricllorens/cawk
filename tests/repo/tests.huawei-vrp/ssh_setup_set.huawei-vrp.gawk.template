@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <ssh server> is set
-# author  : cedric llorens
+# @test_name : ssh_setup_set.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <ssh server> is set
+# @description : missing ssh server configuration means secure remote management is not available and the device may fall back to insecure protocols
+# @actions : configure ssh server parameters (version, timeout, authentication retries) (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.5.1 | Ensure SSH is enabled | SSH
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

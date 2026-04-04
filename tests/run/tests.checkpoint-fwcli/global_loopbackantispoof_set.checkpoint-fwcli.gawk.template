@@ -7,9 +7,13 @@
 # for %SED_VAR% changes like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <loopback 127/8 rules> are set to accept and
-#           drop packets appropriately (Check Point)
-# author  : quentin gavilan (Check Point adaptation)
+# @test_name : global_loopbackantispoof_set.checkpoint-fwcli
+# @supplier : checkpoint-fwcli
+# @purpose : check if <loopback 127/8 rules> are set to accept and drop packets appropriately
+# @description : missing loopback anti-spoofing rules may allow external packets with spoofed loopback source addresses to bypass security controls
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.3.2 | Ensure loopback anti-spoofing rules | Firewall Policy
+# @authors : quentin gavilan
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

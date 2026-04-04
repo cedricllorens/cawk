@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # -------------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if an interface has no <ip directed-broadcast>
-# author  : cedric llorens
+# @test_name : int_directedbroadcast_notset.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if an interface has no <ip directed-broadcast>
+# @description : ip directed-broadcast may trigger attacks
+# @actions : set <no ip directed-broadcast> on interfaces (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.3.3 | Ensure directed broadcast is disabled | Network Protocols
+# @authors : cedric llorens
 # -------------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

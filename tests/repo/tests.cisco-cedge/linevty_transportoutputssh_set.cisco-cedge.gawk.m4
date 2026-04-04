@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if a line vty has <transport intput ssh>
-# author  : cedric llorens
+# @test_name : linevty_transportoutputssh_set.cisco-cedge.gawk
+# @supplier : cisco-cedge
+# @purpose : check if a line vty has <transport output ssh>
+# @description : vty without restricting transport output to ssh or none allows insecure protocols for outbound connections
+# @actions : set <transport output ssh> or <transport output none> on line vty (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.4.3 | Ensure SSH is configured on terminal lines | SSH Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

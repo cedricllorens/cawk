@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# gawk is subject to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check <vrf main><snmp> cust block (trusted communities,authorization,destination)
-# author  : cedric llorens
+# @test_name : global_snmpcustforbidcommunity_notset.6wind-linux
+# @supplier : 6wind-linux
+# @purpose : check if <vrf main><snmp> custom block is compliant (trusted communities, authorization, destination)
+# @description : non-compliant SNMP custom community configuration (forbidden communities, read-write access, or invalid destination) could expose the device to unauthorized access or information disclosure
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.1 | Ensure SNMP is securely configured | SNMP
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

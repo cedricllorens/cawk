@@ -1,5 +1,5 @@
 dnl ------------------------------------------------------------
-dnl cawk is subjet to a MIT open-source licence
+dnl cawk is subject to a MIT open-source licence
 dnl please refer to the MIT licence file for further information
 dnl ------------------------------------------------------------
 

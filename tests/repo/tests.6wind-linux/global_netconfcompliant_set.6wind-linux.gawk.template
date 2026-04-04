@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# gawk is subject to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check <vrf main><netconf-server> block (address,enabled true)
-# author  : cedric llorens
+# @test_name : global_netconfcompliant_set.6wind-linux.gawk
+# @supplier : 6wind-linux
+# @purpose : check if <vrf main><netconf-server> block is compliant (address, enabled true)
+# @description : non-compliant NETCONF server configuration (bad address, missing port, or service disabled) could expose the device to unauthorized management access
+# @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.2.1 | Ensure NETCONF is securely configured | Management Access
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

@@ -1,0 +1,40 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : snmp_v3group_set.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if <snmp v3 group priv> is set
+# @description : missing snmp v3 group with priv security level means snmp v3 authentication and encryption are not enforced at the group level, weakening snmp access control
+# @risk_level : high
+# @actions : configure <snmp-server group> with v3 priv to enforce both authentication and encryption for all snmp v3 access (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 1.6.5 | Ensure SNMPv3 group privileges | SNMP
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 0;
+}
+
+/^snmp-server group \w+ v3 priv/ {
+	print_err("snmp_v3group_set.cisco-xe.gawk",$0,FNR,"high","pass");
+	pass = 1;
+	nextfile;
+}
+
+ENDFILE {
+	if ( !pass ) print_err("snmp_v3group_set.cisco-xe.gawk","no snmp v3 group with priv level is set",0,"high","error");
+}
+
+END {
+}

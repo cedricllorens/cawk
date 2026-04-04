@@ -1,14 +1,19 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check that <rule log> is set globally
-# author  : cedric llorens
+# @test_name : global_rulelog_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <rule log> is set globally
+# @description : missing logging on firewall rules prevents tracking of allowed and denied traffic for security monitoring
+# @actions : add logging to firewall rules to capture traffic events (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 3.1.1 | Ensure firewall rules are logged | Logging
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

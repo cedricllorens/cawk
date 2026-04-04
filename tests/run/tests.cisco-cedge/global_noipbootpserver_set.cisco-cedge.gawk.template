@@ -1,15 +1,20 @@
 #%SED_GAWK_PATH%
 
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
 #
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# purpose : check if <no ip bootp server> is set or <ip bootp server> is not set
-# author  : cedric llorens
+# @test_name : global_noipbootpserver_set.cisco-cedge
+# @supplier : cisco-cedge
+# @purpose : check if <no ip bootp server> is set and <ip bootp server> is not set
+# @description : ip bootp server can be used to gain unauthorized access to the device or trigger attacks
+# @actions : set <no ip bootp server> or remove <ip bootp server> (please refer to engineering/operations guidelines for further information)
+# @cis_benchmark_ref : 2.2.4 | Ensure BOOTP server is disabled | Network Protocols
+# @authors : cedric llorens
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

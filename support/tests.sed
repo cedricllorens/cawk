@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# cawk is subjet to a MIT open-source licence
+# cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 # ------------------------------------------------------------
 #
