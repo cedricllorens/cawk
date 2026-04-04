@@ -16,10 +16,11 @@ function print_err(test_name, test_msg, linenu, test_risk, test_status) {
 
 	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
 	if (cawk_sysname == "") {
-		print FILENAME";"test_name";"test_msg";"linenu";"test_risk";"test_status;
+		clean_msg = rm_semicolon(test_msg);
+		print FILENAME";"test_name";"clean_msg";"linenu";"test_risk";"test_status;
 	} else {
 		print_err_special(test_name, test_msg, linenu, test_risk, test_status);
-	} 
+	}
 
 }
 
@@ -42,7 +43,7 @@ function rm_last_char(str) {
 # purpose : function rm_blank_before(str)
 # purpose : remove the blank character of s tring prefix (used for hierarchical configurations)
 # ----
-function rm_blank_before(str) { 
+function rm_blank_before(str) {
 
 	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
 	if (cawk_sysname == "") {
@@ -50,6 +51,22 @@ function rm_blank_before(str) {
 		return str;
 	} else {
 		return rm_blank_before_special(str);
+	}
+
+}
+
+# purpose : ----
+# purpose : function rm_semicolon(str)
+# purpose : remove semicolons and replace with space (prevents CSV parsing issues)
+# ----
+function rm_semicolon(str) {
+
+	cawk_sysname = ENVIRON["CAWK_SYSNAME"];
+	if (cawk_sysname == "") {
+		gsub(/;/, " ", str);
+		return str;
+	} else {
+		return rm_semicolon_special(str);
 	}
 
 }

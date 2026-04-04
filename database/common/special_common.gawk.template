@@ -11,7 +11,8 @@
 # ----
 
 function print_err_special(test_name, test_msg, linenu, test_risk, test_status) {
-	print FILENAME";"test_name";"test_msg";"linenu";"test_risk";"test_status;
+	clean_msg = rm_semicolon_special(test_msg);
+	print FILENAME";"test_name";"clean_msg";"linenu";"test_risk";"test_status;
 }
 
 # purpose : ----
@@ -26,7 +27,16 @@ function rm_last_char_special(str) {
 # purpose : function rm_blank_before_special(str)
 # purpose : remove the blank character of s tring prefix (used for hierarchical configurations)
 # ----
-function rm_blank_before_special(str) { 
+function rm_blank_before_special(str) {
 	sub(/^ +/, "", str)
+	return str
+}
+
+# purpose : ----
+# purpose : function rm_semicolon_special(str)
+# purpose : remove semicolons and replace with space (prevents CSV parsing issues)
+# ----
+function rm_semicolon_special(str) {
+	gsub(/;/, " ", str)
 	return str
 }
