@@ -12,7 +12,8 @@
 # @purpose : check if <vrf main><ntp> block is compliant (time-sources, enabled true)
 # @description : non-compliant NTP configuration could affect time synchronization and undermine log integrity and audit trail reliability
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1 | Ensure NTP is properly configured | Logging and Timestamping
+# @nist800-53_ref : AU-8(1) | Audit and Accountability | Ensure time synchronization with authoritative source is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

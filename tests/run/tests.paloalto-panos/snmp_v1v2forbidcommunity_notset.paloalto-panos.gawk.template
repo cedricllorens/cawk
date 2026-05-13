@@ -13,7 +13,8 @@
 # @purpose : check if <snmp v1v2 forbidden communities> are not set
 # @description : use of well-known or default snmp community strings such as public or private exposes the device to unauthorized access
 # @actions : remove or replace forbidden snmp community strings with strong unique values (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.3 | Ensure SNMPv1/v2 communities are restricted | SNMP
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

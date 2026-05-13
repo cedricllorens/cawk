@@ -12,7 +12,8 @@
 # @purpose : check that <snmp v1v2 write> is not set
 # @description : snmp v1/v2 write communities allow unauthorized modification of device configuration and represent a critical security risk
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.2 | Ensure SNMPv3 with authentication | SNMP
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : maxime souris
 # ------------------------------------------------------------
 

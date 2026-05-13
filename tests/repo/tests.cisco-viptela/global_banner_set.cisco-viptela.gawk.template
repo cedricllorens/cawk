@@ -12,7 +12,8 @@
 # @purpose : check if <banner motd/login/exec> are set
 # @description : banners can be used to display important information to users
 # @actions : set banners (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.4.1 | Ensure login banner is configured | Banner & Notification
+# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification banner is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

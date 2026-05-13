@@ -13,7 +13,8 @@
 # @purpose : check if <bgp/neighbor block> has authentication-key
 # @description : bgp neighbor without authentication-key allows unauthenticated bgp sessions which can be exploited for route injection
 # @actions : configure authentication-key on all bgp neighbor blocks (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 4.1.1 | Ensure BGP is properly secured | Routing
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

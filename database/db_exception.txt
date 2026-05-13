@@ -1,0 +1,35 @@
+audit;supplier;exception_id;approver;date;reason
+repo;6wind-linux;exc-001;name;yyyy-mm-dd;brief business context
+repo;6wind-linux;exc-002;name;yyyy-mm-dd;brief business context
+repo;checkpoint-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;cisco-cedge;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;cisco-ios;exc-2024-001;john doe;2024-03-15;approved firewall policy exception for production environment
+repo;cisco-ios;exc-2024-002;jane smith;2024-03-20;legacy device compatibility with old ssh version
+repo;cisco-viptela;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;cisco-xe;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;cisco-xr;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;ekinops-oneos;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;fortinet-fortios;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;huawei-vrp;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;iptables-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;juniper-junos;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;nokia-sros;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;packetfilter-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;paloalto-panos;exc-xxx;name;yyyy-mm-dd;brief business context
+run;6wind-linux;exc-001;name;yyyy-mm-dd;brief business context
+run;6wind-linux;exc-002;name;yyyy-mm-dd;brief business context
+run;checkpoint-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+run;cisco-cedge;exc-xxx;name;yyyy-mm-dd;brief business context
+run;cisco-ios;exc-2024-001;john doe;2024-03-15;approved firewall policy exception for production environment
+run;cisco-ios;exc-2024-002;jane smith;2024-03-20;legacy device compatibility with old ssh version
+run;cisco-viptela;exc-xxx;name;yyyy-mm-dd;brief business context
+run;cisco-xe;exc-xxx;name;yyyy-mm-dd;brief business context
+run;cisco-xr;exc-xxx;name;yyyy-mm-dd;brief business context
+run;ekinops-oneos;exc-xxx;name;yyyy-mm-dd;brief business context
+run;fortinet-fortios;exc-xxx;name;yyyy-mm-dd;brief business context
+run;huawei-vrp;exc-xxx;name;yyyy-mm-dd;brief business context
+run;iptables-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+run;juniper-junos;exc-xxx;name;yyyy-mm-dd;brief business context
+run;nokia-sros;exc-xxx;name;yyyy-mm-dd;brief business context
+run;packetfilter-fwcli;exc-xxx;name;yyyy-mm-dd;brief business context
+run;paloalto-panos;exc-xxx;name;yyyy-mm-dd;brief business context

@@ -13,7 +13,8 @@
 # @purpose : check if <ssh server> is set
 # @description : missing ssh server configuration means secure remote management is not available and the device may fall back to insecure protocols
 # @actions : configure ssh server parameters (version, timeout, authentication retries) (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.5.1 | Ensure SSH is enabled | SSH
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

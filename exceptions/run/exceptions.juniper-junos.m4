@@ -14,11 +14,10 @@ include(`cawk.m4')
 
 dnl MACRO BEGIN ------------------------
 
-dnl EXCEPTION FORMAT (for traceability):
-dnl Exception ID: EXC-XXX
-dnl Approver: Name
-dnl Date: YYYY-MM-DD
-dnl Reason: Brief business context
+dnl @exception_id: EXC-XXX
+dnl @approver: Name
+dnl @date: YYYY-MM-DD
+dnl @reason: Brief business context
 dnl m4_cawk_exception(`device',`test_name',`pattern')
 
 dnl MACRO END ------------------------

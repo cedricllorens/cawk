@@ -13,7 +13,8 @@
 # @purpose : check if <aaa users> are not set locally
 # @description : local users can endanger the security of the system by allowing unauthorized access
 # @actions : remove local users or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.3 | Ensure local users are minimized | System Administration
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

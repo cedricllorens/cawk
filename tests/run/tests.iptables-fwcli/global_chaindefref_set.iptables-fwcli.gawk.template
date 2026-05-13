@@ -13,7 +13,8 @@
 # @purpose : check <-N chains> ref not def and def not ref
 # @description : custom chains defined but not referenced represent dead configuration; chains referenced but not defined cause rule processing errors
 # @actions : align chain definitions and references to ensure all custom chains are used and all references are valid (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.1 | Ensure firewall chains are properly defined | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high | low
 # @authors : wael elsingaby
 # ------------------------------------------------------------
 

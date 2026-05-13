@@ -13,7 +13,8 @@
 # @purpose : check if <source-routing> is not set
 # @description : ip source-route can be used to trigger attacks or can be used for unusual routing paths
 # @actions : disable <source-routing> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.1 | Ensure source routing is disabled | Network Protocols
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if <password-expire = always> is not set
 # @description : password set to never expire weakens the security posture by allowing indefinitely valid credentials
 # @actions : configure password expiration policy (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.2.1 | Ensure password expiration is enforced | Authentication
+# @nist800-53_ref : IA-5 | Identification and Authentication | Ensure authenticator management is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

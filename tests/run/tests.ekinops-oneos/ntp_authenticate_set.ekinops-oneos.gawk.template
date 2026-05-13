@@ -12,7 +12,8 @@
 # @purpose : check if <ntp authenticate> is set
 # @description : ntp without authentication can allow unauthorized ntp synchronization and time manipulation
 # @actions : set <ntp authenticate> with appropriate keys (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.2.1 | Ensure NTP authentication is enabled | Logging and Timestamping
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -11,9 +11,9 @@
 # @supplier : juniper-junos
 # @purpose : check if <root-authentication> is set
 # @description : missing root-authentication means the root account has no password, allowing unrestricted console access without any credential check
-# @risk_level : high
 # @actions : configure root-authentication with an encrypted-password or ssh-rsa key under system root-authentication (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.1 | Ensure authentication is properly configured | Authentication, Authorization & Accounting
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

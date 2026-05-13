@@ -12,7 +12,8 @@
 # @purpose : check if <snmp v3 user> is set
 # @description : missing snmp v3 user with auth and priv means snmp v3 authentication and encryption are not properly configured
 # @actions : set <snmp-server user> with proper auth and priv settings (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.4 | Ensure SNMPv3 users are configured | SNMP
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

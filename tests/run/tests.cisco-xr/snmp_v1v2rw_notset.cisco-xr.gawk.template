@@ -12,7 +12,8 @@
 # @purpose : check if <snmp v1v2 rw> is not set
 # @description : snmp v1/v2c read-write community string allows unauthorized configuration changes to the device
 # @actions : remove rw community strings and use read-only community or migrate to snmp v3 (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.2 | Ensure SNMPv3 with authentication | SNMP
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

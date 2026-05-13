@@ -12,7 +12,8 @@
 # @purpose : check if <ntp access-group> is set
 # @description : ntp without access-group restriction can allow unauthorized ntp synchronization requests to or from any host
 # @actions : set <ntp access-group> with appropriate ACL to restrict ntp access (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.2.2 | Ensure NTP access is restricted | Logging and Timestamping
+# @nist800-53_ref : AU-8(1) | Audit and Accountability | Ensure time synchronization with authoritative source is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -12,7 +12,8 @@
 # @purpose : check if <login log enable> is set
 # @description : login logging can be used to track authentication events and potential security incidents
 # @actions : set <login log enable> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1.1 | Ensure login attempts are logged | Logging
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : julien lair
 # ------------------------------------------------------------
 

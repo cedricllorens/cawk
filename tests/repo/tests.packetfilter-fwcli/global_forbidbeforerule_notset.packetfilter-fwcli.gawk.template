@@ -12,7 +12,8 @@
 # @purpose : check if <pass/block> are defined before nat/rdr/match/scrub
 # @description : pass/block rules defined before nat/rdr/match/scrub rules may be shadowed or cause unexpected policy behavior
 # @actions : reorder rules to ensure pass/block rules are placed after nat/rdr/match/scrub rules as required by pf rule evaluation order (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure forbidden rules are not present | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : medium
 # @authors : adrien lebout, pierre bertrand
 # ------------------------------------------------------------
 

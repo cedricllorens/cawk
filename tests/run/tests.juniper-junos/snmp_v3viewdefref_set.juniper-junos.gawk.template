@@ -1,0 +1,121 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : snmp_v3viewdefref_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check when <snmp v3 mib-view> def and not ref / check when <snmp v3 mib-view> ref and not def
+# @description : SNMP v3 mib-view defined but not referenced represents dead configuration; mib-view referenced but not defined causes SNMP policy errors and access failures
+# @actions : align SNMP v3 mib-view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high | info
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	delete mib_view_def;
+	delete mib_view_ref;
+}
+
+# def - mib-view in snmp v3 vacm ----
+
+/^snmp {/ && !/inactive/ {
+	in_snmp = 1;
+	next;
+}
+
+in_snmp && /^%SED_BK_JUNI%v3 {/ && !/inactive/ {
+	in_v3 = 1;
+	next;
+}
+
+in_v3 && /^%SED_BK_JUNI%{2}vacm {/ && !/inactive/ {
+	in_vacm = 1;
+	next;
+}
+
+in_vacm && /^%SED_BK_JUNI%{3}mib-view/ && !/inactive/ {
+	view_name = $2;
+	gsub(/"/, "", view_name);
+	if ( view_name !~ /^"?\$/ ) mib_view_def[view_name] = rm_last_char(rm_blank_before($0));
+	next;
+}
+
+# ref - read-view / write-view / notify-view in snmp v3 vacm access ----
+
+in_vacm && /^%SED_BK_JUNI%{3}access {/ && !/inactive/ {
+	in_access = 1;
+	next;
+}
+
+in_access && /^%SED_BK_JUNI%{4}group [^ ]+ {/ && !/inactive/ {
+	in_group = 1;
+	next;
+}
+
+in_group && /(read-view|write-view|notify-view)/ && !/inactive/ {
+	view_ref_name = $2;
+	gsub(/"/, "", view_ref_name);
+	gsub(/;$/, "", view_ref_name);
+	if ( view_ref_name !~ /^"?\$/ ) mib_view_ref[view_ref_name] = rm_last_char(rm_blank_before($0));
+	next;
+}
+
+/^%SED_BK_JUNI%{4}}$/ && in_group {
+	in_group = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%{3}}$/ && in_access {
+	in_access = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%{2}}$/ && in_vacm {
+	in_vacm = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%}$/ && in_v3 {
+	in_v3 = 0;
+	next;
+}
+
+/^}$/ && in_snmp && !in_v3 {
+	in_snmp = 0;
+}
+
+ENDFILE {
+
+	# mib-view def and not ref ----
+	for (id in mib_view_def) {
+		if ( !(id in mib_view_ref) ) {
+			print_err("snmp_v3viewdefref_set.juniper-junos.gawk",id" : mib-view def but not ref :"mib_view_def[id],0,"info","error");
+			pass = 0;
+		}
+	}
+
+	# mib-view ref and not def ----
+	for (id in mib_view_ref) {
+		if ( !(id in mib_view_def) ) {
+			print_err("snmp_v3viewdefref_set.juniper-junos.gawk",id" : mib-view ref but not def :"mib_view_ref[id],0,"high","error");
+			pass = 0;
+		}
+	}
+
+	if ( pass ) print_err("snmp_v3viewdefref_set.juniper-junos.gawk","all snmp v3 mib-view defs are refs and the reverse",0,"high","pass");
+}
+
+END {
+}

@@ -1,8 +1,6 @@
 # Claude Code workspace
 .claude/
-
-# CLAUDE.md instructions (project-specific)
-CLAUDE.md
+.vscode/
 
 # Generated files
 *.gawk

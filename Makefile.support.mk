@@ -11,14 +11,18 @@ CAWK_RELEASE = v3.5.0
 
 # ---------------
 
+RM ?= rm
+
+# ---------------
+
 CONFS_PATH = confs
 COMMON_PATH = common
 BACKUP_PATH = backup
 DATABASE_PATH = database
 DATABASE_CIS_INFO = $(DATABASE_PATH)/db_info.txt
 LOGS_PATH = logs
-DATABASE_PATH_SH = $(DATABASE_PATH)/scripts
-DATABASE_SH = $(wildcard $(DATABASE_PATH_SH)/*.script.sh)
+DATABASE_SH_PATH = $(DATABASE_PATH)/scripts
+DATABASE_SH = $(wildcard $(DATABASE_SH_PATH)/*.script.sh)
 REPORT_PATH = reports
 
 TESTS_COMMON_PATH = common
@@ -29,7 +33,6 @@ TESTS_SYSTEM = system
 TESTS_TMP = tmp
 
 EXCEPTION_PATH = exceptions
-EXCEPTION_M4 = $(wildcard $(EXCEPTION_PATH)/repo/*.m4) $(wildcard $(EXCEPTION_PATH)/run*/*.m4)
 
 # ---------------
 
@@ -57,6 +60,10 @@ RUN_DIRS := $(shell find tests -name '*run_*' -type d 2>/dev/null | awk -F'run_'
 %: %.m4
 	m4 -I m4 $< | sed '/^$$/d' > $@ || true
 	chmod 650 $@
+
+checkdiff/scripts/%: checkdiff/scripts/%.sh
+	cp $< $@ || true
+	chmod 755 $@
 
 # Define all suppliers/platforms
 SUPPLIER_SCOPE = cisco-ios cisco-xr juniper-junos huawei-vrp fortinet-fortios nokia-sros paloalto-panos cisco-viptela cisco-cedge cisco-xe packetfilter-fwcli checkpoint-fwcli iptables-fwcli 6wind-linux ekinops-oneos
@@ -96,10 +103,10 @@ endif
 
 # psirt tests directory paths
 TESTS_$(1)_REPO_PSIRT_PATH = $$(TESTS_PATH)/repo/tests.$(1).psirt
-ifeq ($(strip $(audit)),)
+ifeq ($$(strip $$(audit)),)
 	TESTS_$(1)_RUN_PSIRT_PATH = $$(TESTS_PATH)/run/tests.$(1).psirt
 else
-	TESTS_$(1)_RUN_PSIRT_PATH = $$(TESTS_PATH)/run_${audit}/tests.$(1).psirt
+	TESTS_$(1)_RUN_PSIRT_PATH = $$(TESTS_PATH)/run_$${audit}/tests.$(1).psirt
 endif
 
 # standard tests files (template and m4)
@@ -151,16 +158,19 @@ FIND_CONF_SELECT = ! -type d
 # if set to yes json reporting is activated
 JSON ?= no
 
+# --------------- catalog build specific parameters
+CATALOG_BUILD ?= no
+
 # --------------- deadbeef specific parameters
 # if set to yes deadbeef support is activated
-DEADBEEF = no
+DEADBEEF ?= no
 DEADBEEF_THRESHOLD_DAYS ?= 30
 
 # --------------- clean specific parameters
 ARCHIVE_OLDER_DAYS ?= 120
 
-# ----------------- PSIRT only computationÒ
+# ----------------- PSIRT only computation
 PSIRT ?= no
 
 # ---------------- clean temporary files
-TMP_ASSESSMENT_FILES = yes
+TMP_ASSESSMENT_FILES ?= yes

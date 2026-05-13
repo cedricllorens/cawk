@@ -12,7 +12,8 @@
 # @purpose : check if <older crypto algorithm> is not set
 # @description : usage of deprecated or weak cryptographic algorithms weakens device security and could be exploited by an attacker
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.7.1 | Ensure strong encryption algorithms are used | Cryptography
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

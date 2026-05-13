@@ -24,10 +24,14 @@ BEGIN {
 	exception_error = 0;
 	exception_warning = 0;
 	exception_psirt = 0;
-	# CIS compliance counters
-	cis_total_pass = 0;
-	cis_total_fail = 0;
-	cis_total_warning = 0;
+	# NIST compliance counters
+	nist_total_pass = 0;
+	nist_total_error = 0;
+	nist_total_warning = 0;
+	nist_official_total = 0;
+	nist_official_covered = 0;
+	nist_official_header_skip = 0;
+	nist_mappings_loaded = 0;
 }
 
 BEGINFILE {
@@ -58,20 +62,21 @@ BEGINFILE {
 		assessment_file = 1;
 		db_info_file = 0;
 		exceptions_file = 0;
-		# CIS compliance initialization
-		delete cis_pass;
-		delete cis_fail;
-		delete cis_warning;
-		# Note: cis_control and cis_category are loaded once and reused, so don't delete them
-		# delete cis_control;
-		# delete cis_category;
-		cis_total_pass = 0;
-		cis_total_fail = 0;
-		cis_total_warning = 0;
-		# Load CIS mappings from db_info.txt if not already loaded
-		if (length(cis_map) == 0) {
+		# NIST compliance initialization
+		delete nist_pass;
+		delete nist_fail;
+		delete nist_warning;
+		# Note: nist_control and nist_category are loaded once and reused, so don't delete them
+		# delete nist_control;
+		# delete nist_category;
+		nist_total_pass = 0;
+		nist_total_error = 0;
+		nist_total_warning = 0;
+		# Load NIST mappings from db_info.txt if not already loaded
+		if (nist_mappings_loaded == 0) {
+			nist_mappings_loaded = 1
 			first_line = 1
-			db_file_path = (DATABASE_CIS_INFO != "") ? DATABASE_CIS_INFO : "database/db_info.txt"
+			db_file_path = (DATABASE_NIST_INFO != "") ? DATABASE_NIST_INFO : "database/db_info.txt"
 			while ((getline line < db_file_path) > 0) {
 				if (first_line) {
 					first_line = 0
@@ -79,19 +84,19 @@ BEGINFILE {
 				}
 				split(line, fields, ";")
 				test_name_full = trim(fields[3])
-				cis_ref = trim(fields[7])
-				if (cis_ref && cis_ref != "" && cis_ref !~ /to be defined/ && cis_ref ~ /^[0-9]/) {
-					split(cis_ref, parts, "|")
-					cis_id = trim(parts[1])
+				nist_ref = trim(fields[7])
+				if (nist_ref && nist_ref != "" && nist_ref !~ /to be defined/ && nist_ref ~ /^[a-z]/) {
+					split(nist_ref, parts, "|")
+					nist_id = trim(parts[1])
 					control = trim(parts[2])
 					category = trim(parts[3])
-					cis_map[test_name_full] = cis_id
-					cis_control[cis_id] = control
-					cis_category[cis_id] = category
-					if (!(cis_id in cis_pass)) {
-						cis_pass[cis_id] = 0
-						cis_fail[cis_id] = 0
-						cis_warning[cis_id] = 0
+					nist_map[test_name_full] = nist_id
+					nist_control[nist_id] = control
+					nist_category[nist_id] = category
+					if (!(nist_id in nist_pass)) {
+						nist_pass[nist_id] = 0
+						nist_fail[nist_id] = 0
+						nist_warning[nist_id] = 0
 					}
 				}
 			}
@@ -132,26 +137,26 @@ BEGINFILE {
 	}
 }
 
-# Parse db_info.txt to load CIS mappings
+# Parse db_info.txt to load NIST mappings
 db_info_file && FNR > 1 {
 	split($0, fields, ";")
 	test_name_full = trim(fields[3])
-	cis_ref = trim(fields[7])
+	nist_ref = trim(fields[7])
 
-	if (cis_ref && cis_ref != "" && cis_ref !~ /to be defined/ && cis_ref ~ /^[0-9]/) {
-		split(cis_ref, parts, "|")
-		cis_id = trim(parts[1])
+	if (nist_ref && nist_ref != "" && nist_ref !~ /to be defined/ && nist_ref ~ /^[a-z]/) {
+		split(nist_ref, parts, "|")
+		nist_id = trim(parts[1])
 		control = trim(parts[2])
 		category = trim(parts[3])
 
-		cis_map[test_name_full] = cis_id
-		cis_control[cis_id] = control
-		cis_category[cis_id] = category
+		nist_map[test_name_full] = nist_id
+		nist_control[nist_id] = control
+		nist_category[nist_id] = category
 
-		if (!(cis_id in cis_pass)) {
-			cis_pass[cis_id] = 0
-			cis_fail[cis_id] = 0
-			cis_warning[cis_id] = 0
+		if (!(nist_id in nist_pass)) {
+			nist_pass[nist_id] = 0
+			nist_fail[nist_id] = 0
+			nist_warning[nist_id] = 0
 		}
 	}
 }
@@ -175,11 +180,11 @@ function trim(str) {
 		if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
 		if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
 		error += 1;
-		# CIS compliance count
-		if (tmp[2] in cis_map) {
-			cis_id = cis_map[tmp[2]];
-			cis_fail[cis_id]++;
-			cis_total_fail++;
+		# NIST compliance count
+		if (tmp[2] in nist_map) {
+			nist_id = nist_map[tmp[2]];
+			nist_fail[nist_id]++;
+			nist_total_error++;
 		}
 	}
 	if ( deadbeef_file ) deadbeef_error += 1;
@@ -193,11 +198,11 @@ function trim(str) {
 
 	if ( assessment_file ) {
 		pass += 1;
-		# CIS compliance count
-		if (tmp[2] in cis_map) {
-			cis_id = cis_map[tmp[2]];
-			cis_pass[cis_id]++;
-			cis_total_pass++;
+		# NIST compliance count
+		if (tmp[2] in nist_map) {
+			nist_id = nist_map[tmp[2]];
+			nist_pass[nist_id]++;
+			nist_total_pass++;
 		}
 	}
 	if ( deadbeef_file ) deadbeef_pass += 1;
@@ -211,11 +216,11 @@ function trim(str) {
 
 	if ( assessment_file ) {
 		warning += 1;
-		# CIS compliance count
-		if (tmp[2] in cis_map) {
-			cis_id = cis_map[tmp[2]];
-			cis_warning[cis_id]++;
-			cis_total_warning++;
+		# NIST compliance count
+		if (tmp[2] in nist_map) {
+			nist_id = nist_map[tmp[2]];
+			nist_warning[nist_id]++;
+			nist_total_warning++;
 		}
 	}
 	if ( deadbeef_file ) deadbeef_warning += 1;
@@ -229,11 +234,11 @@ function trim(str) {
 
 	if ( assessment_file ) {
 		psirt += 1;
-		# CIS compliance count
-		if (tmp[2] in cis_map) {
-			cis_id = cis_map[tmp[2]];
-			cis_warning[cis_id]++;
-			cis_total_warning++;
+		# NIST compliance count
+		if (tmp[2] in nist_map) {
+			nist_id = nist_map[tmp[2]];
+			nist_warning[nist_id]++;
+			nist_total_warning++;
 		}
 	}
 	if ( deadbeef_file ) deadbeef_psirt += 1;
@@ -334,6 +339,12 @@ if ( assessment_file ) {
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * pass / ( pass + error + warning + psirt))
 		print "number_of_pass = " pass " (" decimal "%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_pass / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_pass = " nist_total_pass " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_pass = " nist_total_pass " (0.0%)";
+		}
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0) {
 			decimal = sprintf("%.1f", 100 * exception_pass / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_pass_exceptions = " exception_pass " (" decimal "%)";
@@ -342,6 +353,12 @@ if ( assessment_file ) {
 		}
 	} else {
 		print "number_of_pass = " pass " (0.0%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_pass / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_pass = " nist_total_pass " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_pass = " nist_total_pass " (0.0%)";
+		}
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0) {
 			decimal = sprintf("%.1f", 100 * exception_pass / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_pass_exceptions = " exception_pass " (" decimal "%)";
@@ -380,6 +397,12 @@ if ( assessment_file ) {
 	if ( ( pass + error + warning) > 0) {
 		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning))
 		print "number_of_error = " error " (" decimal "%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_error / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_error = " nist_total_error " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_error = " nist_total_error " (0.0%)";
+		}
 		if ( exception_error + exception_warning + exception_psirt > 0) {
 			decimal = sprintf("%.1f", 100 * exception_error / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_error_exception = " exception_error " (" decimal "%)";
@@ -388,6 +411,12 @@ if ( assessment_file ) {
 		}
 	} else {
 		print "number_of_error = " error " (0.0%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_error / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_error = " nist_total_error " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_error = " nist_total_error " (0.0%)";
+		}
 		if ( exception_error + exception_warning + exception_psirt > 0) {
 			decimal = sprintf("%.1f", 100 * exception_error / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_error_exception = " exception_error " (" decimal "%)";
@@ -426,6 +455,12 @@ if ( assessment_file ) {
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * warning / ( pass + error + warning + psirt))
 		print "number_of_warning = " warning " (" decimal "%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_warning / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_warning = " nist_total_warning " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_warning = " nist_total_warning " (0.0%)";
+		}
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_warning / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_warning_exception = " exception_warning " (" decimal "%)";
@@ -434,6 +469,12 @@ if ( assessment_file ) {
 		}
 	} else {
 		print "number_of_warning = " warning " (0.0%)";
+		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
+			decimal_cis = sprintf("%.1f", 100 * nist_total_warning / (nist_total_pass + nist_total_error + nist_total_warning))
+			print "number_of_nist_warning = " nist_total_warning " (" decimal_cis "%)";
+		} else {
+			print "number_of_nist_warning = " nist_total_warning " (0.0%)";
+		}
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_warning / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_warning_exception = " exception_warning " (" decimal "%)";
@@ -472,6 +513,7 @@ if ( assessment_file ) {
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * psirt / ( pass + error + warning + psirt))
 		print "number_of_psirt = " psirt " (" decimal "%)";
+		print "number_of_nist_psirt = 0 (0.0%)";
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_psirt_exception = " exception_psirt " (" decimal "%)";
@@ -480,6 +522,7 @@ if ( assessment_file ) {
 		}
 	} else {
 		print "number_of_psirt = " psirt " (0.0%)";
+		print "number_of_nist_psirt = 0 (0.0%)";
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
 			print "number_of_psirt_exception = " exception_psirt " (" decimal "%)";
@@ -544,44 +587,81 @@ if ( assessment_file ) {
 	}
 
 	print "-------------------------------------";
-	print "---- CIS benchmark key indicators----";
+	print "---- NIST 800-53 key indicators----";
 	print "-------------------------------------";
 
-	cis_total = cis_total_pass + cis_total_fail + cis_total_warning;
-	if (cis_total > 0) {
+	# Load NIST official benchmark controls
+	nist_official_file = (DATABASE_NIST_OFFICIAL != "") ? DATABASE_NIST_OFFICIAL : "database/db_nist800-53.txt"
+	nist_official_total = 0
+	nist_official_covered = 0
+	nist_official_header_skip = 0
 
-		cis_compliance = sprintf("%.1f", 100 * cis_total_pass / cis_total);
-		print "cis_overall_compliance = " cis_compliance "%";
-		print "cis_pass = " cis_total_pass;
-		print "cis_fail = " cis_total_fail;
-		print "cis_warning = " cis_total_warning;
-		print "";
+	# Initialize per-family tracking
+	delete family_total
+	delete family_covered
 
-		# Aggregate by category
-		delete cat_pass;
-		delete cat_fail;
-		for (cis_id in cis_pass) {
-			cat = cis_category[cis_id];
-			cat_pass[cat] += cis_pass[cis_id];
-			cat_fail[cat] += cis_fail[cis_id];
+	while ((getline nist_line < nist_official_file) > 0) {
+		if (nist_official_header_skip == 0) {
+			nist_official_header_skip = 1
+			continue
 		}
+		split(nist_line, nist_fields, ";")
+		nist_official_nist_id = tolower(trim(nist_fields[1]))
+		nist_official_total++
 
-		# Print top 5 weakest controls
-		print "---- weakest CIS controls ----";
-		delete weak_controls;
-		for (cis_id in cis_pass) {
-			ctotal = cis_pass[cis_id] + cis_fail[cis_id] + cis_warning[cis_id];
-			if (ctotal > 0) {
-				comp = cis_pass[cis_id] / ctotal;
-				weak_controls[cis_id] = comp;
-			}
+		# Extract family prefix (e.g., "ac", "au", "sc", "si" from "ac-3", "au-8", etc.)
+		family = ""
+		match(nist_official_nist_id, /^([a-z]+)/)
+		family = tolower(substr(nist_official_nist_id, RSTART, RLENGTH))
+
+		# Initialize family counters if not exists
+		if (!(family in family_total)) {
+			family_total[family] = 0
+			family_covered[family] = 0
 		}
-		asorti(weak_controls, sorted_ids, "@val_num_asc");
-		for (i = 1; i <= 5 && i <= length(sorted_ids); i++) {
-			cis_id = sorted_ids[i];
-			ctotal = cis_pass[cis_id] + cis_fail[cis_id] + cis_warning[cis_id];
-			comp = sprintf("%.1f", 100 * weak_controls[cis_id]);
-			printf "\t%s: %s%% (%d pass, %d fail, %d warning)\n", cis_id, comp, cis_pass[cis_id], cis_fail[cis_id], cis_warning[cis_id];
+		family_total[family]++
+
+		# Check if this NIST ID is covered in our tests
+		is_covered = 0
+		if (nist_official_nist_id in nist_pass || nist_official_nist_id in nist_fail || nist_official_nist_id in nist_warning) {
+			nist_official_covered++
+			family_covered[family]++
+			is_covered = 1
+		}
+	}
+	close(nist_official_file)
+
+	if (nist_official_total > 0) {
+		nist_official_coverage = sprintf("%.1f", 100 * nist_official_covered / nist_official_total)
+		print "nist_official_coverage = " nist_official_coverage "% (" nist_official_total " total, " nist_official_covered " covered)"
+	}
+
+	# Sort families and print coverage for each
+	n = asorti(family_total, families_sorted)
+	for (i = 1; i <= n; i++) {
+		fam = families_sorted[i]
+		total = family_total[fam]
+		covered = family_covered[fam]
+		if (total > 0) {
+			fam_coverage = sprintf("%.1f", 100 * covered / total)
+			fam_name = ""
+			if (fam == "ac") fam_name = "Access_Control"
+			else if (fam == "au") fam_name = "Audit_and_Accountability"
+			else if (fam == "at") fam_name = "Awareness_and_Training"
+			else if (fam == "ca") fam_name = "Security_Assessment_and_Authorization"
+			else if (fam == "cm") fam_name = "Configuration_Management"
+			else if (fam == "ia") fam_name = "Identification_and_Authentication"
+			else if (fam == "ir") fam_name = "Incident_Response"
+			else if (fam == "ma") fam_name = "Maintenance"
+			else if (fam == "mp") fam_name = "Media_Protection"
+			else if (fam == "pl") fam_name = "Planning"
+			else if (fam == "ps") fam_name = "Personnel_Security"
+			else if (fam == "pe") fam_name = "Physical_and_Environmental_Protection"
+			else if (fam == "ra") fam_name = "Risk_Assessment"
+			else if (fam == "sa") fam_name = "System_and_Services_Acquisition"
+			else if (fam == "sc") fam_name = "System_and_Communications_Protection"
+			else if (fam == "si") fam_name = "System_and_Information_Integrity"
+			print "nist_" fam "_" fam_name " = " fam_coverage "% (" covered "/" total ")"
 		}
 	}
 
@@ -597,13 +677,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_high[name] > 0) {
-			cis_ref = "";
-			if (name in cis_map) {
-				cis_id = cis_map[name];
-				cis_msg = cis_control[cis_id];
-				cis_ref = " (" cis_id " " cis_msg ")";
+			nist_ref = "";
+			if (name in nist_map) {
+				nist_id = nist_map[name];
+				nist_msg = nist_control[nist_id];
+				nist_ref = " (ref nist " nist_id " " nist_msg ")";
 			}
-			print "\t" name cis_ref " = " tests_error_count_high[name];
+			print "\t" name nist_ref " = " tests_error_count_high[name];
 		}
 	}
 	asorti(tests_error_count_medium, sorted_names, "@val_num_desc")
@@ -611,13 +691,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_medium[name] > 0) {
-			cis_ref = "";
-			if (name in cis_map) {
-				cis_id = cis_map[name];
-				cis_msg = cis_control[cis_id];
-				cis_ref = " (" cis_id " " cis_msg ")";
+			nist_ref = "";
+			if (name in nist_map) {
+				nist_id = nist_map[name];
+				nist_msg = nist_control[nist_id];
+				nist_ref = " (ref nist " nist_id " " nist_msg ")";
 			}
-			print "\t" name cis_ref " = " tests_error_count_medium[name];
+			print "\t" name nist_ref " = " tests_error_count_medium[name];
 		}
 	}
 	asorti(tests_error_count_low, sorted_names, "@val_num_desc")
@@ -625,13 +705,13 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_low[name] > 0) {
-			cis_ref = "";
-			if (name in cis_map) {
-				cis_id = cis_map[name];
-				cis_msg = cis_control[cis_id];
-				cis_ref = " (" cis_id " " cis_msg ")";
+			nist_ref = "";
+			if (name in nist_map) {
+				nist_id = nist_map[name];
+				nist_msg = nist_control[nist_id];
+				nist_ref = " (ref nist " nist_id " " nist_msg ")";
 			}
-			print "\t" name cis_ref " = " tests_error_count_low[name];
+			print "\t" name nist_ref " = " tests_error_count_low[name];
 		}
 	}
 	asorti(tests_error_count_info, sorted_names, "@val_num_desc")
@@ -639,14 +719,15 @@ if ( assessment_file ) {
 	for (i = 1; i <= length(sorted_names); i++) {
 		name = sorted_names[i];
 		if (tests_error_count_info[name] > 0) {
-			cis_ref = "";
-			if (name in cis_map) {
-				cis_id = cis_map[name];
-				cis_msg = cis_control[cis_id];
-				cis_ref = " (" cis_id " " cis_msg ")";
+			nist_ref = "";
+			if (name in nist_map) {
+				nist_id = nist_map[name];
+				nist_msg = nist_control[nist_id];
+				nist_ref = " (ref nist " nist_id " " nist_msg ")";
 			}
-			print "\t" name cis_ref " = " tests_error_count_info[name];
+			print "\t" name nist_ref " = " tests_error_count_info[name];
 		}
 	}
+
 }
 }

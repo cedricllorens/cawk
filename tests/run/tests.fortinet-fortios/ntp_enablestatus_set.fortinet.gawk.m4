@@ -13,7 +13,8 @@
 # @purpose : check if <ntp enable status> is set
 # @description : missing ntp enable status configuration can lead to time synchronization issues affecting log correlation and security auditing
 # @actions : set <ntp enable status> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.2.1 | Ensure NTP is configured | Logging and Timestamping
+# @nist800-53_ref : AU-8(1) | Audit and Accountability | Ensure time synchronization with authoritative source is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

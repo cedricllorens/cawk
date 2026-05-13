@@ -13,7 +13,8 @@
 # @purpose : check if <snmp v1v2 rw> is not set
 # @description : snmp v1v2 read-write community strings allow configuration changes via an insecure protocol
 # @actions : disable snmp v1v2 read-write access and use snmp v3 with appropriate privileges (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.2 | Ensure SNMPv3 with authentication | SNMP
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

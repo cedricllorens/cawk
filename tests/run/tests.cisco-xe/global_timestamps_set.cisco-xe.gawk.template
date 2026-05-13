@@ -11,9 +11,9 @@
 # @supplier : cisco-xe
 # @purpose : check if <service timestamps log datetime> is set
 # @description : without timestamp configuration, log entries lack date and time information, making security incident correlation and forensic analysis unreliable
-# @risk_level : medium
 # @actions : set <service timestamps log datetime msec> and <service timestamps debug datetime msec> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1.2 | Ensure logging timestamps are set | Logging
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

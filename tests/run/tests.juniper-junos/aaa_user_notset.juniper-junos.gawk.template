@@ -13,7 +13,8 @@
 # @purpose : check that <aaa forbidden users> are not set
 # @description : presence of forbidden aaa users indicates unauthorized or default accounts that should be removed
 # @actions : remove forbidden aaa users and enforce least-privilege account management (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.3 | Ensure local users are minimized | Authentication, Authorization & Accounting
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

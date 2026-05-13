@@ -13,7 +13,8 @@
 # @purpose : check if each user-interface vty has <acl outbound>
 # @description : vty lines without outbound acl allow unrestricted outbound connections from the device
 # @actions : apply an outbound acl on all user-interface vty lines to control outbound management traffic (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure user access is properly controlled | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

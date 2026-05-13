@@ -1,0 +1,155 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# This script generates database/db_nist_mappings.json from database/db_info.txt
+# It extracts NIST 800-53 references and creates vendor-specific mappings
+#
+# Usage: gawk -f catalog_nist_mappings.gawk database/db_info.txt > database/db_nist_mappings.json
+# Output: JSON file with test name mappings to NIST 800-53 controls
+# ------------------------------------------------------------
+
+BEGIN {
+    FS = ";"
+    OFS = ";"
+    output_file = "database/db_nist_mappings.json"
+    first_mapping = 1
+}
+
+NR == 1 {
+    # Skip header line
+    next
+}
+
+{
+    # Parse db_info.txt line:
+    # audit;supplier;test_name;purpose;description;actions;nist800-53_ref;risk_level;authors
+
+    audit           = $1
+    supplier        = $2
+    full_test_name  = $3
+    nist_ref        = $7
+
+    # Skip lines with missing test_name or NIST reference
+    if (full_test_name == "" || nist_ref == "" || nist_ref ~ /^[[:space:]]*$/) {
+        next
+    }
+
+    # Extract base test_name from "test_name.supplier.gawk"
+    # Pattern: remove ".{supplier}.gawk" from the end
+    test_base = full_test_name
+
+    # Remove .gawk extension
+    gsub(/\.gawk$/, "", test_base)
+
+    # Remove .{supplier} part: find last dot and remove everything after it
+    if (match(test_base, /\.[^.]+$/)) {
+        test_base = substr(test_base, 1, RSTART - 1)
+    }
+
+    # Skip if extraction failed
+    if (test_base == "") {
+        next
+    }
+
+    # Store mappings by test_name base
+    if (!(test_base in tests)) {
+        tests[test_base] = 1
+        test_list[++test_count] = test_base
+    }
+
+    # Store supplier-specific reference
+    supplier_refs[test_base][supplier] = nist_ref
+    all_suppliers[supplier] = 1
+}
+
+END {
+    # Generate JSON header
+    print "{" > output_file
+    print "  \"mappings\": {" >> output_file
+
+    # Process each test in order
+    for (i = 1; i <= test_count; i++) {
+        test = test_list[i]
+
+        # Print comma separator (except for first entry)
+        if (!first_mapping) {
+            print "," >> output_file
+        }
+        first_mapping = 0
+
+        # Start test entry
+        printf "    \"%s\": {\n", test >> output_file
+
+        # Find the most common NIST reference (default)
+        default_ref = ""
+        max_suppliers = 0
+        ref_supplier_count[""] = 0
+
+        for (supplier in supplier_refs[test]) {
+            ref = supplier_refs[test][supplier]
+            ref_supplier_count[ref]++
+            if (ref_supplier_count[ref] > max_suppliers) {
+                max_suppliers = ref_supplier_count[ref]
+                default_ref = ref
+            }
+        }
+
+        # Print "default" first
+        first_ref = 1
+        if (default_ref != "") {
+            printf "      \"default\": \"%s\"", escape_json(default_ref) >> output_file
+            first_ref = 0
+        }
+
+        # Print supplier-specific mappings (except default)
+        for (supplier in supplier_refs[test]) {
+            ref = supplier_refs[test][supplier]
+
+            # Skip if this is the default reference
+            if (ref == default_ref) {
+                continue
+            }
+
+            if (!first_ref) {
+                printf "," >> output_file
+            }
+            printf "\n      \"%s\": \"%s\"", supplier, escape_json(ref) >> output_file
+            first_ref = 0
+        }
+
+        # Close test entry
+        printf "\n    }" >> output_file
+    }
+
+    # Close JSON structure
+    print "" >> output_file
+    print "  }" >> output_file
+    print "}" >> output_file
+
+    close(output_file)
+}
+
+# Escape special characters for JSON
+function escape_json(str,    result, i, c) {
+    result = ""
+    for (i = 1; i <= length(str); i++) {
+        c = substr(str, i, 1)
+        if (c == "\"") {
+            result = result "\\\""
+        } else if (c == "\\") {
+            result = result "\\\\"
+        } else if (c == "\n") {
+            result = result "\\n"
+        } else if (c == "\r") {
+            result = result "\\r"
+        } else if (c == "\t") {
+            result = result "\\t"
+        } else {
+            result = result c
+        }
+    }
+    return result
+}

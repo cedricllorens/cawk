@@ -13,7 +13,8 @@
 # @purpose : check if an interface has no <ip proxy-arp>
 # @description : ip proxy-arp may trigger attacks
 # @actions : set <no ip proxy-arp> on interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.2 | Ensure proxy-arp is disabled | Network Protocols
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

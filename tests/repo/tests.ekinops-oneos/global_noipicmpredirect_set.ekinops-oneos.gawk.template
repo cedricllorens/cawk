@@ -12,7 +12,8 @@
 # @purpose : check if <no ip icmp redirect> is set
 # @description : ip icmp redirect may trigger attacks
 # @actions : set <no ip icmp redirect> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.1 | Ensure unsafe IP options are disabled | Network Protocols
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

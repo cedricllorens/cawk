@@ -13,7 +13,8 @@
 # @purpose : check when an <routing> is def and not ref / check when an <routing> is ref and not def
 # @description : routing policy defined but not referenced represents dead configuration; routing policy referenced but not defined causes forwarding errors
 # @actions : align routing policy definitions and references to ensure consistency (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 4.1.1 | Ensure routing protocols are secured | Routing
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high | info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

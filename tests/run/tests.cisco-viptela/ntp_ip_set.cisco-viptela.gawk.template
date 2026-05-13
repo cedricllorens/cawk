@@ -12,7 +12,8 @@
 # @purpose : check if <ntp server> is set
 # @description : missing ntp server configuration can lead to time synchronization issues affecting log correlation and security auditing
 # @actions : set <ntp server> with a trusted ntp source (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.2.1 | Ensure NTP is configured | Logging and Timestamping
+# @nist800-53_ref : AU-8(1) | Audit and Accountability | Ensure time synchronization with authoritative source is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if an interface has no <ip source-route>
 # @description : ip source-route enabled on interfaces allows attackers to specify routing paths and bypass network controls
 # @actions : disable ip source-route on all interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.1 | Ensure IP source-route is disabled | Network Protocols
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

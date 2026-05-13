@@ -12,7 +12,8 @@
 # @purpose : check if <firewall management default permit> is not set
 # @description : firewall management default permit allows all unmatched traffic to the management plane instead of denying it
 # @actions : change the default management firewall policy from permit to deny (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure default management policy is deny | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

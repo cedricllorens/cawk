@@ -13,7 +13,8 @@
 # @purpose : check when a <snmp view> is def and not ref / check when a <snmp view> is ref and not def
 # @description : snmp view defined but not referenced represents dead configuration; snmp view referenced but not defined causes access control errors
 # @actions : align snmp view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.0.0 | Review and classify | General Security
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high | info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

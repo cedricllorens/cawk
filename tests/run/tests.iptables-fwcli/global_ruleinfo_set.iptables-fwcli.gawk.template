@@ -13,7 +13,8 @@
 # @purpose : perform a basic set of checks on the rules
 # @description : basic rule quality checks detect common misconfigurations and policy gaps in the iptables ruleset
 # @actions : review and correct rules that fail basic quality checks (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.4 | Ensure firewall rules are documented | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info | low
 # @authors : gauthier goncalves, wael elsingaby
 # ------------------------------------------------------------
 

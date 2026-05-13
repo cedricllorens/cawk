@@ -13,7 +13,8 @@
 # @purpose : check if <ssh version 1> is not set
 # @description : ssh version 1 has known cryptographic vulnerabilities and must not be used for remote management
 # @actions : set ssh version 2 to enforce ssh version 2 only (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.5.2 | Ensure SSH version 2 is used | SSH
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

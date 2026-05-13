@@ -13,7 +13,8 @@
 # @purpose : check if a <fw zone> is set
 # @description : missing firewall zone security configuration may allow unrestricted traffic between network zones
 # @actions : configure zone-based firewall with appropriate zone-pairs and policies (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.4 | Ensure firewall zones are configured | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

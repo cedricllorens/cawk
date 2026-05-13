@@ -12,7 +12,8 @@
 # @purpose : provide rule <var> information
 # @description : variable information checks provide visibility into macro/variable usage and help identify undefined or unused references
 # @actions : review variable information output and address any identified gaps or anomalies (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.4 | Ensure firewall rules are documented | Firewall Policy
+# @nist800-53_ref : CM-6 | Configuration Management | Ensure configuration settings are established and enforced
+# @risk_level : info
 # @authors : adrien lebout
 # ------------------------------------------------------------
 

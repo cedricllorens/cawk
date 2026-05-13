@@ -12,7 +12,8 @@
 # @purpose : check if <snmp v3 host> is set
 # @description : missing snmp v3 trap host configuration means security events and traps may not be forwarded to the monitoring system
 # @actions : set <snmp-server host> with snmp v3 credentials pointing to the monitoring trap receiver (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.6 | Ensure SNMPv3 traps are configured | SNMP
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

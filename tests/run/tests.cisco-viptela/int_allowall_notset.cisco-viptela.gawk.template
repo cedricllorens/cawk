@@ -12,7 +12,8 @@
 # @purpose : check if <allow-service all> is not set on tunnel interfaces
 # @description : allow-service all on tunnel interfaces exposes unnecessary services and expands the attack surface
 # @actions : replace <allow-service all> with explicit allowed services on tunnel interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.1 | Ensure interface rules are properly configured | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

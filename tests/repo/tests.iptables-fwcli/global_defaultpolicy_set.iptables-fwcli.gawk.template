@@ -13,7 +13,8 @@
 # @purpose : check that <-P default policy> is set
 # @description : missing default policy means traffic not matched by explicit rules may be allowed by default instead of denied
 # @actions : set a default drop policy on all chains to enforce implicit deny (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure default firewall policy is set | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : medium
 # @authors : wael elsingaby
 # ------------------------------------------------------------
 

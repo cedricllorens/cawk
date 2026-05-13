@@ -12,8 +12,8 @@
 # @purpose : Check when routing community definitions are referenced and vice versa
 # @description : Validates that all routing community definitions have corresponding references and all references have definitions (pelase refer to engineering/operations guidelines for further information)
 # @actions : Check community definitions, Check community references
-# @cis_benchmark_ref : 4.1.1 | Ensure routing is properly configured | Routing
-# @risk_level : high
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high | info
 # -----------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

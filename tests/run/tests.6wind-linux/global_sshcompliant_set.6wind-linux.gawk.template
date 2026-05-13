@@ -12,7 +12,8 @@
 # @purpose : check if <vrf main><ssh-server> block is compliant (port, permit-root-login, enabled true)
 # @description : non-compliant SSH server configuration (missing port, root login allowed, or service disabled) could expose the device to unauthorized remote access
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.5.1 | Ensure SSH is securely configured | SSH
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if each user-interface vty has <ssh inbound>
 # @description : vty lines without ssh inbound protocol restriction may allow insecure protocols such as telnet for inbound connections
 # @actions : configure protocol inbound ssh on all user-interface vty lines (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure user access is properly controlled | Access Control
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

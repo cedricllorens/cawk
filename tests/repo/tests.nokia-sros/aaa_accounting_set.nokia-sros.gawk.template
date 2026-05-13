@@ -12,7 +12,8 @@
 # @purpose : check if <aaa accounting> is set
 # @description : missing aaa accounting means user actions are not logged for audit and forensic purposes
 # @actions : configure aaa accounting to record user authentication and command activity (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.2 | Ensure AAA accounting is configured | Authentication, Authorization & Accounting
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

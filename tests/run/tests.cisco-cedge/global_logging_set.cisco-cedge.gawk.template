@@ -12,7 +12,8 @@
 # @purpose : check if <logging host> is set for centralized logging
 # @description : logging can be used to track system events and potential security incidents
 # @actions : set logging host (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1.1 | Ensure syslog logging is enabled | Logging
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

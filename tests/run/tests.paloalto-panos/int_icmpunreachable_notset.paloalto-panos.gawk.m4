@@ -13,7 +13,8 @@
 # @purpose : check if an interface has no <icmp-unreachable yes>
 # @description : icmp unreachables enabled on interfaces may reveal network topology information to potential attackers
 # @actions : disable icmp-unreachable on all interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.5 | Ensure ICMP unreachables are disabled | Network Protocols
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

@@ -1,367 +1,501 @@
-# ------------------------------------------------------------
-# cawk is subject to a MIT open-source licence
-# please refer to the MIT licence file for further information
-# ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2026 by Cedric Llorens
-# ------------------------------------------------------------
+# cawk Changelog
 
-v3.5.0 (March 2026):
-	Package:
-	- cawk is now managed under Claude Code
-	Tests:
-	- update test regex for some cisco-ios, cisco-xe and cisco-xr suppliers
-	- update all test banners to include @metadata in order to build a full detailed catalog
-	- add new routing consistency tests for juniper-junos
-	Makefile:
-	- update catalog targets and add new catalog targets
-	Exceptions:
-	- add a suggested traceability format for each exception
+> **cawk is subject to an MIT open-source license**  
+> Please refer to the LICENSE file for further information
+> **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
-v3.4.0 (March 2026):
-	Makefile:
-	- (beta) You may add an environment variable CAWK_SYSNAME to use special common functions implemented in database/common/special_common.gawk.template
-	  instead of common/common.gawk.template (refer to the README for further information)
-	- Added a new TMP_ASSESSMENT_FILES variable used to clean all intermediate supplier assessment files, set to <yes> by default
-	 (remain onlu *all* report files) (see Makefile.support.mk)
-	- Updated Makefile for performance enhancements
-	Package Integrity:
-	- Added an additional sha521sum check to verify the integrity of the package before running an assessment
-	Makefile.docker:	
-	- Updated to inherit variables from Makefile.support.mk (see: CAWK_VERSION in Makefile.support.mk)
-	Tests:
-	- Reviewed all existing tests for ACL consistency and added new supplier ones: <packetfilter-fwcli>, <ekinops-oneos>
-	- The ACL consistency library has been thoroughly reviewed (ref. common/common_hypercube-lib.gawk.template)
+## [v3.5.0] - March 2026
 
-v3.3.0 (January 2026):
-	Makefile:
-	- add new supplier <ekinops-oneos>
-	- add a new target <sync_teststoconfs_run> : sync tests to confs for <audit=AUDIT_NAME> assessment
-	- add a new target <sync_teststoconfs_run_audit> : sync tests to confs for only all <audit=AUDIT_NAME> assessments
-	- optimize Makefile to avoid reaching Unix shell maximum line length
-	Tests:
-	- add new tests for <iptables-fwcli> and <ekinops-oneos> (ref new authors)
-	Makefile.cawk.version:
-	- This is a specific Makefile used to manage the cawk version packages (please refer to the README for further information)
-	  (this Makefile must be located in the parent directory of cawk installations)
+### Package
+- cawk is now managed under Claude Code
 
-v3.2.0 (December 2025):
-	Makefile:
-	- add a new variable that can be called with gmake like:
-		gmake check_run audit=<AUDIT_NAME> PSIRT=yes : only compute PSIRT tests if you intend to build an audit only for psirt purpose
-		gmake check_run audit=<AUDIT_NAME> PSIRT=no (dfault value) : compute all the tests
-		(ref Makefile.support.mk file)
-	- fix a bug in database.repo copy to database
-	Docker:
-	- 3 new files have been added to build a cawk container based on:
-		- Makefile.docker file, 
-		- Dockerfile file, 
-		- cawk_docker_run.sh script
-		(please refer to the README for further information)
+### Tests
+- Update tests regexes for suppliers: cisco-ios, cisco-xe, cisco-xr
+- Update all tests to include comprehensive @metadata for test catalog generation (db_info.txt)
+  - @test_name, @supplier, @purpose, @description, @actions, @nist800-53_ref, @authors
+- Add new juniper-junos tests:
+  - routing_communitydefref_set
+  - routing_ribgroupdefref_set
+  - firewall_familyinet_set
+  - syslog_host_set
+  - snmp_v3viewdefref_set
+  - services_sshv1_notset
+  - ntp_restrict_set
 
-v3.1.0 (October 2025):
-	Makefile:
-	- add a new script <database_sync_psirt.sh> in <database/scripts> in order to build psirt inventory
-	  (this script is runned with <sync_psirt> target)
-	  (refer to README for further information)
-	- add a new target <sync_psirt> target to build psirt inventory
-	- add a new target <database_repo_copy> allowing to update <database> directory only with missing 
-	  files (database.repo -> database), this target is runned with <migrate> target
-	  (refer to README for further information)
-	- fix a bug with $(ECHO) -e command (not portable and printing "-e" in files)
-	- fix a bug with <backup_audit_run> find command (-type f -o -type d not portable, database not fully backup)
-	- update database_sync with a new option regex_path_exclude in order to exclude configurations based on their
-	  paths, all associated cawk files have been updated
-	Tests:
-	- add advanced psirt test code allowing to match line, block, os version, etc.
-	  - one advanced psirt code has been added for cisco-ios, cisco-xe, cisco-viptela and cisco-xr
-	  - it is built over <common/test_generic_psirt.gawk.template> v1.0 code
-	  - such psirt test has <.gawk.include> suffix
-	- <username> test is now available for cisco-xe supplier scope
-	- all cisco-ios tests are now available for cisco-xe supplier scope
+### Makefile
+- Update tests_run_copy and tests_run_audit_copy targets
+- Update catalog targets and add new catalog targets
+  - `catalog_build`, `catalog_repo`, `catalog_run`, etc.
+  - See README for further information
+- Add new exceptions targets and information banner
+  - `exceptions_build_repo`: build exceptions from repo .m4 files
+  - `exceptions_build_run`: build exceptions from run .m4 files (or run_AUDIT_NAME)
+  - `exceptions_run_copy audit=AUDIT_NAME`: copy exceptions from repo to audit (no overwrite)
+  - `exceptions_run_audit_copy`: copy exceptions from repo to all named audits
+- Add exception database build and display targets
+  - `exceptions_build`: rebuild database/db_exception.txt from all .m4 files
+  - `exceptions_build_repo`: build exception database for repo/ and run/
+  - `exceptions_build_run audit=AUDIT_NAME`: build for specific audit
+  - `catalog_exceptions_repo`: display exceptions by supplier for repo
+  - `catalog_exceptions_run [audit=AUDIT_NAME]`: display for run or specific audit
+- Add NIST 800-53 compliance coverage targets
+  - `nist_coverage_official`: display official NIST 800-53 controls with coverage metrics
+  - `nist_coverage_repo`: calculate coverage percentage for repo assessment
+  - `nist_coverage_run [audit=AUDIT_NAME]`: calculate coverage for run or named audit
+- Integrate exceptions_build into create_audit and delete_audit workflows
+- Extend create_audit and delete_audit with supplier parameter for incremental audit management
+  - `create_audit audit=AUDIT_NAME`: create full audit (all suppliers)
+  - `create_audit audit=AUDIT_NAME supplier=SUPPLIER`: add supplier to existing audit
+  - `delete_audit audit=AUDIT_NAME`: delete full audit
+  - `delete_audit audit=AUDIT_NAME supplier=SUPPLIER`: remove supplier from existing audit
+- Add sync targets to maintain test/exception scope consistency with configurations
+  - `sync_exceptionstoconfs_run audit=AUDIT_NAME`: remove exceptions for suppliers without confs in run_AUDIT_NAME
+  - `sync_exceptionstoconfs_run_audit`: sync exceptions for all named audits
 
-v3.0.0 (October 2025):
-	Makefile:
-	- update Makefile in order to have a new type of test allowing to check advanced psirt vulnerabilities 
-	  (statements match, ios versions regex match, chassis regex match, etc.) in a future release
-	- update Makefile to support running cawk as a Docker container in a future release
-	- enforce Makefile controls during processing
-	- set a <EGREP variable> in Makefile.support.mk for pointing to <grep -E> rather than to <egrep>
-	- add a new target <clean_archive_older> to remove archive files older than the ARCHIVE_OLDER_DAYS value defined in Makefile.support.mk
-	- <sync_run target> update 
-	  - to add a new regex allowing to match os supplier during the sync
-	  (refer to README for further information)
-	  - remove the confs directories by default and create only the ones linked to existing configurations
-	  (refer to README for further information)
-	Tests:
-	- <banner> tests are now available for all cisco supplier scopes
-	- <enable password> tests are now available for all cisco supplier scopes
-	- <logging> tests are now available for all cisco supplier scopes
+### Common
+- Update report.gawk.template, report_sumjson.gawk.template to manage compliance framework indicators
+- See README for further information
 
-v2.9.0 (September 2025):
-	Makefile:
-	- improved test execution performance by allowing multiple configuration files per test run
-	  (this option can be changed in Makefile.support.mk with the TEST_EXE variable)
-	- general performance improvements (.INTERMEDIATE and *.swap for all scopes)
-	- add a new target gmake version to display the current cawk version
-	- add two targets gmake tests_check and tests_check_nok to check the compliance validity of all tests
-	Tests:
-	- add a banner test for cisco-ios scope only (to be replicated for other scopes in future releases)
-	- updated tests for older crypto algorithms across all supplier scopes (ref support/tests.sed)
-	- fixed all inconsistent test output names and include an internal check before package release. 
-	  note that some tests names have changed to be more consistent (it could impact existing exceptions)
-	  (ref common/check_test.gawk.template will check test consistency and format compliance)
-	  (inconsisstencies can be checked directly with gmake tests_check and gmake tests_check_nok targets)
+### NIST 800-53 Compliance
+- Add database/db_nist800-53.txt: official NIST 800-53 controls reference
+  - Format: nist_id;category;description;applicable_suppliers
+  - NIST controls applied during assessment reporting phase
+  - Used to calculate nist_official_coverage percentage and compliance metrics
+- Control coverage mapping:
+  - database/db_nist800-53.txt — source of official NIST 800-53 controls (one entry per control ID)
+  - Controls mapped to applicable suppliers (e.g., cm-7 applies to all network device types)
+  - Coverage percentage calculated as: (tests mapped to NIST controls / total NIST controls) × 100%
+- Integration with assessments:
+  - NIST coverage automatically included in summary reports (.all.*.txt)
+  - Coverage percentage displayed as compliance framework indicator
+  - Allows tracking NIST 800-53 compliance progress across assessments
 
-v2.8.0 (July 2025):
-	Makefile:
-	- in reports, include the number of exceptions in the summary report
-	- in reports, include the number of deadbeef configurations in the summary report
-	- in email_send target, add the summary as a file attached and only display the common/common_message.txt in the email body
-	- in view_error and view_run targets, simplify the output
-	- in targets tests_run_copy and tests_run_audit_copy, add a check to avoid copying files that already exist in run_audit
-	Tests:
-	- for the following suppliers scopes : cisco-ios, cisco-xe and cisco-cedge, update global tests to take into consideration 
-	the default commands (hidden commands), avoiding to set many exceptions for each supplier scope assessment
-	- for the following suppliers scopes : cisco-ios, cisco-xe, update line aux tests to take into consideration that other 
-	line commands can be defined for modem, etc.
-	Common:
-	- review code of timeline reporting to enhance performance
+### Exceptions Database
+- Add database/db_exception.txt: centralized exception rules repository
+  - Format: audit;supplier;exception_id;approver;date;reason
+  - Stores exception metadata for audit tracking and approval history
+  - Exception matching logic defined in source .m4 files (device/test/pattern regexes)
+- Exception sources:
+  - exceptions/repo/*.m4 files — source definitions with metadata (@exception_id, @approver, @date, @reason)
+    - Contains m4_cawk_exception() macros with device, test_name, error_pattern matching rules
+  - exceptions/run/*.m4 files — editable copy for default assessment
+  - exceptions/run_`audit`/*.m4 files — per-audit custom exceptions
+- Automatic integration:
+  - exceptions_build triggered automatically by `create_audit` and `delete_audit` workflows
+  - Ensures database/db_exception.txt stays synchronized with audit lifecycle
+  - Exceptions applied to summary and final reports (.all.*.csv, .all.*.json)
 
-v2.7.0 (June 2025):
-	Makefile:
-		- in reports:
-			- rename ".all.full." substring to ".all." substring for the final reports
-			- build *.idx (index of configurations assessed)
-			- build a new final psirt report (.all(.security./.audit./.psirt./.exception./.deadbeef.)) gathering 
-			all psirt errors
-			- build a timeline report for each final report (.all(.security./.audit./.psirt./.exception./.deadbeef.))
-			that could be injected into Microsoft PowerBI, Grafana, etc. as it includes a timestamp header for each error 
-			(year, month, day, week, number of devices assessed)
-			- for the final reports, the concept of deadbeef can be activated in Makefile.support.mk or by calling 
-			gmake with DEADBEEF like (gmake check_run audit=cawk DEADBEEF=yes):
-				- if DEADBEEF is set to "yes", then the deadbeef final report is generated and deadbeef devices 
-				are removed from other final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
-				- if DEADBEEF is set to "no", then the deadbeef final report is generated and deadbeef devices 
-				are kept in other final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
-				- a device is considered deadbeef by default if its configuration is older than the days value 
-				set in DEADBEEF_THRESHOLD_DAYS (default value is 30 days)
-		- in backup_run target, enforce that logs/run_audit/AUDIT_NAME logs are also backed up in the gzipped 
-		file (needed for cawk version migration)
-		- in migrate target, enforce the copy of tests by several finds rather than a single find command which can 
-		generate issues at some systems
-	Common:
-		- update the summary format for a better readability
-	Tests:
-		- updated 6wind-linux tests (enhanced test outputs)
+---
 
-v2.6.0 (may 2025):
-	Tests:
-		- update cisco-ios, cisco-xe, cisco-cedge *acls*defref* tests
-		- update cisco-ios, cisco-xe, cisco-cedge, cisco-xr *routing*defref* tests
-		- update juniper-junos *filter*defref* tests
-		- fix issues for sync_run target not working properly, update Makefile and common/sync_cawk_conf.gawk.template
-	Common:
-		- add a new "error stats" section showing a sorted list of most frequent test error names by occurrence by risk level
-	Cawk Makefile:
-		- update targets create_audit and delete_audit which write or remove audit=AUDIT_NAME in the various databases
-		- add a new status code psirt : to classify the errors as psirt
-		- add new targets: 
-			- tests_run_copy audit=AUDIT_NAME supplier=SUPPLIER_NAME
-				allows copying tests from repo to run_audit (supplier scope)
-			- tests_run_audit_copy 
-				allows copying tests from repo to run_audit (all supplier scopes) for all audit=AUDIT_NAME
-			- database_postaudit_(add,del,update) 
-				allows running post-assessment tasks like creating helpdesk tickets, etc. 
-				(please refer to the README for further information)
-			- migrate file=BACKUP_PATH_FILE 
-			  allowing to migrate from a cawk version to an another one
-				(please refer to the README for further information)
+## [v3.4.0] - March 2026
 
-v2.5.0 (april 2025):
-	Tests:
-		- add a new scope : 6wind-linux
-		- review the risk level and status codes of all *defref* tests
-	Cawk Makefile: 
-	  - by default reporting is linked to each supplier scope. now, in addition of the default reporting, a full reporting is 
-		  generated for all suppliers allowing to generate a full report, security report, audit report and summary report.
-		- generate cawk msg (only for assessment audit=AUDIT_NAME) when confs or tests directories are not found. it allows to 
-		  remove unused directories if needed. 
-		- add new targets to manage email notifications for cawk assessments, it refers to database_email_(add,del,update), 
-		  email_send(_audit)? targets (please refer to the README for further information)
-		- update gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH regex=REGEX_PATTERN/.* scope=SCOPE_FILE/none
-		  a scope can be provided to limit the configuration synchronization to a specific scope based on internal inventory
-			(please refer to the README for further information)
-		- fix some bugs when using view targets
-	Cawk Makefile.support.mk:
-		- JSON var is set to "no" by default, if set to "yes" json reporting is activated (i.e. Makefile.support.mk)
-	Cawk directories:
-		- add a log directory to store all cawk logs
+### Makefile
+- (beta) Environment variable CAWK_SYSNAME for special common functions
+  - Use database/common/special_common.gawk.template instead of common/common.gawk.template
+- New TMP_ASSESSMENT_FILES variable to clean intermediate supplier files (default: yes)
+- Performance enhancements
 
-v2.4.0 (march 2025):
-	Tests:
- 	- update and add new tests for supplier scopes : packetfilter-fwcli, iptables-fwcli, checkpoint-fwcli
-	- add a new supplier scope : cisco-xr
-	Cawk Makefile:
-	- add new sync targets to synchronize configurations from a central confs repository to a cawk assessment audit=AUDIT_NAME
-	  it refers to sync_run, sync_run_audit targets (please refer to the README for further information)
-	- add new backup targets to backup data linked to a cawk assessment audit=AUDIT_NAME (confs, tests, exceptions, reports)
-	  it refers to backup_run, backup_run_audit targets (please refer to the README for further information)
-	- add new restore targets to restore data linked to a cawk assessment audit=AUDIT_NAME (confs, tests, exceptions, reports)
-	  it refers to restore_run, restore_run_audit targets (please refer to the README for further information)
-	- add new targets to manage the cawk sync database used for confs synchronization
-	  it refers to database_view, database_sync_(add,del,update)
-	Directory structure:
-	- add a new directory <database> in the cawk root directory to store all cawk options in flat files
-	- add a new directory <backup> in the cawk root directory to store backup and restore data
+### Package Integrity
+- Additional sha521sum check to verify package integrity before assessment
 
-v2.3.0 (march 2025):
-	Tests:
-	- add a new supplier scope cisco-xe
-	- add new tests (snmp v3) for all these supplier scopes :
-	  cisco-ios, cisco-cedge, cisco-xe, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
-	Reports:
-	- computation of two key security indicators in the summary report:
-		- security Compliance : expressed as a percentage between 0% and 100%, where 100% is the best score
-		- average number of errors per Device : measured from 0 up to an upper bound, where 0 is the best score
-	- generate automatically json reports from csv reports using the cawk assessment format (ref README)
-	- generate automatically json reports from txt summary reports using the cawk summary headers
-	Cawk makefile:
-	- automatically build a tar.gz file in archives directory in reports/repo or reports/run or reports/run_AUDIT_NAME
-	  each time an assessment is runned, the date of day is part of the tar.gz filename
-	- you may clean reports or archives by new clean targets (clean_report_repo, ..., clean_archive_repo, ...), please
-	  refer to the cawk gmake help
+### Makefile.docker
+- Updated to inherit variables from Makefile.support.mk
 
-v2.2.0 (february 2025):
-	- add a new target <run_audit>, allowing to run all the assessments with AUDIT_NAMEs (audit=AUDIT_NAME)
-	- review all purpose/author sections and add new tests (lldp/cdp) for all supplier scopes :
-	  cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
-	- add new supplier scopes thanks to new authors : packetfilter-fw, iptables-fw, checkpoint-fw and new associated tests
-	  maxime souris, adrien lebout, pierre bertrand, lucas vanhaaren, gautier goncalves, wael elsingaby
+### Tests
+- Review all existing tests for ACL consistency
+- Add new suppliers: packetfilter-fwcli, ekinops-oneos
+- Thoroughly review ACL consistency library (common/common_hypercube-lib.gawk.template)
 
-v2.1.0 (january 2025): enforce a stabilized version of the v2.0.0 release train
-	- update date 2024-2025 in cawk root directory
-	- change checkdiff output generated by <gmake check> to be compliant with all linux/unix systems (default sort output may differ from os to os)
-	- add <.gitkeep> in all empty cawk directories to avoid that empty directories are not pushed in github
-	- enforce that the <run> repository is a full copy of the <repo> repository
-	- add a new target gicheckdist (implement counter-measures checks) in cawk Makefile to avoid deployment errors before github push
-	- optimize the cawk root Makefile for future supplier os deployment
-	- provide the procedure to submit a pull request
+---
 
-v2.0.1 (december 2024): add .gitkeep reports/repo and reports/run as not pushed in github
+## [v3.3.0] - January 2026
 
-v2.0.0 (november 2024): this is a major update with new usage of building <AUDIT-NAME> assessments
-	Common:
-	- add <number_of_pass_error> in the summary report
-	- review the output of the <gmake> command at cawk root directory (provide full help on the cawk gmake targets)
-	Makefile:
-	- review the Makefile parts
-	- use of variables to point out all cawk core directories
-	- able to create/delete/list an assessment based on an <AUDIT_NAME> thanks to new cawk targets : 
-		- gmake create_audit audit=AUDIT_NAME
-		- gmake delete_audit audit=AUDIT_NAME
-		- gmake list_audit
-		You may refer to README for further information and the number of assessments that can be built is limited by system resources
-	Directories:
-	- confs, tests, exceptions and reports directories setup have been reviewed and organized on the same design 
-	Tests:
-	- add new tests for cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
+### Makefile
+- Add new supplier: ekinops-oneos
+- New target `sync_teststoconfs_run`: sync tests to confs for audit=AUDIT_NAME
+- New target `sync_teststoconfs_run_audit`: sync tests to confs for all audits
+- Optimize Makefile to avoid Unix shell maximum line length
 
-v1.9.0 (october 2024):
-	Common:
-	- fix a small bug (Makefile - gmake catalog)
-        - add a new target : gmake common to provide the list of functions available in the common directory for tests
-	Tests:
-	- add new tests for cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
-	- review the paloalto-panos conf (add <deviceconfig> block) and update the tests accordingly
+### Tests
+- Add new tests for iptables-fwcli and ekinops-oneos (new authors)
 
-v1.8.0 (august 2024):
-	Common:
-	- fix some little bugs or bad ouputs of the Makefile
-	- include m4 preprocessing of exceptions to include later friendly m4 functions
-	- a test can has <.template> suffix and <.m4> suffix, for <.m4> a preprocessing 
-          is performed by m4 functions available in the cawk m4 directory. m4 allows to
-          define predefined templates of tests managing configuration block hierarchy 
-	  automatically
-	Tests:
-	- add a new supplier : cisco-cedge
-	- add new tests for cisco-ios, cisco-cedge, cisco-viptela (tests with *.m4 extension)
+### Makefile.cawk.version
+- Specific Makefile for version package management
+- Must be located in parent directory of cawk installations
 
-v1.7.0 (june 2024):
-	Common:
-	- build exceptions directory with empty exception files per supplier
-	- update Makefile to build for each assessment an exception report
-	Tests:
-	- Run and fix bugs on all suppliers tests
+---
 
-v1.6.0 (june 2024):
-	Common:
-	- migrate the fw rules assessment library in common directory
-	- add the <research> as supplier target for development purpose
-	- add a new risk level = info for audit purpose
-	- update reporting to take into consideration the new risk level info and sort the list of tests
-	Tests:
-	- add new tests checking cisco-ios simple acl with risk level info and add other tests
-	- add new tests checking huawei-vrp acl (partially done) with risk level info and add other tests
-	- add ntp tests for cisco-ios,juniper-junos,huawei-vrp,cisco-viptela and nokia-sros
+## [v3.2.0] - December 2025
 
-v1.5.0 (may 2024):
-	Common:
-	- add new Makefile target <view_error> to only view assessments errors
-	Tests:
-	- review all the tests and fix some bugs
-	For future release:
-	- work on firewall rules analysis in order to find redundant && inconsistent rules
-	- progress for cisco-ios scope
-	(i.e. research directory, only for dvt/test purpose) 
+### Makefile
+- New PSIRT variable for conditional test compilation
+  - `gmake check_run audit=<AUDIT_NAME> PSIRT=yes`: only PSIRT tests
+  - `gmake check_run audit=<AUDIT_NAME> PSIRT=no`: all tests (default)
+- Fix bug in database.repo copy
 
-v1.4.0 (april 2024):
-	Common:
-	- remove the init target in generated parallel Makefile built to avoid missing tests and silent mode
-	- enhance reporting with high, medium, low and review % computation with float
-	System:
-	- remove colors and add OK/NOK for gmake system (portability purpose)
-	Tests:
-	- add tests for cisco-ios,juniper-junos,huawei-vrp,cisco-viptela and nokia-sros
-	For future release:
-	- work on firewall rules analysis in order to find redundant && inconsistent rules
-	(i.e. research directory, only for dvt/test purpose) 
-	
-v1.3.0 (march 2024):
-	Makefile:
-	- add Makefile.support.mk in order to set make options (i.e. cawk parallel mode)
-	- update Makefile to turn on cawk in parallel mode
-	- add a new <system> target to check if the system is ready to run cawk
-	Tests:
-	- add tests for all suppliers (fix some tests outputs / reporting)
-	- add cisco-viptela supplier
-	For next release:
-	- work on analysis firewall rules to find redundant && inconsistent rules
-	(research directory, only for dvt/test purpose) 
+### Docker
+- Add 3 new files for cawk container:
+  - Makefile.docker
+  - Dockerfile
+  - cawk_docker_run.sh
+  - See README for details
 
-v1.2.0 (march 2024):
-	Makefile:
-	- review catalog output and tests running output
-	Tests:
-	- update all tests purposes with similar syntax
-	- add tests for all suppliers
-	- add paloalto-panos supplier
-	For next release:
-	- work to generate a Makefile that can runned in parallel, enforcing stable system and managing write race conditions
-	(commmon/gen_cawk_makefile.gawk.template), it will be used for huge number of devices assessment
+---
 
-v1.1.0 (february 2024):
-	Makefile:
-	- add new suppliers for future tests and add os suffix for each scope
-	- add view per scope thanks to <supplier=> variable called with view target
-	  gmake clean check_repo supplier=cisco-ios (or juniper-junos, etc.)
-	  gmake clean check_run supplier=cisco-ios (or juniper-junos, etc.)
-	  gmake view supplier=cisco-ios (or juniper-junos, etc.)
-	Tests:
-	- add tests in existing suppliers and configure a better writting approach for matching block
-	- add nokia-sros supplier
+## [v3.1.0] - October 2025
 
-v1.0.0 (february 2024): initial version
-	- basis tests covering cisco-ios, huawei, fortiner, juniper-junos
-	- integrate a basic reporting
-	- fully automated by gmake
+### Makefile
+- New script: database_sync_psirt.sh in database/scripts
+- New target `sync_psirt`: build PSIRT inventory
+- New target `database_repo_copy`: update database with missing files
+- Fix bug with $(ECHO) -e command (portability)
+- Fix backup_audit_run find command (-type f -o -type d portability)
+- Update database_sync with regex_path_exclude option
 
+### Tests
+- Add advanced PSIRT test code:
+  - Match line, block, OS version, etc.
+  - Built over common/test_generic_psirt.gawk.template v1.0
+  - Suffix: .gawk.include
+  - One advanced PSIRT code for cisco-ios, cisco-xe, cisco-viptela, cisco-xr
+- username test now available for cisco-xe
+- All cisco-ios tests now available for cisco-xe
+
+---
+
+## [v3.0.0] - October 2025
+
+### Makefile
+- Support advanced PSIRT vulnerability checks (future release)
+- Support Docker container deployment (future release)
+- Enforce Makefile controls during processing
+- EGREP variable points to `grep -E` instead of `egrep`
+- New target `clean_archive_older`: remove archives older than ARCHIVE_OLDER_DAYS
+- Update `sync_run` with OS supplier regex matching
+
+### Tests
+- banner tests available for all Cisco suppliers
+- enable password tests available for all Cisco suppliers
+- logging tests available for all Cisco suppliers
+
+---
+
+## [v2.9.0] - September 2025
+
+### Makefile
+- Improve test execution: multiple config files per test run
+- Option TEST_EXE in Makefile.support.mk controls this behavior
+- Performance improvements (.INTERMEDIATE and *.swap)
+- New target `gmake version`: display current version
+- New targets: `gmake tests_check`, `gmake tests_check_nok`
+
+### Tests
+- Add banner test for cisco-ios (replicate to other scopes in future)
+- Update crypto algorithm tests across all suppliers
+- Fix inconsistent test output names
+
+### Common
+- check_test.gawk.template validates test consistency and format compliance
+
+---
+
+## [v2.8.0] - July 2025
+
+### Makefile Reports
+- Include number of exceptions in summary report
+- Include number of deadbeef configurations
+- Attach summary as file in email_send target
+- Simplify view_error and view_run output
+- Check to avoid copying existing files in run_audit
+
+### Tests
+- Update for cisco-ios, cisco-xe, cisco-cedge: default commands (hidden)
+- Update for cisco-ios, cisco-xe: line aux tests (modem support)
+
+### Common
+- Review timeline reporting code for performance
+
+---
+
+## [v2.7.0] - June 2025
+
+### Makefile Reports
+- Rename ".all.full." to ".all." in final reports
+- Build *.idx (index of configurations)
+- Build new final PSIRT report (.all.psirt.)
+- Build timeline reports (for PowerBI, Grafana, etc.)
+  - Includes timestamp header (year, month, day, week)
+- Deadbeef concept activation in Makefile.support.mk or via `gmake ... DEADBEEF=yes`
+- Device considered deadbeef if config older than DEADBEEF_THRESHOLD_DAYS (default: 30 days)
+
+### Makefile Backup
+- Enforce logs/run_audit/AUDIT_NAME backup in gzipped file (migration support)
+- Use multiple finds for test copying (system portability)
+
+### Common
+- Update summary format for better readability
+
+### Tests
+- Update 6wind-linux tests (enhanced output)
+
+---
+
+## [v2.6.0] - May 2025
+
+### Tests
+- Update cisco-ios, cisco-xe, cisco-cedge: acls*defref* tests
+- Update cisco-ios, cisco-xe, cisco-cedge, cisco-xr: routing*defref* tests
+- Update juniper-junos: filter*defref* tests
+
+### Common
+- Add "error stats" section: sorted list of frequent test errors by risk level
+
+### Makefile
+- Update create_audit and delete_audit targets
+- Add new status code: psirt
+- New targets:
+  - `tests_run_copy audit=AUDIT_NAME supplier=SUPPLIER_NAME`
+  - `tests_run_audit_copy` (all suppliers, all audits)
+  - `database_postaudit_(add,del,update)` (post-assessment tasks)
+  - `migrate file=BACKUP_PATH_FILE` (version migration)
+
+---
+
+## [v2.5.0] - April 2025
+
+### Tests
+- Add new scope: 6wind-linux
+- Review risk level and status codes for all defref tests
+
+### Makefile
+- Full reporting for all suppliers (in addition to per-supplier)
+- Generate cawk msg for missing confs/tests (allows cleanup)
+- New targets for email notifications: `database_email_(add,del,update)`
+- New targets: `email_send(_audit)?`
+- Update `gmake database_sync_(add,update)` with scope option
+- Fix bugs in view targets
+
+### Makefile.support.mk
+- JSON var set to "no" by default (set to "yes" for JSON reports)
+
+### Directories
+- Add log directory for cawk logs
+
+---
+
+## [v2.4.0] - March 2025
+
+### Tests
+- Update and add for: packetfilter-fwcli, iptables-fwcli, checkpoint-fwcli
+- Add new supplier: cisco-xr
+
+### Makefile
+- New sync targets: `sync_run`, `sync_run_audit`
+- New backup targets: `backup_run`, `backup_run_audit`
+- New restore targets: `restore_run`, `restore_run_audit`
+- New database management targets: `database_view`, `database_sync_(add,del,update)`
+
+### Directories
+- New directory: `database/` for cawk options in flat files
+- New directory: `backup/` for backup/restore data
+
+---
+
+## [v2.3.0] - March 2025
+
+### Tests
+- Add new supplier: cisco-xe
+- Add SNMP v3 tests for all suppliers:
+  - cisco-ios, cisco-cedge, cisco-xe, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
+
+### Reports
+- Compute security Compliance percentage (0-100%, 100% best)
+- Compute average errors per device (0 is best)
+- Auto-generate JSON from CSV and TXT reports
+
+### Makefile
+- Auto-build tar.gz in archives directory
+- New targets: `clean_report_*`, `clean_archive_*`
+
+---
+
+## [v2.2.0] - February 2025
+
+### Makefile
+- New target: `run_audit` (run all assessments with AUDIT_NAMEs)
+
+### Tests
+- Review all purpose/author sections
+- Add LLDP/CDP tests for all suppliers:
+  - cisco-ios, cisco-cedge, cisco-viptela, nokia-sros, paloalto-panos, huawei-vrp, fortinet-fortios, juniper-junos
+- Add new suppliers: packetfilter-fw, iptables-fw, checkpoint-fw
+- New authors: Maxime Souris, Adrien Lebout, Pierre Bertrand, Lucas Vanhaaren, Gautier Goncalves, Wael Elsingaby
+
+---
+
+## [v2.1.0] - January 2025
+
+Stabilized release from v2.0.0 train
+
+- Update date 2024-2025
+- Change checkdiff output for system portability
+- Add .gitkeep in all empty directories
+- Enforce run repository as full copy of repo
+- New target: gitcheckdist (counter-measures checks before github push)
+- Add PR submission procedure
+
+---
+
+## [v2.0.1] - December 2024
+
+- Add .gitkeep to reports/repo and reports/run
+
+---
+
+## [v2.0.0] - November 2024
+
+Major update: new AUDIT-NAME assessment workflow
+
+### Common
+- Add number_of_pass_error in summary report
+- Review gmake command output and help
+
+### Makefile
+- Complete review of Makefile structure
+- Use variables for all core directories
+- Create/delete/list assessments: `create_audit`, `delete_audit`, `list_audit`
+- New targets support audit=AUDIT_NAME
+
+### Directory Structure
+- Reorganize confs, tests, exceptions, reports
+
+### Tests
+- Add new tests across all suppliers
+
+---
+
+## [v1.9.0] - October 2024
+
+### Common
+- Fix small bugs
+- New target: `gmake common` (list available functions)
+
+### Tests
+- Add new tests for all suppliers
+- Review paloalto-panos conf and update tests
+
+---
+
+## [v1.8.0] - August 2024
+
+### Common
+- Fix bugs and output issues
+- Include M4 preprocessing for exceptions
+- Support .template and .m4 suffixes
+  - .m4 uses M4 preprocessing for block hierarchy
+
+### Tests
+- Add new supplier: cisco-cedge
+- Add new tests for cisco-ios, cisco-cedge, cisco-viptela (.m4 extension)
+
+---
+
+## [v1.7.0] - June 2024
+
+### Common
+- Build exceptions directory (empty per supplier)
+- Update Makefile for exception reporting
+
+### Tests
+- Run and fix bugs on all suppliers
+
+---
+
+## [v1.6.0] - June 2024
+
+### Common
+- Migrate firewall rules library to common
+- Add 'research' supplier for development
+- Add risk level: info
+- Update reporting for info level and sorting
+
+### Tests
+- Add cisco-ios simple ACL tests (info level)
+- Add huawei-vrp ACL tests (partial)
+- Add NTP tests for: cisco-ios, juniper-junos, huawei-vrp, cisco-viptela, nokia-sros
+
+---
+
+## [v1.5.0] - May 2024
+
+### Common
+- New target: `view_error` (only view assessment errors)
+
+### Tests
+- Review and fix bugs
+
+### Future
+- Firewall rules analysis (redundant/inconsistent rules)
+- Cisco-ios scope progress
+
+---
+
+## [v1.4.0] - April 2024
+
+### Common
+- Remove init from generated parallel Makefile
+- Enhance reporting: high/medium/low % with float
+- Remove colors, add OK/NOK for portability
+
+### Tests
+- Add tests for: cisco-ios, juniper-junos, huawei-vrp, cisco-viptela, nokia-sros
+
+---
+
+## [v1.3.0] - March 2024
+
+### Makefile
+- Add Makefile.support.mk for make options
+- Enable parallel mode
+- New target: `system` (check system readiness)
+
+### Tests
+- Add tests for all suppliers
+- Add supplier: cisco-viptela
+
+---
+
+## [v1.2.0] - March 2024
+
+### Makefile
+- Review catalog and test output
+
+### Tests
+- Update all test purposes
+- Add tests for all suppliers
+- Add supplier: paloalto-panos
+
+### Future
+- Generate parallel Makefile (stability, race condition management)
+
+---
+
+## [v1.1.0] - February 2024
+
+### Makefile
+- Add new suppliers with OS suffix
+- Add per-scope view with `supplier=` variable
+
+### Tests
+- Add tests for existing suppliers
+- Add supplier: nokia-sros
+
+---
+
+## [v1.0.0] - February 2024
+
+Initial release
+
+- Basic tests for: cisco-ios, huawei, fortinet, juniper-junos
+- Basic reporting
+- Fully automated with gmake

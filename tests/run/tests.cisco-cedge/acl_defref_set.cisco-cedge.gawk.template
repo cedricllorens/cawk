@@ -12,7 +12,8 @@
 # @purpose : check if <acl> definitions are referenced
 # @description : unreferenced ACLs can lead to security vulnerabilities
 # @actions : remove unreferenced ACLs or reference them (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.1 | Ensure ACL definitions are referenced | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high | info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

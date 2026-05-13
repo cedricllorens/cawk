@@ -13,7 +13,8 @@
 # @purpose : check if <lldp> is not set (global)
 # @description : lldp enabled globally discloses network topology information to adjacent devices and may be exploited
 # @actions : disable lldp globally if not required for network operations (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.1 | Ensure LLDP is disabled | Network Protocols
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

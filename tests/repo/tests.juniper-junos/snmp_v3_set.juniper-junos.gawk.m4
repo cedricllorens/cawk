@@ -13,7 +13,8 @@
 # @purpose : check if <snmp v3> is set
 # @description : missing snmp v3 configuration means secure snmp management with authentication and encryption is not in place
 # @actions : configure snmp v3 with authentication and privacy settings (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.4 | Ensure SNMPv3 is configured | SNMP
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

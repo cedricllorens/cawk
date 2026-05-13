@@ -12,7 +12,8 @@
 # @purpose : check <last drop rule> is set
 # @description : a missing implicit deny-all last rule may allow unintended traffic to pass through the firewall policy
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.3 | Ensure last rule is drop/deny | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : medium
 # @authors : lucas vanhaaren
 # ------------------------------------------------------------
 

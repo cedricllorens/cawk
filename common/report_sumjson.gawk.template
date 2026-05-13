@@ -17,6 +17,9 @@
 BEGIN {
     delim = "\034"      # délimiteur pour concaténer plusieurs valeurs
     sectCount = 0       # compteur de sections
+    in_tests_section = 0 # flag pour la section tests purposes
+    testCount = 0       # compteur de tests
+    current_test = ""   # nom du test courant
 }
 
 # remove leading and trailing spaces
@@ -49,7 +52,7 @@ function addKV(section, key, value) {
 
 {
     line = $0
-    
+
     # ignore lines composed only of dashes (separators)
     # ignore lines starting with an email address or "cawk view_repo done"
     if (line ~ /^[ -]*$/ && line ~ /^[-]+$/) next
@@ -61,9 +64,24 @@ function addKV(section, key, value) {
         gsub(/^[-]+/, "", header)
         gsub(/[-]+$/, "", header)
         header = trim(header)
-        
+
         if (header == "") next
-        
+
+        # detect tests purposes section
+        if (header ~ /tests purposes/) {
+            in_tests_section = 1
+            current_section = "tests"
+            if (!(current_section in sectSeen)) {
+                sectCount++
+                sectOrder[sectCount] = current_section
+                sectSeen[current_section] = 1
+            }
+            next
+        }
+
+        # exit tests section if entering another section
+        in_tests_section = 0
+
         if (header ~ /^Summary[ \t]+/) {
             split(header, arr, /[ \t]+/)
             current_section = "Summary"
@@ -80,6 +98,30 @@ function addKV(section, key, value) {
                 sectOrder[sectCount] = current_section
                 sectSeen[current_section] = 1
             }
+        }
+        next
+    }
+
+    # handle tests purposes section specially
+    if (in_tests_section) {
+        # check for test name line (audit/test_name: ...) - before trimming
+        if ($0 ~ /^audit\/test_name:/) {
+            test_line = $0
+            gsub(/^audit\/test_name:[ \t]*/, "", test_line)
+            current_test = trim(test_line)
+            testCount++
+            tests[testCount] = current_test
+            next
+        }
+        # parse test properties (indented lines with : separator) - before trimming
+        if ($0 ~ /^[ \t]+.*:/) {
+            prop_line = $0
+            gsub(/^[ \t]+/, "", prop_line)
+            split(prop_line, parts, ":")
+            key = trim(parts[1])
+            value = trim(substr(prop_line, index(prop_line, ":") + 1))
+            if (current_test != "")
+                addKV("tests", current_test "|" key, value)
         }
         next
     }
@@ -111,31 +153,65 @@ END {
     # move over the sections
     for (s = 1; s <= sectCount; s++) {
         sec = sectOrder[s]
-        printf "  " json_escape(sec) ": {"
-        firstKey = 1
-        # for each key in the section
-        for (i = 1; i <= keyCount[sec]; i++) {
-            k = order[sec, i]
-            composite = sec SUBSEP k
-            if (!firstKey)
-                printf ","
-            printf "\n    " json_escape(k) ": "
-            if (count[composite] > 1) {
-                # if more values, then create a json array
-                printf "["
-                n = split(data[composite], arr, delim)
-                for (j = 1; j <= n; j++) {
-                    if (j > 1)
-                        printf ", "
-                    printf json_escape(arr[j])
+
+        # special handling for tests section - create array of objects
+        if (sec == "tests") {
+            printf "  " json_escape(sec) ": ["
+            first_test = 1
+            for (t = 1; t <= testCount; t++) {
+                test_name = tests[t]
+                if (!first_test)
+                    printf ","
+                printf "\n    {\n"
+                printf "      \"name\": %s", json_escape(test_name)
+
+                # collect all properties for this test by iterating through all data
+                for (ckey in data) {
+                    split(ckey, parts, SUBSEP)
+                    if (length(parts) >= 2) {
+                        sec_part = parts[1]
+                        key_part = parts[2]
+
+                        # check if this key belongs to this test
+                        if (sec_part == "tests" && index(key_part, test_name "|") == 1) {
+                            prop = substr(key_part, length(test_name) + 2)
+                            printf ",\n      %s: %s", json_escape(prop), json_escape(data[ckey])
+                        }
+                    }
                 }
-                printf "]"
-            } else {
-                printf json_escape(data[composite])
+                printf "\n    }"
+                first_test = 0
             }
-            firstKey = 0
+            printf "\n  ]"
+        } else {
+            # normal section handling
+            printf "  " json_escape(sec) ": {"
+            firstKey = 1
+            # for each key in the section
+            for (i = 1; i <= keyCount[sec]; i++) {
+                k = order[sec, i]
+                composite = sec SUBSEP k
+                if (!firstKey)
+                    printf ","
+                printf "\n    " json_escape(k) ": "
+                if (count[composite] > 1) {
+                    # if more values, then create a json array
+                    printf "["
+                    n = split(data[composite], arr, delim)
+                    for (j = 1; j <= n; j++) {
+                        if (j > 1)
+                            printf ", "
+                        printf json_escape(arr[j])
+                    }
+                    printf "]"
+                } else {
+                    printf json_escape(data[composite])
+                }
+                firstKey = 0
+            }
+            printf "\n  }"
         }
-        printf "\n  }"
+
         if (s < sectCount)
             printf ","
         printf "\n"

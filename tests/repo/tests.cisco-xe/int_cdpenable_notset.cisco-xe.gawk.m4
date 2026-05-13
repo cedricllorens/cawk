@@ -13,7 +13,8 @@
 # @purpose : check if an interface has no <cdp enable>
 # @description : cdp may disclose sensitive information or trigger vulnerabilities
 # @actions : set <no cdp enable> on interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.1 | Ensure CDP is disabled on interfaces | Network Protocols
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

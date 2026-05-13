@@ -13,7 +13,8 @@
 # @purpose : check if <http(s) server> is not set
 # @description : enabled http or https server exposes the device management interface to web-based attacks
 # @actions : disable http and https server services if not required (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.1.1 | Ensure HTTP server is disabled | Network Protocols
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

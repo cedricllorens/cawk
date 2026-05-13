@@ -13,7 +13,8 @@
 # @purpose : check if <firewall last rule> implements src=all dst=all service=all action=deny
 # @description : missing implicit deny-all as last firewall rule may allow unmatched traffic to pass through
 # @actions : ensure the last firewall rule is a deny-all (src=all dst=all service=all action=deny) (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.3 | Ensure last rule is deny-all | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

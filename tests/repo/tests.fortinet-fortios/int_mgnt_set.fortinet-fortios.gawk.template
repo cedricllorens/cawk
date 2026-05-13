@@ -13,7 +13,8 @@
 # @purpose : check if a <management interface> is set
 # @description : missing dedicated management interface may expose management services on production interfaces
 # @actions : configure a dedicated management interface with restricted access (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure management interfaces are restricted | Management Access
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

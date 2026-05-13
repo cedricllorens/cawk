@@ -12,7 +12,8 @@
 # @purpose : check if <vrf main><snmp> block is compliant (trusted community, authorization, enabled true)
 # @description : use of default or forbidden SNMP communities (public, private) or read-write authorization could expose the device to unauthorized access or configuration changes
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.1 | Ensure SNMP is securely configured | SNMP
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

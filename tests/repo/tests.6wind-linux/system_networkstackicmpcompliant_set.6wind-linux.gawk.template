@@ -12,7 +12,8 @@
 # @purpose : check if <system><network-stack><icmp> block is compliant (rate-limit-icmp, rate-mask-icmp destination-unreachable, ignore-icmp-echo-broadcast)
 # @description : non-compliant ICMP network stack settings could expose the device to ICMP flood or amplification attacks and information leakage via broadcast echo
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.1 | Ensure ICMP is properly configured | Network Hardening
+# @nist800-53_ref : SC-5(2) | System and Communications Protection | Ensure dos protection capacity and bandwidth is managed
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

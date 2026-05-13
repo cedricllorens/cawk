@@ -1,0 +1,101 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# it generates the cawk exceptions database from the exception files
+# ------------------------------------------------------------
+
+BEGIN {
+    FS = ";"
+    OFS = ";"
+    db_file = "database/db_exception.txt"
+
+    if (ARGC < 3) {
+        print "Usage: gawk -f catalog_build_exceptions_db.gawk audit [exception_file_path]" > "/dev/stderr"
+        exit 1
+    }
+
+    audit = ARGV[1]
+    exception_file = ARGV[2]
+    delete ARGV[1]
+    delete ARGV[2]
+
+    # Create header if file doesn't exist
+    if ((getline < db_file) <= 0) {
+	    print "audit;supplier;exception_id;approver;date;reason" > db_file
+    }
+    close(db_file)
+
+    parse_exception_file(audit, exception_file)
+}
+
+function parse_exception_file(audit, file,    line, supplier, exception_id, approver, date, reason, line_num, in_macro) {
+    supplier = ""
+    exception_id = ""
+    approver = ""
+    date = ""
+    reason = ""
+    line_num = 0
+    in_macro = 0
+
+    while ((getline line < file) > 0) {
+        line_num++
+        gsub(/^[ \t]+|[ \t]+$/, "", line)
+
+        # Extract supplier from filename (e.g., exceptions.cisco-ios.m4 -> cisco-ios)
+        if (supplier == "") {
+            if (file ~ /exceptions\.([^.]+)\.m4/) {
+                match(file, /exceptions\.([^.]+)\.m4/, arr)
+                supplier = arr[1]
+            }
+        }
+
+        # Parse exception metadata
+        if (tolower(line) ~ /^dnl[ \t]+@exception_id[ \t]*:/) {
+            gsub(/^dnl[ \t]+@exception_id[ \t]*:[ \t]*/, "", line)
+            exception_id = tolower(line)
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@approver[ \t]*:/) {
+            gsub(/^dnl[ \t]+@approver[ \t]*:[ \t]*/, "", line)
+            approver = tolower(line)
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@date[ \t]*:/) {
+            gsub(/^dnl[ \t]+@date[ \t]*:[ \t]*/, "", line)
+            date = tolower(line)
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@reason[ \t]*:/) {
+            gsub(/^dnl[ \t]+@reason[ \t]*:[ \t]*/, "", line)
+            reason = tolower(line)
+        }
+        # When we hit m4_cawk_exception, we have a complete record
+        else if (tolower(line) ~ /^dnl[ \t]+m4_cawk_exception/) {
+            # Add to database if we have essential fields
+            if (supplier != "" && exception_id != "") {
+                # Remove semicolons from data fields to prevent CSV parsing issues
+                gsub(/;/, " ", approver)
+                gsub(/;/, " ", date)
+                gsub(/;/, " ", reason)
+
+                # Add to database
+                print audit ";" supplier ";" exception_id ";" approver ";" date ";" reason >> db_file
+
+                # Reset for next exception
+                exception_id = ""
+                approver = ""
+                date = ""
+                reason = ""
+            }
+        }
+    }
+    close(file)
+
+    # Add last record if any
+    if (supplier != "" && exception_id != "") {
+        gsub(/;/, " ", approver)
+        gsub(/;/, " ", date)
+        gsub(/;/, " ", reason)
+        print audit ";" supplier ";" exception_id ";" approver ";" date ";" reason >> db_file
+    }
+}

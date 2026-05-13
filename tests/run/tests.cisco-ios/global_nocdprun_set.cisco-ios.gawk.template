@@ -14,7 +14,8 @@
 # @purpose : check if <no cdp run> is set and <cdp run> is not set
 # @description : cdp can be used to gain unauthorized access to the device or reveal sensitive information
 # @actions : set <no cdp run> or remove <cdp run> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.2 | Ensure CDP is disabled | Network Protocols
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

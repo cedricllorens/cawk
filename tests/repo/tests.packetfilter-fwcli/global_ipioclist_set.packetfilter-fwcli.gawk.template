@@ -13,7 +13,8 @@
 # @purpose : check that <ip_ioc_list> is set
 # @description : missing ip ioc list means known malicious ip indicators of compromise are not blocked at the firewall level
 # @actions : configure ip_ioc_list with current threat intelligence feeds to block known malicious addresses (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.1.1 | Ensure IOC lists are configured | Threat Prevention
+# @nist800-53_ref : SI-4 | System and Information Integrity | Ensure system monitoring is configured
+# @risk_level : info
 # @authors : wael elsingaby
 # ------------------------------------------------------------
 

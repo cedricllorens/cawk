@@ -12,7 +12,8 @@
 # @purpose : check if <aaa config> is set
 # @description : missing aaa configuration means authentication, authorization, and accounting are not properly enforced
 # @actions : configure aaa with proper authentication and authorization settings (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1 | Ensure AAA is configured | System Administration
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

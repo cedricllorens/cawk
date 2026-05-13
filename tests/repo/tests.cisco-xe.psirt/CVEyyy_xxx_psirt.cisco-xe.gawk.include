@@ -29,7 +29,8 @@
 # @purpose : PSIRT vulnerability assessment template for cisco-xe
 # @description : generic pattern-based vulnerability detection tool for cisco-xe devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : to be defined
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : high
 # @authors : cedric llorens
 # ====================================================================================
 

@@ -12,7 +12,8 @@
 # @purpose : check if <acl rules> are consistent
 # @description : inconsistent or redundant ACL rules can lead to security vulnerabilities
 # @actions : remove inconsistent or redundant rules (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure ACL rules are consistent | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

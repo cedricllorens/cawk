@@ -13,7 +13,8 @@
 # @purpose : check if a line aux has <no exec>
 # @description : line aux without <no exec> can allow unauthorized console-like access if the aux port is connected
 # @actions : set <no exec> on line aux to prevent exec sessions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.3 | Ensure no exec on auxiliary lines | Console and Line Access
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

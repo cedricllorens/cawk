@@ -13,7 +13,8 @@
 # @purpose : check if older crypto algorithms are not set
 # @description : older crypto algorithms (md5, 3des, sha1, rc4, tlsv1) are weak and may expose IPsec tunnels to cryptographic attacks
 # @actions : replace older crypto algorithms with stronger ones (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.7.1 | Ensure IPSec uses strong encryption | Cryptography
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

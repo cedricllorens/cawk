@@ -12,7 +12,8 @@
 # @purpose : check that <duplicate rules> are not set
 # @description : duplicate firewall rules indicate policy inconsistencies, increase rule base complexity, and may hide unintended access permissions
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.3 | Ensure no duplicate firewall rules | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : medium
 # @authors : lucas vanhaaren
 # ------------------------------------------------------------
 

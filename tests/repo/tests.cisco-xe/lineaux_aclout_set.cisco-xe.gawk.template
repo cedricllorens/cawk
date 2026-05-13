@@ -13,7 +13,8 @@
 # @purpose : check if a line aux has <access-class xx out>
 # @description : line aux without outbound ACL can allow unauthorized outgoing management connections from the device
 # @actions : set <access-class xx out> on line aux (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure auxiliary lines have ACLs | Console and Line Access
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

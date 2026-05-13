@@ -13,7 +13,8 @@
 # @purpose : check if a line vty has no <exec-timeout 0 0>
 # @description : exec-timeout 0 0 disables session timeout and can leave an unattended vty session active indefinitely
 # @actions : set a proper exec-timeout value on line vty and remove <exec-timeout 0 0> (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.5 | Ensure exec-timeout is set on VTY lines | Console and Line Access
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

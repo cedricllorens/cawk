@@ -12,7 +12,8 @@
 # @purpose : check if <snmp acl defined> is set
 # @description : snmp without acl restriction may allow unauthorized snmp access from any host
 # @actions : define and apply an ACL to restrict snmp access to authorized hosts only (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.1 | Ensure SNMP has access controls | SNMP
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : julien lair
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if a <firewall rule> implements src=all dst=all service=all action=accept
 # @description : a firewall rule accepting all sources, destinations and services creates a security bypass and exposes the device to attacks
 # @actions : replace overly permissive rules with specific source, destination and service definitions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.1 | Ensure allow-all rules are restricted | Firewall Policy
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if an interface has no <lldp enable>
 # @description : lldp enabled on interfaces discloses topology information to adjacent devices and may be exploited
 # @actions : disable lldp on all interfaces where it is not required (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.1 | Ensure LLDP is disabled on interfaces | Network Protocols
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if <snmp v3 host> is set
 # @description : missing snmp v3 host configuration means trap notifications are not sent to a secure management destination
 # @actions : configure snmp v3 host with appropriate notification targets (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.6 | Ensure SNMPv3 traps are configured | SNMP
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

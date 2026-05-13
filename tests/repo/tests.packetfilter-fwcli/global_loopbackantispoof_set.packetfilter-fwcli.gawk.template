@@ -12,7 +12,8 @@
 # @purpose : check if <loopback 127/8 rules> are set on lo to accept and drop packets (pf)
 # @description : missing loopback anti-spoofing rules allows packets with 127/8 source addresses arriving on non-loopback interfaces
 # @actions : add rules to accept loopback traffic on lo and block 127/8 packets arriving on other interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure loopback anti-spoofing rules | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high | medium
 # @authors : quentin gavilan
 # ------------------------------------------------------------
 

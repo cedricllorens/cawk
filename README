@@ -1,13 +1,10 @@
-# ------------------------------------------------------------
-# cawk is subject to a MIT open-source licence
-# please refer to the MIT licence file for further information
-# ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2026 by Cedric Llorens
-# ------------------------------------------------------------
+# cawk README
 
-# -----------------
-# ---- introduction
-# -----------------
+> **cawk is subject to an MIT open-source license**  
+> Please refer to the LICENSE file for further information
+> **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
+
+# cawk introduction
 
 cawk's objective is to provide the community with a complete list of tests for checking 
 network configurations across all suppliers. Moreover, cawk is ONLY based on 3 well-known
@@ -21,8 +18,9 @@ packages. No other languages, no databases, no configure, etc. cawk tries to kee
 simple and understandable for everyone. The package size is very small while maintaining 
 powerful capabilities.
 
-All developers and AIs can help to build new tests because Cawk relies on well-known languages, 
-making development and maintenance easier. On my side, cawk is now managed under Claude Code.
+All developers and AIs can help to build new tests because Cawk relies on well-known languages,
+making development and maintenance easier. cawk is now managed by Claude Code, enabling efficient
+development workflows and AI-assisted enhancements while maintaining code quality and consistency.
 
 You can work with two predefined assessments <repo> and <run> included in the cawk package, but
 you can create/delete as many different assessments as you want <run_{audit_name}> based on 
@@ -30,23 +28,23 @@ your own different networks or customers.
 
 In summary, in gawk && gmake && m4 we trust :-)
 
-# ----------------------
-# ---- cawk check
-# ----------------------
+# cawk check
+
 Before installing the application, extract it to a temporary directory and launch <gmake check>.
 A full set of tests will be performed and a hash computed to ensure the distribution has not been
 altered
 
-# ----------------------
-# ---- cawk installation
-# ----------------------
+# cawk installation
 
-manually ----
+## manually
+
 jump to a specific directory and extract cawk, cd to cawk root directory and execute the <gmake> 
 command in order to have help on the cawk gmake targets. 
 
-Makefile.cawk.version ----
+## Makefile.cawk.version
+
 The Makefile.cawk.version file provides installation and version management targets:
+
 	- install - First time installation of cawk
 		- required: `CAWK_VERSION=x.y.y`
 	- reinstall - Reinstall current cawk version with audit backup and restore
@@ -61,54 +59,11 @@ system level required for building tests:
 	-%SED_GAWK_PATH% must point out the right path for gawk 
 	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
 
-# -----------------------
-# ---- cawk gmake targets
-# -----------------------
+# cawk gmake targets
 
 just execute <gmake> in the cawk root directory and all the cawk targets are detailed
 
-# -----------------------------------------
-# ---- cawk configuration options
-# -----------------------------------------
-
-cawk provides comprehensive configuration options defined in Makefile.support.mk that control
-assessment behavior, reporting format, and performance. All options can be overridden per-invocation
-using gmake environment variables.
-
-common configuration options:
-
-- PSIRT (default: no) : Enable PSIRT vulnerability tests
-  example: gmake check_repo PSIRT=yes
-
-- JSON (default: no) : Generate JSON reports alongside text reports
-  example: gmake check_repo JSON=yes
-
-- DEADBEEF (default: no) : Flag and optionally exclude configurations older than DEADBEEF_THRESHOLD_DAYS
-  example: gmake check_run DEADBEEF=yes
-
-- DEADBEEF_THRESHOLD_DAYS (default: 30) : Number of days threshold for flagging old configurations
-  example: gmake check_run DEADBEEF=yes DEADBEEF_THRESHOLD_DAYS=60
-
-- ARCHIVE_OLDER_DAYS (default: 120) : Auto-cleanup of report archives older than N days
-  example: gmake check_run ARCHIVE_OLDER_DAYS=90
-
-- TMP_ASSESSMENT_FILES (default: yes) : Clean all intermediate supplier assessment files after processing
-
-performance and parallel options (see cawk gmake parallel section for details):
-
-- MAKE_PARALLEL (default: no) : Enable parallel execution mode
-- MAKE_FILES_PER_TARGET (default: 100) : Number of files per target in parallel mode
-- MAKE_FILES_PER_TARGET_PSIRT (default: 1) : Files per target for PSIRT tests
-- MAKE_J (default: 4) : Number of parallel gmake jobs
-- MAKE_LOAD_AVG (default: 3) : Maximum load average for parallel processing
-
-example combining multiple options:
-
-gmake check_run audit=client1 PSIRT=yes JSON=yes DEADBEEF=yes MAKE_PARALLEL=yes MAKE_J=8
-
-# ------------------------
-# ---- cawk gmake parallel
-# ------------------------
+# cawk gmake parallel
 
 in standard mode, cawk performs assessment not in parallel mode. to use parallel mode,
 you have to modify the Makefile.support.mk file thanks to these gmake VARS:
@@ -125,13 +80,11 @@ you have to modify the Makefile.support.mk file thanks to these gmake VARS:
 	# gmake load average
 	MAKE_LOAD_AVG = 3
 
-once cawk parallel mode is enabled, before performing assessment, cawk builds one Makefile
+once cawk parallel mode is enabled, before performing assessment, cawk build one Makefile
 per os in tmp directory. once done, it performs each Makefile in parallel mode to offer 
 enhanced performances for a huge set of files.
 
-# --------------------
-# ---- cawk first use
-# --------------------
+# cawk first use
 
 after install, cd to the cawk root directory, execute:
 
@@ -147,32 +100,46 @@ after install, cd to the cawk root directory, execute:
 
 	-- audit=AUDIT_NAME assessment --
 
-	- gmake create_audit audit=client1 : it creates client1 assessment, all tests 
-	from repo are copied, all exceptions from repo are copied, all confs from repo 
-	are copied. now, you may remove or/and add tests, remove and/or add true confs 
-	and run this assessment as such
+## audit create (create_audit)
 
-          	- gmake check_run audit=client1 : it applies the test run_client1 to conf
-		run_client1, you may also check reports/run_client1 assessment files
-          
-          	- gmake check_run view_run audit=client1 : it applies the test run_client1
-		to conf run_client1 and see results, you may also check reports/run_client1
-		assessment files
+	- gmake create_audit audit=client1
+	  Create full audit: copies all tests, exceptions, and confs from repo.
+	  You may then remove or add tests, confs as needed for your assessment.
 
-          	- gmake check_run view_run audit=client1 supplier=cisco-ios : same as previous
-		but only for cisco-ios configurations 
+	- gmake create_audit audit=client1 supplier=cisco-ios
+	  Add supplier to existing audit: copies only the specified supplier's tests,
+	  exceptions, and confs into an existing audit. Does not modify databases.
+	  Useful for incrementally building up an audit with specific suppliers.
 
-          	- gmake delete_audit audit=client1 : remove the client1 assessment
+## audit execution
 
-	- gmake list_audit : list all the AUDIT_NAMEs (audit=AUDIT_NAME)
+    - gmake check_run audit=client1 : applies tests/run_client1 to confs/run_client1
+	(you may also check reports/run_client1 assessment files)
 
-	- gmake check_run_audit : run assessments for all the AUDIT_NAMEs (audit=AUDIT_NAME)
+    - gmake check_run view_run audit=client1 : applies tests/run_client1 to
+	confs/run_client1 and displays results
+	(you may also check reports/run_client1 assessment files)
 
-	-- audit=AUDIT_NAME assessment --
+    - gmake check_run view_run audit=client1 supplier=cisco-ios : same as previous
+	but only for cisco-ios configurations
 
-# ---------------------
-# ---- cawk directories
-# ---------------------
+## audit delete (delete_audit)
+
+	- gmake delete_audit audit=client1
+	  Delete full audit: removes all tests, exceptions, confs, reports, logs,
+	  and audit entries from databases.
+
+	- gmake delete_audit audit=client1 supplier=cisco-ios
+	  Remove supplier from audit: removes only the specified supplier's tests,
+	  exceptions, and confs from an existing audit. Does not modify databases.
+	  Useful for removing specific suppliers from an audit.
+
+## audit listing
+
+	- gmake list_audit : list all AUDIT_NAMEs (audit=AUDIT_NAME)
+	- gmake check_run_audit : run assessments for all AUDIT_NAMEs
+
+# cawk directories
 
 cawk has the following core directories:
 
@@ -188,24 +155,20 @@ exceptions or tests level
 - database : contains all the flat files databases used to manage various cawk options like sync
 confs, sending emails, etc.
 
-	- scripts : contains scripts used for various usages as described : generally it requires the
-	use of the internal inventory
+- scripts : contains scripts used for various usages as described : generally it requires the
+use of the internal inventory
 
-		- each time sync_audit audit=AUDIT_NAME target is called, database_sync.script is launched 
-		allowing to update device scope files. these file scopes are/must be stored sync_scopes with 
-		the name audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
+	- each time sync_run audit=AUDIT_NAME target is called, database_sync.script is launched
+	allowing to update device scope files. these file scopes are/must be stored in sync_scopes with
+	the name audit(=AUDIT_NAME)_inventory_sync_scope.txt
 	
 	- sync_scopes : sync scopes files generated by the scripts described above. It could be useful
-	to define various sub-assessments for the same audit=AUDIT_NAME like
+	to define various sub-assessments for a as same audit=AUDIT_NAME like
 		- audit_network_part1 assessment with scope associated to
 		- audit_network_part2 assessment with scope associated to
 		- etc.
 
 	- post_audit : can be used by post_audit target process if needed
-
-- database.repo : contains all the flat EMPTY files databases used to manage various cawk options 
-like sync confs, sending emails, etc. This is used during the <migrate> target to update the 
-database directory ONLY with missing files, existing files are not updated
 
 - tests : contains a collection of individual tests <*.gawk.template> or <*.gawk.m4> or 
 <*.gawk.include> per supplier :
@@ -224,11 +187,11 @@ database directory ONLY with missing files, existing files are not updated
 
 	- inside each core tests directories, you have a full set of tests supplier directories
 
-	- a test has <.template> suffix or <.m4> suffix or <.include> suffix, but the test is
-	converted to <.gawk> with the support of support/tests.sed and the cawk root Makefile.
-	this <step> allows to write tests more easily and to enforce env system portability, so
-	each test may contain %SED_VAR% aka:
-		- %SED_BLOCK_JUNIPER% : space indentation used for block hierarchy
+	- a test has <.template> suffix or <.m4> suffix or <.include> suffix, but the test is 
+	converted to <.gawk> with the 	support of support/tests.sed and the cawk root Makefile. 
+	this <step> allows to write tests more 	easily and to enforce env system portability, so 
+	each test may to %SED_VAR% aka:
+		- %SED_BLOCK_JUNIPER% : space identation used for block hierarchy
 		- %SED_COMMON_PATH% = to point out the common <kind of library>
 		- %SED_GAWK_PATH% = to point out the right path for gawk 
 		etc.
@@ -276,7 +239,7 @@ database directory ONLY with missing files, existing files are not updated
 		- report/run_{audit_name} : empty by default, contains the run_{audit_name} assessment results
 		-- audit=AUDIT_NAME assessment --
 
-	- each of these directories has a sub-directory <archives>. each time an assessment is performed
+	- each of these directories has a sub-directory <archives>. each time an asessment is performed
 	  a tar.gz file is built and stored in this directory including the date in filename 
 	  (please refer to cawk assessment format for further information)
 
@@ -290,9 +253,9 @@ database directory ONLY with missing files, existing files are not updated
 
 	- for the final reports, the concept of deadbeef that can be also activated in Makefile.support.mk or by 
 	  calling gmake with DEADBEEF like (gmake check_run audit=cawk DEADBEEF=yes):
-		- if DEADBEEF is set to "yes", then the deadbeef final report is generated and the deadbeef devices
+		- if DEAEDBEEF is set to "yes", then the deadbeef final report is generated and the deadbeef devices 
 		  are removed from the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
-		- if DEADBEEF is set to "no", then the deadbeef final report is generated and the deadbeef devices 
+		- if DEAEDBEEF is set to "no", then the deadbeef final report is generated and the deadbeef devices 
 		  are kept in the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
 		- a device is considered by default as deadbeef if the configuration is older than the days value 
 		set in DEADBEEF_THRESHOLD_DAYS  (default value is 30 days)
@@ -304,9 +267,7 @@ database directory ONLY with missing files, existing files are not updated
 - backup : contains tar.gz files when using cawk backup targets, please refer to the cawk backup
            section for further information
 
-# -----------------------------------
-# ---- cawk risk level && status code
-# -----------------------------------
+# cawk risk level && status code
 
 cawk allows the following risk levels:
 	- high   : for (high impacts) security item
@@ -320,9 +281,7 @@ cawk allows the following status codes:
 	- warning : check passed with warning
 	- psirt   : check psirt classified errors
 
-# ---------------------------
-# ---- cawk assessment format
-# ---------------------------
+# cawk assessment format
 
 cawk follows an assessment report format consisting of these fields:
 	---- timeline header ----
@@ -341,37 +300,42 @@ cawk follows an assessment report format consisting of these fields:
 	status_code: pass, error, warning, psirt
 	---- generic header ---------
 
-# ---------------------------------
-# ---- cawk security key indicators
-# ---------------------------------
+# cawk security key indicators
 
 cawk computes three key security indicators in the summary report:
 	- security compliance (scope pass/error) : expressed as a percentage between 0% and 100% (100% is best)
-	- high risk error ratio (scope error) : expressed as a percentage between 0% and 100% (0% is best) 
+	- high risk error ratio (scope error) : expressed as a percentage between 0% and 100% (0% is best)
 	- average errors per device (scope error) : measured from 0 upward with no upper bound (0 is best)
 
-# ------------------------------------------
-# ---- cawk database
-# ------------------------------------------
+# cawk compliance framework indicators
+
+cawk supports compliance framework indicators that are automatically calculated and displayed in assessment
+summary reports. these indicators track compliance against recognized security standards:
+
+	- NIST 800-53 compliance coverage : percentage of official NIST 800-53 controls mapped to cawk tests
+	  - calculated as: (tests mapped to NIST controls / total NIST controls) × 100%
+	  - automatically included in summary reports (.all.*.txt, .all.*.csv, .all.*.json)
+	  - displayed as a compliance framework indicator in assessment summaries
+
+	note : compliance framework indicators are automatically integrated into report generation via
+	updated report.gawk.template and report_sumjson.gawk.template. these indicators are calculated
+	during the assessment reporting phase and provide visibility into compliance posture
+
+# cawk databases
 
 cawk allows to manage flat file databases in order to use cawk options like sync confs,
 sending emails, etc. this is only available for audit=AUDIT_NAME assessment
-
-	-- generic --
 	
 	- gmake database_view : view all the databases
 
-	- gmake database_repo_copy : update <database> directory only with missing files
-	(database.repo -> database), this target is run with <migrate> target
+## sync database
 
-	-- sync database --
+cawk sync database format is the following where fields are separated by spaces :
 
-	- the cawk sync database format is the following where fields are separated by spaces :
-
-		each time sync_run audit=AUDIT_NAME target is called, database/scripts/database_sync.script
-		is launched allowing to update device scope files that can be used as the field number 4 described 
-		hereafter. these file inventory scopes are/must be stored in database/sync_scopes with the name :
-		audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
+	each time sync_run audit=AUDIT_NAME target is called, database/scripts/database_sync.script
+	is launched allowing to update device scope files that can be used as the field number 4 described 
+	hereafter. these file inventory scopes are/must be stored in database/sync_scopes with the name :
+	audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
 		- 2 field is the various sync paths separated by comma (no space) 
@@ -398,9 +362,9 @@ sending emails, etc. this is only available for audit=AUDIT_NAME assessment
 	
 	- gmake database_sync_del audit=AUDIT_NAME : delete an entry in the cawk sync database
 	
-	-- email database --
+## email database
 
-	- the email sync database format is the following where fields are separated by spaces :
+cawk email sync database format is the following where fields are separated by spaces :
 
 		- 1 field is the audit name"
 		- 2 field is the dst list of emails separated by comma (no space) like email1,email2,email3"
@@ -411,21 +375,120 @@ sending emails, etc. this is only available for audit=AUDIT_NAME assessment
 
 	- gmake database_email_del audit=AUDIT_NAME : delete an entry in the cawk email database
 
-	-- postaudit database --
+## postaudit database
 
-	- the cawk postaudit database format follows the same structure where fields are separated by spaces:
+cawk postaudit database format follows the same structure where fields are separated by spaces:
 
 		each time postaudit_run audit=AUDIT_NAME target is called, database/scripts/database_postaudit.script
 		is launched allowing to run specific tasks like to generate helpdesk tickets, etc.
 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
 
-	- gmake database_postaudit_(add,del) audit=AUDIT_NAME : 
+	- gmake database_postaudit_(add,del) audit=AUDIT_NAME :
 	  add/delete an entry in the cawk postaudit database
 
-# ------------------------------------------
-# ---- cawk sync audit=AUDIT_NAME assessment
-# ------------------------------------------
+## NIST 800-53 compliance database
+
+cawk NIST 800-53 compliance database (database/db_nist800-53.txt) contains official
+NIST 800-53 controls reference data with the following format (semicolon-separated fields):
+
+		- 1 field is the NIST control ID (e.g., cm-7, cm-7(1), etc.)
+		- 2 field is the NIST control category (e.g., Configuration Management, etc.)
+		- 3 field is the control description
+		- 4 field is comma-separated list of applicable suppliers (or . for all)
+
+	- NIST controls are applied during assessment reporting phase to calculate compliance metrics:
+		- Control coverage mapping: tests are mapped to NIST 800-53 controls via @nist800-53_ref metadata
+		- Coverage percentage calculated as: (tests mapped to NIST controls / total NIST controls) × 100%
+		- NIST coverage automatically included in summary reports (.all.*.txt, .all.*.csv, .all.*.json)
+		- Coverage percentage displayed as compliance framework indicator in assessment summaries
+
+	- gmake nist_coverage_official : display official NIST 800-53 controls with coverage metrics
+	  gmake nist_coverage_repo : calculate coverage percentage for repo assessment
+	  gmake nist_coverage_run [audit=AUDIT_NAME] : calculate coverage for run or named audit
+
+## exceptions database
+
+cawk exceptions database (database/db_exception.txt) is a centralized exception rules
+repository with the following format (semicolon-separated fields):
+
+		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
+		- 2 field is the supplier/platform (e.g., cisco-ios, juniper-junos)
+		- 3 field is the exception ID for tracking and audit purposes
+		- 4 field is the approver name (person who authorized the exception)
+		- 5 field is the approval date (YYYY-MM-DD format)
+		- 6 field is the reason for the exception
+
+	- exception sources and matching logic:
+
+		- exceptions/repo/*.m4 files : source definitions with metadata (@exception_id, @approver, @date, @reason)
+			Contains m4_cawk_exception() macros with device, test_name, error_pattern matching rules
+		- exceptions/run/*.m4 files : editable copy for default assessment
+		- exceptions/run_audit/*.m4 files : per-audit custom exceptions
+
+	- automatic integration and lifecycle:
+
+		- exceptions_build triggered automatically by create_audit and delete_audit workflows
+		- Ensures database/db_exception.txt stays synchronized with audit lifecycle
+		- Exceptions applied to summary and final reports (.all.*.csv, .all.*.json)
+		- Exception matching evaluated during assessment based on configured patterns in .m4 files
+
+	- gmake exceptions_build : rebuild database/db_exception.txt from all .m4 exception files
+	  gmake exceptions_build_repo : build exception database for repo/ and run/
+	  gmake exceptions_build_run audit=AUDIT_NAME : build exception database for specific audit
+
+## info database ----
+
+cawk info database (database/db_info.txt) contains comprehensive test metadata compiled
+from all test source files. Format: semicolon-separated fields (9 fields)
+
+		- 1 field is the audit context (repo or audit name)
+		- 2 field is the supplier/platform (e.g., cisco-ios, juniper-junos)
+		- 3 field is the test_name (unique test identifier, must match compiled .gawk filename)
+		- 4 field is the purpose (one-line purpose of the test)
+		- 5 field is the description (detailed description of what the test checks)
+		- 6 field is the actions (recommended remediation actions)
+		- 7 field is the nist800-53_ref (NIST 800-53 control reference, e.g., cm-7(1) | configuration management)
+		- 8 field is the risk_level (high, medium, low, info, or pipe-separated for multi-aspect tests)
+		- 9 field is the authors (test authors, comma-separated if multiple)
+
+	- test metadata sources:
+
+		- extracted from @metadata tags in test template source files (*.gawk.template, *.gawk.m4, *.gawk.include)
+		- metadata tags: @test_name, @supplier, @purpose, @description, @actions, @nist800-53_ref, @risk_level, @authors
+		- see CLAUDE.md for metadata tag format and guidelines
+
+	- automatic integration and lifecycle:
+
+		- gmake catalog_build : rebuild database/db_info.txt from all .gawk source files
+		- triggered automatically by create_audit and delete_audit workflows
+		- ensures database stays synchronized with test and audit lifecycle
+		- used for generating catalog displays and NIST coverage reports
+
+# cawk catalog targets
+
+cawk provides catalog targets to build and display comprehensive test metadata catalogs:
+
+	- gmake catalog_build : rebuild all catalog databases from test and exception metadata
+	  - database/db_info.txt : test information catalog (compiled from all .gawk source files)
+	  - database/db_exception.txt : exception catalog (compiled from all .m4 files)
+	  - database/db_nist_mappings.json : NIST 800-53 control mappings (compiled from @nist800-53_ref metadata)
+
+	- gmake catalog_repo : display catalog information for repo assessment
+
+	- gmake catalog_run [audit=AUDIT_NAME] : display catalog information for run or specific audit
+
+	- gmake catalog_exceptions_repo : display exception catalog for repo (organized by supplier)
+	  gmake catalog_exceptions_run [audit=AUDIT_NAME] : display exception catalog for run or specific audit
+
+	- gmake nist_coverage_official : display official NIST 800-53 controls with coverage metrics
+	  gmake nist_coverage_repo : calculate coverage percentage for repo assessment
+	  gmake nist_coverage_run [audit=AUDIT_NAME] : calculate coverage for run or specific audit
+
+	note : catalogs are automatically built during create_audit and delete_audit workflows to ensure
+	consistency with the audit lifecycle
+
+# cawk sync audit=AUDIT_NAME assessment
 
 cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of working is:
 
@@ -449,30 +512,36 @@ cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of work
 	To be used after <sync_run> to reduce tests supplier scope to confs supplier scope. in case
 	of issue, you may copy tests sources from repo by gmake tests_run_copy audit=AUDIT_NAME
 
-	- gmake sync_teststoconfs_run_audit : to sync tests to confs for only all <audit=AUDIT_NAME> 
-	assessments. To be used after <sync_run_audit> to reduce tests supplier scope to confs supplier 
+	- gmake sync_teststoconfs_run_audit : to sync tests to confs for only all <audit=AUDIT_NAME>
+	assessments. To be used after <sync_run_audit> to reduce tests supplier scope to confs supplier
 	scope. in case of issue, you may copy tests sources from repo by gmake tests_run_audit_copy
 
-note : we recommend that the central confs repository is owned by a different user than
+	- gmake sync_exceptionstoconfs_run audit=AUDIT_NAME : to sync exceptions to confs for
+	<audit=AUDIT_NAME> assessment. To be used after <sync_run> to reduce exceptions supplier scope
+	to confs supplier scope. removes exceptions for suppliers that have no corresponding configuration
+	in confs/run_AUDIT_NAME
+
+	- gmake sync_exceptionstoconfs_run_audit : to sync exceptions to confs for all <audit=AUDIT_NAME>
+	assessments. To be used after <sync_run_audit> to reduce exceptions supplier scope to confs
+	supplier scope for all audits
+
+note : we do recommend that the central confs repository is owned by a different user than
 the cawk package in order to enforce that the cawk user can only read the central confs
 repository.
 
-# -------------------------------------------
-# ---- cawk email audit=AUDIT_NAME assessment
-# -------------------------------------------
+# cawk email audit=AUDIT_NAME assessment
 
 cawk allows to email audit=AUDIT_NAME assessments in zip file format. the way of working is:
 
 	- use the gmake database_email_(add,del,update) targets to update the cawk email database
 	  for audit=AUDIT_NAME assessment
 
-	- gmake email_send audit=AUDIT_NAME : send email by referring to cawk email database
+	- gmake email_send audit=AUDIT_NAME : send email by refering to cawk email database 	
 
 	- gmake email_send_audit (email all the audit=AUDIT_NAMEs)
 
-# -----------------------
-# ---- cawk psirt tests
-# -----------------------
+# cawk psirt tests
+
 compared to standard tests, psirt tests are located in tests.<os>.psirt directories and have 
 <*.gawk.include> suffix. within a test, you can setup advanced checks like:
 	
@@ -483,81 +552,51 @@ compared to standard tests, psirt tests are located in tests.<os>.psirt director
 	- BLOCK(s) pattern matching 
 	- Build a combined logic to detect vulnerable devices 
 
-# -----------------------
-# ---- cawk catalog
-# -----------------------
+# cawk Makefile.support.mk
 
-cawk provides dynamic catalog targets that extract and list all available tests for suppliers that have
-corresponding configurations. The catalog is generated based on the directories found in confs/repo,
-confs/run, or confs/run_{audit_name}, ensuring that only suppliers with actual configurations are
-included in the report.
+you may thanks to the file Makefile.support.mk control all the cawk options like PSIRT,
+DEADBEEF, etc. please note that all these options can be called with gmake like:
+gmake check_repo DEADBEEF=yes PSIRT=yes ....
 
-catalog targets available:
-
-	- gmake catalog_repo : generates a detailed catalog of all tests available in tests/repo for each
-	  supplier that has a configuration in confs/repo
-
-	- gmake catalog_run : generates a detailed catalog of all tests available in tests/run for each
-	  supplier that has a configuration in confs/run
-
-	- gmake catalog_run audit=AUDIT_NAME : generates a detailed catalog of all tests available in
-	  tests/run_{audit_name} for each supplier that has a configuration in confs/run_{audit_name}
-
-each catalog entry includes comprehensive test metadata:
-	- @test_name : name of the test
-	- @supplier : targeted supplier/platform
-	- @purpose : what the test verifies
-	- @description : detailed explanation of the test scope
-	- @risk_level : security level (high, medium, low, info)
-	- @actions : specific checks and validations performed
-
-the catalog is dynamically generated based on supplier directories found in the configuration path,
-ensuring consistency between available tests and existing configurations across all assessment types.
-
-# ---------------------------------------------
-# ---- cawk backup audit=AUDIT_NAME assessment
-# ---- cawk restore audit=AUDIT_NAME assessment
-# ---------------------------------------------
+# cawk backup/restore audit=AUDIT_NAME assessment
 
 cawk allows to build backup/restore only for audit=AUDIT_NAME assessments. 
 it saves all tests, exceptions, confs, reports linked to this assessment. 
 
-backup one audit assessment --
+## backup one audit assessment
 for example, to backup an audit=cawk assessment, execute : 
  - gmake backup_run audit=cawk
    the backup file is stored in backup/run_cawk.<date>.tar.gz
 
-restore one audit assessment --
+## restore one audit assessment
 copy your backup in the cawk backup directory, execute: 
  - gmake restore_run audit=cawk file=backup_path_file 
 as such, the audit=cawk assessment is restored.
 
-backup all audit assessments --
+## backup all audit assessments
 you can backup cawk database and all your audit=AUDIT_NAME assessments in one command, execute :
  - gmake backup_run_audit
    the backup file is stored in backup/run_audit.<date>.tar.gz
 
-restore all audit assessments --
+## restore all audit assessments
 copy your backup in the cawk backup directory, execute: 
  - gmake restore_run_audit file=backup_path_file 
 as such, all the assessments are restored.
 
-# ---------------------------
-# ---- cawk version migration
-# ---------------------------
+# cawk version migration
 
-manually ----
+## manually
 1) backup all your audit=AUDIT_NAME assessments and save it in a secure directory 
 	- gmake backup_run_audit
 2) install a new version of cawk
 3) copy your backup filename (previously done) in the new version of cawk backup directory
-4) restore all your audit=AUDIT_NAME assessments
+4) restore your all audit=AUDIT_NAME assessments
 	- gmake restore_run_audit file=backup/backup_filename
 5) to update the tests only for audit=AUDIT_NAME assessments, you may use the target :
 	- tests_run_copy audit=AUDIT_NAME (ref one run_audit)
 	- tests_run_audit_copy (ref all run_audit)
 
-	it allows to copy/update tests from repo to run_audit in order to have the latest set of
+	it allows to copy/update tests from repo to run_audit in order to have the lastest set of 
 	tests from repo linked to your audit=AUDIT_NAME assessments :
 		- if you have coded additional tests, we will remain there
 		- if you have changed existing tests, they will be changed to repo tests
@@ -568,9 +607,9 @@ the migrate target allows to reach this goal in such a way:
 1) backup all your audit=AUDIT_NAME assessments and save it in a secure directory 
 	- gmake backup_run_audit
 2) install a new version of cawk
-3) gmake migrate file=backup_filename_path and all the next steps above are done 3) to 6)
+3) gmake migrate file=backup_filename_path and all the next steps above are done automatically
 
-Makefile.cawk.version ----
+## Makefile.cawk.version
 The Makefile.cawk.version file provides installation and version management targets:
 	- install - First time installation of cawk
 		- required: `CAWK_VERSION=x.y.y`
@@ -581,17 +620,15 @@ The Makefile.cawk.version file provides installation and version management targ
 
 	note: This Makefile must be located in the parent directory of cawk installations.
 
-# -------------------
-# ---- cawk docker
-# -------------------
+# cawk docker
 
 first of all, you need to install:
 - docker
 - buildx
 
 the cawk docker files:
-- Dockerfile : allows building a cawk image
-- cawk_docker_run.sh : script run when running the cawk container
+- Dockerfile : allow to build a cawk image
+- cawk_docker_run.sh : script runned when running the cawk container
 - Makefile.docker : contains all the commands to manage cawk container and persistent data storage
 
 to know all the available commands:
@@ -634,9 +671,7 @@ some useful commands are :
 	sudo docker exec cawk-container-v3.2.0 sh -c "cd /app/cawk && gmake check_run audit=<AUDIT_NAME> >> /app/cawk/logs/cawk-check-<AUDIT_NAME>.log 2>&1"
 	sudo ls /var/lib/docker/volumes/cawk-persistent-volume-v3.2.0/_data/
 
-# --------------------------
-# ---- cawk specific system
-# --------------------------
+# cawk specific system
 
 The CAWK_SYSNAME environment variable can be set to implement cawk <_special> function calls. Below is a list of 
 <_special> functions that can be called:
@@ -646,12 +681,10 @@ If CAWK_SYSNAME environment variable is set, all functions related to these file
 	- common/common.gawk.template functions are replaced by special functions in database/common/special_common.gawk.template
  	  (special functions can be coded specifically for your system and will be backed up and restored)
 
-# ---------------------
-# ---- cawk community
-# ---------------------
+# cawk community
 
-if someone intends to submit a test and a configuration associated with it, if approved, then the
-test will be added to the package and the name of author will be added to the AUTHORS list.
+if someone intends to submit a test and a configuration associated to, if approved, then the 
+test will added to the package and the name of author will be added to the AUTHORS list.
 
 the requester must use a Pull Request to submit an evolution as such:
 

@@ -12,7 +12,8 @@
 # @purpose : check if <aaa authorization> is set
 # @description : missing aaa authorization means privilege levels and command access are not centrally controlled
 # @actions : configure aaa authorization to enforce role-based access control (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.1 | Ensure AAA authentication is configured | Authentication, Authorization & Accounting
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

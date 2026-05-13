@@ -13,7 +13,8 @@
 # @purpose : check if <aaa auth order> starts with radius/tacacs
 # @description : aaa authentication order not starting with radius or tacacs means centralized authentication may be bypassed
 # @actions : configure aaa authentication order to prioritize radius or tacacs before local (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.1 | Ensure AAA order is properly configured | Authentication, Authorization & Accounting
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

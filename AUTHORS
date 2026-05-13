@@ -1,0 +1,35 @@
+# CAWK - Authors & Contributors
+
+## Founder
+
+- **Cedric Llorens** (2024-2026)
+
+## Contributors
+
+### 2026
+
+**iptables, ekinops-oneos**
+- Quentin Gavilan
+- Julien Lair
+
+### 2025
+
+**Docker**
+- Floriant Heitz
+
+**Checkpoint, iptables, packetfilter**
+- Maxime Souris
+- Adrien Lebout
+- Pierre Bertrand
+- Lucas Vanhaaren
+- Gautier Goncalves
+- Wael Elsingaby
+
+---
+
+## License
+
+CAWK is subject to an MIT open-source license.  
+Please refer to the [MIT license file](LICENSE) for further information.
+
+© 2024-2026 Cedric Llorens

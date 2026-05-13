@@ -1,9 +1,8 @@
-# ------------------------------------------------------------
-# cawk is subject to a MIT open-source licence
-# please refer to the MIT licence file for further information
-# ------------------------------------------------------------
-# cawk is Copyright (C) 2024-2026 by Cedric Llorens
-# ------------------------------------------------------------
+# cawk LICENCE
+
+> **cawk is subject to an MIT open-source license**  
+> Please refer to the LICENSE file for further information
+> **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

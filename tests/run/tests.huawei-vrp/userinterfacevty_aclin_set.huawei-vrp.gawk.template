@@ -13,7 +13,8 @@
 # @purpose : check if each user-interface vty has <acl inbound>
 # @description : vty lines without inbound acl allow unrestricted access from any source address
 # @actions : apply an inbound acl on all user-interface vty lines to restrict management access (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure user access is properly controlled | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

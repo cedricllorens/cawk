@@ -13,7 +13,8 @@
 # @purpose : check if <snmp v1v2> is not set
 # @description : snmp v1 and v2c use cleartext community strings and lack authentication, making them insecure
 # @actions : disable snmp v1 and v2c and migrate to snmp v3 with authentication and encryption (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.6.1 | Ensure SNMPv3 is used | SNMP
+# @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

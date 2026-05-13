@@ -13,7 +13,8 @@
 # @purpose : check if each user-interface vty has <ssh outbound>
 # @description : vty lines without ssh outbound protocol restriction may allow insecure protocols for outbound connections
 # @actions : configure protocol outbound ssh on all user-interface vty lines (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.1 | Ensure user access is properly controlled | Access Control
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

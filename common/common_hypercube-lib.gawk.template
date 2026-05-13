@@ -275,7 +275,6 @@ function cawk_init_hypercube_rules() {
 	table_port["etcd-peer"] = 2380;
 	table_port["ntp"] = 123;
 	table_port["cvsup"] = 5999; 
-	table_port["cvsup"] = 3690; 
 }
 
 # -----------------------------------------------
@@ -346,8 +345,8 @@ function cawk_add_hypercube_rules(rule_name,rule_description,action,inoutgress,i
 	cidr = src_net
 
  	if ( cidr == "none" ) {
-		cawk_cube[cawk_current_rule]["dst"] = -1
-		cawk_cube[cawk_current_rule]["dst_net"] = -1
+		cawk_cube[cawk_current_rule]["src"] = -1
+		cawk_cube[cawk_current_rule]["src_net"] = -1
  	} else if ( cidr == "host" ) {
 		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_ipToBinary(ip_address))
 		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_ipToBinary(ip_address))
@@ -387,8 +386,8 @@ function cawk_add_hypercube_rules(rule_name,rule_description,action,inoutgress,i
 		cawk_cube[cawk_current_rule]["dst"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr)))
 		cawk_cube[cawk_current_rule]["dst_net"] = cawk_binToDec(cawk_binaryOR(cawk_cidrHostMask(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_cidrNetworkMask(cidr))))
 	} else {
-		cawk_cube[cawk_current_rule]["src"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
-		cawk_cube[cawk_current_rule]["src_net"] = cawk_binToDec(cawk_binaryOR(cawk_hostMaskToBinary(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr))))
+		cawk_cube[cawk_current_rule]["dst"] = cawk_binToDec(cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr)))
+		cawk_cube[cawk_current_rule]["dst_net"] = cawk_binToDec(cawk_binaryOR(cawk_hostMaskToBinary(cidr),cawk_binaryAND(cawk_ipToBinary(ip_address),cawk_netMaskToBinary(cidr))))
 	}
 	
 	# -------------
@@ -451,7 +450,7 @@ function cawk_hypercube_rules_assessment() {
 
 		for(s=r;s<cawk_current_rule;s++) {
 
-		   	if ( cawk_dst[r] >= 0 && cawk_dst_net[r] >= 0 && cawk_src[s+1] >= 0 && cawk_dst_net[s+1] >= 0) {
+		   	if ( cawk_cube[r]["dst"]>= 0 && cawk_cube[r]["dst_net"] >= 0 && cawk_cube[s+1]["src"] >= 0 && cawk_cube[s+1]["src_net"] >= 0) {
 
 				# gather numbers to compute intersection ----
 				x_1_0 = cawk_cube[r]["src"]; x_1_1 = cawk_cube[r]["src_net"]; 
@@ -528,7 +527,7 @@ function cawk_hypercube_rules_assessment() {
 										||\
 										cawk_cube[r]["port_src"] == 0 && cawk_cube[r]["port_src_range"] == 0 && cawk_cube[r]["port_dst"] == 0 && cawk_cube[r]["port_dst_range"] == 0\
 										||\
-										cawk_cube[s+1]["port_src"] == 0 && cawk_cube[s+1]["port_dst_range"] == 0 && cawk_cube[s+1]["port_dst"] == 0 && cawk_cube[s+1]["port_dst_range"] == 0\
+										cawk_cube[s+1]["port_src"] == 0 && cawk_cube[s+1]["port_src_range"] == 0 && cawk_cube[s+1]["port_dst"] == 0 && cawk_cube[s+1]["port_dst_range"] == 0\
 										||\
 										(\
 											port_ranges_overlap(cawk_cube[r]["port_src"], cawk_cube[r]["port_src_range"], cawk_cube[s+1]["port_src"], cawk_cube[s+1]["port_src_range"]) &&\

@@ -12,7 +12,8 @@
 # @purpose : check if <vrf main><netconf-server> block is compliant (address, enabled true)
 # @description : non-compliant NETCONF server configuration (bad address, missing port, or service disabled) could expose the device to unauthorized management access
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.2.1 | Ensure NETCONF is securely configured | Management Access
+# @nist800-53_ref : AC-17(2) | Access Control | Ensure remote access is encrypted
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

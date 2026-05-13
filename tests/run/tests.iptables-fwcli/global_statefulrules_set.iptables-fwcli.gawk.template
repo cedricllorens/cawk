@@ -13,7 +13,8 @@
 # @purpose : check that <config stateful rules> is set
 # @description : missing stateful connection tracking rules means the firewall cannot distinguish established traffic from new unsolicited connections
 # @actions : configure stateful rules using conntrack to allow established and related traffic (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure firewall rules are properly configured | Firewall Policy
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high | medium
 # @authors : quentin gavilan
 # ------------------------------------------------------------
 

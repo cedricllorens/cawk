@@ -12,7 +12,8 @@
 # @purpose : check if <vrf main> block only contains trusted services
 # @description : unauthorized or unexpected services running in vrf main expand the attack surface and could expose the device to security risks
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.2.1 | Ensure unnecessary services are disabled | Services
+# @nist800-53_ref : CM-7(1) | Configuration Management | Ensure periodic review of unnecessary functions ports protocols and services
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

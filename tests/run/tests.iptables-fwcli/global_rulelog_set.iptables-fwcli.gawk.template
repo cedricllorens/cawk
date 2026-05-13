@@ -12,7 +12,8 @@
 # @purpose : check that <rule log> is set globally
 # @description : missing logging on firewall rules prevents tracking of allowed and denied traffic for security monitoring
 # @actions : add logging targets to firewall rules to capture traffic events (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1.1 | Ensure firewall rules are logged | Logging
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

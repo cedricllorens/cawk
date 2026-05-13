@@ -37,8 +37,9 @@ function detailed_report(audit,supplier) {
             printf "\t%-20s: %s\n", "purpose", fields[4]
             printf "\t%-20s: %s\n", "description", fields[5]
             printf "\t%-20s: %s\n", "actions", fields[6]
-            printf "\t%-20s: %s\n", "CIS Benchmark Ref", fields[7]
-            printf "\t%-20s: %s\n", "authors", fields[8]
+            printf "\t%-20s: %s\n", "NIST 800-53 Ref", fields[7]
+            printf "\t%-20s: %s\n", "risk_level", fields[8]
+            printf "\t%-20s: %s\n", "authors", fields[9]
             print ""
         }
     }

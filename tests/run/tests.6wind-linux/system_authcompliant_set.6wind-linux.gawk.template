@@ -12,7 +12,8 @@
 # @purpose : check if <system><auth> block is compliant (trusted users)
 # @description : non-compliant authentication configuration allowing untrusted users could grant unauthorized access to the device
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.2 | Ensure authentication is properly configured | System Administration
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

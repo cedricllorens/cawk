@@ -12,7 +12,8 @@
 # @purpose : check that <rule log> is set globally
 # @description : rules without logging prevent detection of security incidents and make forensic analysis impossible
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 3.1.1 | Ensure firewall rules are logged | Logging
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

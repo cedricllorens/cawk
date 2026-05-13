@@ -1,0 +1,48 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : firewall_familyinet_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check if <family inet> is set inside firewall block
+# @description : missing family inet configuration inside firewall block means IPv4 filtering rules are not applied and the device lacks adequate IPv4 traffic control
+# @actions : configure family inet policies inside firewall block to enforce IPv4 traffic filtering (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-7(11) | System and Communications Protection | Ensure restriction of incoming communications traffic is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	in_firewall = 0;
+	family_inet_found = 0;
+}
+
+/^firewall {/ && !/inactive/ {
+	in_firewall = 1;
+}
+
+in_firewall && /^%SED_BK_JUNI%family inet {/ && !/inactive/ {
+	print_err("firewall_familyinet_set.juniper-junos.gawk",$0,FNR,"high","pass");
+	family_inet_found = 1;
+}
+
+/^}$/ && in_firewall {
+	in_firewall = 0;
+}
+
+ENDFILE {
+	if ( !family_inet_found ) print_err("firewall_familyinet_set.juniper-junos.gawk","family inet is not set inside firewall block",0,"high","error");
+}
+
+END {
+}

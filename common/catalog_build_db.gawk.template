@@ -5,15 +5,17 @@
 # please refer to the MIT licence file for further information
 #
 # it generates the cawk info database from the test files
+# with NIST 800-53 validation
 # ------------------------------------------------------------
 
 BEGIN {
     FS = ";"
     OFS = ";"
     db_file = "database/db_info.txt"
+    nist_db_file = "database/db_nist800-53.txt"
 
     if (ARGC < 3) {
-        print "Usage: gawk -f build_database.awk audit [test_file_path]"
+        print "Usage: gawk -f catalog_build_db.gawk audit [test_file_path]" > "/dev/stderr"
         exit 1
     }
 
@@ -22,27 +24,75 @@ BEGIN {
     delete ARGV[1]
     delete ARGV[2]
 
+    # Load valid NIST IDs from db_nist800-53.txt
+    load_nist_database()
+
     # Create header if file doesn't exist
     if ((getline < db_file) <= 0) {
-	    print "audit;supplier;test_name;purpose;description;actions;cis_benchmark_ref;authors" > db_file
+	    print "audit;supplier;test_name;purpose;description;actions;nist800-53_ref;risk_level;authors" > db_file
     }
     close(db_file)
-    
-    parse_test_file(audit,test_file)
+
+    parse_test_file(audit, test_file)
 }
 
-function parse_test_file(audit,file) {
+# Load all valid NIST IDs from database/db_nist800-53.txt
+function load_nist_database(    line, fields, nist_id, line_num) {
+    line_num = 0
+    while ((getline line < nist_db_file) > 0) {
+        line_num++
+        if (line_num == 1) continue  # Skip header
+
+        split(line, fields, ";")
+        nist_id = fields[1]
+        gsub(/^[ \t]+|[ \t]+$/, "", nist_id)
+
+        if (nist_id != "") {
+            nist_valid[tolower(nist_id)] = 1
+        }
+    }
+    close(nist_db_file)
+}
+
+# Validate NIST ID and output error in cawk standard format
+function validate_nist_id(test_name, nist_ref, line_num,    nist_id, parts) {
+    # Extract NIST ID from reference (format: XX-Y | category | description)
+    nist_id = nist_ref
+    if (nist_ref ~ /\|/) {
+        split(nist_ref, parts, "|")
+        nist_id = parts[1]
+    }
+    gsub(/^[ \t]+|[ \t]+$/, "", nist_id)
+
+    # Validation logic
+    if (nist_id == "") {
+        # Missing NIST reference
+        print "cawk catalog_build|" test_name "|missing @nist800-53_ref comment|" line_num "|low|warning"
+        return 0
+    }
+    else if (!(nist_id in nist_valid)) {
+        # Invalid NIST ID
+        print "cawk catalog_build|" test_name "|invalid nist800-53 id: " nist_id " (not in database/db_nist800-53.txt)|" line_num "|medium|error"
+        return 0
+    }
+}
+
+function parse_test_file(audit, file,    line, supplier, test_name, purpose, description, actions, nist_ref, risk_level, authors, line_num, nist_line_num) {
     supplier = ""
     test_name = ""
     purpose = ""
     description = ""
     actions = ""
-    cis_ref = ""
+    nist_ref = ""
+    risk_level = ""
     authors = ""
+    line_num = 0
+    nist_line_num = 0
 
     while ((getline line < file) > 0) {
+        line_num++
         gsub(/^[ \t]+|[ \t]+$/, "", line)
-        
+
         if (tolower(line) ~ /^#[ \t]+@supplier[ \t]*:/) {
             gsub(/^#[ \t]+@supplier[ \t]*:[ \t]*/, "", line)
             supplier = tolower(line)
@@ -63,9 +113,14 @@ function parse_test_file(audit,file) {
             gsub(/^#[ \t]+@actions[ \t]*:[ \t]*/, "", line)
             actions = tolower(line)
         }
-        else if (tolower(line) ~ /^#[ \t]+@cis_benchmark_ref[ \t]*:/) {
-            gsub(/^#[ \t]+@cis_benchmark_ref[ \t]*:[ \t]*/, "", line)
-            cis_ref = tolower(line)
+        else if (tolower(line) ~ /^#[ \t]+@nist800-53_ref[ \t]*:/) {
+            gsub(/^#[ \t]+@nist800-53_ref[ \t]*:[ \t]*/, "", line)
+            nist_ref = tolower(line)
+            nist_line_num = line_num
+        }
+        else if (tolower(line) ~ /^#[ \t]+@risk_level[ \t]*:/) {
+            gsub(/^#[ \t]+@risk_level[ \t]*:[ \t]*/, "", line)
+            risk_level = tolower(line)
         }
         else if (tolower(line) ~ /^#[ \t]+@authors[ \t]*:/) {
             gsub(/^#[ \t]+@authors[ \t]*:[ \t]*/, "", line)
@@ -73,16 +128,21 @@ function parse_test_file(audit,file) {
         }
     }
     close(file)
-    
-    # Add to database
-    if (supplier != "" || test_name != "") {
+
+    # Add to database with NIST validation
+    if (supplier != "" && test_name != "") {
+        # Validate NIST ID and output result in cawk format
+        validate_nist_id(test_name, nist_ref, nist_line_num)
+
         # Remove semicolons from data fields to prevent CSV parsing issues
         gsub(/;/, " ", purpose)
         gsub(/;/, " ", description)
         gsub(/;/, " ", actions)
-        gsub(/;/, " ", cis_ref)
+        gsub(/;/, " ", nist_ref)
+        gsub(/;/, " ", risk_level)
         gsub(/;/, " ", authors)
 
-        print audit ";" supplier ";" test_name ";" purpose ";" description ";" actions ";" cis_ref ";" authors >> db_file
+        # Add to database
+        print audit ";" supplier ";" test_name ";" purpose ";" description ";" actions ";" nist_ref ";" risk_level ";" authors >> db_file
     }
 }

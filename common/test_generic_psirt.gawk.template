@@ -80,14 +80,14 @@ BEGINFILE {
 
     # Enforce that filename matches DEVICE (regex)
     if (!match(filename_only, DEVICE)) {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because filename " filename_only " does not match device pattern " DEVICE, FNR, "low", "psirt");
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because filename " filename_only " does not match device pattern " DEVICE, FNR, "info", "psirt");
         psirt_inventory_file_error = 1
         nextfile
     }
 
     inventory_file = "database/psirt_scopes/psirt_CAWK_PSIRT_OS_inventory_scope.txt"
     if (system("test -f " inventory_file) != 0) {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because inventory file " inventory_file " does not exist", FNR, "low", "psirt");
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because inventory file " inventory_file " does not exist", FNR, "info", "psirt");
         psirt_inventory_file_error = 1
         nextfile
     }
@@ -98,7 +98,7 @@ BEGINFILE {
             os_device = arr[1]
         }
     } else {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because not found in " inventory_file, FNR, "low", "psirt");
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because not found in " inventory_file, FNR, "info", "psirt");
         psirt_inventory_file_error = 1
         nextfile
     }
@@ -245,7 +245,7 @@ ENDFILE {
 
         split(os_device, target_parts, " ")
         if (length(target_parts) < 3) {
-            print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because Invalid os_device format detected: "os_device, FNR, "low", "psirt");
+            print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because Invalid os_device format detected: "os_device, FNR, "info", "psirt");
         } else {
             # Check OS pattern match
             target_os = target_parts[1]

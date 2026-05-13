@@ -12,7 +12,8 @@
 # @purpose : check if an interface has no <ip redirects>
 # @description : ip redirects may trigger attacks
 # @actions : set <no ip redirects> on interfaces (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 2.3.4 | Ensure ICMP redirects are disabled | Network Protocols
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------
 

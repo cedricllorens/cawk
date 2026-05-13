@@ -12,7 +12,8 @@
 # @purpose : check vars def not ref and ref not def
 # @description : undefined variable references or unused variable definitions indicate configuration inconsistencies that may lead to unexpected security policy behavior
 # @actions : missing statements should be added to the configuration or setup exceptions (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.5 | Ensure variables are properly defined | Configuration Management
+# @nist800-53_ref : CM-6 | Configuration Management | Ensure configuration settings are established and enforced
+# @risk_level : high | info
 # @authors : pierre bertrand
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if a line vty has <transport output (none|ssh)>
 # @description : vty without restricting transport output to ssh or none allows insecure protocols for outbound connections
 # @actions : set <transport output ssh> or <transport output none> on line vty (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.6 | Ensure SSH is configured on VTY lines | SSH Access
+# @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

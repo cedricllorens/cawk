@@ -13,7 +13,8 @@
 # @purpose : check if <ikev1> is not set
 # @description : ikev1 has known cryptographic weaknesses and should not be used for ipsec tunnels
 # @actions : migrate ipsec tunnels to ikev2 (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.7.2 | Ensure IKEv2 is used | Cryptography
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -12,7 +12,8 @@
 # @purpose : check if <routing> definitions are referenced and references are defined
 # @description : route-maps or prefix-lists defined but not referenced (or vice versa) indicate dead configuration and potential routing inconsistencies
 # @actions : remove unused route-maps and prefix-lists or fix missing references (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 4.1.1 | Ensure routing protocols are secured | Routing
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high | info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

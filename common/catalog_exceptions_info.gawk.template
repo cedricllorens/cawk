@@ -1,0 +1,44 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# it lists the exceptions of a supplier with all the database information
+# ------------------------------------------------------------
+
+BEGIN {
+    FS = ";"
+    db_file = "database/db_exception.txt"
+
+    if (ARGC < 3) {
+        print "Usage: gawk -f catalog_exceptions_info.gawk [audit] [supplier]"
+        exit 1
+    }
+
+    target_audit = ARGV[1]
+    target_supplier = ARGV[2]
+    delete ARGV[1]
+    delete ARGV[2]
+
+    detailed_report(target_audit,target_supplier)
+}
+
+function detailed_report(audit,supplier) {
+    print "=== audit:" audit " supplier:" supplier " list of exceptions ==="
+    print ""
+
+    while ((getline line < db_file) > 0) {
+        split(line, fields, ";")
+
+        if (tolower(fields[1]) == tolower(audit) && tolower(fields[2]) == tolower(supplier)) {
+            printf "audit/exception_id: %s/%-30s\n", fields[1], fields[3]
+            printf "\t%-20s: %s\n", "supplier", fields[2]
+            printf "\t%-20s: %s\n", "approver", fields[4]
+            printf "\t%-20s: %s\n", "date", fields[5]
+            printf "\t%-20s: %s\n", "reason", fields[6]
+            print ""
+        }
+    }
+    close(db_file)
+}

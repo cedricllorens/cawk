@@ -12,7 +12,8 @@
 # @purpose : check that <ip acl number standard ...> have inconsistent/redundant rules
 # @description : inconsistent or redundant acl rules reduce security effectiveness and complicate policy management
 # @actions : review and clean up acl rules to remove redundancies and resolve inconsistencies (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.3.2 | Ensure ACL rules are consistent | Access Control
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

@@ -13,7 +13,8 @@
 # @purpose : check if a line vty has <access-class xx in>
 # @description : line vty without inbound ACL can allow unauthorized remote management access from any source
 # @actions : set <access-class xx in> on line vty (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.4.4 | Ensure VTY lines have ACLs | Console and Line Access
+# @nist800-53_ref : AC-17 | Access Control | Ensure remote access is controlled and monitored
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 

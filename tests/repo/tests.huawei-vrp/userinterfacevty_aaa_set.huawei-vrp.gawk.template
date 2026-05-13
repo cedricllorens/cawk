@@ -13,7 +13,8 @@
 # @purpose : check if each user-interface vty has <authentication-mode aaa>
 # @description : vty lines without aaa authentication-mode allow access without centralized authentication enforcement
 # @actions : configure authentication-mode aaa on all user-interface vty lines (please refer to engineering/operations guidelines for further information)
-# @cis_benchmark_ref : 1.1.1 | Ensure AAA is configured on user interface | System Administration
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
 
