@@ -1,8 +1,14 @@
 # cawk Changelog
 
-> **cawk is subject to an MIT open-source license**  
+> **cawk is subject to an MIT open-source license**
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
+
+## [v3.6.0] - May 2026
+
+### Makefile
+
+- Fix catalog_exceptions_repo: search suppliers in confs/repo instead of exceptions/repo, add file existence check before execution
 
 ## [v3.5.0] - May 2026
 

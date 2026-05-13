@@ -2474,9 +2474,11 @@ else
 endif
 
 catalog_exceptions_repo: tests_target_common
-	@for supplier in $(shell find exceptions/repo -maxdepth 1 -name "exceptions.*.m4" | sed 's|.*exceptions\.||;s|\.m4||' | sort -u | xargs); do \
-		$(ECHO) ""; \
-		common/catalog_exceptions_info.gawk repo $$supplier; \
+	@for supplier in $(shell find confs/repo -maxdepth 1 -type d ! -name "repo" | sed 's|.*/||' | sort -u); do \
+		[ -d "confs/repo/$$supplier" ] && { \
+			$(ECHO) ""; \
+			common/catalog_exceptions_info.gawk repo $$supplier; \
+		} || true; \
 	done
 	$(ECHO) "cawk catalog_exceptions_repo done ----"
 
