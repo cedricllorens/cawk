@@ -578,7 +578,7 @@ else
 		$(ECHO) "cawk sync_teststoconfs_run: no suppliers found in confs/run_$(audit), skip ----"; \
 		exit 0; \
 	fi; \
-	for t in $(TESTS_PATH)/run_$(audit)/*; do \
+	for t in $(TESTS_PATH)/run_$(audit)/tests.*; do \
 		if [ ! -e "$$t" ]; then continue; fi; \
 		name=$$(basename $$t); \
 		sup=$$(echo $$name | sed -e 's/^tests\.//' -e 's/\.psirt$$//' ); \
@@ -587,8 +587,9 @@ else
 			if [ "$$ks" = "$$sup" ]; then found=yes; break; fi; \
 		done; \
 		if [ "$$found" = "no" ]; then \
-			$(ECHO) "cawk sync_teststoconfs_run: removing $$t (supplier=$$sup not present in confs/run_$(audit)) ----"; \
-			rm -rf "$$t" || true; \
+			rm -rf "$$(dirname "$$t")/zz.sync.save.$$(basename "$$t")" 2>/dev/null || true; \
+			mv "$$t" "$$(dirname "$$t")/zz.sync.save.$$(basename "$$t")" || true; \
+			$(ECHO) "cawk sync_teststoconfs_run: renamed $$t to $$(dirname "$$t")/zz.sync.save.$$(basename "$$t") ----"; \
 		else \
 			$(ECHO) "cawk sync_teststoconfs_run: keep $$t (supplier=$$sup)"; \
 		fi; \
@@ -632,8 +633,9 @@ else
 			if [ "$$ks" = "$$sup" ]; then found=yes; break; fi; \
 		done; \
 		if [ "$$found" = "no" ]; then \
-			$(ECHO) "cawk sync_exceptionstoconfs_run: removing $$e (supplier=$$sup not present in confs/run_$(audit)) ----"; \
-			rm -f "$$e" || true; \
+			rm -rf "$$(dirname "$$e")/zz.sync.save.$$(basename "$$e")" 2>/dev/null || true; \
+			mv "$$e" "$$(dirname "$$e")/zz.sync.save.$$(basename "$$e")" || true; \
+			$(ECHO) "cawk sync_exceptionstoconfs_run: renamed $$e to $$(dirname "$$e")/zz.sync.save.$$(basename "$$e") ----"; \
 		else \
 			$(ECHO) "cawk sync_exceptionstoconfs_run: keep $$e (supplier=$$sup)"; \
 		fi; \

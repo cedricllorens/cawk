@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important: Git Workflow
+
+**Claude Code must NOT create git commits.** All git operations (commits, pushes, branch management) must be done manually by the user.
+
+Claude Code should:
+
+- ✅ Create `.orig` backups before modifying files
+- ✅ Review changes with `git diff` and `git status`
+- ✅ Update ChangeLog and README as needed
+- ❌ **NOT create commits** — user will do this manually
+- ❌ **NOT push to remote** — user will do this manually
+
+See [CLAUDE.CAWK-PRACTICES.md](CLAUDE.CAWK-PRACTICES.md) section 8 for commit message format and git workflow guidelines.
+
 ## Code Practices & Standards
 
 For development guidelines, including backup protocol, code style, testing requirements, documentation updates, and vigilance checklist, refer to **[CLAUDE.CAWK-PRACTICES.md](CLAUDE.CAWK-PRACTICES.md)**.

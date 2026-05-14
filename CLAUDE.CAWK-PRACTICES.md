@@ -17,18 +17,31 @@ All build and execution commands use `gmake`, never plain `make`.
 
 ### 1.1 Backup Creation
 
-**Mandatory:** Before modifying ANY existing file, create a `.orig` backup **only if one does not already exist**.
+**Mandatory:** Before modifying ANY existing file, follow this workflow:
+
+1. **Check** if a `.orig` backup already exists: `ls file.awk.orig`
+2. **Create** the backup **only if it doesn't exist**: `cp file.awk file.awk.orig`
+3. **Then** proceed with edits using Edit tool
+
+**Correct workflow:**
 
 ```bash
-# Correct: Create backup before editing
-cp file.awk file.awk.orig  # Only if file.awk.orig does not exist
-# Then proceed with edits
+# Step 1: Check if backup exists
+ls file.awk.orig  # Returns 2 if not found, 0 if exists
 
-# Incorrect: Do not overwrite existing backups
-cp file.awk file.awk.orig  # If file.awk.orig already exists, STOP
+# Step 2: Create backup only if it doesn't exist
+[ ! -f file.awk.orig ] && cp file.awk file.awk.orig
+
+# Step 3: Now proceed with edits (via Edit tool or manual)
 ```
 
-**Rationale:** Backups allow reverting to the original state if something goes wrong. Preserving existing backups prevents accidental loss of previous recovery points.
+**Why this order matters:**
+
+- Creating backup **before** editing ensures you have a pristine original
+- Checking first prevents overwriting previous backup points
+- This creates a clear audit trail of what the original state was
+
+**Rationale:** Backups allow reverting to the original state if something goes wrong. Preserving existing backups prevents accidental loss of previous recovery points from earlier changes.
 
 ### 1.2 Change Review & Validation
 
@@ -360,7 +373,28 @@ gmake database_postaudit_add audit=client1
 
 ## 8. Git Workflow
 
-### 8.1 Before Committing
+⚠️ **IMPORTANT:** Claude Code must NOT create git commits. All git operations (commits, pushes, branch management) must be done manually by the user. Claude Code responsibility ends at code changes and documentation updates.
+
+### 8.1 Claude Code Responsibilities (Before User Commits)
+
+Claude Code will:
+
+1. ✅ Create `.orig` backups before modifying files
+2. ✅ Review changes with `git diff` and `git status` output
+3. ✅ Update ChangeLog and README (if applicable)
+4. ✅ Run tests to validate changes
+5. ✅ Provide summary of changes for user review
+
+Claude Code will NOT:
+
+1. ❌ Create git commits
+2. ❌ Push to remote
+3. ❌ Create or switch branches
+4. ❌ Perform any git operations
+
+### 8.2 User Responsibilities (Manual Commits)
+
+The user will perform all git operations:
 
 ```bash
 # 1. Check status
@@ -372,15 +406,22 @@ git diff
 # 3. Verify .orig backups were created for modified files
 ls *.orig
 
-# 4. Run tests
+# 4. Run tests (optional, if not done by Claude Code)
 gmake check_repo        # or gmake check_run audit=<name>
 
-# 5. Ensure documentation is updated
-# → README.md (if applicable)
-# → ChangeLog.md (always)
+# 5. Review ChangeLog and README updates
+cat ChangeLog | head -20
 ```
 
-### 8.2 Commit Message Format
+Then create the commit:
+
+```bash
+git add <files>
+git commit -m "..."  # Use format below
+git push origin <branch>
+```
+
+### 8.3 Commit Message Format
 
 ```
 <Category>: <Brief summary>

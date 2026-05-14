@@ -8,7 +8,9 @@
 
 ### Makefile
 
-- Fix catalog_exceptions_repo: search suppliers in confs/repo instead of exceptions/repo, add file existence check before execution
+- Fix catalog_exceptions_repo and catalog_exceptions_run: search suppliers in confs/ directories instead of exceptions/
+- Change sync_teststoconfs_run: rename test directories to zz.sync.save.* instead of removing them (preserve for audit trail)
+- Change sync_exceptionstoconfs_run: rename exception files to zz.sync.save.* instead of removing them (preserve for audit trail)
 
 ## [v3.5.0] - May 2026
 
