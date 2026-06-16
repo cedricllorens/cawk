@@ -1,53 +1,53 @@
-# ------------------------------------------------------------
-# cawk is subject to a MIT open-source licence
-# please refer to the MIT licence file for further information
-# ------------------------------------------------------------
-# Makefile used for managing cawk container 
-# authors: cedric llorens, florian heitz
-# cawk docker version: 1.0
-# ------------------------------------------------------------
-
-# ---------------------------------------------
+# ===============================================================================
+# cawk Docker Container Management Makefile
+# ===============================================================================
+# Purpose: Build, run, and manage cawk Docker containers with persistent volumes
+# Authors: Cedric Llorens, Florian Heitz
+# Version: 1.0
+# License: MIT (see LICENSE file)
+# ===============================================================================
 
 SHELL := /bin/bash
 
-# ---------------------------------------------
-
 include Makefile.support.mk
 
-# ---------------------------------------------
+# ===============================================================================
+# DOCKER CONFIGURATION
+# ===============================================================================
 
-# Container configuration
+# Container naming (includes release version for multi-version deployments)
 CONTAINER_NAME := cawk-container
 CONTAINER_FULL := $(CONTAINER_NAME)-$(CAWK_RELEASE)
 
-# image configuration
+# Docker image naming
 IMAGE_NAME := cawk-image
 IMAGE_FULL := $(IMAGE_NAME):$(CAWK_RELEASE)
 
-# ---------------------------------------------
-
-# Volume configuration
+# Persistent volume for audit data (survives container lifecycle)
 CAWK_VOLUME := cawk-persistent-volume
 CAWK_VOLUME_FULL := $(CAWK_VOLUME)-$(CAWK_RELEASE)
 
-# ---------------------------------------------
-
-# Proxy configuration
+# HTTP/HTTPS proxy configuration (from environment)
 PROXY_URL := $(shell echo $$HTTP_PROXY)
 PROXY_URL_SECU := $(shell echo $$HTTPS_PROXY)
 
-# ---------------------------------------------
+# ===============================================================================
+# TARGETS (grouped by function)
+# ===============================================================================
 
-# Default target
-.PHONY: help build run stop clean clean-all rebuild status images containers \
-        prune prune-all logs shell connect info pull-alpine-image \
-        create-volume info-volume remove-volume cawk-check-repo \
-	remove-image-cawk remove-image-alpine check-system
+.PHONY: \
+	help check-system \
+	build run stop shell connect rebuild \
+	create-volume info-volume remove-volume \
+	status images containers remove-image-cawk remove-image-alpine \
+	pull-alpine-image logs info \
+	clean clean-all prune \
+	cawk-check
 
-# ---------------------------------------------
+# ===============================================================================
+# HELP & SYSTEM CHECK
+# ===============================================================================
 
-# Default target
 help:
 	@echo "===================================================================="
 	@echo "Cawk Docker Management - Available Targets"
@@ -88,8 +88,9 @@ help:
 	@echo "check-system           - Check the cawk docker system requirements"
 	@echo "===================================================================="
 
-
-# ---------------------------------------------
+# ===============================================================================
+# SYSTEM REQUIREMENTS CHECK
+# ===============================================================================
 
 check-system:
 	@echo "==== cawk docker check"

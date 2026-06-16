@@ -4,13 +4,47 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
-## [v3.6.0] - May 2026
+## [v3.6.0] - June 2026
 
 ### Makefile
+-- structure --
+- Improve readability and fix minor bugs
+- Start splitting the Makefile into several parts for enhancement purposes
+-- build --
+- exceptions_build, exceptions_build_run, exceptions_build_repo now call exceptions_build_run (without audit) to handle exceptions/run/ in addition to named audits
+- catalog_build, catalog_build_run, catalog_build_repo now call catalog_build_run (without audit) to handle tests/run/ in addition to named audits
+-- sync --
+- sync_teststoconfs_run, sync_exceptionstoconfs_run: auto-cleanup old zz.sync.save.* (keep only 3 newest) to prevent disk space accumulation ([Makefile](Makefile) lines 598, 644)
+- sync_teststoconfs_run: rename test directories to zz.sync.save.*.YYYY-MM-DD instead of removing them (preserve for audit trail)
+- sync_exceptionstoconfs_run: rename exception files to zz.sync.save.*.YYYY-MM-DD instead of removing them (preserve for audit trail)
+-- catalog --
+- catalog_exceptions_repo and catalog_exceptions_run: search suppliers in confs/ directories instead of exceptions/
 
-- Fix catalog_exceptions_repo and catalog_exceptions_run: search suppliers in confs/ directories instead of exceptions/
-- Change sync_teststoconfs_run: rename test directories to zz.sync.save.* instead of removing them (preserve for audit trail)
-- Change sync_exceptionstoconfs_run: rename exception files to zz.sync.save.* instead of removing them (preserve for audit trail)
+### Makefile.support.mk
+- Add documentation headers to Makefile.support.mk: clarify pattern rules (no .PHONY required), organize into logical sections (version, directories, suppliers, compilation, options, reporting) for improved maintainability
+- Add compilation validation to Makefile.support.mk: detect silent empty/malformed .gawk files by verifying file is non-empty and has shebang
+
+### Makefile.cawk.version
+- Improve documentation in Makefile.cawk.version: add detailed help for install/reinstall/update operations with usage examples, clarify error messages, add success confirmation output ([Makefile.cawk.version](Makefile.cawk.version) lines 1-49)
+- Fix line endings: Makefile.cawk.version had CRLF line terminators (likely from Windows editing); normalized to LF. Added [.gitattributes](.gitattributes) with `* text=auto eol=lf` to enforce LF normalization across all text files and prevent future CRLF drift
+
+### Community & Contribution Files
+- Add community contribution guidelines and templates: created [CONTRIBUTING.md](CONTRIBUTING.md) (migrated from PR.howto.md, enhanced with code style guidelines and testing instructions), [SECURITY.md](SECURITY.md) (responsible disclosure policy for security vulnerabilities), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) (Contributor Covenant), [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) (PR checklist), [.github/ISSUE_TEMPLATE/bug_report.md](.github/ISSUE_TEMPLATE/bug_report.md) and [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) (issue templates for bug reports and feature requests). Modernized [README.md](README.md) community section to link to CONTRIBUTING.md and other governance files. Deleted PR.howto.md (content migrated to CONTRIBUTING.md)
+
+### Makefile.docker
+- Improve structure of Makefile.docker: reformatted .PHONY into grouped logical functions (help, build, volumes, images, cleanup), enhanced header documentation, add section comments for container/volume/system targets
+
+### Scripts
+- Fix catalog_build_exceptions_db.gawk: remove dependency on m4_cawk_exception macro — exceptions are now compiled based on metadata (@exception_id) alone
+- Add print_err() field validation to check_test.gawk: validate both risk_level (4th arg: high, medium, low, info) and status_code (5th arg: pass, error, warning, psirt) at `gmake tests_check` time; captures errors even with concatenated message expressions
+
+### Tests
+- Add PSIRT test directories and templates for all suppliers
+— Correct NIST 800-53 reference in PSIRT tests: replace AU-12 (audit) with SI-2 (flaw remediation)
+- Add global_banner_set test (AC-8, high) to 4 suppliers missing it: juniper-junos, huawei-vrp, nokia-sros, ekinops-oneos
+- Add new paloalto-panos tests: aaa_authprofile_set (IA-2, high), login_banner_set (AC-8, medium)
+
+---
 
 ## [v3.5.0] - May 2026
 

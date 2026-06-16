@@ -12,3 +12,6 @@
 *.swo
 *~
 .DS_Store
+
+# Directory used for debug
+roles/

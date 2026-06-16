@@ -21,6 +21,9 @@
     "global_sshcompliant_set": {
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
     },
+    "cveyyy_xxx_psirt": {
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
     "system_authcompliant_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
@@ -31,9 +34,8 @@
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "global_duplicaterule_notset": {
-      "default": "sc-7 | system and communications protection | ensure boundary protection is configured",
-      "iptables-fwcli": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "packetfilter-fwcli": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
+      "checkpoint-fwcli": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "global_ipioclist_set": {
       "default": "si-4 | system and information integrity | ensure system monitoring is configured"
@@ -449,8 +451,14 @@
     "global_tabledefref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
+    "aaa_authprofile_set": {
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users"
+    },
     "fw_anyany_notset": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "login_banner_set": {
+      "default": "ac-8 | access control | ensure system use notification is displayed before granting access"
     }
   }
 }

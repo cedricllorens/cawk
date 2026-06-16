@@ -56,7 +56,7 @@ The Makefile.cawk.version file provides installation and version management targ
 
 important note : you may have to change the file support/tests.sed for finding the gawk path at your
 system level required for building tests:
-	-%SED_GAWK_PATH% must point out the right path for gawk 
+	-%SED_GAWK_PATH% must point out the right path for gawk
 	( we set <!/usr/bin/env -S gawk -f> for a generic finding )
 
 # cawk gmake targets
@@ -561,6 +561,11 @@ you may thanks to the file Makefile.support.mk control all the cawk options like
 DEADBEEF, etc. please note that all these options can be called with gmake like:
 gmake check_repo DEADBEEF=yes PSIRT=yes ....
 
+note on PSIRT (assessment mode):
+	- PSIRT=no (default): run standard tests + psirt tests
+	- PSIRT=yes        : run ONLY psirt tests (standard tests are skipped)
+	psirt tests are always compiled; this flag only selects which tests run at assessment time.
+
 # cawk backup/restore audit=AUDIT_NAME assessment
 
 cawk allows to build backup/restore only for audit=AUDIT_NAME assessments. 
@@ -684,28 +689,37 @@ If CAWK_SYSNAME environment variable is set, all functions related to these file
 	- common/common.gawk.template functions are replaced by special functions in database/common/special_common.gawk.template
  	  (special functions can be coded specifically for your system and will be backed up and restored)
 
-# cawk community
+# Contributing to cawk
 
-if someone intends to submit a test and a configuration associated to, if approved, then the 
-test will added to the package and the name of author will be added to the AUTHORS list.
+We welcome contributions from the community! If you'd like to:
 
-the requester must use a Pull Request to submit an evolution as such:
+- **Report a bug** — Open an issue with details and reproduction steps
+- **Suggest a feature** — Describe your idea and use case
+- **Submit a test or enhancement** — Follow our contribution guidelines
 
-	# project clone
-	git clone https://github.com/cedricllorens/cawk.git
-	cd cawk
+## Getting Started
 
-	# build your own develop branch
-	git checkout -b cawk_name_update
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
-	# perform your changes
-	git add .
-	git commit -m "Update ..."
+- Pull request procedure and branch naming conventions
+- Code style and formatting guidelines
+- Testing requirements before submission
+- Documentation update checklist
+- Local validation steps
 
-	# push your update
-	git push origin cawk_name_update
+For security vulnerabilities, please see [SECURITY.md](SECURITY.md) for responsible disclosure.
 
-	# create the push request at Github
+## Community Standards
 
-enjoy participating in cawk or simply using it! 
-cedric llorens.
+We are committed to providing a welcoming and inclusive environment. Please review our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+---
+
+Approved contributions will be:
+- Added to the cawk package
+- Credited in the [AUTHORS](AUTHORS.md) list
+- Acknowledged in the [ChangeLog](ChangeLog.md)
+
+Enjoy participating in cawk or simply using it!
+
+**cedric llorens**

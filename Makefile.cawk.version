@@ -1,85 +1,115 @@
-# ----------------------------------------------------------------------------------
-# cawk is subject to a MIT open-source licence
-# please refer to the MIT licence file for further information
-# ----------------------------------------------------------------------------------
-# cawk is Copyright (C) 2024-2026 by Cedric Llorens
-# ----------------------------------------------------------------------------------
+# ===============================================================================
+# cawk Version Management Makefile
+# ===============================================================================
+# Purpose: Manage installation, reinstallation, and upgrades of cawk versions
+# Author: Cedric Llorens
+# License: MIT (see LICENSE file)
+#
 # NOTE: This Makefile must be located in the parent directory of cawk installations
-#        you may refer to the README for further information
-# ----------------------------------------------------------------------------------
+#       Each cawk-X.Y.Z installation is managed independently with symlink fallback
+# ===============================================================================
 
-.PHONY: all update reinstall
+.PHONY: all install reinstall update help
 CURRENT_DATE := $(shell date +%Y-%m-%d)
 
-# --------------------
+# ===============================================================================
+# TARGETS
+# ===============================================================================
 
-all:
-	@echo "Available targets:"
+help all:
+	@echo "================================================================================"
+	@echo "cawk Version Management - Available Operations"
+	@echo "================================================================================"
 	@echo ""
-	@echo "  install - Install for the first time a cawk version"
-	@echo "    Required: CAWK_VERSION=x.y.y"
+	@echo "  install — Install cawk for the first time"
+	@echo "    Usage:   gmake install CAWK_VERSION=x.y.z"
+	@echo "    Example: gmake install CAWK_VERSION=3.6.0"
+	@echo "    Action:  Extracts cawk-x.y.z.tar.gz, creates symlink, removes .git"
 	@echo ""
-	@echo "  reinstall - Reinstall a cawk current version (with audit backup && restore)"
-	@echo "    Required: CAWK_VERSION=x.y.y"
+	@echo "  reinstall — Reinstall current cawk version (preserve audits)"
+	@echo "    Usage:   gmake reinstall CAWK_VERSION=x.y.z"
+	@echo "    Example: gmake reinstall CAWK_VERSION=3.6.0"
+	@echo "    Action:  Backup audits, reinstall version, restore audits"
 	@echo ""
-	@echo "  update - Install a new cawk version ( with audit backup && restore from previous version)"
-	@echo "    Required: CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y"
+	@echo "  update — Upgrade to a new cawk version (preserve audits)"
+	@echo "    Usage:   gmake update CAWK_VERSION=x.y.z CAWK_NEXT_VERSION=x.y.z"
+	@echo "    Example: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
+	@echo "    Action:  Backup from old version, install new, restore audits"
 	@echo ""
-	@echo " NOTE : This Makefile must be located in the parent directory of cawk installations"
+	@echo "================================================================================"
+	@echo "NOTE: This Makefile must be located in the PARENT directory of cawk"
+	@echo "      installations (where cawk-X.Y.Z directories are extracted)"
+	@echo "================================================================================"
 
-# --------------------
+# ===============================================================================
+# INSTALL TARGET
+# ===============================================================================
 
 install:
 ifeq ($(CAWK_VERSION),)
-		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "Usage: gmake install CAWK_VERSION=3.6.0"
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
 else
+	@echo "Installing cawk-$(CAWK_VERSION)..."
 	tar zxvf cawk-$(CAWK_VERSION).tar.gz
 	ln -s cawk-$(CAWK_VERSION) cawk
 	cd cawk-$(CAWK_VERSION) && rm -r -f .git && cd ..
+	@echo "✓ cawk-$(CAWK_VERSION) installed successfully"
 endif
 endif
 
-# --------------------
+# ===============================================================================
+# REINSTALL TARGET
+# ===============================================================================
 
 reinstall:
 ifeq ($(CAWK_VERSION),)
-		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "Usage: gmake reinstall CAWK_VERSION=3.6.0"
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
 else
+	@echo "Reinstalling cawk-$(CAWK_VERSION) (backing up audits)..."
 	rm -r -f cawk-$(CAWK_VERSION).old
 	cd cawk-$(CAWK_VERSION) && gmake backup_run_audit && cp backup/run_audit_$(CURRENT_DATE).tar.gz .. && cd ..
-	rm -f cawk 
+	rm -f cawk
 	mv cawk-$(CAWK_VERSION) cawk-$(CAWK_VERSION).old
 	tar zxvf cawk-$(CAWK_VERSION).tar.gz
 	ln -s cawk-$(CAWK_VERSION) cawk
 	cd cawk-$(CAWK_VERSION) && rm -r -f .git && gmake migrate file=../run_audit_$(CURRENT_DATE).tar.gz && cd ..
+	@echo "✓ cawk-$(CAWK_VERSION) reinstalled with restored audits"
 endif
 endif
 
-# --------------------
+# ===============================================================================
+# UPDATE TARGET
+# ===============================================================================
 
 update:
 ifeq ($(CAWK_VERSION),)
-		@echo "CAWK_VERSION=x.y.y must be defined within the target call"
+	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
 else
 ifeq ($(CAWK_NEXT_VERSION),)
-		@echo "CAWK_NEXT_VERSION=x.y.y must be defined within the target call"
+	@echo "ERROR: CAWK_NEXT_VERSION=$(CAWK_NEXT_VERSION) must be specified"
+	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-		@echo "cawk-$(CAWK_VERSION).tar.gz file not found"
+	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found"
 else
+	@echo "Upgrading from cawk-$(CAWK_VERSION) to cawk-$(CAWK_NEXT_VERSION)..."
 	rm -r -f cawk-$(CAWK_VERSION).old
 	cd cawk-$(CAWK_VERSION) && gmake backup_run_audit && cp backup/run_audit_$(CURRENT_DATE).tar.gz .. && cd ..
-	rm -f cawk 
+	rm -f cawk
 	mv cawk-$(CAWK_VERSION) cawk-$(CAWK_VERSION).old
 	tar zxvf cawk-$(CAWK_NEXT_VERSION).tar.gz
 	ln -s cawk-$(CAWK_NEXT_VERSION) cawk
 	cd cawk-$(CAWK_NEXT_VERSION) && rm -r -f .git && gmake migrate file=../run_audit_$(CURRENT_DATE).tar.gz && cd ..
+	@echo "✓ Upgraded from $(CAWK_VERSION) to $(CAWK_NEXT_VERSION) with restored audits"
 endif
 endif
 endif

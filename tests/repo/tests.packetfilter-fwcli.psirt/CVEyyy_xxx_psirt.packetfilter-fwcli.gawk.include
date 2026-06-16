@@ -1,0 +1,75 @@
+# ====================================================================================
+# PSIRT VULNERABILITY ASSESSMENT TOOL
+# ====================================================================================
+# DESCRIPTION:
+#   Generic pattern-based vulnerability detection tool with configurable logic
+#   Automatically detects OS device information from inventory file
+#   Supports line patterns, block patterns, and complex boolean logic
+#
+# REQUIREMENTS:
+#   - Inventory file database/psirt_scopes/psirt_os_inventory_scope.txt
+#     with format: "device_filename os_version chassis cpu" separated by one space
+#
+# USER CONFIGURATION:
+#   - Modify ONLY the section between "USER START" and "USER END"
+#   - Define OS patterns, line patterns, block patterns, and logic
+#
+# SYNTAX REFERENCE AND LOGIC:
+#   DEVICE (regex matching filename)            -> LOGIC : not used
+#   OS (regex matching os_version chassis cpu)  -> LOGIC : not used
+#   LINE[1] (regex matching line)               -> LOGIC : LINE[1] == 1 or 0
+#   BLOCK[1]["start"] (regex matching block)    -> LOGIC : BLOCK[1] == 1 or 0
+#   BLOCK[1]["match"][1] (regex matching line)  -> LOGIC : BLOCK_LINE[1][1] == 1 or 0
+#   BLOCK[1]["match"][2] (regex matching line)  -> LOGIC : BLOCK_LINE[1][2] == 1 or 0
+#
+# VERSION: 1.0
+#
+# @test_name : CVEyyy_xxx_psirt.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : PSIRT vulnerability assessment template for PacketFilter firewalls
+# @description : generic pattern-based vulnerability detection tool for PacketFilter firewall devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
+# @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ====================================================================================
+
+function load_psirt_config() {
+
+    # ==============================================================
+    # ==============================================================
+    # USER START - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+
+    # Device Patterns
+    DEVICE = "^.*"
+
+    # OS Patterns (OpenBSD versions with PacketFilter)
+    OS[1] = "6\\.[0-9] .* .*"
+    OS[2] = "7\\.[0-9] .* .*"
+
+    # Line Patterns (PacketFilter rules)
+    LINE[1] = "^pass"
+    LINE[2] = "^block"
+
+    # Block Patterns (PacketFilter macro and table blocks)
+    BLOCK[1]["start"] = "^table"
+    BLOCK[1]["end"] = "$"
+    BLOCK[1]["match"][1] = "^ {"
+    BLOCK[1]["match"][2] = "^ }"
+
+    BLOCK[2]["start"] = "^anchor"
+    BLOCK[2]["end"] = "load"
+    BLOCK[2]["match"][1] = "^pass"
+    BLOCK[2]["match"][2] = "^block"
+
+    # Logic
+    LOGIC = "LINE[1] == 1 && LINE[2] == 1 && BLOCK[1] == 1 && BLOCK_LINE[1][1] == 0"
+
+    # ==============================================================
+    # ==============================================================
+    # USER END - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+}

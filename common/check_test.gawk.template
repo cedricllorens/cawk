@@ -14,6 +14,7 @@
 # FIX 5: FIXED Point 2 - now tracks variable initialization in BEGINFILE
 # FIX 6: FIXED Point 4 - now tracks arrays used and deleted in BEGINFILE
 # FIX 8: IMPROVED DEBUG detection (case-insensitive)
+# FIX 9: ADDED risk_level validation for print_err() calls
 # DISABLED: Point 5 (function call tracking) - generates too many false positives
 
 function count_func_args(line, open_paren_pos,    depth, i, char, count, len, content) {
@@ -81,6 +82,24 @@ BEGINFILE {
         arg = m[1]
         if (filename != arg) {
             print "cawk test error: file=" filename " print_err=" arg " (in "FILENAME" line "FNR") NOK"
+            error_count++
+        }
+    }
+
+    # FIX 9: Validate risk_level and status_code in print_err() — only quoted string literals
+    # Pattern: print_err("test_name", "message or message_expr", line_num, "risk_level", "status_code")
+    # This regex captures the 4th and 5th arguments (risk_level and status_code) as quoted strings
+    if (match($0, /print_err\s*\([^,]+,\s*[^,]+,\s*[^,]+\s*,\s*"([a-z]+)"\s*,\s*"([a-z]+)"/, m)) {
+        risk_level = m[1]
+        status_code = m[2]
+
+        if (risk_level !~ /^(high|medium|low|info)$/) {
+            print "cawk test error: invalid risk_level=\""risk_level"\" in print_err call (must be one of: high, medium, low, info) (in "FILENAME" line "FNR") NOK"
+            error_count++
+        }
+
+        if (status_code !~ /^(pass|error|warning|psirt)$/) {
+            print "cawk test error: invalid status_code=\""status_code"\" in print_err call (must be one of: pass, error, warning, psirt) (in "FILENAME" line "FNR") NOK"
             error_count++
         }
     }

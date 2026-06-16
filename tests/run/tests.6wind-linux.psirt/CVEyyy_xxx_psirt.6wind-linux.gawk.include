@@ -1,0 +1,75 @@
+# ====================================================================================
+# PSIRT VULNERABILITY ASSESSMENT TOOL
+# ====================================================================================
+# DESCRIPTION:
+#   Generic pattern-based vulnerability detection tool with configurable logic
+#   Automatically detects OS device information from inventory file
+#   Supports line patterns, block patterns, and complex boolean logic
+#
+# REQUIREMENTS:
+#   - Inventory file database/psirt_scopes/psirt_os_inventory_scope.txt
+#     with format: "device_filename os_version chassis cpu" separated by one space
+#
+# USER CONFIGURATION:
+#   - Modify ONLY the section between "USER START" and "USER END"
+#   - Define OS patterns, line patterns, block patterns, and logic
+#
+# SYNTAX REFERENCE AND LOGIC:
+#   DEVICE (regex matching filename)            -> LOGIC : not used
+#   OS (regex matching os_version chassis cpu)  -> LOGIC : not used
+#   LINE[1] (regex matching line)               -> LOGIC : LINE[1] == 1 or 0
+#   BLOCK[1]["start"] (regex matching block)    -> LOGIC : BLOCK[1] == 1 or 0
+#   BLOCK[1]["match"][1] (regex matching line)  -> LOGIC : BLOCK_LINE[1][1] == 1 or 0
+#   BLOCK[1]["match"][2] (regex matching line)  -> LOGIC : BLOCK_LINE[1][2] == 1 or 0
+#
+# VERSION: 1.0
+#
+# @test_name : CVEyyy_xxx_psirt.6wind-linux.gawk
+# @supplier : 6wind-linux
+# @purpose : PSIRT vulnerability assessment template for 6wind-linux
+# @description : generic pattern-based vulnerability detection tool for 6wind-linux devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
+# @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ====================================================================================
+
+function load_psirt_config() {
+
+    # ==============================================================
+    # ==============================================================
+    # USER START - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+
+    # Device Patterns
+    DEVICE = "^.*"
+
+    # OS Patterns (6wind-linux kernel and distribution versions)
+    OS[1] = "4\\..* .* .*"
+    OS[2] = "5\\..* .* .*"
+
+    # Line Patterns (6wind-linux system configuration)
+    LINE[1] = "hostname"
+    LINE[2] = "permit all"
+
+    # Block Patterns (6wind-linux interface and service blocks)
+    BLOCK[1]["start"] = "^interface "
+    BLOCK[1]["end"] = "^$"
+    BLOCK[1]["match"][1] = "^ address"
+    BLOCK[1]["match"][2] = "^ no shutdown"
+
+    BLOCK[2]["start"] = "^service "
+    BLOCK[2]["end"] = "^$"
+    BLOCK[2]["match"][1] = "^  enable"
+    BLOCK[2]["match"][2] = "^  port"
+
+    # Logic
+    LOGIC = "LINE[1] == 1 && LINE[2] == 1 && BLOCK[1] == 1 && BLOCK_LINE[1][1] == 0"
+
+    # ==============================================================
+    # ==============================================================
+    # USER END - MODIFY ONLY THIS SECTION
+    # ==============================================================
+    # ==============================================================
+}

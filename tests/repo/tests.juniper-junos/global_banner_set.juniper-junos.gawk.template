@@ -1,0 +1,123 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_banner_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check if <system login message> is set
+# @description : banners can be used to display important information to users
+# @actions : set system login message (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification banner is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	banner_set = 0;
+	in_groups = 0;
+	in_groupsname = 0;
+	in_system = 0;
+	in_login = 0;
+}
+
+# Path 1: system at root level
+/^system {/ && in_groups == 0 && in_system == 0 {
+	in_system = 1;
+	next;
+}
+
+# Path 2: groups > groupname > system (check each groupname)
+/^groups {/ && in_groups == 0 && in_system == 0 {
+	in_groups = 1;
+	next;
+}
+
+# groupname or other block inside groups (prepare to check inside)
+/^%SED_BK_JUNI%[^ ]* {/ && in_groups == 1 && in_system == 0 {
+	in_groupsname = 1;
+	next;
+}
+
+# system nested inside groups > groupname
+/^%SED_BK_JUNI%{2}system {/ && in_groups == 1 && in_system == 0 && in_groupsname == 1 {
+	in_system = 1;
+	next;
+}
+
+# login inside system at root level
+/^%SED_BK_JUNI%login {/ && in_system == 1 && in_groups == 0 {
+	in_login = 1;
+	next;
+}
+
+# login inside system (nested in groups > groupname)
+/^%SED_BK_JUNI%{3}login {/ && in_system == 1 && in_groups == 1 && in_groupsname == 1  {
+	in_login = 1;
+	next;
+}
+
+# message inside login at root level
+/^%SED_BK_JUNI%{2}message/ && in_login == 1 && in_groups == 0 && !/inactive/ {
+	banner_set = 1;
+	nextfile;
+}
+
+# message inside login (nested in groups > groupname)
+/^%SED_BK_JUNI%{4}message/ && in_login == 1 && in_groups == 1 && !/inactive/ && in_groupsname == 1 {
+	banner_set = 1;
+	nextfile;
+}
+
+# Close login blocks
+/^%SED_BK_JUNI%}$/ && in_login == 1 && in_groups == 0 {
+	in_login = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%{3}}$/ && in_login == 1 && in_groups == 1 && in_groupsname == 1 {
+	in_login = 0;
+	next;
+}
+
+# Close system blocks
+/^}$/ && in_system == 1 && in_groups == 0 {
+	in_system = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%{2}}$/ && in_system == 1 && in_groups == 1 && in_groupsname == 1 {
+	in_system = 0;
+	next;
+}
+
+# Close groupname block (allows checking next groupname)
+/^%SED_BK_JUNI%}$/ && in_groups == 1 && in_system == 0 && in_login == 0 && in_groupsname == 1 {
+	in_groupsname = 0;
+	next;
+}
+
+# Close groups block
+/^}$/ && in_groups == 1 && in_system == 0 {
+	in_groups = 0;
+	next;
+}
+
+ENDFILE {
+	if (banner_set)
+		print_err("global_banner_set.juniper-junos.gawk", "<system login message> is set", 0, "high", "pass");
+	else
+		print_err("global_banner_set.juniper-junos.gawk", "<system login message> is not set", 0, "high", "error");
+}
+
+END {
+}

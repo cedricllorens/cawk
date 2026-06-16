@@ -1,0 +1,52 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_banner_set.nokia-sros.gawk
+# @supplier : nokia-sros
+# @purpose : check if <system login-control motd text> is set
+# @description : banners can be used to display important information to users
+# @actions : set system login-control motd text (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification banner is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	banner_set = 0;
+	block_system = 0;
+}
+
+/^%SED_BK_NOKIA%system/ && block_system == 0 {
+	block_system = 1;
+	next;
+}
+
+/^%SED_BK_NOKIA%{3}motd text/ && block_system == 1 {
+	banner_set = 1;
+	nextfile;
+}
+
+/^%SED_BK_NOKIA%exit$/ && block_system == 1 {
+	block_system = 0;
+}
+
+ENDFILE {
+	if (banner_set)
+		print_err("global_banner_set.nokia-sros.gawk", "<system login-control motd text> is set", 0, "high", "pass");
+	else
+		print_err("global_banner_set.nokia-sros.gawk", "<system login-control motd text> is not set", 0, "high", "error");
+}
+
+END {
+}

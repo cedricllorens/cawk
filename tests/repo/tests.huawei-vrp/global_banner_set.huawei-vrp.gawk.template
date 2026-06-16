@@ -1,0 +1,42 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_banner_set.huawei-vrp.gawk
+# @supplier : huawei-vrp
+# @purpose : check if <header login/shell information> is set
+# @description : banners can be used to display important information to users
+# @actions : set header login or shell information (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification banner is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	banner_set = 0;
+}
+
+/^header (login|shell) information / {
+	banner_set = 1;
+	nextfile;
+}
+
+ENDFILE {
+	if (banner_set)
+		print_err("global_banner_set.huawei-vrp.gawk", "<header login/shell information> is set", 0, "high", "pass");
+	else
+		print_err("global_banner_set.huawei-vrp.gawk", "<header login/shell information> is not set", 0, "high", "error");
+}
+
+END {
+}

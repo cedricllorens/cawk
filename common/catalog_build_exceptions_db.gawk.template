@@ -31,17 +31,23 @@ BEGIN {
     parse_exception_file(audit, exception_file)
 }
 
-function parse_exception_file(audit, file,    line, supplier, exception_id, approver, date, reason, line_num, in_macro) {
+function add_exception_to_db(audit, supplier, exception_id, approver, date, reason) {
+    if (supplier != "" && exception_id != "") {
+        gsub(/;/, " ", approver)
+        gsub(/;/, " ", date)
+        gsub(/;/, " ", reason)
+        print audit ";" supplier ";" exception_id ";" approver ";" date ";" reason >> db_file
+    }
+}
+
+function parse_exception_file(audit, file,    line, supplier, exception_id, approver, date, reason, new_exception_id) {
     supplier = ""
     exception_id = ""
     approver = ""
     date = ""
     reason = ""
-    line_num = 0
-    in_macro = 0
 
     while ((getline line < file) > 0) {
-        line_num++
         gsub(/^[ \t]+|[ \t]+$/, "", line)
 
         # Extract supplier from filename (e.g., exceptions.cisco-ios.m4 -> cisco-ios)
@@ -52,50 +58,42 @@ function parse_exception_file(audit, file,    line, supplier, exception_id, appr
             }
         }
 
-        # Parse exception metadata
-        if (tolower(line) ~ /^dnl[ \t]+@exception_id[ \t]*:/) {
-            gsub(/^dnl[ \t]+@exception_id[ \t]*:[ \t]*/, "", line)
-            exception_id = tolower(line)
-        }
-        else if (tolower(line) ~ /^dnl[ \t]+@approver[ \t]*:/) {
-            gsub(/^dnl[ \t]+@approver[ \t]*:[ \t]*/, "", line)
-            approver = tolower(line)
-        }
-        else if (tolower(line) ~ /^dnl[ \t]+@date[ \t]*:/) {
-            gsub(/^dnl[ \t]+@date[ \t]*:[ \t]*/, "", line)
-            date = tolower(line)
-        }
-        else if (tolower(line) ~ /^dnl[ \t]+@reason[ \t]*:/) {
-            gsub(/^dnl[ \t]+@reason[ \t]*:[ \t]*/, "", line)
-            reason = tolower(line)
-        }
-        # When we hit m4_cawk_exception, we have a complete record
-        else if (tolower(line) ~ /^dnl[ \t]+m4_cawk_exception/) {
-            # Add to database if we have essential fields
-            if (supplier != "" && exception_id != "") {
-                # Remove semicolons from data fields to prevent CSV parsing issues
-                gsub(/;/, " ", approver)
-                gsub(/;/, " ", date)
-                gsub(/;/, " ", reason)
+        # Parse exception metadata (handle both dnl and non-dnl formats)
+        if (tolower(line) ~ /^dnl[ \t]+@exception_id[ \t]*:/ || tolower(line) ~ /^@exception_id[ \t]*:/) {
+            gsub(/^dnl[ \t]+/, "", line)
+            gsub(/^@exception_id[ \t]*:[ \t]*/, "", line)
+            new_exception_id = tolower(line)
 
-                # Add to database
-                print audit ";" supplier ";" exception_id ";" approver ";" date ";" reason >> db_file
-
-                # Reset for next exception
-                exception_id = ""
+            # If we found a different exception_id and have data, add the previous record
+            if (exception_id != "" && exception_id != new_exception_id) {
+                add_exception_to_db(audit, supplier, exception_id, approver, date, reason)
                 approver = ""
                 date = ""
                 reason = ""
             }
+
+            exception_id = new_exception_id
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@approver[ \t]*:/ || tolower(line) ~ /^@approver[ \t]*:/) {
+            gsub(/^dnl[ \t]+/, "", line)
+            gsub(/^@approver[ \t]*:[ \t]*/, "", line)
+            approver = tolower(line)
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@date[ \t]*:/ || tolower(line) ~ /^@date[ \t]*:/) {
+            gsub(/^dnl[ \t]+/, "", line)
+            gsub(/^@date[ \t]*:[ \t]*/, "", line)
+            date = tolower(line)
+        }
+        else if (tolower(line) ~ /^dnl[ \t]+@reason[ \t]*:/ || tolower(line) ~ /^@reason[ \t]*:/) {
+            gsub(/^dnl[ \t]+/, "", line)
+            gsub(/^@reason[ \t]*:[ \t]*/, "", line)
+            reason = tolower(line)
         }
     }
     close(file)
 
-    # Add last record if any
+    # Add final record at EOF
     if (supplier != "" && exception_id != "") {
-        gsub(/;/, " ", approver)
-        gsub(/;/, " ", date)
-        gsub(/;/, " ", reason)
-        print audit ";" supplier ";" exception_id ";" approver ";" date ";" reason >> db_file
+        add_exception_to_db(audit, supplier, exception_id, approver, date, reason)
     }
 }

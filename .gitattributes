@@ -1,0 +1,16 @@
+# Normalize line endings to LF (Unix) across all text files
+* text=auto eol=lf
+
+# Explicitly mark these as text files
+*.md text eol=lf
+*.txt text eol=lf
+*.gawk text eol=lf
+*.gawk.template text eol=lf
+*.gawk.m4 text eol=lf
+*.gawk.include text eol=lf
+*.awk text eol=lf
+*.sed text eol=lf
+Makefile text eol=lf
+Makefile* text eol=lf
+*.mk text eol=lf
+*.sh text eol=lf

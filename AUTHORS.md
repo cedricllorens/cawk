@@ -1,12 +1,19 @@
-# CAWK - Authors & Contributors
+# cawk contributors
+
+> **cawk is subject to an MIT open-source license**  
+> Please refer to the LICENSE file for further information
+> **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
 ## Founder
 
-- **Cedric Llorens** (2024-2026)
+- **Cedric Llorens**
 
 ## Contributors
 
 ### 2026
+
+**cawk design update**
+- Yanis Llorens
 
 **iptables, ekinops-oneos**
 - Quentin Gavilan
@@ -25,11 +32,3 @@
 - Gautier Goncalves
 - Wael Elsingaby
 
----
-
-## License
-
-CAWK is subject to an MIT open-source license.  
-Please refer to the [MIT license file](LICENSE) for further information.
-
-© 2024-2026 Cedric Llorens

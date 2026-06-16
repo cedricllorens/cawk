@@ -35,6 +35,13 @@ BEGINFILE {
 	next;
 }
 
+in_snmp && /^%SED_BK_JUNI%view / && !/inactive/ {
+	view_name = $2;
+	gsub(/"/, "", view_name);
+	if ( view_name !~ /^"?\$/ ) mib_view_def[view_name] = rm_last_char(rm_blank_before($0));
+	next;
+}
+
 in_snmp && /^%SED_BK_JUNI%v3 {/ && !/inactive/ {
 	in_v3 = 1;
 	next;
