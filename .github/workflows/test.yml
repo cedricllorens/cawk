@@ -1,0 +1,50 @@
+name: Test
+
+on:
+  push:
+    branches: [master, main, develop]
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y \
+            gawk \
+            make \
+            m4 \
+            coreutils \
+            diffutils \
+            grep \
+            sed
+
+      - name: Run gmake check
+        id: check
+        run: gmake check 2>&1 | tee check_output.txt
+
+      - name: Verify results
+        run: |
+          cawk_commands_ok=$(grep -A 1 "check cawk commands" check_output.txt | grep -c "^OK")
+          cawk_crypto_ok=$(grep -A 1 "check cawk crypto image" check_output.txt | grep -c "^OK")
+
+          if [ "$cawk_commands_ok" -ge 1 ] && [ "$cawk_crypto_ok" -ge 1 ]; then
+            echo "✓ Test passed: Both cawk checks returned OK"
+            exit 0
+          else
+            echo "✗ Test failed: Expected both cawk checks to return OK"
+            echo "check cawk commands: $cawk_commands_ok"
+            echo "check cawk crypto image: $cawk_crypto_ok"
+            cat check_output.txt
+            exit 1
+          fi

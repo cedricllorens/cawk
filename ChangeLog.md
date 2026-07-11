@@ -4,6 +4,77 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v3.7.0] - july 2026
+
+### Performance
+
+- Precompute catalogs once in `check_repo`/`check_run`, reducing from 32 sub-makes to 2 (~2.8x speedup)
+
+### Fixed
+
+- Fix run-audit auto-discovery in containers: add `find -L` so `catalog_build`, `create_audit`, `delete_audit`, `list_audit`, audit backup, and `exceptions_build` find `run_*` audits when `tests`/`exceptions` are symlinks to the persistent volume
+- Fix `check_run` shell syntax error in supplier+audit cases caused by inline Makefile comments breaking `if/fi` blocks
+- Fix `database_email_add`/`update` shell syntax error by restructuring `ifeq`/`endif` to shell `if`/`fi` blocks
+- Fix `Makefile.docker info` target: display actual cawk version instead of Docker version
+- Fix `Makefile.docker check-system` target: wrap shell variable assignments in bash subshell to prevent variable scope issues
+- Fix `Dockerfile`: add missing `COPY Makefile.docker` directive for complete image build
+- Fix `dockerfile_cawk_run.sh`: prevent symlink creation failure by checking if link already exists before ln -s
+- Fix `Makefile.docker remove-image-alpine` target: correct message from "remove cawk image" to "remove alpine image"
+- Fix `Makefile.docker cawk-check` target: check if container exists/running instead of recreating it, create logs directory before writing
+- Fix `Makefile.docker info` target: improve version display with "Version: " prefix and add docker images/containers info
+- Fix `view_repo_error` and `view_run_error` targets: use aggregated assessment.all.csv instead of non-existent per-supplier CSV files
+
+### Enhancement
+
+- Simplify `catalog_exceptions_repo` to display exceptions from source files grouped by metadata
+- Improve `cawk_check_system` output: add tool categorization (essentials/support/optional), summary count, and visual indicators (✅/❌)
+
+### Code Quality
+
+- Standardize `${var}` to `$(var)` syntax across all Makefile.support.*.mk files
+- Refactor `ifeq`/`endif` patterns to runtime shell conditions in database, audit, archive, and other targets
+
+### Tests
+
+- Add `aaa_userclass_notset` test for juniper-junos: verify users have an assigned class
+- Add `aaa_classpermissions_notset` test for juniper-junos: verify login classes have explicit permissions
+- Add `aaa_classdefref_set` test for juniper-junos: verify login classes are defined and referenced
+- Add `tcl_script_notset` test for cisco-ios/xe: verify TCL scripts are forbidden
+
+### Build
+
+- Rename Docker script `cawk_docker_run.sh` to `dockerfile_cawk_run.sh`
+- Add missing Makefile.support.*.mk files and documentation files to Dockerfile COPY directives for complete image build
+- Add git package to Alpine Dockerfile to prevent git-related warnings at container startup
+
+### Build System Refactor
+
+- Split monolithic Makefile into 17 modular `Makefile.support.*.mk` files (phases 1-3)
+- Add standardized headers to all assessment macros in Makefile.support.mk
+- Integrate assessment macros into check_repo/check_run cases, eliminating inline duplication
+- Add `cawk_deadbeef_scan` foreach-safe macro for per-device deadbeef scanning
+- Add `cawk_test_gen_parallel` foreach-safe macro for parallel-mode test execution
+- Normalize parallel-mode execution blocks to fix drift across the 6 variants
+- Decentralize `.PHONY` declarations into each support file
+- Consolidate `cawk_deadbeef_idx` into unified `cawk_deadbeef_scan` macro
+- Update CLAUDE.md with complete build system architecture
+
+### Database Management
+
+- Add `sort_database_file` macro to enforce lexicographic ordering on all database targets
+
+### CI/CD & Git Automation
+
+- Add GitHub Actions workflow for automated `gmake check` on every push
+- Install all cawk runtime dependencies in CI (gawk, make, m4, coreutils, diffutils, grep, sed)
+- Enhance `gitinstallcicd` to copy all `.yml` workflows from `cicd/` to `.github/workflows/`
+
+### Documentation
+
+- Add Makefile section in README describing the modular split into 17 support files
+
+---
+
 ## [v3.6.0] - June 2026
 
 ### Makefile
@@ -14,7 +85,7 @@
 - exceptions_build, exceptions_build_run, exceptions_build_repo now call exceptions_build_run (without audit) to handle exceptions/run/ in addition to named audits
 - catalog_build, catalog_build_run, catalog_build_repo now call catalog_build_run (without audit) to handle tests/run/ in addition to named audits
 -- sync --
-- sync_teststoconfs_run, sync_exceptionstoconfs_run: auto-cleanup old zz.sync.save.* (keep only 3 newest) to prevent disk space accumulation ([Makefile](Makefile) lines 598, 644)
+- sync_teststoconfs_run, sync_exceptionstoconfs_run: auto-cleanup old zz.sync.save.* (keep only 3 newest) to prevent disk space accumulation
 - sync_teststoconfs_run: rename test directories to zz.sync.save.*.YYYY-MM-DD instead of removing them (preserve for audit trail)
 - sync_exceptionstoconfs_run: rename exception files to zz.sync.save.*.YYYY-MM-DD instead of removing them (preserve for audit trail)
 -- catalog --
@@ -23,6 +94,12 @@
 ### Makefile.support.mk
 - Add documentation headers to Makefile.support.mk: clarify pattern rules (no .PHONY required), organize into logical sections (version, directories, suppliers, compilation, options, reporting) for improved maintainability
 - Add compilation validation to Makefile.support.mk: detect silent empty/malformed .gawk files by verifying file is non-empty and has shebang
+- **Phase 2.5 (Refactoring):** Add three reusable macros for check_repo/check_run duplication reduction: `cawk_summary_scope` (exception filtering + report generation + catalog), `cawk_deadbeef_idx` (deadbeef CSV + indexing), `cawk_test_execution` (test discovery + execution); eliminates ~400 LOC duplication across 12 cases
+
+### Makefile
+- **Phase 2A (Build System Optimization - Complete):** Refactor all 4 check_repo cases (no supplier/supplier × no parallel/parallel) to use new `cawk_summary_scope` macro; eliminates 64 LOC of duplicated exception filtering + report generation + catalog code; also fixes ECHO newline issue in parallel mode (was using `\n` without `-e` flag)
+- **Phase 2B (Build System Optimization - Extensive):** Refactor 7 of 8 check_run cases (all non-audit paths + Cas 7 parallel supplier) to use `cawk_summary_scope` macro; eliminates ~150 LOC; remaining 4 audit cases (Cas 2, 4, 6, 8) preserve conditional `if [ -d ... ]` guards for future refactoring
+- **Bug Fix (Macro Integration):** Fix shell syntax error in refactored foreach loops: change trailing `\` (Makefile line continuation) to `;\` (shell statement terminator) in macro calls within `$(foreach)` blocks to generate valid shell commands
 
 ### Makefile.cawk.version
 - Improve documentation in Makefile.cawk.version: add detailed help for install/reinstall/update operations with usage examples, clarify error messages, add success confirmation output ([Makefile.cawk.version](Makefile.cawk.version) lines 1-49)

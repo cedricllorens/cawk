@@ -5,6 +5,46 @@
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
+# ------------------------------------------------------------
+# Git workflow - two release modes (all targets need FORCE=yes)
+# ------------------------------------------------------------
+# MODE 1 - Direct to master (solo / quick fixes):
+#   gitinstallcicd -> gitcommit -> gitpush -> gitpushtag
+#
+# MODE 2 - Pull request (review, CODEOWNERS + branch protection):
+#   gitnewbranch
+#   gitinstallcicd -> gitcommit -> gitpushbranch -> gitpr
+#   -> gitprmerge -> gitmasterupdate -> gitpushtag
+#   (requires gh CLI authenticated; tag always applied on master)
+# ------------------------------------------------------------
+
+.PHONY: \
+  gitcheck gitcommit gitinstallcicd gitpush  \
+  gitpushtag gitnewbranch gitpushbranch \
+  gitpr gitprmerge gitmasterupdate \
+  git_branch_master_check git_branch_not_master_check
+
+# ------------------------------------------------------------
+
+git_branch_master_check:
+	@current=$$(git rev-parse --abbrev-ref HEAD); \
+	if [ "$$current" != "master" ]; then \
+		$(ECHO) "\033[31mERROR: Git branch is '$$current'; must be 'master'.\033[0m"; \
+		exit 1; \
+	fi
+
+git_branch_not_master_check:
+	@current=$$(git rev-parse --abbrev-ref HEAD); \
+	if [ "$$current" = "master" ]; then \
+		$(ECHO) "\033[31mERROR: Git branch is '$$current'; must NOT be 'master'.\033[0m"; \
+		exit 1; \
+	fi
+
+gitnewbranch: git_branch_master_check
+	@if [ "$(FORCE)" = "yes" ]; then \
+		git checkout -b $(CAWK_RELEASE)-beta; \
+	fi	
+
 gitcheck: tests_target_common
 	$(GMAKE) clean clean_force FORCE=yes
 	
@@ -67,6 +107,11 @@ gitcheck: tests_target_common
 	find . -name .DS_Store | xargs $(RM) -f
 	$(RM) -r -f .vscode
 	@$(ECHO) "\033[31m================================================== : end clean vscode param\033[0m"
+	
+	$(ECHO) ""
+	@$(ECHO) "\033[31m================================================== : start docker state\033[0m"
+	gmake -f Makefile.docker info
+	@$(ECHO) "\033[31m================================================== : end docker state\033[0m"
 
 	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start update run repository confs && tests && exceptions from repo\033[0m"
@@ -160,24 +205,62 @@ gitcheck: tests_target_common
 	@$(ECHO) "\033[31m================================================== : start update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
 	@$(ECHO) "\033[31m================================================== : end update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
 
+
+# ------------------------------------------------------------
+
 gitinstallcicd:
-	@if [ "$(FORCE)" = "yes" ]; then \
+	if [ "$(FORCE)" = "yes" ]; then \
 		mkdir -p .github/workflows; \
-		cp cicd/release.yml .github/workflows/release.yml; \
+		cp cicd/*.yml .github/workflows/ 2>/dev/null || true; \
 	fi
 
-gitcommit:
-	@if [ "$(FORCE)" = "yes" ]; then \
+# ------------------------------------------------------------
+
+gitcommit: gitinstallcicd
+	if [ "$(FORCE)" = "yes" ]; then \
 		git add .; \
 		git commit -m "*$(CAWK_RELEASE) ref ChangeLog"; \
 	fi
+	@echo "gitpush or gitpushbranchtarget next step"
 
-gitpush:
+# ------------------------------------------------------------
+
+# DIRECT -----------------------------------------------------
+
+gitpush: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git push origin master; \
 	fi
 
-gitpushtag:
+# BRANCH -----------------------------------------------------
+
+gitpushbranch: git_branch_not_master_check
+	@if [ "$(FORCE)" = "yes" ]; then \
+		git push origin $(CAWK_RELEASE)-beta; \
+	fi
+
+gitpr: git_branch_not_master_check
+	@if [ "$(FORCE)" = "yes" ]; then \
+		gh pr create --title "cawk $(CAWK_RELEASE)" --base master --head $$(git branch --show-current); \
+	fi
+	@echo "gitprmerge target next step"
+
+gitprmerge: git_branch_not_master_check
+	@if [ "$(FORCE)" = "yes" ]; then \
+		gh pr merge --merge --delete-branch; \
+	fi
+	@echo "gitmasterupdate target next step"
+
+gitmasterupdate: git_branch_not_master_check
+	@if [ "$(FORCE)" = "yes" ]; then \
+		git checkout master; \
+		git pull origin master; \
+	fi
+	@echo "gitpushtag target next step"
+
+# ------------------------------------------------------------
+
+gitpushtag: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git tag -a $(CAWK_RELEASE) -m "$(CAWK_RELEASE)"; \
 		git push origin $(CAWK_RELEASE); \

@@ -1,0 +1,70 @@
+=== audit:client2_mqsdhqndqqos198440 supplier:6wind-linux list of exceptions ===
+
+[EXC-001] Brief business context (approver: Name, date: YYYY-MM-DD)
+  m4_cawk_exception(`',`global_forbidservices_notset.6wind-linux.gawk',`')
+  m4_cawk_exception(`',`test_test_notset.6wind-linux.gawk',`')
+
+[EXC-002] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+  dnl m4_cawk_exception(`',`test1_test1_notset.6wind-linux.gawk',`')
+  m4_cawk_exception(`',`test2_test2_notset.6wind-linux.gawk',`')
+=== audit:client2_mqsdhqndqqos198440 supplier:checkpoint-fwcli list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:cisco-cedge list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:cisco-ios list of exceptions ===
+
+[EXC-2024-001] Approved firewall policy exception for production environment (approver: John Doe, date: 2024-03-15)
+  dnl m4_cawk_exception(`prod-fw-01',`firewall_acl_policy',`permit 10.0.0.0')
+
+[EXC-2024-002] Legacy device compatibility with old SSH version (approver: Jane Smith, date: 2024-03-20)
+  dnl m4_cawk_exception(`legacy-router-01',`ssh_version_check',`SSHv1')
+=== audit:client2_mqsdhqndqqos198440 supplier:cisco-viptela list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:cisco-xe list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:cisco-xr list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:ekinops-oneos list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:fortinet-fortios list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:huawei-vrp list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:iptables-fwcli list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:juniper-junos list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:nokia-sros list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:packetfilter-fwcli list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+=== audit:client2_mqsdhqndqqos198440 supplier:paloalto-panos list of exceptions ===
+
+[EXC-XXX] Brief business context (approver: Name, date: YYYY-MM-DD)
+  dnl m4_cawk_exception(`device',`test_name',`pattern')
+cawk catalog_exceptions_run client2_mqsdhqndqqos198440 done ----

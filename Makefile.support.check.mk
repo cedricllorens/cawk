@@ -5,6 +5,10 @@
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
+.PHONY: \
+  check check_analyze check_checkdiff check_debug  \
+  check_debug_log check_parallel check_parallel_debug check_update
+
 check:
 	$(GMAKE) clean clean_force FORCE=yes
 	find confs -type f -exec touch {} \;

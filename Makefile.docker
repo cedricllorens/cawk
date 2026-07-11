@@ -94,50 +94,54 @@ help:
 
 check-system:
 	@echo "==== cawk docker check"
-	@docker_ok=true; \
-	buildx_ok=true; \
-	proxy_ok=true; \
-	\
-	printf "Docker check: "; \
-	if command -v docker >/dev/null 2>&1; then \
-		echo "OK"; \
-	else \
-		echo "NOK"; docker_ok=false; \
-	fi; \
-	\
-	printf "BuildX check: "; \
-	if sudo docker buildx version >/dev/null 2>&1; then \
-		echo "OK"; \
-	else \
-		echo "NOK"; buildx_ok=false; \
-	fi; \
-	\
-	printf "env PROXY_HTTP check: "; \
-	if [ -n "$(PROXY_URL)" ]; then \
-		echo "OK ($(PROXY_URL))"; \
-	else \
-		echo "NOK"; proxy_ok=false; \
-	fi; \
-	\
-	printf "env PROXY_HTTPS check: "; \
-	if [ -n "$(PROXY_URL_SECU)" ]; then \
-		echo "OK ($(PROXY_URL_SECU))"; \
-	else \
-		echo "NOK"; proxy_ok=false; \
-	fi; \
-	\
-	if [ "$$docker_ok" = "true" ] && [ "$$buildx_ok" = "true" ] && [ "$$proxy_ok" = "true" ]; then \
-		echo "System: OK"; \
-	else \
-		echo "System: NOK"; \
-	fi
+	@bash -c '\
+		docker_ok=true; \
+		buildx_ok=true; \
+		proxy_ok=true; \
+		\
+		printf "Docker check: "; \
+		if command -v docker >/dev/null 2>&1; then \
+			echo "OK"; \
+		else \
+			echo "NOK"; docker_ok=false; \
+		fi; \
+		\
+		printf "BuildX check: "; \
+		if sudo docker buildx version >/dev/null 2>&1; then \
+			echo "OK"; \
+		else \
+			echo "NOK"; buildx_ok=false; \
+		fi; \
+		\
+		printf "env PROXY_HTTP check: "; \
+		if [ -n "$(PROXY_URL)" ]; then \
+			echo "OK ($(PROXY_URL))"; \
+		else \
+			echo "NOK"; proxy_ok=false; \
+		fi; \
+		\
+		printf "env PROXY_HTTPS check: "; \
+		if [ -n "$(PROXY_URL_SECU)" ]; then \
+			echo "OK ($(PROXY_URL_SECU))"; \
+		else \
+			echo "NOK"; proxy_ok=false; \
+		fi; \
+		\
+		if [ "$$docker_ok" = "true" ] && [ "$$buildx_ok" = "true" ] && [ "$$proxy_ok" = "true" ]; then \
+			echo "System: OK"; \
+		else \
+			echo "System: NOK"; \
+		fi \
+	'
 	@echo "==== cawk docker check"
 
 # ---------------------------------------------
 
 create-volume:
 	@echo "cawk create volume: $(CAWK_VOLUME_FULL) ----"
+	@echo "build volume ----"
 	sudo docker volume inspect $(CAWK_VOLUME_FULL) || sudo docker volume create $(CAWK_VOLUME_FULL)
+	@echo "check volume ----"
 	sudo docker volume inspect $(CAWK_VOLUME_FULL)
 
 remove-volume:
@@ -204,7 +208,7 @@ remove-image-cawk:
 	sudo docker rmi $(IMAGE_FULL)
 
 remove-image-alpine:
-	@echo "cawk remove cawk image ----"
+	@echo "cawk remove alpine image ----"
 	sudo docker rmi alpine:latest
 
 containers:
@@ -218,9 +222,12 @@ logs:
 info:
 	@echo "cawk system information ----"
 	sudo docker system df
+	sudo docker images
 	@echo ""
 	@echo "cawk version information ----"
-	sudo docker version --format "{{.Client.Version}}"
+	@echo "Version: $(CAWK_RELEASE)"
+	@echo ""
+	gmake -f Makefile.docker containers
 	@echo ""
 	@echo "cawk volume information ----"
 	sudo docker volume ls --format "table {{.Name}}\t{{.Driver}}\t{{.Mountpoint}}"
@@ -237,6 +244,17 @@ prune:
 
 # ---------------------------------------------
 
-cawk-check:
-	sudo docker exec $(CONTAINER_FULL) sh -c "cd /app/cawk && gmake check >> /app/cawk/logs/cawk-check.log 2>&1"
+cawk-check: create-volume
+	@echo "cawk running check and check_parallel ----"
+	@if sudo docker inspect $(CONTAINER_FULL) >/dev/null 2>&1; then \
+		if [ "$$(sudo docker inspect -f '{{.State.Running}}' $(CONTAINER_FULL))" = "true" ]; then \
+			echo "Container is running"; \
+		else \
+			sudo docker start $(CONTAINER_FULL); \
+		fi; \
+	else \
+		echo "Container does not exist. Run 'gmake -f Makefile.docker run' first"; \
+		exit 1; \
+	fi
+	sudo docker exec $(CONTAINER_FULL) sh -c "mkdir -p /app/cawk/logs && cd /app/cawk && gmake check >> /app/cawk/logs/cawk-check.log 2>&1"
 	sudo docker exec $(CONTAINER_FULL) sh -c "cd /app/cawk && gmake check_parallel >> /app/cawk/logs/cawk-check_parallel.log 2>&1"

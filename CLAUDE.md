@@ -73,7 +73,7 @@ Tests are **never written as `.gawk` directly**. They are authored as one of thr
 | `*.gawk.m4` | `m4` then `sed` | Tests needing M4 block-parse macros |
 | `*.gawk.include` | `sed` (PSIRT mode) | PSIRT vulnerability tests |
 
-The build rule in `Makefile.support.mk` converts these to `*.gawk` files. The sed rules in `support/tests.sed` substitute vendor-specific placeholders (e.g., `%SED_GAWK_PATH%`, `%SED_AUTHUSER_CISCO%`) with system/vendor-specific values.
+The build rule (defined in the Makefile support files, see below) converts these to `*.gawk` files. The sed rules in `support/tests.sed` substitute vendor-specific placeholders (e.g., `%SED_GAWK_PATH%`, `%SED_AUTHUSER_CISCO%`) with system/vendor-specific values.
 
 Key `%SED_*` placeholders (defined in `support/tests.sed`):
 
@@ -152,13 +152,38 @@ database/           # Flat-file databases for sync, email, post-audit config
 
 ## Supported Suppliers
 
-Tests and confs are organized per supplier. Current scope (defined in `Makefile.support.mk`):
+Tests and confs are organized per supplier. Current scope (defined in `Makefile` and support files):
 
 `cisco-ios`, `cisco-xr`, `cisco-xe`, `cisco-cedge`, `cisco-viptela`, `juniper-junos`, `huawei-vrp`, `fortinet-fortios`, `nokia-sros`, `paloalto-panos`, `checkpoint-fwcli`, `packetfilter-fwcli`, `iptables-fwcli`, `6wind-linux`, `ekinops-oneos`
 
+## Test Naming Convention
+
+Test filenames follow a strict pattern:
+
+```
+<category>_<check>_<status>.<supplier>.gawk.<format>
+```
+
+| Segment | Description | Examples |
+|---------|-------------|---------|
+| `<category>` | Security domain | `aaa`, `acl`, `snmp`, `ntp`, `crypto` |
+| `<check>` | What is being checked (compound words concatenated) | `user`, `userclass`, `community`, `defref` |
+| `<status>` | Expected state: `set` (must be present) or `notset` (must be absent) | `set`, `notset` |
+| `<supplier>` | Vendor/platform (see [Supported Suppliers](#supported-suppliers)) | `cisco-ios`, `juniper-junos` |
+| `<format>` | Source format | `template`, `m4`, `include` |
+
+**Examples:**
+
+- `aaa_user_notset.juniper-junos.gawk.template` — forbidden AAA users must not exist
+- `aaa_userclass_notset.juniper-junos.gawk.template` — user class must be assigned
+- `acl_defref_set.cisco-ios.gawk.template` — ACL definitions must be referenced
+- `snmp_community_notset.cisco-xe.gawk.m4` — default SNMP communities must not exist
+
+**Important:** The `@test_name` metadata tag must match the compiled filename (without the source format extension), e.g., `aaa_userclass_notset.juniper-junos.gawk`.
+
 ## Writing a New Test
 
-1. Create `tests/repo/tests.<supplier>/<test_name>.<supplier>.gawk.template`
+1. Create `tests/repo/tests.<supplier>/<test_name>.<supplier>.gawk.<format>` (see [Test Naming Convention](#test-naming-convention) above)
 2. Use `%SED_GAWK_PATH%` as shebang and `%SED_INCLUDE_PATH%` for the include
 3. Include metadata comments with format `# @tag : value`:
    - `@test_name` — Unique test identifier (must match compiled filename)
@@ -178,9 +203,33 @@ Tests and confs are organized per supplier. Current scope (defined in `Makefile.
 
 See [Working with Tests](#working-with-tests) for the full workflow on creating, modifying, and validating tests.
 
-## Key Configuration: Makefile.support.mk
+## Build System Architecture
 
-Global options that affect all assessments:
+The cawk build system has been modularized into focused Makefile support files for maintainability:
+
+| File | Purpose |
+|------|---------|
+| `Makefile` | Main entry point; includes all support files |
+| `Makefile.support.mk` | Core variables, paths, options, and compilation rules |
+| `Makefile.support.help.mk` | Help and information targets |
+| `Makefile.support.audit.mk` | Audit creation/deletion/management targets |
+| `Makefile.support.database.mk` | Database entry management targets |
+| `Makefile.support.postaudit.mk` | Post-audit execution targets |
+| `Makefile.support.email.mk` | Email notification targets |
+| `Makefile.support.backup.mk` | Backup, restore, and migrate targets |
+| `Makefile.support.sync.mk` | Config synchronization targets |
+| `Makefile.support.tests.mk` | Test compilation and validation targets |
+| `Makefile.support.view.mk` | Report viewing targets (view_repo, view_run, errors) |
+| `Makefile.support.archive.mk` | Archive management targets |
+| `Makefile.support.clean.mk` | Cleanup targets (reports, backups, temporary files) |
+| `Makefile.support.catalog.mk` | Test catalog and NIST mapping targets |
+| `Makefile.support.exceptions.mk` | Exception rule management targets |
+| `Makefile.support.check.mk` | Assessment and validation targets (repo, run, audit) |
+| `Makefile.support.git.mk` | Git-related targets (commit, push, CI/CD integration) |
+
+### Key Configuration: Makefile.support.mk
+
+Global options that affect all assessments (defined in `Makefile.support.mk`):
 
 | Option | Values | Default | Purpose |
 |--------|--------|---------|---------|
@@ -511,18 +560,16 @@ gmake catalog_build       # Validate test metadata
 ### ChangeLog.md
 
 **Always update with:**
-- **Date** in ISO format (YYYY-MM-DD)
 - **Category** (e.g., `Fix`, `Feature`, `Docs`, `Build`)
-- **Description** (1-2 lines, what changed and why)
-- **Affected scope** (which files, targets, suppliers)
+- **Description** — one short sentence, no dates
 
 **Example:**
 ```markdown
 ### Fixed
-- **2026-05-09** — Fix CIS database: add missing CIS IDs 1.1, 2.2.3-5 to db_info.txt ([db_info.txt](database/db_info.txt))
+- Fix CIS database: add missing CIS IDs 1.1, 2.2.3-5 to db_info.txt
 
 ### Added
-- **2026-05-07** — Add CIS benchmark references to error stats section in report output
+- Add CIS benchmark references to error stats section in report output
 ```
 
 ## Git Workflow Details

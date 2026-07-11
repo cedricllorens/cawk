@@ -9,7 +9,7 @@
 # VERSION & CORE SETTINGS
 # ===============================================================================
 
-CAWK_RELEASE = v3.6.0
+CAWK_RELEASE = v3.7.0
 RM ?= rm
 GMAKE ?= gmake
 
@@ -40,7 +40,14 @@ EXCEPTION_PATH = exceptions
 # AUDIT DISCOVERY (dynamic run_audit directories)
 # ===============================================================================
 
-RUN_DIRS := $(shell find tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u || echo "")
+# Deferred (=) on purpose: this find must run only when a target actually reads
+# RUN_DIRS (check_run_audit), not at parse time of every (recursive) make invocation.
+RUN_DIRS = $(shell find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u || echo "")
+
+# ===============================================================================
+# Mark temporary files for automatic cleanup
+# ===============================================================================
+.INTERMEDIATE: $(REPORT_PATH)/repo/*.swap $(REPORT_PATH)/run/*.swap $(REPORT_PATH)/run_*/*.swap
 
 # ===============================================================================
 # PATTERN RULES FOR COMPILATION
@@ -199,8 +206,9 @@ MAKE_FILES_PER_TARGET ?= 100
 MAKE_FILES_PER_TARGET_PSIRT ?= 1
 
 # GNU Make parallel job options (used when MAKE_PARALLEL=yes)
-MAKE_J ?= 4
-MAKE_LOAD_AVG ?= 3
+# Default to the host CPU count (fallback 4/3 if nproc is unavailable).
+MAKE_J ?= $(shell nproc 2>/dev/null || echo 4)
+MAKE_LOAD_AVG ?= $(shell nproc 2>/dev/null || echo 3)
 
 # Suppress verbose gmake output
 MAKEFLAGS += -s
@@ -233,3 +241,147 @@ PSIRT ?= no
 
 # Remove intermediate assessment files after reporting (yes/no)
 TMP_ASSESSMENT_FILES ?= yes
+
+# ===============================================================================
+# MACROS DATABASE
+# ===============================================================================
+
+# -------------------------------------------------------------------------------------------
+# MACRO: sort_database_file — Sort flat-file database by first field (audit name)
+# -------------------------------------------------------------------------------------------
+# $(1) = database file path (db_sync.txt, db_email.txt, db_postaudit.txt)
+# -------------------------------------------------------------------------------------------
+define sort_database_file
+	@if [ -s $(1) ]; then sort -k1 $(1) -o $(1); fi
+endef
+
+# ===============================================================================
+# MACROS REPORT
+# ===============================================================================
+
+# DEADBEEF ----
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_deadbeef_scan — Per-device deadbeef+idx scan for one scope/supplier
+# -------------------------------------------------------------------------------------------
+# Single-line form (foreach-safe: expansion ends with ';'). Covers only the per-scope scan;
+# the final 'assessment.all.deadbeef.idx' generation stays inline (runs once, after the loop).
+# $(1) = scope/supplier, $(2) = path infix (REPO|RUN), $(3) = report dir (repo|run|run_$${audit})
+# -------------------------------------------------------------------------------------------
+define cawk_deadbeef_scan
+	find $(CONFIGURATION_$(1)_$(2)_PATH) $(FIND_CONF_SELECT) -exec ./$(TESTS_COMMON_PATH)/deadbeef_cawk_conf.script $(DEADBEEF_THRESHOLD_DAYS) {} \; > $(REPORT_PATH)/$(3)/assessment.$(1).deadbeef.csv 2>/dev/null || true ;\
+	cat $(REPORT_PATH)/$(3)/assessment.$(1).deadbeef.csv >> $(REPORT_PATH)/$(3)/assessment.all.deadbeef.csv ;\
+	find $(CONFIGURATION_$(1)_$(2)_PATH) $(FIND_CONF_SELECT) > $(REPORT_PATH)/$(3)/assessment.$(1).idx 2>/dev/null || true ;\
+	awk -v scope=$(1) '{print $$0,scope}' $(REPORT_PATH)/$(3)/assessment.$(1).idx >> $(REPORT_PATH)/$(3)/assessment.all.idx.swap ;
+endef
+
+# RUN && PSIRT ----
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_test_execution — Execute tests and collect assessment results
+# -------------------------------------------------------------------------------------------
+# $(1) = tests_path_std, $(2) = config_path, $(3) = output_csv, $(4) = tests_path_psirt
+# -------------------------------------------------------------------------------------------
+define cawk_test_execution
+	$(if $(filter no,$(PSIRT)),\
+		$(foreach test,$(shell find $(1) -name '*.gawk' -type f 2>/dev/null || true),\
+			find $(2) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(3) 2>/dev/null || true ;\
+		),\
+		touch $(3) ;\
+	) \
+	$(foreach test,$(shell find $(4) -name '*.gawk' -type f 2>/dev/null || true),\
+		find $(2) $(FIND_CONF_SELECT) $(TEST_EXE) >> $(3) 2>/dev/null || true ;\
+	)
+endef
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_test_gen_parallel — Parallel-mode standard-test generation+run for one scope/supplier
+# -------------------------------------------------------------------------------------------
+# Single-line form (foreach-safe: expansion ends with ';'). The per-scope ECHO is kept inline
+# (its wording varies per case), so this macro covers only the gen/run body.
+# $(1) = scope/supplier, $(2) = path infix (REPO|RUN), $(3) = report dir (repo|run|run_$${audit}), $(4) = tmp suffix (repo|run|$${audit})
+# -------------------------------------------------------------------------------------------
+define cawk_test_gen_parallel
+	find $(CONFIGURATION_$(1)_$(2)_PATH) $(FIND_CONF_SELECT) > $(TESTS_TMP)/conf_list_files.$(4).$(1) 2>/dev/null || true ;\
+	$(if $(filter no,$(PSIRT)),\
+		find $(TESTS_$(1)_$(2)_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(4).$(1) 2>/dev/null || true ;\
+		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.$(4).$(1) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(4).$(1) > $(TESTS_TMP)/Makefile.$(4).$(1) 2>/dev/null || true ;\
+		$(GMAKE) -f $(TESTS_TMP)/Makefile.$(4).$(1) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/$(3)/assessment.$(1).csv.swap 2>/dev/null || true ;\
+		,\
+		touch $(REPORT_PATH)/$(3)/assessment.$(1).csv.swap ;\
+	)
+endef
+
+# CONTEXT LOCAL REPORT ----
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_report_scope_local — Filter exceptions and generate assessment summary reports
+# -------------------------------------------------------------------------------------------
+# $(1) = scope/supplier, $(2) = report_base (repo|run|run_${audit}), $(3) = exception_context (repo|run|run_${audit})
+# $(4) = catalog tmp tag (repo|run|$(audit)) — see cawk_catalog_precompute, which must run once before this macro
+# -------------------------------------------------------------------------------------------
+define cawk_report_scope_local
+# exception ---
+	$(EGREP) -v -f $(EXCEPTION_PATH)/$(3)/exceptions.$(1) $(REPORT_PATH)/$(2)/assessment.$(1).csv.swap | sort -u > $(REPORT_PATH)/$(2)/assessment.$(1).csv || true
+	cat $(REPORT_PATH)/$(2)/assessment.$(1).csv >> $(REPORT_PATH)/$(2)/assessment.all.csv.swap
+	$(EGREP) -f $(EXCEPTION_PATH)/$(3)/exceptions.$(1) $(REPORT_PATH)/$(2)/assessment.$(1).csv.swap | $(EGREP) ';error' | sort -u > $(REPORT_PATH)/$(2)/assessment.$(1).exceptions.csv || true
+	cat $(REPORT_PATH)/$(2)/assessment.$(1).exceptions.csv >> $(REPORT_PATH)/$(2)/assessment.all.exception.csv
+# local ---
+	$(TESTS_COMMON_PATH)/report.gawk $(DATABASE_CIS_INFO) $(REPORT_PATH)/$(2)/assessment.all.deadbeef.csv $(REPORT_PATH)/$(2)/assessment.$(1).exceptions.csv $(REPORT_PATH)/$(2)/assessment.$(1).csv > $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "------------------------" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "---- tests purposes ----" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "------------------------" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	cat $(TESTS_TMP)/catalog_tests.$(4).txt >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "------------------------------" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "---- exceptions purposes ----" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	$(ECHO) "------------------------------" >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+	cat $(TESTS_TMP)/catalog_exceptions.$(4).txt >> $(REPORT_PATH)/$(2)/assessment.$(1).summary.txt
+endef
+
+# CONTEXT ALL REPORT ----
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_report_scope_all — Generate final assessment reports and timeline exports
+# -------------------------------------------------------------------------------------------
+# $(1) = report_dir, $(2) = catalog tmp tag (repo|run|$(audit)) — see cawk_catalog_precompute, which must run once before this macro
+# -------------------------------------------------------------------------------------------
+define cawk_report_scope_all
+	if [ "$(strip $(DEADBEEF))" = "yes" ]; then $(ECHO) "cawk deadbeef filter performed ----"; $(EGREP) -v -f $(1)/assessment.all.deadbeef.idx $(1)/assessment.all.csv.swap > $(1)/assessment.all.csv || true; else $(ECHO) "cawk deadbeef filter skipped ----"; mv $(1)/assessment.all.csv.swap $(1)/assessment.all.csv || true; fi
+	$(TESTS_COMMON_PATH)/report.gawk $(DATABASE_CIS_INFO) $(1)/assessment.all.deadbeef.csv $(1)/assessment.all.exception.csv $(1)/assessment.all.csv > $(1)/assessment.all.summary.txt
+	$(ECHO) "------------------------" >> $(1)/assessment.all.summary.txt
+	$(ECHO) "---- tests purposes ----" >> $(1)/assessment.all.summary.txt
+	$(ECHO) "------------------------" >> $(1)/assessment.all.summary.txt
+	cat $(TESTS_TMP)/catalog_tests.$(2).txt >> $(1)/assessment.all.summary.txt
+	$(ECHO) "------------------------------" >> $(1)/assessment.all.summary.txt
+	$(ECHO) "---- exceptions purposes ----" >> $(1)/assessment.all.summary.txt
+	$(ECHO) "------------------------------" >> $(1)/assessment.all.summary.txt
+	cat $(TESTS_TMP)/catalog_exceptions.$(2).txt >> $(1)/assessment.all.summary.txt
+	$(EGREP) "(high|medium|low);error" $(1)/assessment.all.csv > $(1)/assessment.all.security.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.security.csv > $(1)/assessment.all.security.timeline.csv || true
+	$(EGREP) ";psirt" $(1)/assessment.all.csv > $(1)/assessment.all.psirt.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.psirt.csv > $(1)/assessment.all.psirt.timeline.csv || true
+	$(EGREP) "(info;error|;warning)" $(1)/assessment.all.csv > $(1)/assessment.all.audit.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.audit.csv > $(1)/assessment.all.audit.timeline.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.csv > $(1)/assessment.all.timeline.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.exception.csv > $(1)/assessment.all.exception.timeline.csv || true
+	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.deadbeef.csv > $(1)/assessment.all.deadbeef.timeline.csv || true
+	sort -u $(1)/assessment.all.idx.swap > $(1)/assessment.all.idx
+	if [ "$(strip $(TMP_ASSESSMENT_FILES))" = "yes" ]; then $(ECHO) "cawk removing temporary assessment files ----"; for s in $(SUPPLIER_SCOPE); do $(RM) -f $(1)/assessment.$$s.* || true; done; $(RM) -f $(1)/assessment.all.*.swap || true; else $(ECHO) "cawk keeping assessment files ----"; fi
+	if [ "$(strip $(JSON))" = "yes" ]; then $(ECHO) "cawk json reporting performed ----"; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.csv > $(1)/assessment.all.json || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.security.csv > $(1)/assessment.all.security.json || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.audit.csv > $(1)/assessment.all.audit.json || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.psirt.csv > $(1)/assessment.all.psirt.json || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.exception.csv > $(1)/assessment.all.exception.json || true; $(TESTS_COMMON_PATH)/report_sumjson.gawk $(1)/assessment.all.summary.txt > $(1)/assessment.all.summary.json || true; else $(ECHO) "cawk json reporting skipped ----"; fi
+endef
+
+# CATALOG TAIL (shared across suppliers) ----
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_catalog_precompute — Generate the per-supplier summary catalog tails once
+# -------------------------------------------------------------------------------------------
+# The "tests purposes" / "exceptions purposes" catalog tail is identical for every supplier of
+# a scope. Computing it once into a tmp file (instead of one recursive $(GMAKE) per supplier)
+# removes 2*N redundant sub-make invocations per assessment. Consumers cat the tmp files.
+# $(1) = catalog target, $(2) = exceptions catalog target, $(3) = tmp context tag
+# -------------------------------------------------------------------------------------------
+define cawk_catalog_precompute
+	$(GMAKE) $(1) > $(TESTS_TMP)/catalog_tests.$(3).txt 2>/dev/null || true
+	$(GMAKE) $(2) > $(TESTS_TMP)/catalog_exceptions.$(3).txt 2>/dev/null || true
+endef
+

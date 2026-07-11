@@ -85,8 +85,8 @@ BEGINFILE {
 }
 
 /[ ]*login quiet-mode access-class [^ ]+/ {
-        acl_ref[$4] = $0;
-        next;
+    acl_ref[$NF] = $0;
+    next;
 }
 
 /^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" {

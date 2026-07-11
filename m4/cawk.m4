@@ -4,6 +4,7 @@ dnl please refer to the MIT licence file for further information
 dnl ------------------------------------------------------------
 
 dnl ---------------------------------------------------
+dnl This macro is used to generate an exception
 dnl m4_cawk_exception($1,$2,$3)
 dnl  $1 : device name   : extended regex
 dnl  $2 : test name     : extended regex
@@ -14,10 +15,11 @@ define(`m4_cawk_exception', `
 ifelse($1,`',`[^;]*',`[^;]*'$1`[^;]*')`;'ifelse($2,`',`[^;]*',`[^;]*'$2`[^;]*')`;'ifelse($3,`',`[^;]*',`[^;]*'$3`[^;]*')`;'
 ')
 
-dnl ---------------------------------------------------
+dnl -------------------------------------------------------------
+dnl This macro is used to generate a gawk hierarchical program
 dnl m4_cawk_parse_block macro generates awk pgm
 dnl while managing block level automatically (bl_level)
-dnl ---------------------------------------------------
+dnl -------------------------------------------------------------
 
 define(`BL_LEVEL', 0)
 

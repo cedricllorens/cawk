@@ -59,23 +59,44 @@ RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
 # ----
 # Copy non-persistent data locally
 # ----
-COPY Authors /app/cawk
-COPY ChangeLog /app/cawk
+COPY AUTHORS.md /app/cawk
+COPY ChangeLog.md /app/cawk
+COPY CODE_OF_CONDUCT.md /app/cawk
+COPY CONTRIBUTING.md /app/cawk
+COPY SECURITY.md /app/cawk
+COPY CLAUDE.md /app/cawk
 COPY checkdiff /app/cawk/checkdiff
 COPY common /app/cawk/common
 COPY m4 /app/cawk/m4
 COPY system /app/cawk/system
 COPY support /app/cawk/support
-COPY README /app/cawk
-COPY PR.howto /app/cawk
-COPY Makefile.support.mk /app/cawk
+COPY README.md /app/cawk
 COPY Makefile /app/cawk
+COPY Makefile.docker /app/cawk
+COPY Makefile.support.mk /app/cawk
+COPY Makefile.support.archive.mk /app/cawk
+COPY Makefile.support.audit.mk /app/cawk
+COPY Makefile.support.backup.mk /app/cawk
+COPY Makefile.support.catalog.mk /app/cawk
+COPY Makefile.support.check.mk /app/cawk
+COPY Makefile.support.clean.mk /app/cawk
+COPY Makefile.support.database.mk /app/cawk
+COPY Makefile.support.email.mk /app/cawk
+COPY Makefile.support.exceptions.mk /app/cawk
+COPY Makefile.support.git.mk /app/cawk
+COPY Makefile.support.help.mk /app/cawk
+COPY Makefile.support.postaudit.mk /app/cawk
+COPY Makefile.support.role.mk /app/cawk
+COPY Makefile.support.supplier.mk /app/cawk
+COPY Makefile.support.sync.mk /app/cawk
+COPY Makefile.support.tests.mk /app/cawk
+COPY Makefile.support.view.mk /app/cawk
 COPY LICENSE /app/cawk
 COPY Dockerfile /app/cawk
-COPY cawk_docker_run.sh /app/cawk
+COPY dockerfile_cawk_run.sh /app/cawk
 
 # ----
-# Copy <persistent> data in tmp directory, cawk_docker_run.sh program will link all these data
+# Copy <persistent> data in tmp directory, dockerfile_cawk_run.sh program will link all these data
 # to the cawk persistent volume <cawk-persistent-volume>
 # ----
 COPY backup /app/cawk/tmp/backup
@@ -104,7 +125,7 @@ RUN mkdir -p /app/cawk/cawk-persistent-volume && \
 RUN chown -R appuser:appuser /app 2>/dev/null || true && \
     find /app/cawk -type d -exec chmod 755 {} \; 2>/dev/null || true && \
     find /app/cawk -type f -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true && \
-    chmod +x /app/cawk/cawk_docker_run.sh 2>/dev/null || true
+    chmod +x /app/cawk/dockerfile_cawk_run.sh 2>/dev/null || true
 
 # ----
 # Switch to non-root user
@@ -114,4 +135,4 @@ USER appuser
 # -------------------------------------------------------------------------
 # Entrypoint to update latest updates and remain still alive
 # -------------------------------------------------------------------------
-ENTRYPOINT ["/app/cawk/cawk_docker_run.sh"]
+ENTRYPOINT ["/app/cawk/dockerfile_cawk_run.sh"]

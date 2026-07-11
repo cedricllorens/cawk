@@ -1,68 +1,56 @@
 #!/bin/sh
 
-# ------------------------------------------------------------
 # cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
-# 
+#
 # this program checks if the main tools are available
 # and if the system is ready to run cawk
-# ------------------------------------------------------------
-#
 
-echo "cawk -----------------------------------"
-echo "cawk : check if the main tools are there"
-echo "cawk : all should be available/OK"
-echo "cawk check system start ----------------"
+echo ""
+echo "cawk system check"
+echo "=================================="
+echo ""
 
-if command -v find >/dev/null 2>&1; then
-    echo "OK : find is available."
-else
-    echo "NOK : find is not available."
-fi
+total=0
+available=0
 
-if command -v m4 >/dev/null 2>&1; then
-    echo "OK : m4 is available."
-else
-    echo "NOK : m4 is not available."
-fi
+check_tool() {
+    tool=$1
+    if command -v "$tool" >/dev/null 2>&1; then
+        echo "  ✅ $tool"
+        available=$((available + 1))
+    else
+        echo "  ❌ $tool"
+    fi
+    total=$((total + 1))
+}
 
-if command -v mktemp >/dev/null 2>&1; then
-    echo "OK : mktemp is available."
-else
-    echo "NOK : mktemp is not available."
-fi
+echo "ESSENTIALS (required for cawk):"
+check_tool "gawk"
+check_tool "gmake"
+check_tool "m4"
+echo ""
 
-if command -v gmake >/dev/null 2>&1; then
-    echo "OK : gmake is available."
-else
-    echo "NOK : gmake is not available."
-fi
+echo "SUPPORT (recommended):"
+check_tool "sed"
+check_tool "find"
+check_tool "grep"
+check_tool "diff"
+check_tool "mktemp"
+check_tool "sha512sum"
+echo ""
 
-if command -v gawk >/dev/null 2>&1; then
-    echo "OK : gawk is available."
-else
-    echo "NOK : gawk is not available."
-fi
+echo "OPTIONAL (advanced features):"
+check_tool "tar"
+check_tool "gzip"
+check_tool "mutt"
+echo ""
 
-if command -v sed >/dev/null 2>&1; then
-    echo "OK : sed is available."
+echo "=================================="
+echo "Summary: $available/$total tools available"
+if [ "$available" = "$total" ]; then
+    echo "✅ cawk is ready to use"
 else
-    echo "NOK : sed is not available."
+    echo "⚠️  Some tools are missing"
 fi
-if command -v diff >/dev/null 2>&1; then
-    echo "OK : diff is available."
-else
-    echo "NOK : diff is not available."
-fi
-if command -v grep >/dev/null 2>&1; then
-    echo "OK : grep is available."
-else
-    echo "NOK : grep is not available."
-fi
-if command -v sha512sum >/dev/null 2>&1; then
-    echo "OK : sha512sum is available."
-else
-    echo "NOK : sha512sum is not available."
-fi
-
-echo "cawk check system end ------------------"
+echo ""

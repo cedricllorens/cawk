@@ -87,6 +87,11 @@ BEGINFILE {
 	next;
 }
 
+/[ ]*login quiet-mode access-class [^ ]+/ {
+    acl_ref[$NF] = $0;
+    next;
+}
+
 ENDFILE {
 
 	# acl def and not ref

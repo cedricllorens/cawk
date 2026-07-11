@@ -31,7 +31,7 @@ copy_with_log() {
     if [ -d "$source" ] && [ "$(ls -A "$source" 2>/dev/null)" ]; then
         mkdir -p "$destination"
         cp -r "$source"/* "$destination"
-        ln -s "$destination" "$softlink"
+        [ -L "$softlink" ] || ln -s "$destination" "$softlink"
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Copy completed with exit code: $?"
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Source directory empty or doesn't exist: $source"
@@ -59,7 +59,7 @@ cleanup_tmp() {
 # ------------------
 
 # log
-LOG_FILE="/app/cawk/cawk_docker_run.log"
+LOG_FILE="/app/cawk/dockerfile_cawk_run.log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 # copy

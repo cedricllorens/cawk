@@ -4,7 +4,8 @@
 # cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# it lists the exceptions of a supplier with all the database information
+# it lists the exceptions of a supplier with database information
+# and groups exceptions by source file comment
 # ------------------------------------------------------------
 
 BEGIN {
@@ -21,24 +22,72 @@ BEGIN {
     delete ARGV[1]
     delete ARGV[2]
 
-    detailed_report(target_audit,target_supplier)
+    detailed_report(target_audit, target_supplier)
 }
 
-function detailed_report(audit,supplier) {
+function detailed_report(audit, supplier) {
     print "=== audit:" audit " supplier:" supplier " list of exceptions ==="
     print ""
+    catalog_exceptions_by_source(audit, supplier)
+}
 
-    while ((getline line < db_file) > 0) {
-        split(line, fields, ";")
+function catalog_exceptions_by_source(audit, supplier,    exc_dir, cmd, file) {
+    exc_dir = ""
+    if (audit == "repo") {
+        exc_dir = "exceptions/repo"
+    } else {
+        exc_dir = "exceptions/run_" audit
+    }
 
-        if (tolower(fields[1]) == tolower(audit) && tolower(fields[2]) == tolower(supplier)) {
-            printf "audit/exception_id: %s/%-30s\n", fields[1], fields[3]
-            printf "\t%-20s: %s\n", "supplier", fields[2]
-            printf "\t%-20s: %s\n", "approver", fields[4]
-            printf "\t%-20s: %s\n", "date", fields[5]
-            printf "\t%-20s: %s\n", "reason", fields[6]
-            print ""
+    cmd = "find " exc_dir " -type f \\( -name 'exceptions." supplier ".m4' -o -name 'exceptions." supplier ".template' -o -name 'exceptions." supplier ".include' \\) 2>/dev/null | sort"
+
+    while ((cmd | getline file) > 0) {
+        parse_exception_file(file, audit, supplier)
+    }
+    close(cmd)
+}
+
+function parse_exception_file(file, audit, supplier,    line, current_comment, current_id, current_approver, current_date, header_printed) {
+    current_comment = ""
+    current_id = ""
+    current_approver = ""
+    current_date = ""
+    header_printed = 0
+
+    while ((getline line < file) > 0) {
+        if (line ~ /^dnl @exception_id:/) {
+            if (header_printed && current_id != "") {
+                print ""
+            }
+            sub(/^dnl @exception_id:[ \t]*/, "", line)
+            gsub(/^[ \t]+|[ \t]+$/, "", line)
+            current_id = line
+            header_printed = 0
+        }
+        else if (line ~ /^dnl @approver:/) {
+            sub(/^dnl @approver:[ \t]*/, "", line)
+            gsub(/^[ \t]+|[ \t]+$/, "", line)
+            current_approver = line
+        }
+        else if (line ~ /^dnl @date:/) {
+            sub(/^dnl @date:[ \t]*/, "", line)
+            gsub(/^[ \t]+|[ \t]+$/, "", line)
+            current_date = line
+        }
+        else if (line ~ /^dnl @reason:/) {
+            sub(/^dnl @reason:[ \t]*/, "", line)
+            gsub(/^[ \t]+|[ \t]+$/, "", line)
+            current_comment = line
+        }
+        else if (line ~ /cawk_exception\(/) {
+            if (current_id != "") {
+                if (!header_printed) {
+                    printf "[%s] %s (approver: %s, date: %s)\n", current_id, current_comment, current_approver, current_date
+                    header_printed = 1
+                }
+                print "  " line
+            }
         }
     }
-    close(db_file)
+    close(file)
 }

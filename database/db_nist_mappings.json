@@ -224,6 +224,9 @@
     "snmp_v3noauthnopriv_notset": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
+    "tcl_script_notset": {
+      "default": "sc-7 | boundary protection | ensure unauthorized remote execution of commands is prevented"
+    },
     "aaa_authorder_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
@@ -355,8 +358,17 @@
     "global_defaultpolicy_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
+    "aaa_classdefref_set": {
+      "default": "ac-2 | access control | account management | ensure user accounts reference valid and active login classes"
+    },
+    "aaa_classpermissions_notset": {
+      "default": "ac-6 | access control | least privilege | ensure least-privilege access is enforced through explicit permission assignment"
+    },
     "aaa_rightorder_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
+    },
+    "aaa_userclass_notset": {
+      "default": "ac-2 | access control | account management | ensure user accounts have defined roles and permissions"
     },
     "filter_defref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"

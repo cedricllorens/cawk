@@ -84,11 +84,6 @@ BEGINFILE {
 	next;
 }
 
-/[ ]*login quiet-mode access-class [^ ]+/ {
-        acl_ref[$4] = $0;
-        next;
-}
-
 /^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" {
 	acl_ref[$4] = $0;
 	next;
@@ -102,6 +97,11 @@ BEGINFILE {
 /^ntp access-group [^ ]+/ {
 	acl_ref[$NF] = $0;
 	next;
+}
+
+/[ ]*login quiet-mode access-class [^ ]+/ {
+    acl_ref[$NF] = $0;
+    next;
 }
 
 ENDFILE {

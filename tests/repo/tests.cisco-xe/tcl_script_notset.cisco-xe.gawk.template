@@ -1,0 +1,40 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : tcl_script_notset.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if TCL scripts are forbidden on device
+# @description : TCL scripts on network devices can pose security risks if not properly controlled and monitored. TCL scripting capabilities should be disabled or restricted to authorized users only to prevent unauthorized automation and potential malicious scripts
+# @actions : remove TCL scripting commands or restrict TCL access; ensure tclsh and related TCL commands are not configured in device startup or running configuration
+# @nist800-53_ref : SC-7 | Boundary Protection | Ensure unauthorized remote execution of commands is prevented
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	tcl_found = 0;
+}
+
+/^(tclsh|tcl.*scripting|scripting tcl)/ {
+	print_err("tcl_script_notset.cisco-xe.gawk",$0,FNR,"high","error");
+	tcl_found = 1;
+	next;
+}
+
+ENDFILE {
+	if ( !tcl_found ) print_err("tcl_script_notset.cisco-xe.gawk","<tcl script> is forbidden (compliant)",0,"high","pass");
+}
+
+END {
+}

@@ -347,7 +347,7 @@ cawk sync database format is the following where fields are separated by spaces 
 			audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
 		- 5 field is an extended regex to select os pattern matching
 		    like (cisco-ios|cisco-xr) or .* (i.e. regexos=REGEX)
-		- 6 field is an extended regex to exclude some specific paths if required 
+		- 6 field is an extended regex to exclude some specific paths or device names if required 
 		    like (_home_|_earth) or .* (i.e. regexpathexclude=REGEX)
 
 		note : common/sync_cawk_conf.gawk script is in charge to apply the database configuration 
@@ -555,13 +555,40 @@ compared to standard tests, psirt tests are located in tests.<os>.psirt director
 	- BLOCK(s) pattern matching 
 	- Build a combined logic to detect vulnerable devices 
 
+# cawk Makefile
+
+Starting with v3.7.0, the central Makefile has been split into several modular
+Makefile.support.*.mk files to enhance maintainability and performance.
+
+Each file is self-contained with its own `.PHONY` declarations and targets:
+
+| File | Purpose |
+|------|---------|
+| Makefile | Main entry point, includes all support files |
+| Makefile.support.mk | Core variables, paths, options, compilation rules |
+| Makefile.support.help.mk | Help and information targets |
+| Makefile.support.audit.mk | Audit creation/deletion/management |
+| Makefile.support.database.mk | Database entry management |
+| Makefile.support.postaudit.mk | Post-audit execution |
+| Makefile.support.email.mk | Email notification |
+| Makefile.support.backup.mk | Backup, restore, migrate |
+| Makefile.support.sync.mk | Config synchronization |
+| Makefile.support.tests.mk | Test compilation and validation |
+| Makefile.support.view.mk | Report viewing (view_repo, view_run) |
+| Makefile.support.archive.mk | Archive management |
+| Makefile.support.clean.mk | Cleanup targets |
+| Makefile.support.catalog.mk | Test catalog and NIST mapping |
+| Makefile.support.exceptions.mk | Exception rule management |
+| Makefile.support.check.mk | Assessment and validation (check_repo, check_run) |
+| Makefile.support.git.mk | Git and CI/CD integration |
+
 # cawk Makefile.support.mk
 
-you may thanks to the file Makefile.support.mk control all the cawk options like PSIRT,
-DEADBEEF, etc. please note that all these options can be called with gmake like:
+You may thanks to the file Makefile.support.mk control all the cawk options like PSIRT,
+DEADBEEF, etc. Please note that all these options can be called with gmake like:
 gmake check_repo DEADBEEF=yes PSIRT=yes ....
 
-note on PSIRT (assessment mode):
+Note on PSIRT (assessment mode):
 	- PSIRT=no (default): run standard tests + psirt tests
 	- PSIRT=yes        : run ONLY psirt tests (standard tests are skipped)
 	psirt tests are always compiled; this flag only selects which tests run at assessment time.
@@ -636,7 +663,7 @@ first of all, you need to install:
 
 the cawk docker files:
 - Dockerfile : allow to build a cawk image
-- cawk_docker_run.sh : script runned when running the cawk container
+- dockerfile_cawk_run.sh : script runned when running the cawk container
 - Makefile.docker : contains all the commands to manage cawk container and persistent data storage
 
 to know all the available commands:
@@ -652,7 +679,7 @@ some useful commands are :
 	cawk container status ----
 	sudo docker ps -a --filter name=cawk-container-v3.2.0 || echo "No containers found"
 	CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS         PORTS     NAMES
-	2dbee2c723b3   cawk-image:v3.2.0   "/app/cawk/cawk_dock…"   9 minutes ago   Up 9 minutes             cawk-container-v3.2.0
+	2dbee2c723b3   cawk-image:v3.2.0   "/app/cawk/dockerfil…"   9 minutes ago   Up 9 minutes             cawk-container-v3.2.0
 
 	cawk volume status ----
 	sudo docker volume ls --filter name=cawk || echo "No cawk volumes found"

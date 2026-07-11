@@ -1,0 +1,80 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : aaa_classpermissions_notset.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check that login class has permissions configured
+# @description : each login class must have explicit permissions to enforce role-based access control and prevent overprivileged or undefined access
+# @actions : assign explicit permissions to each login class (e.g. permissions all, permissions view, permissions configure) to enforce least-privilege
+# @nist800-53_ref : AC-6 | Access Control | Least Privilege | Ensure least-privilege access is enforced through explicit permission assignment
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+	block_system = 0;
+	block_login = 0;
+	block_class = 0;
+	class_name = "";
+}
+
+/^system {/ && block_system == 0 {
+	block_system = 1;
+	block_login = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%login/ && block_system == 1 {
+	block_login = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%{2}class / && block_login == 1 && block_class == 0 {
+	block_class = 1;
+	match($0, /class ([^ {]+)/, arr);
+	class_name = arr[1];
+	class_has_permissions = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%{3}permissions / && block_class == 1 {
+	class_has_permissions = 1;
+	next;
+}
+
+/^%SED_BK_JUNI%{2}}$/ && block_class == 1 {
+	if (!class_has_permissions) {
+		print_err("aaa_classpermissions_notset.juniper-junos.gawk","class " class_name " has no permissions configured",FNR,"high","error");
+		pass = 0;
+	}
+	block_class = 0;
+	next;
+}
+
+/^%SED_BK_JUNI%}$/ && block_login == 1 {
+	block_login = 0;
+}
+
+/^}$/ && block_system == 1 {
+	block_system = 0;
+}
+
+ENDFILE {
+	if (pass) print_err("aaa_classpermissions_notset.juniper-junos.gawk","all login classes have permissions configured",0,"high","pass");
+}
+
+END {
+}
