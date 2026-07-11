@@ -79,6 +79,7 @@ clean_tmp:
 	find $(TESTS_TMP) -type f -name "conf_*" -delete 2>/dev/null || true
 	find $(TESTS_TMP) -type f -name "Makefile*" -delete 2>/dev/null || true
 	find $(TESTS_TMP) -type f -name "*.swap" -delete 2>/dev/null || true
+	find $(TESTS_TMP) -type f -name "*.txt" -delete 2>/dev/null || true
 	$(ECHO) "cawk clean tmp done ----"
 
 clean_force:
