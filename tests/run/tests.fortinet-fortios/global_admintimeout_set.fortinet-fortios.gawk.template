@@ -1,0 +1,55 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_admintimeout_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check that <admintimeout> is set to a safe value
+# @description : a disabled or excessive idle timeout leaves unattended administrative sessions open and exploitable
+# @actions : set admintimeout to a value between 1 and 30 minutes (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-11 | Access Control | Ensure device lock after inactivity timeout is configured
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    block_global = 0;
+    timeout_seen = 0;
+}
+
+/^config system global/ {
+    block_global = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%set admintimeout / && block_global == 1 {
+    timeout_seen = 1;
+    timeout_value = $NF + 0;
+    if ( timeout_value == 0 || timeout_value > 30 ) {
+        print_err("global_admintimeout_set.fortinet-fortios.gawk","unsafe admintimeout value <<"rm_blank_before($0)">>",FNR,"medium","error");
+    } else {
+        print_err("global_admintimeout_set.fortinet-fortios.gawk","admintimeout set <<"rm_blank_before($0)">>",FNR,"medium","pass");
+    }
+    next;
+}
+
+/^end$/ {
+    block_global = 0;
+}
+
+ENDFILE {
+    if ( !timeout_seen ) print_err("global_admintimeout_set.fortinet-fortios.gawk","admintimeout not explicitly set (vendor default applies)",0,"medium","warning");
+}
+
+END {
+}

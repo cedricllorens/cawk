@@ -1,0 +1,53 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_scrub_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <scrub> traffic normalization is set
+# @description : missing scrub normalization allows fragmented or malformed packets to reach hosts, enabling ids evasion and fragmentation attacks
+# @actions : add a scrub rule with fragment reassemble on external interfaces (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-5 | System and Communications Protection | Ensure denial-of-service protection is configured
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    scrub_found = 0;
+    reassemble_found = 0;
+}
+
+# scrub with fragment reassemble ----
+/^scrub .*fragment reassemble/ {
+    scrub_found = 1;
+    reassemble_found = 1;
+    print_err("global_scrub_set.packetfilter-fwcli.gawk","scrub with fragment reassemble found <<"$0">>",FNR,"medium","pass");
+    next;
+}
+
+# scrub without reassemble ----
+/^scrub / {
+    scrub_found = 1;
+    next;
+}
+
+ENDFILE {
+    if ( scrub_found && !reassemble_found ) {
+        print_err("global_scrub_set.packetfilter-fwcli.gawk","scrub found but without fragment reassemble",0,"medium","warning");
+    } else if ( !scrub_found ) {
+        print_err("global_scrub_set.packetfilter-fwcli.gawk","no scrub normalization rule found",0,"medium","error");
+    }
+}
+
+END {
+}

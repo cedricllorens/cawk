@@ -1,0 +1,50 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_tcpflagsprotect_set.iptables-fwcli.gawk
+# @supplier : iptables-fwcli
+# @purpose : check that <NULL and XMAS scan> protection rules are set
+# @description : packets with no tcp flags (null scan) or all tcp flags (xmas scan) are reconnaissance techniques that should be dropped explicitly
+# @actions : add rules dropping tcp packets with flags ALL NONE and ALL ALL (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-4 | System and Information Integrity | Ensure system monitoring is configured
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    null_scan_drop = 0;
+    xmas_scan_drop = 0;
+}
+
+# null scan protection ----
+/^iptables .*--tcp-flags ALL NONE .*-j DROP/ {
+    null_scan_drop = 1;
+    print_err("global_tcpflagsprotect_set.iptables-fwcli.gawk","null scan protection found <<"$0">>",FNR,"medium","pass");
+    next;
+}
+
+# xmas scan protection ----
+/^iptables .*--tcp-flags ALL ALL .*-j DROP/ {
+    xmas_scan_drop = 1;
+    print_err("global_tcpflagsprotect_set.iptables-fwcli.gawk","xmas scan protection found <<"$0">>",FNR,"medium","pass");
+    next;
+}
+
+ENDFILE {
+    if ( !null_scan_drop ) print_err("global_tcpflagsprotect_set.iptables-fwcli.gawk","null scan protection <--tcp-flags ALL NONE> not found",0,"medium","error");
+    if ( !xmas_scan_drop ) print_err("global_tcpflagsprotect_set.iptables-fwcli.gawk","xmas scan protection <--tcp-flags ALL ALL> not found",0,"medium","error");
+}
+
+END {
+}

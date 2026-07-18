@@ -1,0 +1,81 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_sshratelimit_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <ssh rate limiting> is set when ssh is accepted
+# @description : ssh accepted without connection rate limiting exposes the service to brute-force and credential-stuffing attacks
+# @actions : add max-src-conn-rate with an overload table and flush global to ssh pass rules (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-7 | Access Control | Ensure unsuccessful login attempts are limited
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# local functions ----
+function parendepth(line) {
+    return gsub(/\(/, "(", line) - gsub(/\)/, ")", line);
+}
+
+function processrule(rule) {
+    if ( rule ~ /^pass / && rule ~ /port[ =].*(ssh|22)/ ) {
+        ssh_accept = 1;
+        ssh_accept_line = rule;
+        if ( rule ~ /max-src-conn-rate/ && rule ~ /overload[ ]*</ ) {
+            ssh_ratelimit = 1;
+        }
+    }
+}
+# local functions ----
+
+BEGIN {
+}
+
+BEGINFILE {
+    ssh_accept = 0;
+    ssh_ratelimit = 0;
+    ssh_accept_line = "";
+    rule = "";
+    depth = 0;
+}
+
+# state options in parentheses may span multiple lines without continuation
+depth > 0 {
+    rule = rule " " $0;
+    depth += parendepth($0);
+    if ( depth <= 0 ) {
+        processrule(rule);
+        rule = "";
+        depth = 0;
+    }
+    next;
+}
+
+/^pass / {
+    depth = parendepth($0);
+    if ( depth > 0 ) {
+        rule = $0;
+    } else {
+        processrule($0);
+        depth = 0;
+    }
+    next;
+}
+
+ENDFILE {
+    if ( ssh_accept && ssh_ratelimit ) {
+        print_err("global_sshratelimit_set.packetfilter-fwcli.gawk","ssh accepted with rate limiting",0,"medium","pass");
+    } else if ( ssh_accept && !ssh_ratelimit ) {
+        print_err("global_sshratelimit_set.packetfilter-fwcli.gawk","ssh accepted without rate limiting <<"ssh_accept_line">>",0,"medium","error");
+    }
+}
+
+END {
+}

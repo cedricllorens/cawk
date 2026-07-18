@@ -1,0 +1,53 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_sshratelimit_set.iptables-fwcli.gawk
+# @supplier : iptables-fwcli
+# @purpose : check that <ssh rate limiting> is set when ssh is accepted
+# @description : ssh accepted without rate limiting exposes the service to brute-force and credential-stuffing attacks
+# @actions : add recent/hashlimit/limit rate-limiting rules on the ssh port (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-7 | Access Control | Ensure unsuccessful login attempts are limited
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    ssh_accept = 0;
+    ssh_ratelimit = 0;
+    ssh_accept_line = "";
+}
+
+# ssh rate limiting via recent/hashlimit/limit modules ----
+/^iptables .*--dport 22 .*-m (recent|hashlimit|limit)/ {
+    ssh_ratelimit = 1;
+    next;
+}
+
+# ssh accepted ----
+/^iptables .*--dport 22 .*-j ACCEPT/ {
+    ssh_accept = 1;
+    ssh_accept_line = $0;
+    next;
+}
+
+ENDFILE {
+    if ( ssh_accept && ssh_ratelimit ) {
+        print_err("global_sshratelimit_set.iptables-fwcli.gawk","ssh accepted with rate limiting",0,"medium","pass");
+    } else if ( ssh_accept && !ssh_ratelimit ) {
+        print_err("global_sshratelimit_set.iptables-fwcli.gawk","ssh accepted without rate limiting <<"ssh_accept_line">>",0,"medium","error");
+    }
+}
+
+END {
+}

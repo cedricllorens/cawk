@@ -15,36 +15,69 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Install dependencies
+      - name: apt-get update
+        run: sudo apt-get update
+
+      - name: Install packages
+        run: sudo apt-get install -y gawk make m4 coreutils diffutils grep sed
+
+      - name: Create gmake symlink
+        run: sudo ln -sf /usr/bin/make /usr/local/bin/gmake
+
+      - name: Show environment
         run: |
-          apt-get update
-          apt-get install -y \
-            gawk \
-            make \
-            m4 \
-            coreutils \
-            diffutils \
-            grep \
-            sed
+          echo "::group::Tool versions"
+          gawk --version | head -1
+          gmake --version | head -1
+          m4 --version | head -1
+          echo "::endgroup::"
+          echo "::group::Repository content"
+          ls -la
+          echo "::endgroup::"
 
       - name: Run gmake check
         id: check
-        run: gmake check 2>&1 | tee check_output.txt
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          trap 'echo "::error title=gmake check failed::Command \"$BASH_COMMAND\" (line $LINENO, exit $?)"' ERR
+          set -x
+          gmake check 2>&1 | tee check_output.txt
 
       - name: Verify results
+        shell: bash
         run: |
-          cawk_commands_ok=$(grep -A 1 "check cawk commands" check_output.txt | grep -c "^OK")
-          cawk_crypto_ok=$(grep -A 1 "check cawk crypto image" check_output.txt | grep -c "^OK")
+          set -Eeuo pipefail
+
+          cawk_commands_ok=$(grep -A 1 "check cawk commands" check_output.txt | grep -c "^OK" || true)
+          cawk_crypto_ok=$(grep -A 1 "check cawk crypto image" check_output.txt | grep -c "^OK" || true)
+
+          {
+            echo "## cawk check results"
+            echo ""
+            echo "| Test | Result |"
+            echo "|------|--------|"
+            echo "| check cawk commands | $([ "$cawk_commands_ok" -ge 1 ] && echo 'OK ✅' || echo 'KO ❌') |"
+            echo "| check cawk crypto image | $([ "$cawk_crypto_ok" -ge 1 ] && echo 'OK ✅' || echo 'KO ❌') |"
+          } >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$cawk_commands_ok" -ge 1 ] && [ "$cawk_crypto_ok" -ge 1 ]; then
-            echo "✓ Test passed: Both cawk checks returned OK"
+            echo "::notice title=cawk check::Both tests passed"
             exit 0
           else
-            echo "✗ Test failed: Expected both cawk checks to return OK"
-            echo "check cawk commands: $cawk_commands_ok"
-            echo "check cawk crypto image: $cawk_crypto_ok"
+            echo "::error title=cawk check::At least one test failed (commands=$cawk_commands_ok, crypto=$cawk_crypto_ok)"
+            echo "::group::Full gmake check output"
             cat check_output.txt
+            echo "::endgroup::"
             exit 1
           fi
+
+      - name: Upload check output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-output
+          path: check_output.txt
+          retention-days: 7

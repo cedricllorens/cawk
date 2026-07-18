@@ -52,6 +52,7 @@ BEGINFILE {
 		deadbeef_psirt = 0;
 	} else if (FILENAME ~ /exception/ && FILENAME ~ /\.csv/) {
 		exceptions_file = 1;
+		db_info_file = 0;
 		assessment_file = 0;
 		deadbeef_file = 0;
 		exception_pass = 0;
@@ -61,6 +62,7 @@ BEGINFILE {
 	} else if (FILENAME ~ /assessment/ && FILENAME ~ /\.csv/) {
 		assessment_file = 1;
 		db_info_file = 0;
+		deadbeef_file = 0;
 		exceptions_file = 0;
 		# NIST compliance initialization
 		delete nist_pass;
@@ -129,7 +131,6 @@ BEGINFILE {
 		psirt_info = 0;
 
 		delete files;
-		delete tests;
 		delete tests_error_count_high;
 		delete tests_error_count_medium;
 		delete tests_error_count_low;
@@ -170,15 +171,17 @@ function trim(str) {
 # -------------------------------------
 
 /;error$/ {
-	split($0,tmp,";");
+	# risk_level is the next-to-last field: error_line may itself contain
+	# semicolons and severity words, so never match severity on the whole record
+	n = split($0,tmp,";");
 	files[tmp[1]];
-	tests[tmp[2]] = tmp[2];
+	risk = tmp[n-1];
 
 	if ( assessment_file ) {
-		if ( $0 ~ /;high/ ) tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1;
-		if ( $0 ~ /;medium/ ) tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1;
-		if ( $0 ~ /;low/ ) tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1;
-		if ( $0 ~ /;info/ ) tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1;
+		if ( risk == "high" ) { error_high += 1; tests_error_count_high[tmp[2]] = tests_error_count_high[tmp[2]] + 1 }
+		if ( risk == "medium" ) { error_medium += 1; tests_error_count_medium[tmp[2]] = tests_error_count_medium[tmp[2]] + 1 }
+		if ( risk == "low" ) { error_low += 1; tests_error_count_low[tmp[2]] = tests_error_count_low[tmp[2]] + 1 }
+		if ( risk == "info" ) { error_info += 1; tests_error_count_info[tmp[2]] = tests_error_count_info[tmp[2]] + 1 }
 		error += 1;
 		# NIST compliance count
 		if (tmp[2] in nist_map) {
@@ -192,11 +195,15 @@ function trim(str) {
 }
 
 /;pass$/ {
-	split($0,tmp,";");
+	n = split($0,tmp,";");
 	files[tmp[1]];
-	tests[tmp[2]] = tmp[2];
+	risk = tmp[n-1];
 
 	if ( assessment_file ) {
+		if ( risk == "high" ) pass_high += 1;
+		if ( risk == "medium" ) pass_medium += 1;
+		if ( risk == "low" ) pass_low += 1;
+		if ( risk == "info" ) pass_info += 1;
 		pass += 1;
 		# NIST compliance count
 		if (tmp[2] in nist_map) {
@@ -210,11 +217,15 @@ function trim(str) {
 }
 
 /;warning$/ {
-	split($0,tmp,";");
+	n = split($0,tmp,";");
 	files[tmp[1]];
-	tests[tmp[2]] = tmp[2];
+	risk = tmp[n-1];
 
 	if ( assessment_file ) {
+		if ( risk == "high" ) warning_high += 1;
+		if ( risk == "medium" ) warning_medium += 1;
+		if ( risk == "low" ) warning_low += 1;
+		if ( risk == "info" ) warning_info += 1;
 		warning += 1;
 		# NIST compliance count
 		if (tmp[2] in nist_map) {
@@ -228,11 +239,15 @@ function trim(str) {
 }
 
 /;psirt$/ {
-	split($0,tmp,";");
+	n = split($0,tmp,";");
 	files[tmp[1]];
-	tests[tmp[2]] = tmp[2];
+	risk = tmp[n-1];
 
 	if ( assessment_file ) {
+		if ( risk == "high" ) psirt_high += 1;
+		if ( risk == "medium" ) psirt_medium += 1;
+		if ( risk == "low" ) psirt_low += 1;
+		if ( risk == "info" ) psirt_info += 1;
 		psirt += 1;
 		# NIST compliance count
 		if (tmp[2] in nist_map) {
@@ -243,78 +258,6 @@ function trim(str) {
 	}
 	if ( deadbeef_file ) deadbeef_psirt += 1;
 	if ( exceptions_file ) exception_psirt += 1;
-}
-
-# -------------------------------------
-
-/;info;/ && /;error$/ {
-	if ( assessment_file ) error_info += 1
-}
-
-/;info;/ && /;pass$/ {
-	if ( assessment_file ) pass_info += 1
-}
-
-/;info;/ && /;warning$/ {
-	if ( assessment_file ) warning_info += 1
-}
-
-/;info;/ && /;psirt$/ {
-	if ( assessment_file ) psirt_info += 1
-}
-
-# -------------------------------------
-
-/;high;/ && /;error$/ {
-	if ( assessment_file ) error_high += 1;
-}
-
-/;high;/ && /;pass$/ {
-	if ( assessment_file ) pass_high += 1;
-}
-
-/;high;/ && /;warning$/ {
-	if ( assessment_file ) warning_high += 1;
-}
-
-/;high;/ && /;psirt$/ {
-	if ( assessment_file ) psirt_high += 1;
-}
-
-# -------------------------------------
-
-/;medium;/ && /;error$/ {
-	if ( assessment_file ) error_medium += 1;
-}
-
-/;medium;/ && /;pass$/ {
-	if ( assessment_file ) pass_medium += 1;
-}
-
-/;medium;/ && /;warning$/ {
-	if ( assessment_file ) warning_medium += 1;
-}
-
-/;medium;/ && /;psirt$/ {
-	if ( assessment_file ) psirt_medium += 1;
-}
-
-# -------------------------------------
-
-/;low;/ && /;error$/ {
-	if ( assessment_file ) error_low += 1;
-}
-
-/;low;/ && /;pass$/ {
-	if ( assessment_file ) pass_low += 1;
-}
-
-/;low;/ && /;warning$/ {
-	if ( assessment_file ) warning_low += 1;
-}
-
-/;low;/ && /;psirt$/ {
-	if ( assessment_file ) psirt_low += 1;
 }
 
 # -------------------------------------
@@ -394,8 +337,8 @@ if ( assessment_file ) {
 	# ------------------------------------------------------------------
 
 	print "";
-	if ( ( pass + error + warning) > 0) {
-		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning))
+	if ( ( pass + error + warning + psirt) > 0) {
+		decimal = sprintf("%.1f", 100 * error / ( pass + error + warning + psirt))
 		print "number_of_error = " error " (" decimal "%)";
 		if ((nist_total_pass + nist_total_error + nist_total_warning) > 0) {
 			decimal_cis = sprintf("%.1f", 100 * nist_total_error / (nist_total_pass + nist_total_error + nist_total_warning))
@@ -564,23 +507,35 @@ if ( assessment_file ) {
 	print "---------------------------------";
 	print "---- security key indicators ----";
 	print "---------------------------------";
-	
+
+	# Severity weights used by weighted indicators (single definition point)
+	weight_high = 3
+	weight_medium = 2
+	weight_low = 1
+
 	if ((pass_high + pass_medium + pass_low + error_high + error_medium + error_low) > 0) {
-		key1 = sprintf("%.1f", 100 - 100  * ( ((3*error_high + 2*error_medium + error_low)) / (3 * (pass_high + pass_medium + pass_low + error_high + error_medium + error_low)) ) )
+		key1 = sprintf("%.1f", 100 - 100 * ( (weight_high*error_high + weight_medium*error_medium + weight_low*error_low) / (weight_high*(pass_high + error_high) + weight_medium*(pass_medium + error_medium) + weight_low*(pass_low + error_low)) ) )
 		print "security_compliance (scope pass/error) = " key1 "% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
 	} else {
 		print "security_compliance (scope pass/error) = 100% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
 	}
 
-	if ( (length(files)) > 0) {
-		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
-		print "error_avg_perdevice (scope error) = " key2 " (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+	if ((pass_info + error_info) > 0) {
+		key_info = sprintf("%.1f", 100 - 100 * ( error_info / (pass_info + error_info) ) )
+		print "security_info_compliance (scope pass/error) = " key_info "% (informational only - not a compliance requirement)";
 	} else {
-		print "error_avg_perdevice (scope error) = 0 (0-0.1/excellent;0.1-0.5/good;0.6-1/average;1.1-1000/critical)";
+		print "security_info_compliance (scope pass/error) = 100% (informational only - not a compliance requirement)";
 	}
 
-	if ((error_high + error_medium + error_low + error_info) > 0) {
-		key_error = sprintf("%.1f", 100 * error_high / (error_high + error_medium + error_low + error_info))
+	if ( (length(files)) > 0) {
+		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
+		print "error_avg_perdevice (scope error) = " key2 " (0-1/excellent;1-5/good;5-15/average;15+/critical)";
+	} else {
+		print "error_avg_perdevice (scope error) = 0 (0-1/excellent;1-5/good;5-15/average;15+/critical)";
+	}
+
+	if ((error_high + error_medium + error_low) > 0) {
+		key_error = sprintf("%.1f", 100 * error_high / (error_high + error_medium + error_low))
 		print "error_high_ratio    (scope error) = " key_error "% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
 	} else {
 		print "error_high_ratio    (scope error) = 0% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
@@ -622,11 +577,9 @@ if ( assessment_file ) {
 		family_total[family]++
 
 		# Check if this NIST ID is covered in our tests
-		is_covered = 0
 		if (nist_official_nist_id in nist_pass || nist_official_nist_id in nist_fail || nist_official_nist_id in nist_warning) {
 			nist_official_covered++
 			family_covered[family]++
-			is_covered = 1
 		}
 	}
 	close(nist_official_file)

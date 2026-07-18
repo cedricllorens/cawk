@@ -1,0 +1,73 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_trusthost_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check that <trusthost> is set for every admin account
+# @description : without trusthost restrictions the administrative interface is reachable from any source address; CIS FortiGate benchmark requires each admin account to restrict login sources
+# @actions : set trusthost1..N on every account under config system admin to restrict management access to trusted networks (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-17 | Access Control | Ensure remote access is restricted to trusted hosts
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    block_admin = 0;
+    admin_name = "";
+    trusthost_seen = 0;
+    admin_found = 0;
+    pass = 1;
+}
+
+/^config system admin/ {
+    block_admin = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%edit / && block_admin == 1 {
+    admin_found = 1;
+    admin_name = $2;
+    trusthost_seen = 0;
+    next;
+}
+
+/^%SED_BK_FORTI%%SED_BK_FORTI%set trusthost[0-9]+ / && block_admin == 1 {
+    trusthost_seen = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%next$/ && block_admin == 1 && admin_name != "" {
+    if ( trusthost_seen ) {
+        print_err("global_trusthost_set.fortinet-fortios.gawk","trusthost set for admin <<"admin_name">>",FNR,"high","pass");
+    } else {
+        print_err("global_trusthost_set.fortinet-fortios.gawk","no trusthost set for admin <<"admin_name">>",FNR,"high","error");
+        pass = 0;
+    }
+    admin_name = "";
+    next;
+}
+
+/^end$/ {
+    block_admin = 0;
+    admin_name = "";
+}
+
+ENDFILE {
+    if ( !admin_found ) {
+        print_err("global_trusthost_set.fortinet-fortios.gawk","no admin account found in configuration",0,"high","warning");
+    }
+}
+
+END {
+}

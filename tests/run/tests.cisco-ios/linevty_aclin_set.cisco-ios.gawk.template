@@ -52,6 +52,11 @@ BEGINFILE {
 	next;
 }
 
+/^ (transport input none|no exec)$/ && block_vty == 1 {
+	aclin = 1;
+	next;
+}
+
 /^!$/ && block_vty == 1 {
 	acl_summary();
 	block_vty = 0;

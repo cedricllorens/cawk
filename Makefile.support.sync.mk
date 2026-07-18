@@ -67,7 +67,9 @@ else
 		$(ECHO) "cawk sync_teststoconfs_run: confs/run_$(audit) not found, skip ----"; \
 		exit 0; \
 	fi; \
-	find "$(TESTS_PATH)/run_$(audit)" -maxdepth 1 -name "zz.sync.save.*" -type d | sort -r | tail -n +4 | xargs -r rm -rf; \
+	for supplier in $(SUPPLIER_SCOPE); do \
+		find "$(TESTS_PATH)/run_$(audit)" -maxdepth 1 -name "zz.sync.save.tests.$${supplier}*" -type d | sort -r | tail -n +4 | xargs -r rm -rf; \
+	done; \
 	keep=""; \
 	for s in $(SUPPLIER_SCOPE); do \
 		if [ -d "$(CONFS_PATH)/run_$(audit)/confs.$$s" ]; then \
@@ -113,7 +115,9 @@ else
 		$(ECHO) "cawk sync_exceptionstoconfs_run: confs/run_$(audit) not found, skip ----"; \
 		exit 0; \
 	fi; \
-	find "$(EXCEPTION_PATH)/run_$(audit)" -maxdepth 1 -name "zz.sync.save.*" -type f | sort -r | tail -n +4 | xargs -r rm -f; \
+	for supplier in $(SUPPLIER_SCOPE); do \
+		find "$(EXCEPTION_PATH)/run_$(audit)" -maxdepth 1 -name "zz.sync.save.exceptions.$${supplier}*" -type f | sort -r | tail -n +4 | xargs -r rm -f; \
+	done; \
 	keep=""; \
 	for s in $(SUPPLIER_SCOPE); do \
 		if [ -d "$(CONFS_PATH)/run_$(audit)/confs.$$s" ]; then \

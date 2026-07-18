@@ -75,7 +75,7 @@ ENDFILE {
         pass = 0;
     }
     if (pass) {
-        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block is compliant", FNR, high, "pass");
+        print_err("global_snmpforbidcommunity_notset.6wind-linux.gawk", "<vrf main><snmp> block is compliant", FNR, "high", "pass");
     }
 }
 

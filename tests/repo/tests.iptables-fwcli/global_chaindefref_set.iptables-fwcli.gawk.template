@@ -13,7 +13,7 @@
 # @purpose : check <-N chains> ref not def and def not ref
 # @description : custom chains defined but not referenced represent dead configuration; chains referenced but not defined cause rule processing errors
 # @actions : align chain definitions and references to ensure all custom chains are used and all references are valid (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @nist800-53_ref : CM-6 | Configuration Management | Ensure configuration settings are established and enforced
 # @risk_level : high | low
 # @authors : wael elsingaby
 # ------------------------------------------------------------
@@ -52,11 +52,11 @@ BEGINFILE {
 }
 
 # chain ref -----
-/^iptables .* -j \w+/ {
+/^iptables .* -j [A-Za-z0-9_\-]+/ {
     match($0, /-j ([A-Za-z0-9_\-]+)/, arr);
     if (arr[1] != "" && !(arr[1] in default_chains)) {
         chain_name = arr[1];
-        chains_referenced[chain_name] = NR; 
+        chains_referenced[chain_name] = NR;
     }
 }
 

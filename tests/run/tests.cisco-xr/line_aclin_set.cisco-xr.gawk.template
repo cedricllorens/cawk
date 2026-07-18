@@ -53,6 +53,11 @@ BEGINFILE {
 	next;
 }
 
+/^ transport input none$/ && block == 1 {
+	aclin = 1;
+	next;
+}
+
 /^!$/ && block == 1 {
 	acl_summary();
 	block = 0;

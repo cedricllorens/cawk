@@ -53,6 +53,11 @@ BEGINFILE {
 	next;
 }
 
+/^ (transport output none|no exec)$/ && block_aux == 1 {
+	aclout = 1;
+	next;
+}
+
 ( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
 	acl_summary();
 	block_aux = 0;

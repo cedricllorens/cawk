@@ -1,0 +1,53 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_synfloodprotect_set.iptables-fwcli.gawk
+# @supplier : iptables-fwcli
+# @purpose : check that <syn flood protection> is set
+# @description : without rate limiting on tcp syn packets or a synproxy target the firewall and the services behind it are exposed to syn flood denial of service
+# @actions : add a limit or hashlimit rule on tcp syn packets or use the SYNPROXY target (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-5 | System and Communications Protection | Ensure denial-of-service protection is configured
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    syn_protect = 0;
+    syn_protect_line = "";
+}
+
+# syn rate limiting via limit/hashlimit modules (--syn or --tcp-flags ... SYN) ----
+/^iptables .*-p tcp .*(--syn|--tcp-flags .*SYN) .*-m (limit|hashlimit)/ {
+    syn_protect = 1;
+    syn_protect_line = $0;
+    next;
+}
+
+# kernel synproxy target ----
+/^iptables .*-j SYNPROXY/ {
+    syn_protect = 1;
+    syn_protect_line = $0;
+    next;
+}
+
+ENDFILE {
+    if ( syn_protect ) {
+        print_err("global_synfloodprotect_set.iptables-fwcli.gawk","syn flood protection found <<"syn_protect_line">>",0,"medium","pass");
+    } else {
+        print_err("global_synfloodprotect_set.iptables-fwcli.gawk","no syn flood protection rule found",0,"medium","error");
+    }
+}
+
+END {
+}

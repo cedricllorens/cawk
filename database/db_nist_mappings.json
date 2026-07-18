@@ -33,9 +33,16 @@
     "system_networkstackipcompliant_set": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
+    "global_adminlockout_set": {
+      "default": "ac-7 | access control | ensure unsuccessful login attempts are limited"
+    },
     "global_duplicaterule_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
+      "iptables-fwcli": "cm-6 | configuration management | ensure configuration settings are established and enforced",
       "checkpoint-fwcli": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_inactivitytimeout_set": {
+      "default": "ac-11 | access control | ensure device lock after inactivity timeout is configured"
     },
     "global_ipioclist_set": {
       "default": "si-4 | system and information integrity | ensure system monitoring is configured"
@@ -52,6 +59,9 @@
     "global_passwordpolicy_set": {
       "default": "ia-5(1) | identification and authentication | ensure password-based authentication complexity is enforced"
     },
+    "global_remotesyslog_set": {
+      "default": "au-4 | audit and accountability | ensure audit log storage capacity is configured"
+    },
     "global_ruleinfo_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
@@ -67,6 +77,12 @@
     },
     "global_statefulrules_set": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_stealthrule_set": {
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_telnet_notset": {
+      "default": "sc-8 | system and communications protection | ensure transmission confidentiality is protected"
     },
     "global_vardefref_set": {
       "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
@@ -290,8 +306,20 @@
     "fw_lastrule_set": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
+    "global_admintimeout_set": {
+      "default": "ac-11 | access control | ensure device lock after inactivity timeout is configured"
+    },
+    "global_httpsonly_set": {
+      "default": "sc-8 | system and communications protection | ensure transmission confidentiality is protected"
+    },
     "global_sourcerouting_notset": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_tlsminversion_set": {
+      "default": "sc-13 | system and communications protection | ensure cryptographic protection using approved algorithms is configured"
+    },
+    "global_trusthost_set": {
+      "default": "ac-17 | access control | ensure remote access is restricted to trusted hosts"
     },
     "int_icmpredirect_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -353,10 +381,26 @@
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
     },
     "global_chaindefref_set": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+      "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
     },
     "global_defaultpolicy_set": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
+      "iptables-fwcli": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_icmpratelimit_set": {
+      "default": "sc-5 | system and communications protection | ensure denial-of-service protection is configured"
+    },
+    "global_invalidstatedrop_set": {
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
+    "global_sshratelimit_set": {
+      "default": "ac-7 | access control | ensure unsuccessful login attempts are limited"
+    },
+    "global_synfloodprotect_set": {
+      "default": "sc-5 | system and communications protection | ensure denial-of-service protection is configured"
+    },
+    "global_tcpflagsprotect_set": {
+      "default": "si-4 | system and information integrity | ensure system monitoring is configured"
     },
     "aaa_classdefref_set": {
       "default": "ac-2 | access control | account management | ensure user accounts reference valid and active login classes"
@@ -451,6 +495,9 @@
     "login_ssh_set": {
       "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
     },
+    "global_antispoof_set": {
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
+    },
     "global_basicrulecheck_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
@@ -460,8 +507,17 @@
     "global_rulevarinfo_set": {
       "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
     },
+    "global_scrub_set": {
+      "default": "sc-5 | system and communications protection | ensure denial-of-service protection is configured"
+    },
+    "global_statelimits_set": {
+      "default": "sc-5 | system and communications protection | ensure denial-of-service protection is configured"
+    },
     "global_tabledefref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
+    "global_urpffailed_set": {
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "aaa_authprofile_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users"

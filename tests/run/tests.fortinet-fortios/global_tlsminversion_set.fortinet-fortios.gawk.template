@@ -1,0 +1,61 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_tlsminversion_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check that <ssl-min-proto-version> is set to TLSv1.2 or higher
+# @description : TLS 1.0 and 1.1 contain known cryptographic vulnerabilities (CVE-2013-0169 BEAST, POODLE); SSLv3 is deprecated and allows downgrade attacks
+# @actions : set ssl-min-proto-version to TLSv1-2 or TLSv1-3 to enforce modern cryptography (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    block_global = 0;
+    ssl_version_found = 0;
+    ssl_version_safe = 0;
+}
+
+/^config system global/ {
+    block_global = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%set ssl-min-proto-version / && block_global == 1 {
+    ssl_version_found = 1;
+    if ( match($0, /ssl-min-proto-version\s+(\S+)/, arr) ) {
+        version = arr[1];
+        if ( version == "TLSv1-2" || version == "TLSv1-3" ) {
+            ssl_version_safe = 1;
+            print_err("global_tlsminversion_set.fortinet-fortios.gawk","ssl-min-proto-version set to safe version <<"version">>",FNR,"high","pass");
+        } else {
+            print_err("global_tlsminversion_set.fortinet-fortios.gawk","unsafe ssl-min-proto-version <<"version">> detected (use TLSv1-2 or TLSv1-3)",FNR,"high","error");
+        }
+    }
+    next;
+}
+
+/^end$/ {
+    block_global = 0;
+}
+
+ENDFILE {
+    if ( !ssl_version_found ) {
+        print_err("global_tlsminversion_set.fortinet-fortios.gawk","ssl-min-proto-version not explicitly configured (vendor default may allow weak TLS versions)",0,"high","warning");
+    }
+}
+
+END {
+}

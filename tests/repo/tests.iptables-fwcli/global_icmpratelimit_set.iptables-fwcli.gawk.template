@@ -1,0 +1,53 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_icmpratelimit_set.iptables-fwcli.gawk
+# @supplier : iptables-fwcli
+# @purpose : check that <icmp echo-request> is rate limited when accepted
+# @description : icmp echo-request accepted without rate limiting can be leveraged for icmp flood denial of service
+# @actions : add a limit module to icmp echo-request accept rules (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-5 | System and Communications Protection | Ensure denial-of-service protection is configured
+# @risk_level : low
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    icmp_limited = 0;
+    icmp_unlimited = 0;
+    icmp_line = "";
+}
+
+# icmp echo-request rate limited ----
+/^iptables .*-p icmp .*--icmp-type echo-request .*-m limit .*-j ACCEPT/ {
+    icmp_limited = 1;
+    next;
+}
+
+# icmp accepted without limit ----
+/^iptables .*-p icmp .*-j ACCEPT/ && $0 !~ /-m limit/ {
+    icmp_unlimited = 1;
+    icmp_line = $0;
+    next;
+}
+
+ENDFILE {
+    if ( icmp_limited && !icmp_unlimited ) {
+        print_err("global_icmpratelimit_set.iptables-fwcli.gawk","icmp echo-request accepted with rate limiting",0,"low","pass");
+    } else if ( icmp_unlimited ) {
+        print_err("global_icmpratelimit_set.iptables-fwcli.gawk","icmp accepted without rate limiting <<"icmp_line">>",0,"low","error");
+    }
+}
+
+END {
+}

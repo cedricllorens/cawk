@@ -1,0 +1,48 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_telnet_notset.checkpoint-fwcli.gawk
+# @supplier : checkpoint-fwcli
+# @purpose : check that <net-access telnet> is not enabled
+# @description : telnet transmits administrative credentials in clear text and must not be used to manage the gateway; CIS Gaia benchmark requires telnet access to be disabled
+# @actions : disable telnet with set net-access telnet off and use ssh for management access (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality is protected
+# @risk_level : high | low
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    telnet_seen = 0;
+}
+
+/^set net-access telnet on/ {
+    telnet_seen = 1;
+    print_err("global_telnet_notset.checkpoint-fwcli.gawk","telnet management access enabled <<"$0">>",FNR,"high","error");
+    next;
+}
+
+/^set net-access telnet off/ {
+    telnet_seen = 1;
+    print_err("global_telnet_notset.checkpoint-fwcli.gawk","telnet management access disabled <<"$0">>",FNR,"high","pass");
+    next;
+}
+
+ENDFILE {
+    if ( !telnet_seen ) {
+        print_err("global_telnet_notset.checkpoint-fwcli.gawk","net-access telnet not explicitly set (vendor default disables telnet)",0,"low","warning");
+    }
+}
+
+END {
+}

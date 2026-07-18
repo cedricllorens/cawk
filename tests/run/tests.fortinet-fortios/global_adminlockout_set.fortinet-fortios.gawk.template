@@ -1,0 +1,55 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_adminlockout_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check that <admin-lockout-threshold> is set to a safe value
+# @description : a high or disabled lockout threshold allows brute-force attempts against administrative accounts
+# @actions : set admin-lockout-threshold to a low value and a sufficient admin-lockout-duration (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-7 | Access Control | Ensure unsuccessful login attempts are limited
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    block_global = 0;
+    threshold_seen = 0;
+}
+
+/^config system global/ {
+    block_global = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%set admin-lockout-threshold / && block_global == 1 {
+    threshold_seen = 1;
+    threshold_value = $NF + 0;
+    if ( threshold_value == 0 || threshold_value > 10 ) {
+        print_err("global_adminlockout_set.fortinet-fortios.gawk","unsafe admin-lockout-threshold value <<"rm_blank_before($0)">>",FNR,"medium","error");
+    } else {
+        print_err("global_adminlockout_set.fortinet-fortios.gawk","admin-lockout-threshold set <<"rm_blank_before($0)">>",FNR,"medium","pass");
+    }
+    next;
+}
+
+/^end$/ {
+    block_global = 0;
+}
+
+ENDFILE {
+    if ( !threshold_seen ) print_err("global_adminlockout_set.fortinet-fortios.gawk","admin-lockout-threshold not explicitly set (vendor default applies)",0,"medium","warning");
+}
+
+END {
+}

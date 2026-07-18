@@ -1,0 +1,49 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_statelimits_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <state table limits> are set
+# @description : missing state table limits allows state exhaustion attacks to fill the firewall memory and disrupt legitimate connections
+# @actions : set limit states, frags and src-nodes values sized for the platform (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-5 | System and Communications Protection | Ensure denial-of-service protection is configured
+# @risk_level : low
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    limit_states = 0;
+    limit_frags = 0;
+}
+
+# state table limit ----
+/^set limit states / {
+    limit_states = 1;
+    print_err("global_statelimits_set.packetfilter-fwcli.gawk","state table limit found <<"$0">>",FNR,"low","pass");
+    next;
+}
+
+# fragment table limit ----
+/^set limit frags / {
+    limit_frags = 1;
+    next;
+}
+
+ENDFILE {
+    if ( !limit_states ) print_err("global_statelimits_set.packetfilter-fwcli.gawk","no state table limit found",0,"low","error");
+    if ( limit_states && !limit_frags ) print_err("global_statelimits_set.packetfilter-fwcli.gawk","state limit found but no fragment table limit",0,"low","warning");
+}
+
+END {
+}

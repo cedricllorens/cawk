@@ -1,0 +1,43 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_urpffailed_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <urpf-failed> blocking is set
+# @description : missing unicast reverse path forwarding check allows packets whose source address does not match the routing table, a common spoofing vector
+# @actions : add a block in quick from urpf-failed rule (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    urpf_found = 0;
+}
+
+# urpf-failed blocking ----
+/^block .*from urpf-failed/ {
+    urpf_found = 1;
+    print_err("global_urpffailed_set.packetfilter-fwcli.gawk","urpf-failed blocking rule found <<"$0">>",FNR,"medium","pass");
+    next;
+}
+
+ENDFILE {
+    if ( !urpf_found ) {
+        print_err("global_urpffailed_set.packetfilter-fwcli.gawk","no urpf-failed blocking rule found",0,"medium","error");
+    }
+}
+
+END {
+}

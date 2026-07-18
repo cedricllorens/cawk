@@ -52,9 +52,15 @@ BEGINFILE {
 	next;
 }
 
+/^ (transport input none|no exec)$/ && block_aux == 1 {
+	aclin = 1;
+	next;
+}
+
 ( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
 	acl_summary();
 	block_aux = 0;
+	next;
 }
 
 ENDFILE {

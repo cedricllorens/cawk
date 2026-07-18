@@ -1,0 +1,43 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_antispoof_set.packetfilter-fwcli.gawk
+# @supplier : packetfilter-fwcli
+# @purpose : check that <antispoof> is set for interfaces
+# @description : missing antispoof allows packets with spoofed source addresses belonging to directly connected networks to enter through the wrong interface
+# @actions : add an antispoof quick rule for internal interfaces (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    antispoof_found = 0;
+}
+
+# antispoof directive ----
+/^antispoof / {
+    antispoof_found = 1;
+    print_err("global_antispoof_set.packetfilter-fwcli.gawk","antispoof rule found <<"$0">>",FNR,"high","pass");
+    next;
+}
+
+ENDFILE {
+    if ( !antispoof_found ) {
+        print_err("global_antispoof_set.packetfilter-fwcli.gawk","no antispoof rule found",0,"high","error");
+    }
+}
+
+END {
+}

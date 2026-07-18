@@ -1,0 +1,63 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_httpsonly_set.fortinet-fortios.gawk
+# @supplier : fortinet-fortios
+# @purpose : check that <https-redirect> is enabled and HTTP management is disabled
+# @description : HTTP management interface transmits credentials in clear text; HTTPS-only access prevents credential interception and Man-in-the-Middle attacks
+# @actions : enable admin-https-redirect and disable HTTP management access to enforce encrypted administrative sessions (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality is protected
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    block_global = 0;
+    https_redirect_enabled = 0;
+    http_disabled = 0;
+}
+
+/^config system global/ {
+    block_global = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%set admin-https-redirect enable/ && block_global == 1 {
+    https_redirect_enabled = 1;
+    next;
+}
+
+/^%SED_BK_FORTI%set admin-port 0/ && block_global == 1 {
+    http_disabled = 1;
+    next;
+}
+
+/^end$/ {
+    block_global = 0;
+}
+
+ENDFILE {
+    if ( https_redirect_enabled && http_disabled ) {
+        print_err("global_httpsonly_set.fortinet-fortios.gawk","HTTPS redirect enabled and HTTP management disabled",0,"high","pass");
+    } else if ( https_redirect_enabled && !http_disabled ) {
+        print_err("global_httpsonly_set.fortinet-fortios.gawk","HTTPS redirect enabled but HTTP management port still active",0,"high","warning");
+    } else if ( !https_redirect_enabled && http_disabled ) {
+        print_err("global_httpsonly_set.fortinet-fortios.gawk","HTTP disabled but HTTPS redirect not enabled",0,"high","warning");
+    } else {
+        print_err("global_httpsonly_set.fortinet-fortios.gawk","HTTPS redirect not enabled and HTTP management may be active",0,"high","error");
+    }
+}
+
+END {
+}

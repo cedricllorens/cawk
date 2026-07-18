@@ -13,7 +13,7 @@
 # @purpose : check that <-P default policy> is set
 # @description : missing default policy means traffic not matched by explicit rules may be allowed by default instead of denied
 # @actions : set a default drop policy on all chains to enforce implicit deny (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : medium
 # @authors : wael elsingaby
 # ------------------------------------------------------------

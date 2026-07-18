@@ -40,10 +40,14 @@ git_branch_not_master_check:
 		exit 1; \
 	fi
 
+# ------------------------------------------------------------
+
 gitnewbranch: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git checkout -b $(CAWK_RELEASE)-beta; \
 	fi	
+
+# ------------------------------------------------------------
 
 gitcheck: tests_target_common
 	$(GMAKE) clean clean_force FORCE=yes
@@ -219,7 +223,13 @@ gitinstallcicd:
 gitcommit: gitinstallcicd
 	if [ "$(FORCE)" = "yes" ]; then \
 		git add .; \
-		git commit -m "*$(CAWK_RELEASE) ref ChangeLog"; \
+		msg="*$(CAWK_RELEASE) ref ChangeLog"; \
+		if [ -n "$(CO_AUTHOR)" ]; then \
+			msg="$$msg\n\n$(CO_AUTHOR)"; \
+		fi; \
+		printf "$$msg" > .git_commit_msg; \
+		git commit -F .git_commit_msg; \
+		rm -f .git_commit_msg; \
 	fi
 	@echo "gitpush or gitpushbranchtarget next step"
 

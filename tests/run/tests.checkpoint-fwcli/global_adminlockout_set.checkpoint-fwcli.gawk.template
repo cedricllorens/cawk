@@ -1,0 +1,59 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : global_adminlockout_set.checkpoint-fwcli.gawk
+# @supplier : checkpoint-fwcli
+# @purpose : check that <password-controls deny-on-fail> account lockout is enabled
+# @description : Gaia deny-on-fail lockout is disabled by default, allowing unlimited brute-force attempts against administrative accounts
+# @actions : set password-controls deny-on-fail enable on with a low failures-allowed value (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : AC-7 | Access Control | Ensure unsuccessful login attempts are limited
+# @risk_level : medium
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+    lockout_enabled = 0;
+    lockout_seen = 0;
+}
+
+/^set password-controls deny-on-fail enable on/ {
+    lockout_seen = 1;
+    lockout_enabled = 1;
+    print_err("global_adminlockout_set.checkpoint-fwcli.gawk","account lockout enabled <<"$0">>",FNR,"medium","pass");
+    next;
+}
+
+/^set password-controls deny-on-fail enable off/ {
+    lockout_seen = 1;
+    print_err("global_adminlockout_set.checkpoint-fwcli.gawk","account lockout explicitly disabled <<"$0">>",FNR,"medium","error");
+    next;
+}
+
+/^set password-controls deny-on-fail failures-allowed / {
+    if ( $NF + 0 > 10 ) {
+        print_err("global_adminlockout_set.checkpoint-fwcli.gawk","failures-allowed above vendor default 10 <<"$0">>",FNR,"medium","warning");
+    } else {
+        print_err("global_adminlockout_set.checkpoint-fwcli.gawk","failures-allowed set <<"$0">>",FNR,"medium","pass");
+    }
+    next;
+}
+
+ENDFILE {
+    if ( !lockout_seen ) {
+        print_err("global_adminlockout_set.checkpoint-fwcli.gawk","deny-on-fail not configured (vendor default disables account lockout)",0,"medium","error");
+    }
+}
+
+END {
+}

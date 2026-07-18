@@ -4,11 +4,80 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v3.8.0] - july 2026
+
+### Fixed
+
+- Fix sync targets: keep 3 backup archives per supplier instead of 3 globally; `sync_teststoconfs_run` and `sync_exceptionstoconfs_run` now iterate cleanup by supplier to prevent unrelated suppliers' backups from evicting each other
+- Fix iptables-fwcli tests: refine NIST 800-53 mappings for chain reference validation (CM-6), default policy enforcement (SC-7), and duplicate rule detection (CM-6); improve chain name pattern matching to accept hyphens in custom chain names
+- Fix security_compliance calculation: normalize divisor with weighted severity (3×high + 2×medium + 1×low) for consistent metric
+- Fix error_high_ratio: exclude info findings from denominator to avoid artificially lowering the ratio
+- Fix report BEGINFILE file-type detection: reset all flags in every branch to prevent misclassified counts when file order varies or a file is missing
+- Fix report severity counting: read risk_level from its field instead of substring-matching the whole record, so error_line content containing severity words no longer double-counts; consolidate 16 pattern rules into the status rules
+- Fix number_of_error percentage: include psirt in the denominator so pass/error/warning/psirt percentages share the same base and sum to 100%
+- Remove dead code in report: unused tests[] array and is_covered variable
+- Fix global_snmpforbidcommunity_notset.6wind-linux: quote risk_level "high" in pass print_err (unquoted variable produced an empty risk field)
+
+### Changed
+
+- Fix lineaux_aclin_set.cisco-ios: treat `transport input none` and `no exec` as a validated exception (aux port disabled for management, so an inbound ACL is not required) to avoid false-positive errors
+- Fix lineaux_aclout_set.cisco-ios: treat `transport output none` and `no exec` as a validated exception (aux port disabled, so an outbound ACL is not required) to avoid false-positive errors
+- Fix linevty_aclin_set.cisco-ios: treat `transport input none` and `no exec` as a validated exception (vty line disabled, so an inbound ACL is not required) to avoid false-positive errors
+- Fix linevty_aclout_set.cisco-ios: treat `transport output none` and `no exec` as a validated exception (vty line disabled, so an outbound ACL is not required) to avoid false-positive errors
+- Fix lineaux/linevty aclin/aclout tests for cisco-xe: apply the same disabled-port/line validated exception (`transport input/output none`, `no exec`) as cisco-ios to avoid false-positive errors
+- Fix line_aclin/line_aclout tests for cisco-xr: treat `transport input none` / `transport output none` as a validated exception; `no exec` is intentionally omitted as it does not exist in IOS XR
+- Centralize severity weights (high=3, medium=2, low=1) as named variables in report indicators
+- Recalibrate error_avg_perdevice rating scale to realistic bands (0-1/excellent;1-5/good;5-15/average;15+/critical); previous scale flagged nearly all real assessments as critical
+
+### Added
+
+- Add security_info_compliance metric: separate indicator for informational findings (no artificial score inflation), labeled informational only without compliance rating scale
+
+### Docs
+
+- Add exact security indicators formulas to README: security_compliance, security_info_compliance, error_avg_perdevice, and error_high_ratio with precise mathematical expressions and interpretation scales
+- Add "Understanding Assessment Reports" guide: interpret four security indicators together and benchmark compliance posture
+- Add detailed "Report Breakdown Details" section: explain per-risk-level statistics and what each metric reveals about infrastructure security
+- Add NIST 800-53 coverage explanation with all 17 family names, codes, and example controls; clarify family-level vs overall coverage metrics
+- Add "Deadbeef Concept Clarification" section: explain stale configuration detection, two operating modes (include/exclude), and practical use cases
+- Add "Supported Suppliers" section: list all 15 network platforms and directory organization pattern
+- Add "Test Metadata Tags Reference": complete guide to required @tags, format rules, multi-aspect tests, and example test header
+
+### Tests
+
+- Add `global_stealthrule_set` test for checkpoint-fwcli: verify a stealth rule dropping traffic destined to the gateway itself is present in the rulebase (NIST SC-7)
+- Add `global_telnet_notset` test for checkpoint-fwcli: verify telnet management access is disabled per CIS Gaia benchmark, cleartext credentials must not be used (NIST SC-8)
+- Add `global_inactivitytimeout_set` test for checkpoint-fwcli: verify clish inactivity-timeout and WebUI session-timeout are set, warn above CIS recommended 10 minutes (NIST AC-11)
+- Add `global_remotesyslog_set` test for checkpoint-fwcli: verify a remote syslog server is configured for centralized log retention (NIST AU-4)
+- Add `global_adminlockout_set` test for checkpoint-fwcli: verify Gaia password-controls deny-on-fail lockout is enabled, disabled by default it allows unlimited brute-force attempts (NIST AC-7)
+- Add `global_adminlockout_set` test for fortinet-fortios: verify admin account lockout threshold is configured to safe value (1-10 attempts) to prevent brute-force attacks (NIST AC-7)
+- Add `global_admintimeout_set` test for fortinet-fortios: verify idle admin session timeout is configured to safe value (1-30 minutes) to prevent unattended session exploitation (NIST AC-11)
+- Add `global_httpsonly_set` test for fortinet-fortios: verify HTTPS-redirect is enabled and HTTP management is disabled to protect credentials in transit (NIST SC-8)
+- Add `global_tlsminversion_set` test for fortinet-fortios: verify SSL/TLS minimum version is set to TLSv1.2+ to prevent downgrade attacks and known vulnerabilities (NIST SC-13)
+- Add `global_trusthost_set` test for fortinet-fortios: verify every admin account restricts management access with trusthost per CIS FortiGate benchmark (NIST AC-17)
+- Add `global_passwordpolicy_set` test for fortinet-fortios: verify system password-policy is enabled with minimum-length 8 or more (NIST IA-5(1))
+- Add `global_chaindefref_set` test for iptables-fwcli: verify custom chains are defined and referenced correctly to detect dead code and invalid references
+- Add `global_defaultpolicy_set` test for iptables-fwcli: verify default drop policies are set on INPUT, FORWARD, and OUTPUT chains to enforce implicit deny
+- Add `global_duplicaterule_notset` test for iptables-fwcli: detect duplicate rules that indicate configuration drift or errors
+- Add `global_icmpratelimit_set` test for iptables-fwcli: verify ICMP echo-request is rate-limited when accepted to prevent DoS attacks
+- Add `global_synfloodprotect_set` test for iptables-fwcli: verify syn flood protection via limit/hashlimit on syn packets or SYNPROXY target (NIST SC-5)
+- Add `global_scrub_set` test for packetfilter-fwcli: verify traffic scrub normalization with fragment reassembly is configured
+- Add `global_antispoof_set` test for packetfilter-fwcli: verify antispoof rules are configured to prevent IP spoofing
+- Add `global_statelimits_set` test for packetfilter-fwcli: verify state and fragment table limits are configured to prevent exhaustion attacks
+- Add `global_urpffailed_set` test for packetfilter-fwcli: verify unicast reverse path forwarding check blocks spoofed packets
+- Add `global_sshratelimit_set` test for packetfilter-fwcli: verify ssh pass rules use max-src-conn-rate with an overload table to block brute-force sources (NIST AC-7)
+
+---
+
 ## [v3.7.0] - july 2026
 
 ### Performance
 
 - Precompute catalogs once in `check_repo`/`check_run`, reducing from 32 sub-makes to 2 (~2.8x speedup)
+
+### Added
+
+- Add `CO_AUTHOR` parameter to `gitcommit` target in `Makefile.support.git.mk` to support flexible co-author attribution in commits (usage: `gmake gitcommit FORCE=yes CO_AUTHOR="Name <email@github.com>"`)
 
 ### Fixed
 
@@ -40,6 +109,8 @@
 - Add `aaa_classpermissions_notset` test for juniper-junos: verify login classes have explicit permissions
 - Add `aaa_classdefref_set` test for juniper-junos: verify login classes are defined and referenced
 - Add `tcl_script_notset` test for cisco-ios/xe: verify TCL scripts are forbidden
+- Add `global_scrub_set` test for packetfilter-fwcli: verify traffic scrub normalization with fragment reassembly is configured
+- Add `global_antispoof_set` test for packetfilter-fwcli: verify antispoof rules are configured to prevent IP spoofing
 
 ### Build
 
