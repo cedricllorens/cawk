@@ -7,7 +7,7 @@
 
 .PHONY: \
   clean clean_archive_older clean_archive_repo clean_archive_run  \
-  clean_archive_run_audit clean_backup clean_force clean_orig  \
+  clean_archive_run_audit clean_backup clean_force clean_orig  clean_roig_info \
   clean_report_repo clean_report_run clean_report_run_audit clean_tmp
 
 
@@ -35,8 +35,18 @@ clean_backup:
 	$(ECHO) "cawk clean $(BACKUP_PATH) done ----"
 
 clean_orig:
-	find . -type f -name "*.orig" -delete 2>/dev/null || true
-	$(ECHO) "cawk clean all .orig backup files done ----"
+	@if [ "$(FORCE)" = "yes" ]; then \
+		$(ECHO) "FORCE='$(FORCE)'. Proceeding with clean_orig..."; \
+		find . -type f -name "*.orig" -delete 2>/dev/null || true; \
+		$(ECHO) "cawk clean all .orig backup files done ----"; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run clean_orig ----"; \
+		exit 0; \
+	fi
+
+clean_orig_info:
+	find . -type f -name "*.orig" || true
+	$(ECHO) "cawk clean info .orig backup files done ----"
 
 clean_report_repo:
 	$(RM) -f $(REPORT_PATH)/repo/* 2>/dev/null || true

@@ -9,7 +9,7 @@
 
 SHELL := /bin/bash
 
-include Makefile.support.mk
+include support/Makefile.support.mk
 
 # ===============================================================================
 # DOCKER CONFIGURATION
@@ -157,6 +157,7 @@ info-volume:
 build: check-system
 	@echo "cawk building $(IMAGE_FULL) ----"
 	sudo docker buildx build \
+		-f docker/Dockerfile \
 		--build-arg http_proxy=$(PROXY_URL) \
 		--build-arg https_proxy=$(PROXY_URL_SECU) \
 		--build-arg HTTP_PROXY=$(PROXY_URL) \

@@ -4,7 +4,43 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v3.9.0] - august 2026
+
+### Build
+
+- Move all `Makefile.support.*.mk` files into `support/` directory for centralized organization; update `Makefile` (18 includes), `Makefile.docker` (1 include), and `docker/Dockerfile` (18 COPY directives) to reference new paths; update CLAUDE.md and README.md documentation tables
+- Add FORCE=yes requirement to `clean_orig` target to prevent accidental deletion of .orig backup files; matches pattern of `clean_force` target
+- Move `Dockerfile` and `dockerfile_cawk_run.sh` into a new `docker/` directory; update `Makefile.docker` to build with `-f docker/Dockerfile` (build context unchanged at repo root)
+- Fix CI workflows: bump `actions/upload-artifact` v4→v5 (test.yml) and `actions/checkout` v4→v5 (release.yml) to run on Node.js 24 and clear the Node.js 20 deprecation warnings
+
+### Docs
+
+- Reorder Makefile.support.help.mk sections to follow the real audit workflow: SYNC → TESTS → EXCEPTIONS → CHECK → VIEW → EMAIL → POST AUDIT → BACKUP AND RESTORE → DATABASE → CATALOG; add the missing `CAWK POST AUDIT` section documenting `postaudit_run` and `postaudit_run_audit`
+- Reorder README top-level `# cawk ...` action sections (sync → psirt → email → postaudit → backup/restore → catalog → Makefile) to match the reordered help output; add a dedicated `# cawk postaudit audit=AUDIT_NAME assessment` section (previously undocumented as a standalone workflow step)
+- Fix README: correct NIST 800-53 family count from 17 to 16 to match report.gawk.template
+- Document previously undocumented assessment report fields (number_of_confs, number_of_checks, exceptions and NIST-scoped counters) in README
+- Document the `error stats` report section and the literal section headers of the assessment summary report in README
+- Fix README and report.gawk.template: recalibrate error_avg_perdevice thresholds from [0,0.1)/[0.1,0.6)/[0.6,1]/>1 to [0,1)/[1,5)/[5,15]/>15 for realistic reporting
+
+### Added
+
+- Add `m4_cawk_exception_prefixsuffix` macro to generate exceptions with configurable field prefixes and suffixes
+
+### Changed
+
+- Update all `repo` exception contexts to use the new macro in inactive `dnl` examples
+- Rename the NIST coverage indicator to `nist_ref_coverage` and use lowercase family names
+- Move `security_info_compliance` into a dedicated information key indicators section before NIST indicators
+- Rename NIST report variables from `official` to `reference` without changing coverage results
+- Align README indicator formulas, fallback behavior, and NIST family output examples with the report template
+
+---
+
 ## [v3.8.0] - july 2026
+
+### Build
+
+- Fix CI workflows: bump `actions/upload-artifact` v4→v5 (test.yml) and `actions/checkout` v4→v5 (release.yml) to run on Node.js 24 and clear the Node.js 20 deprecation warnings
 
 ### Fixed
 
@@ -250,7 +286,7 @@
 - Add database/db_nist800-53.txt: official NIST 800-53 controls reference
   - Format: nist_id;category;description;applicable_suppliers
   - NIST controls applied during assessment reporting phase
-  - Used to calculate nist_official_coverage percentage and compliance metrics
+  - Used to calculate nist_ref_coverage percentage and compliance metrics
 - Control coverage mapping:
   - database/db_nist800-53.txt — source of official NIST 800-53 controls (one entry per control ID)
   - Controls mapped to applicable suppliers (e.g., cm-7 applies to all network device types)

@@ -28,9 +28,9 @@ BEGIN {
 	nist_total_pass = 0;
 	nist_total_error = 0;
 	nist_total_warning = 0;
-	nist_official_total = 0;
-	nist_official_covered = 0;
-	nist_official_header_skip = 0;
+	nist_reference_total = 0;
+	nist_reference_covered = 0;
+	nist_reference_header_skip = 0;
 	nist_mappings_loaded = 0;
 }
 
@@ -515,10 +515,28 @@ if ( assessment_file ) {
 
 	if ((pass_high + pass_medium + pass_low + error_high + error_medium + error_low) > 0) {
 		key1 = sprintf("%.1f", 100 - 100 * ( (weight_high*error_high + weight_medium*error_medium + weight_low*error_low) / (weight_high*(pass_high + error_high) + weight_medium*(pass_medium + error_medium) + weight_low*(pass_low + error_low)) ) )
-		print "security_compliance (scope pass/error) = " key1 "% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+		print "security_compliance (scope pass/error) = " key1 "% ([90,100]/excellent;[60,90[/good;[40,60[/average;[0,40[/critical)";
 	} else {
-		print "security_compliance (scope pass/error) = 100% (90-100%/excellent;60-80%/good;40-60%/average;0-40%/critical)";
+		print "security_compliance (scope pass/error) = 100% ([90,100]/excellent;[60,90[/good;[40,60[/average;[0,40[/critical)";
 	}
+
+	if ( (length(files)) > 0) {
+		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
+		print "error_avg_perdevice (scope error) = " key2 " ([0,1[/excellent;[1,5[/good;[5,15]/average;>15/critical)";
+	} else {
+		print "error_avg_perdevice (scope error) = 0 ([0,1[/excellent;[1,5[/good;[5,15]/average;>15/critical)";
+	}
+
+	if ((error_high + error_medium + error_low) > 0) {
+		key_error = sprintf("%.1f", 100 * error_high / (error_high + error_medium + error_low))
+		print "error_high_ratio    (scope error) = " key_error "% ([0,10[/excellent;[10,30[/good;[30,50[/average;[50,100]/critical)";
+	} else {
+		print "error_high_ratio    (scope error) = 0% ([0,10[/excellent;[10,30[/good;[30,50[/average;[50,100]/critical)";
+	}
+
+	print "------------------------------------";
+	print "---- information key indicators ----";
+	print "------------------------------------";
 
 	if ((pass_info + error_info) > 0) {
 		key_info = sprintf("%.1f", 100 - 100 * ( error_info / (pass_info + error_info) ) )
@@ -527,47 +545,33 @@ if ( assessment_file ) {
 		print "security_info_compliance (scope pass/error) = 100% (informational only - not a compliance requirement)";
 	}
 
-	if ( (length(files)) > 0) {
-		key2 = sprintf("%.1f",  (error_high + error_medium + error_low) / length(files))
-		print "error_avg_perdevice (scope error) = " key2 " (0-1/excellent;1-5/good;5-15/average;15+/critical)";
-	} else {
-		print "error_avg_perdevice (scope error) = 0 (0-1/excellent;1-5/good;5-15/average;15+/critical)";
-	}
+	print "---------------------------------------";
+	print "---- nist sp 800-53 key indicators ----";
+	print "---------------------------------------";
 
-	if ((error_high + error_medium + error_low) > 0) {
-		key_error = sprintf("%.1f", 100 * error_high / (error_high + error_medium + error_low))
-		print "error_high_ratio    (scope error) = " key_error "% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
-	} else {
-		print "error_high_ratio    (scope error) = 0% (0-10%/excellent;10-30%/good;30-50%/average;50-100%/critical)";
-	}
-
-	print "-------------------------------------";
-	print "---- NIST 800-53 key indicators----";
-	print "-------------------------------------";
-
-	# Load NIST official benchmark controls
-	nist_official_file = (DATABASE_NIST_OFFICIAL != "") ? DATABASE_NIST_OFFICIAL : "database/db_nist800-53.txt"
-	nist_official_total = 0
-	nist_official_covered = 0
-	nist_official_header_skip = 0
+	# Load NIST benchmark controls
+	nist_reference_file = (DATABASE_NIST_REFERENCE != "") ? DATABASE_NIST_REFERENCE : "database/db_nist800-53.txt"
+	nist_reference_total = 0
+	nist_reference_covered = 0
+	nist_reference_header_skip = 0
 
 	# Initialize per-family tracking
 	delete family_total
 	delete family_covered
 
-	while ((getline nist_line < nist_official_file) > 0) {
-		if (nist_official_header_skip == 0) {
-			nist_official_header_skip = 1
+	while ((getline nist_line < nist_reference_file) > 0) {
+		if (nist_reference_header_skip == 0) {
+			nist_reference_header_skip = 1
 			continue
 		}
 		split(nist_line, nist_fields, ";")
-		nist_official_nist_id = tolower(trim(nist_fields[1]))
-		nist_official_total++
+		nist_reference_nist_id = tolower(trim(nist_fields[1]))
+		nist_reference_total++
 
 		# Extract family prefix (e.g., "ac", "au", "sc", "si" from "ac-3", "au-8", etc.)
 		family = ""
-		match(nist_official_nist_id, /^([a-z]+)/)
-		family = tolower(substr(nist_official_nist_id, RSTART, RLENGTH))
+		match(nist_reference_nist_id, /^([a-z]+)/)
+		family = tolower(substr(nist_reference_nist_id, RSTART, RLENGTH))
 
 		# Initialize family counters if not exists
 		if (!(family in family_total)) {
@@ -577,16 +581,16 @@ if ( assessment_file ) {
 		family_total[family]++
 
 		# Check if this NIST ID is covered in our tests
-		if (nist_official_nist_id in nist_pass || nist_official_nist_id in nist_fail || nist_official_nist_id in nist_warning) {
-			nist_official_covered++
+		if (nist_reference_nist_id in nist_pass || nist_reference_nist_id in nist_fail || nist_reference_nist_id in nist_warning) {
+			nist_reference_covered++
 			family_covered[family]++
 		}
 	}
-	close(nist_official_file)
+	close(nist_reference_file)
 
-	if (nist_official_total > 0) {
-		nist_official_coverage = sprintf("%.1f", 100 * nist_official_covered / nist_official_total)
-		print "nist_official_coverage = " nist_official_coverage "% (" nist_official_total " total, " nist_official_covered " covered)"
+	if (nist_reference_total > 0) {
+		nist_ref_coverage = sprintf("%.1f", 100 * nist_reference_covered / nist_reference_total)
+		print "nist_ref_coverage = " nist_ref_coverage "% (" nist_reference_total " total, " nist_reference_covered " covered)"
 	}
 
 	# Sort families and print coverage for each
@@ -598,23 +602,23 @@ if ( assessment_file ) {
 		if (total > 0) {
 			fam_coverage = sprintf("%.1f", 100 * covered / total)
 			fam_name = ""
-			if (fam == "ac") fam_name = "Access_Control"
-			else if (fam == "au") fam_name = "Audit_and_Accountability"
-			else if (fam == "at") fam_name = "Awareness_and_Training"
-			else if (fam == "ca") fam_name = "Security_Assessment_and_Authorization"
-			else if (fam == "cm") fam_name = "Configuration_Management"
-			else if (fam == "ia") fam_name = "Identification_and_Authentication"
-			else if (fam == "ir") fam_name = "Incident_Response"
-			else if (fam == "ma") fam_name = "Maintenance"
-			else if (fam == "mp") fam_name = "Media_Protection"
-			else if (fam == "pl") fam_name = "Planning"
-			else if (fam == "ps") fam_name = "Personnel_Security"
-			else if (fam == "pe") fam_name = "Physical_and_Environmental_Protection"
-			else if (fam == "ra") fam_name = "Risk_Assessment"
-			else if (fam == "sa") fam_name = "System_and_Services_Acquisition"
-			else if (fam == "sc") fam_name = "System_and_Communications_Protection"
-			else if (fam == "si") fam_name = "System_and_Information_Integrity"
-			print "nist_" fam "_" fam_name " = " fam_coverage "% (" covered "/" total ")"
+			if (fam == "ac") fam_name = "access_control"
+			else if (fam == "au") fam_name = "audit_and_accountability"
+			else if (fam == "at") fam_name = "awareness_and_training"
+			else if (fam == "ca") fam_name = "security_assessment_and_authorization"
+			else if (fam == "cm") fam_name = "configuration_management"
+			else if (fam == "ia") fam_name = "identification_and_authentication"
+			else if (fam == "ir") fam_name = "incident_response"
+			else if (fam == "ma") fam_name = "maintenance"
+			else if (fam == "mp") fam_name = "media_protection"
+			else if (fam == "pl") fam_name = "planning"
+			else if (fam == "ps") fam_name = "personnel_security"
+			else if (fam == "pe") fam_name = "physical_and_environmental_protection"
+			else if (fam == "ra") fam_name = "risk_assessment"
+			else if (fam == "sa") fam_name = "system_and_services_acquisition"
+			else if (fam == "sc") fam_name = "system_and_communications_protection"
+			else if (fam == "si") fam_name = "system_and_information_integrity"
+			print "nist_" fam_name " = " fam_coverage "% (" covered "/" total ")"
 		}
 	}
 

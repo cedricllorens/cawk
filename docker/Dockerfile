@@ -73,27 +73,27 @@ COPY support /app/cawk/support
 COPY README.md /app/cawk
 COPY Makefile /app/cawk
 COPY Makefile.docker /app/cawk
-COPY Makefile.support.mk /app/cawk
-COPY Makefile.support.archive.mk /app/cawk
-COPY Makefile.support.audit.mk /app/cawk
-COPY Makefile.support.backup.mk /app/cawk
-COPY Makefile.support.catalog.mk /app/cawk
-COPY Makefile.support.check.mk /app/cawk
-COPY Makefile.support.clean.mk /app/cawk
-COPY Makefile.support.database.mk /app/cawk
-COPY Makefile.support.email.mk /app/cawk
-COPY Makefile.support.exceptions.mk /app/cawk
-COPY Makefile.support.git.mk /app/cawk
-COPY Makefile.support.help.mk /app/cawk
-COPY Makefile.support.postaudit.mk /app/cawk
-COPY Makefile.support.role.mk /app/cawk
-COPY Makefile.support.supplier.mk /app/cawk
-COPY Makefile.support.sync.mk /app/cawk
-COPY Makefile.support.tests.mk /app/cawk
-COPY Makefile.support.view.mk /app/cawk
+COPY support/Makefile.support.mk /app/cawk
+COPY support/Makefile.support.archive.mk /app/cawk
+COPY support/Makefile.support.audit.mk /app/cawk
+COPY support/Makefile.support.backup.mk /app/cawk
+COPY support/Makefile.support.catalog.mk /app/cawk
+COPY support/Makefile.support.check.mk /app/cawk
+COPY support/Makefile.support.clean.mk /app/cawk
+COPY support/Makefile.support.database.mk /app/cawk
+COPY support/Makefile.support.email.mk /app/cawk
+COPY support/Makefile.support.exceptions.mk /app/cawk
+COPY support/Makefile.support.git.mk /app/cawk
+COPY support/Makefile.support.help.mk /app/cawk
+COPY support/Makefile.support.postaudit.mk /app/cawk
+COPY support/Makefile.support.role.mk /app/cawk
+COPY support/Makefile.support.supplier.mk /app/cawk
+COPY support/Makefile.support.sync.mk /app/cawk
+COPY support/Makefile.support.tests.mk /app/cawk
+COPY support/Makefile.support.view.mk /app/cawk
 COPY LICENSE /app/cawk
-COPY Dockerfile /app/cawk
-COPY dockerfile_cawk_run.sh /app/cawk
+COPY docker/Dockerfile /app/cawk
+COPY docker/dockerfile_cawk_run.sh /app/cawk
 
 # ----
 # Copy <persistent> data in tmp directory, dockerfile_cawk_run.sh program will link all these data

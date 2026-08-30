@@ -26,4 +26,10 @@ dnl @date: 2024-03-20
 dnl @reason: Legacy device compatibility with old SSH version
 dnl m4_cawk_exception(`legacy-router-01',`ssh_version_check',`SSHv1')
 
+dnl @exception_id: EXC-2026-001
+dnl @approver: Test Approver
+dnl @date: 2026-08-23
+dnl @reason: Validate configurable exception field prefixes and suffixes
+dnl m4_cawk_exception_prefixsuffix(`device-01',`test_name',`error message',`0',`1',`1',`0',`0',`1')
+
 dnl MACRO END ------------------------

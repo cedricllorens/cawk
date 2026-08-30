@@ -18,8 +18,8 @@ dnl @exception_id: EXC-001
 dnl @approver: Name
 dnl @date: YYYY-MM-DD
 dnl @reason: Brief business context
-m4_cawk_exception(`',`global_forbidservices_notset.6wind-linux.gawk',`')
-m4_cawk_exception(`',`test_test_notset.6wind-linux.gawk',`')
+dnl m4_cawk_exception_prefixsuffix(`',`global_forbidservices_notset.6wind-linux.gawk',`',`1',`1',`1',`1',`1',`1')
+dnl m4_cawk_exception_prefixsuffix(`',`test_test_notset.6wind-linux.gawk',`',`1',`1',`1',`1',`1',`1')
 
 dnl @exception_id: EXC-002
 dnl @approver: Name
@@ -27,6 +27,6 @@ dnl @date: YYYY-MM-DD
 dnl @reason: Brief business context
 dnl m4_cawk_exception(`device',`test_name',`pattern')
 dnl m4_cawk_exception(`',`test1_test1_notset.6wind-linux.gawk',`')
-m4_cawk_exception(`',`test2_test2_notset.6wind-linux.gawk',`')
+dnl m4_cawk_exception_prefixsuffix(`',`test2_test2_notset.6wind-linux.gawk',`',`1',`1',`1',`1',`1',`1')
 
 dnl MACRO END ------------------------

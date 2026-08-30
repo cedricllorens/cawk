@@ -357,14 +357,16 @@ security_compliance = 100 - 100 × [
 ]
 ```
 **Where:** weight_high = 3, weight_medium = 2, weight_low = 1  
+If there are no pass/error findings, the report returns `100%`.
 **Range:** 0% to 100% (100% is best)  
-**Interpretation:** 90-100% = excellent, 60-80% = good, 40-60% = average, 0-40% = critical
+**Interpretation:** [90,100] = excellent, [60,90) = good, [40,60) = average, [0,40) = critical
 
 ## 2. Security Info Compliance (scope pass/error - informational only)
 **Formula:**
 ```
 security_info_compliance = 100 - 100 × [error_info / (pass_info + error_info)]
 ```
+If there are no informational pass/error findings, the report returns `100%`.
 **Range:** 0% to 100% (100% is best)  
 **Interpretation:** Informational only - not a compliance requirement
 
@@ -373,14 +375,16 @@ security_info_compliance = 100 - 100 × [error_info / (pass_info + error_info)]
 ```
 error_avg_perdevice = (error_high + error_medium + error_low) / number_of_devices
 ```
+The report uses the number of assessed configuration files as `number_of_devices`.
 **Range:** 0 and upward (0 is best)  
-**Interpretation:** 0-1 = excellent, 1-5 = good, 5-15 = average, 15+ = critical
+**Interpretation:** [0,1) = excellent, [1,5) = good, [5,15] = average, >15 = critical
 
 ## 4. High Risk Error Ratio (scope error)
 **Formula:**
 ```
 error_high_ratio = 100 × [error_high / (error_high + error_medium + error_low)]
 ```
+If there are no high/medium/low errors, the report returns `0%`.
 **Range:** 0% to 100% (0% is best)  
 **Interpretation:** 0-10% = excellent, 10-30% = good, 30-50% = average, 50-100% = critical
 
@@ -392,11 +396,11 @@ The four security indicators work together to provide a complete security postur
 
 - **Use error_high_ratio to prioritize remediation** — If this ratio is high (>30%), your most critical issues dominate the problem set. Focus resources on high-severity findings first.
 
-- **Use error_avg_perdevice to track infrastructure scale impact** — This tells you how many errors each device has on average. Low values (0-1) indicate isolated issues; high values (15+) indicate systemic configuration problems across many devices.
+- **Use error_avg_perdevice to track infrastructure scale impact** — This tells you how many errors each device has on average. Excellent (<1 error/device) means isolated issues; good (1-5) means manageable scope; average (5-15) means significant issues; critical (>15) means systemic problems across configurations.
 
 - **Use security_info_compliance separately** — Informational findings (info risk_level) are excluded from your compliance score. Track them separately; they should not inflate or deflate your compliance metrics. Use them for trend analysis and context.
 
-**Example interpretation:** If security_compliance=72%, error_high_ratio=18%, error_avg_perdevice=2.3, this indicates good compliance with mostly medium/low issues distributed across devices — no systemic critical problem, so incremental remediation is effective.
+**Example interpretation:** If security_compliance=72%, error_high_ratio=18%, error_avg_perdevice=3.2, this indicates good compliance with mostly medium/low issues at a manageable rate (3-4 errors per device) — no systemic critical problem, so incremental remediation is effective.
 
 ## Report Breakdown Details
 
@@ -406,6 +410,16 @@ Assessment reports include detailed breakdowns by risk level:
 - `number_of_error_high / number_of_error_medium / number_of_error_low / number_of_error_info` — Failing checks by severity
 - `number_of_warning_high / number_of_warning_medium / ...` — Warnings by severity
 - `number_of_psirt_high / number_of_psirt_medium / ...` — PSIRT findings by severity
+
+**Other report fields:**
+
+- `number_of_confs` — number of distinct configuration files assessed
+- `number_of_confs_deadbeef` — number of configuration files flagged as deadbeef (stale)
+- `number_of_checks` — total checks run across assessment, exceptions, and deadbeef files
+- `number_of_checks_exceptions` — total checks run against the exceptions file
+- `number_of_pass_exceptions / number_of_error_exception / number_of_warning_exception / number_of_psirt_exception` — pass/error/warning/psirt counts from the exceptions file
+- `number_of_nist_pass / number_of_nist_error / number_of_nist_warning` — pass/error/warning counts restricted to checks that have a NIST 800-53 mapping
+- `number_of_nist_psirt` — always reported as `0 (0.0%)`; PSIRT findings are not currently mapped to NIST controls
 
 **What this tells you:**
 - High pass counts indicate strong security posture in those areas
@@ -421,11 +435,11 @@ summary reports. these indicators track compliance against recognized security s
 ## NIST 800-53 Coverage
 
 **Overall Coverage Metric:**
-- `nist_official_coverage` = (official NIST controls with mapped tests / total official NIST controls) × 100%
-- Displayed in summary reports with total and covered count (e.g., "nist_official_coverage = 85.3% (201 total, 171 covered)")
+- `nist_ref_coverage` = (reference NIST controls with mapped tests / total reference NIST controls) × 100%
+- Displayed in summary reports with total and covered count (e.g., "nist_ref_coverage = 85.3% (201 total, 171 covered)")
 
 **Family-Level Coverage:**
-cawk tracks coverage by the 17 NIST 800-53 control families, each representing a security domain:
+cawk tracks coverage by the 16 NIST 800-53 control families, each representing a security domain:
 
 | Family Code | Family Name | Examples | Coverage Shows |
 |-------------|------------|----------|-----------------|
@@ -448,9 +462,9 @@ cawk tracks coverage by the 17 NIST 800-53 control families, each representing a
 
 **Report Example:**
 ```
-nist_ac_Access_Control = 92.3% (13/14)
-nist_cm_Configuration_Management = 87.5% (7/8)
-nist_sc_System_and_Communications_Protection = 100% (6/6)
+nist_access_control = 92.3% (13/14)
+nist_configuration_management = 87.5% (7/8)
+nist_system_and_communications_protection = 100% (6/6)
 ```
 
 **What This Means:**
@@ -461,6 +475,36 @@ nist_sc_System_and_Communications_Protection = 100% (6/6)
 
 **Integration:**
 Compliance framework indicators are automatically calculated during the assessment reporting phase and included in summary reports (.all.*.txt, .all.*.csv, .all.*.json) via [report.gawk.template](common/report.gawk.template)
+
+## Error Stats Section
+
+Assessment summary reports end with an `---- error stats ----` block listing every failing test, grouped by
+risk level (high, medium, low, info) and sorted by descending error count within each group:
+
+```
+---------------------
+---- error stats ----
+---------------------
+number_of_error_high = 12
+	aaa_user_notset.cisco-ios.gawk (ref nist ia-2 identification and authentication) = 8
+	acl_defref_set.cisco-ios.gawk = 4
+number_of_error_medium = 3
+	...
+```
+
+Each entry shows the `test_name`, its NIST 800-53 reference when the test is mapped (`ref nist <id> <control>`),
+and the number of configuration files that failed that test. This helps prioritize remediation on the
+tests causing the most findings.
+
+## Assessment Report Structure
+
+The full text summary report is organized into these literal sections, in order:
+
+- `---- assessment stats ----` — check counts, pass/error/warning/psirt totals and percentages (overall, NIST-scoped, and exceptions-scoped)
+- `---- security key indicators ----` — `security_compliance`, `error_avg_perdevice`, `error_high_ratio`
+- `---- information key indicators ----` — `security_info_compliance`
+- `---- nist sp 800-53 key indicators ----` — `nist_ref_coverage` and per-family coverage
+- `---- error stats ----` — failing tests ranked by count, see [Error Stats Section](#error-stats-section)
 
 # cawk databases
 
@@ -527,6 +571,12 @@ cawk postaudit database format follows the same structure where fields are separ
 
 	- gmake database_postaudit_(add,del) audit=AUDIT_NAME :
 	  add/delete an entry in the cawk postaudit database
+
+	- gmake postaudit_run audit=AUDIT_NAME :
+	  run database/database_postaudit.script for audit=AUDIT_NAME (skipped if the script does not exist)
+
+	- gmake postaudit_run_audit :
+	  run database/database_postaudit.script for all audit=AUDIT_NAMEs in the cawk postaudit database
 
 ## NIST 800-53 compliance database
 
@@ -606,29 +656,6 @@ from all test source files. Format: semicolon-separated fields (9 fields)
 		- ensures database stays synchronized with test and audit lifecycle
 		- used for generating catalog displays and NIST coverage reports
 
-# cawk catalog targets
-
-cawk provides catalog targets to build and display comprehensive test metadata catalogs:
-
-	- gmake catalog_build : rebuild all catalog databases from test and exception metadata
-	  - database/db_info.txt : test information catalog (compiled from all .gawk source files)
-	  - database/db_exception.txt : exception catalog (compiled from all .m4 files)
-	  - database/db_nist_mappings.json : NIST 800-53 control mappings (compiled from @nist800-53_ref metadata)
-
-	- gmake catalog_repo : display catalog information for repo assessment
-
-	- gmake catalog_run [audit=AUDIT_NAME] : display catalog information for run or specific audit
-
-	- gmake catalog_exceptions_repo : display exception catalog for repo (organized by supplier)
-	  gmake catalog_exceptions_run [audit=AUDIT_NAME] : display exception catalog for run or specific audit
-
-	- gmake nist_coverage_official : display official NIST 800-53 controls with coverage metrics
-	  gmake nist_coverage_repo : calculate coverage percentage for repo assessment
-	  gmake nist_coverage_run [audit=AUDIT_NAME] : calculate coverage for run or specific audit
-
-	note : catalogs are automatically built during create_audit and delete_audit workflows to ensure
-	consistency with the audit lifecycle
-
 # cawk sync audit=AUDIT_NAME assessment
 
 cawk allows to sync confs only for audit=AUDIT_NAME assessments. the way of working is:
@@ -673,17 +700,6 @@ note : we do recommend that the central confs repository is owned by a different
 the cawk package in order to enforce that the cawk user can only read the central confs
 repository.
 
-# cawk email audit=AUDIT_NAME assessment
-
-cawk allows to email audit=AUDIT_NAME assessments in zip file format. the way of working is:
-
-	- use the gmake database_email_(add,del,update) targets to update the cawk email database
-	  for audit=AUDIT_NAME assessment
-
-	- gmake email_send audit=AUDIT_NAME : send email by refering to cawk email database 	
-
-	- gmake email_send_audit (email all the audit=AUDIT_NAMEs)
-
 # cawk psirt tests
 
 compared to standard tests, psirt tests are located in tests.<os>.psirt directories and have 
@@ -696,43 +712,30 @@ compared to standard tests, psirt tests are located in tests.<os>.psirt director
 	- BLOCK(s) pattern matching 
 	- Build a combined logic to detect vulnerable devices 
 
-# cawk Makefile
+# cawk email audit=AUDIT_NAME assessment
 
-Starting with v3.7.0, the central Makefile has been split into several modular
-Makefile.support.*.mk files to enhance maintainability and performance.
+cawk allows to email audit=AUDIT_NAME assessments in zip file format. the way of working is:
 
-Each file is self-contained with its own `.PHONY` declarations and targets:
+	- use the gmake database_email_(add,del,update) targets to update the cawk email database
+	  for audit=AUDIT_NAME assessment
 
-| File | Purpose |
-|------|---------|
-| Makefile | Main entry point, includes all support files |
-| Makefile.support.mk | Core variables, paths, options, compilation rules |
-| Makefile.support.help.mk | Help and information targets |
-| Makefile.support.audit.mk | Audit creation/deletion/management |
-| Makefile.support.database.mk | Database entry management |
-| Makefile.support.postaudit.mk | Post-audit execution |
-| Makefile.support.email.mk | Email notification |
-| Makefile.support.backup.mk | Backup, restore, migrate |
-| Makefile.support.sync.mk | Config synchronization |
-| Makefile.support.tests.mk | Test compilation and validation |
-| Makefile.support.view.mk | Report viewing (view_repo, view_run) |
-| Makefile.support.archive.mk | Archive management |
-| Makefile.support.clean.mk | Cleanup targets |
-| Makefile.support.catalog.mk | Test catalog and NIST mapping |
-| Makefile.support.exceptions.mk | Exception rule management |
-| Makefile.support.check.mk | Assessment and validation (check_repo, check_run) |
-| Makefile.support.git.mk | Git and CI/CD integration |
+	- gmake email_send audit=AUDIT_NAME : send email by refering to cawk email database 	
 
-# cawk Makefile.support.mk
+	- gmake email_send_audit (email all the audit=AUDIT_NAMEs)
 
-You may thanks to the file Makefile.support.mk control all the cawk options like PSIRT,
-DEADBEEF, etc. Please note that all these options can be called with gmake like:
-gmake check_repo DEADBEEF=yes PSIRT=yes ....
+# cawk postaudit audit=AUDIT_NAME assessment
 
-Note on PSIRT (assessment mode):
-	- PSIRT=no (default): run standard tests + psirt tests
-	- PSIRT=yes        : run ONLY psirt tests (standard tests are skipped)
-	psirt tests are always compiled; this flag only selects which tests run at assessment time.
+cawk allows to run a post-audit script only for audit=AUDIT_NAME assessments, for example to
+generate helpdesk tickets once a report has been reviewed/emailed. the way of working is:
+
+	- use the gmake database_postaudit_(add,del) targets to register audit=AUDIT_NAME in the
+	  cawk postaudit database
+
+	- gmake postaudit_run audit=AUDIT_NAME : run database/database_postaudit.script for
+	  audit=AUDIT_NAME (skipped if the script does not exist)
+
+	- gmake postaudit_run_audit (run the postaudit script for all audit=AUDIT_NAMEs registered
+	  in the cawk postaudit database)
 
 # cawk backup/restore audit=AUDIT_NAME assessment
 
@@ -758,6 +761,67 @@ you can backup cawk database and all your audit=AUDIT_NAME assessments in one co
 copy your backup in the cawk backup directory, execute: 
  - gmake restore_run_audit file=backup_path_file 
 as such, all the assessments are restored.
+
+# cawk catalog targets
+
+cawk provides catalog targets to build and display comprehensive test metadata catalogs:
+
+	- gmake catalog_build : rebuild all catalog databases from test and exception metadata
+	  - database/db_info.txt : test information catalog (compiled from all .gawk source files)
+	  - database/db_exception.txt : exception catalog (compiled from all .m4 files)
+	  - database/db_nist_mappings.json : NIST 800-53 control mappings (compiled from @nist800-53_ref metadata)
+
+	- gmake catalog_repo : display catalog information for repo assessment
+
+	- gmake catalog_run [audit=AUDIT_NAME] : display catalog information for run or specific audit
+
+	- gmake catalog_exceptions_repo : display exception catalog for repo (organized by supplier)
+	  gmake catalog_exceptions_run [audit=AUDIT_NAME] : display exception catalog for run or specific audit
+
+	- gmake nist_coverage_official : display official NIST 800-53 controls with coverage metrics
+	  gmake nist_coverage_repo : calculate coverage percentage for repo assessment
+	  gmake nist_coverage_run [audit=AUDIT_NAME] : calculate coverage for run or specific audit
+
+	note : catalogs are automatically built during create_audit and delete_audit workflows to ensure
+	consistency with the audit lifecycle
+
+# cawk Makefile
+
+Starting with v3.7.0, the central Makefile has been split into several modular
+Makefile.support.*.mk files to enhance maintainability and performance.
+
+Each file is self-contained with its own `.PHONY` declarations and targets:
+
+| File | Purpose |
+|------|---------|
+| Makefile | Main entry point, includes all support files |
+| support/Makefile.support.mk | Core variables, paths, options, compilation rules |
+| support/Makefile.support.help.mk | Help and information targets |
+| support/Makefile.support.audit.mk | Audit creation/deletion/management |
+| support/Makefile.support.database.mk | Database entry management |
+| support/Makefile.support.postaudit.mk | Post-audit execution |
+| support/Makefile.support.email.mk | Email notification |
+| support/Makefile.support.backup.mk | Backup, restore, migrate |
+| support/Makefile.support.sync.mk | Config synchronization |
+| support/Makefile.support.tests.mk | Test compilation and validation |
+| support/Makefile.support.view.mk | Report viewing (view_repo, view_run) |
+| support/Makefile.support.archive.mk | Archive management |
+| support/Makefile.support.clean.mk | Cleanup targets |
+| support/Makefile.support.catalog.mk | Test catalog and NIST mapping |
+| support/Makefile.support.exceptions.mk | Exception rule management |
+| support/Makefile.support.check.mk | Assessment and validation (check_repo, check_run) |
+| support/Makefile.support.git.mk | Git and CI/CD integration |
+
+# cawk support/Makefile.support.mk
+
+You may thanks to the file support/Makefile.support.mk control all the cawk options like PSIRT,
+DEADBEEF, etc. Please note that all these options can be called with gmake like:
+gmake check_repo DEADBEEF=yes PSIRT=yes ....
+
+Note on PSIRT (assessment mode):
+	- PSIRT=no (default): run standard tests + psirt tests
+	- PSIRT=yes        : run ONLY psirt tests (standard tests are skipped)
+	psirt tests are always compiled; this flag only selects which tests run at assessment time.
 
 # cawk version migration
 
@@ -803,8 +867,8 @@ first of all, you need to install:
 - buildx
 
 the cawk docker files:
-- Dockerfile : allow to build a cawk image
-- dockerfile_cawk_run.sh : script runned when running the cawk container
+- docker/Dockerfile : allow to build a cawk image
+- docker/dockerfile_cawk_run.sh : script runned when running the cawk container
 - Makefile.docker : contains all the commands to manage cawk container and persistent data storage
 
 to know all the available commands:

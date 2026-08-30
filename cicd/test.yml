@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload check output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: check-output
           path: check_output.txt

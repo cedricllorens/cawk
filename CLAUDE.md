@@ -210,26 +210,26 @@ The cawk build system has been modularized into focused Makefile support files f
 | File | Purpose |
 |------|---------|
 | `Makefile` | Main entry point; includes all support files |
-| `Makefile.support.mk` | Core variables, paths, options, and compilation rules |
-| `Makefile.support.help.mk` | Help and information targets |
-| `Makefile.support.audit.mk` | Audit creation/deletion/management targets |
-| `Makefile.support.database.mk` | Database entry management targets |
-| `Makefile.support.postaudit.mk` | Post-audit execution targets |
-| `Makefile.support.email.mk` | Email notification targets |
-| `Makefile.support.backup.mk` | Backup, restore, and migrate targets |
-| `Makefile.support.sync.mk` | Config synchronization targets |
-| `Makefile.support.tests.mk` | Test compilation and validation targets |
-| `Makefile.support.view.mk` | Report viewing targets (view_repo, view_run, errors) |
-| `Makefile.support.archive.mk` | Archive management targets |
-| `Makefile.support.clean.mk` | Cleanup targets (reports, backups, temporary files) |
-| `Makefile.support.catalog.mk` | Test catalog and NIST mapping targets |
-| `Makefile.support.exceptions.mk` | Exception rule management targets |
-| `Makefile.support.check.mk` | Assessment and validation targets (repo, run, audit) |
-| `Makefile.support.git.mk` | Git-related targets (commit, push, CI/CD integration) |
+| `support/Makefile.support.mk` | Core variables, paths, options, and compilation rules |
+| `support/Makefile.support.help.mk` | Help and information targets |
+| `support/Makefile.support.audit.mk` | Audit creation/deletion/management targets |
+| `support/Makefile.support.database.mk` | Database entry management targets |
+| `support/Makefile.support.postaudit.mk` | Post-audit execution targets |
+| `support/Makefile.support.email.mk` | Email notification targets |
+| `support/Makefile.support.backup.mk` | Backup, restore, and migrate targets |
+| `support/Makefile.support.sync.mk` | Config synchronization targets |
+| `support/Makefile.support.tests.mk` | Test compilation and validation targets |
+| `support/Makefile.support.view.mk` | Report viewing targets (view_repo, view_run, errors) |
+| `support/Makefile.support.archive.mk` | Archive management targets |
+| `support/Makefile.support.clean.mk` | Cleanup targets (reports, backups, temporary files) |
+| `support/Makefile.support.catalog.mk` | Test catalog and NIST mapping targets |
+| `support/Makefile.support.exceptions.mk` | Exception rule management targets |
+| `support/Makefile.support.check.mk` | Assessment and validation targets (repo, run, audit) |
+| `support/Makefile.support.git.mk` | Git-related targets (commit, push, CI/CD integration) |
 
-### Key Configuration: Makefile.support.mk
+### Key Configuration: support/Makefile.support.mk
 
-Global options that affect all assessments (defined in `Makefile.support.mk`):
+Global options that affect all assessments (defined in `support/Makefile.support.mk`):
 
 | Option | Values | Default | Purpose |
 |--------|--------|---------|---------|

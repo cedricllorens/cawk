@@ -19,5 +19,6 @@ dnl @approver: Name
 dnl @date: YYYY-MM-DD
 dnl @reason: Brief business context
 dnl m4_cawk_exception(`device',`test_name',`pattern')
+dnl m4_cawk_exception_prefixsuffix(`device',`test_name',`pattern',`1',`1',`1',`1',`1',`1')
 
 dnl MACRO END ------------------------

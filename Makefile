@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 
-include Makefile.support.mk
+include support/Makefile.support.mk
 
 
 .PHONY: all
@@ -23,7 +23,7 @@ all: help
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.help.mk
+include support/Makefile.support.help.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ include Makefile.support.help.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.role.mk
+include support/Makefile.support.role.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ include Makefile.support.role.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.audit.mk
+include support/Makefile.support.audit.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ include Makefile.support.audit.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.database.mk
+include support/Makefile.support.database.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ include Makefile.support.database.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.sync.mk
+include support/Makefile.support.sync.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ include Makefile.support.sync.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.postaudit.mk
+include support/Makefile.support.postaudit.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ include Makefile.support.postaudit.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.email.mk
+include support/Makefile.support.email.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ include Makefile.support.email.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.backup.mk
+include support/Makefile.support.backup.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ include Makefile.support.backup.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.supplier.mk
+include support/Makefile.support.supplier.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ include Makefile.support.supplier.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.tests.mk
+include support/Makefile.support.tests.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -678,7 +678,7 @@ check_run_audit:
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.view.mk
+include support/Makefile.support.view.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -690,7 +690,7 @@ include Makefile.support.view.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.archive.mk
+include support/Makefile.support.archive.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -702,7 +702,7 @@ include Makefile.support.archive.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.clean.mk
+include support/Makefile.support.clean.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -714,7 +714,7 @@ include Makefile.support.clean.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.catalog.mk
+include support/Makefile.support.catalog.mk
 
 # -------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------
@@ -724,7 +724,7 @@ include Makefile.support.catalog.mk
 # -------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------
 
-include Makefile.support.exceptions.mk
+include support/Makefile.support.exceptions.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -736,7 +736,7 @@ include Makefile.support.exceptions.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.git.mk
+include support/Makefile.support.git.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -748,4 +748,4 @@ include Makefile.support.git.mk
 # -------------------------------------------------------------------------------------------
 
 
-include Makefile.support.check.mk
+include support/Makefile.support.check.mk
