@@ -13,7 +13,7 @@
 # @purpose : check that user class is implemented in user block
 # @description : all users must have an explicitly assigned class to define role-based access control and enforce least-privilege
 # @actions : assign appropriate class to each user (admin, operator, viewer, etc.) to enforce role-based access control
-# @nist800-53_ref : AC-2 | Access Control | Account Management | Ensure user accounts have defined roles and permissions
+# @nist800-53_ref : AC-2 | Access Control | Ensure account management is implemented
 # @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------

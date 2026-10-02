@@ -10,9 +10,9 @@
 # @test_name : global_httpsonly_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check that <https-redirect> is enabled and HTTP management is disabled
-# @description : HTTP management interface transmits credentials in clear text; HTTPS-only access prevents credential interception and Man-in-the-Middle attacks
+# @description : HTTP management interface transmits credentials in clear text, HTTPS-only access prevents credential interception and Man-in-the-Middle attacks
 # @actions : enable admin-https-redirect and disable HTTP management access to enforce encrypted administrative sessions (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality is protected
+# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality and integrity is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

@@ -12,7 +12,7 @@
 # @purpose : check that <rule log> is set globally
 # @description : missing logging on firewall rules prevents tracking of allowed and denied traffic for security monitoring
 # @actions : add logging targets to firewall rules to capture traffic events (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
+# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
 # @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------

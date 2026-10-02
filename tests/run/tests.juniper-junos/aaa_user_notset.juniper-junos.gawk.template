@@ -24,6 +24,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_login = 0;
 	pass = 1;
 	block_system = 0;
 }

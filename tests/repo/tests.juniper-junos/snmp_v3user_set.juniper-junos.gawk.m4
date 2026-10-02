@@ -13,7 +13,7 @@
 # @purpose : check if <snmp v3 user> is set
 # @description : missing snmp v3 user configuration means authenticated snmp access is not configured
 # @actions : configure snmp v3 user with authentication and privacy protocols (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

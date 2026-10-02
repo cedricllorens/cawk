@@ -45,7 +45,7 @@ BEGINFILE {
 	nextfile;
 }
 
-/^SED_BK_JUNI%}$/ && block_services == 1 {
+/^%SED_BK_JUNI%}$/ && block_services == 1 {
 	block_services = 0;
 	next;
 }

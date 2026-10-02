@@ -42,7 +42,7 @@ dnl ----
 
 dnl ----
 
-`/%SED_BK_JUNI%[^ ]+ {/',`',
+`/%SED_BK_JUNI%[^ ]+ {/ && !/inactive/',`',
 `/^%SED_BK_JUNI%}$/',`',
 
 dnl ----
@@ -59,14 +59,9 @@ dnl ----
 	}
 ',
 
-dnl ----
+dnl ---- proxy-arp is a unit-level statement
 
-`/%SED_BK_JUNI%{3}family inet.* {/',`',
-`/^%SED_BK_JUNI%{3}}$/',`',
-
-dnl ----
-
-`/^%SED_BK_JUNI%{4}proxyarp/',`proxyarp = 1;',
+`/^%SED_BK_JUNI%{3}proxy-arp/',`proxyarp = 1;',
 `', `'
 
 )

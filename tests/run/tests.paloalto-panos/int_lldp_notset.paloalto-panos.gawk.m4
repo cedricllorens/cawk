@@ -13,7 +13,7 @@
 # @purpose : check if an interface has no <lldp>
 # @description : lldp enabled on interfaces discloses topology information to adjacent devices and may be exploited
 # @actions : disable lldp on all interfaces where it is not required (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------

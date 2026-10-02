@@ -10,9 +10,9 @@
 # @test_name : global_telnet_notset.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <net-access telnet> is not enabled
-# @description : telnet transmits administrative credentials in clear text and must not be used to manage the gateway; CIS Gaia benchmark requires telnet access to be disabled
+# @description : telnet transmits administrative credentials in clear text and must not be used to manage the gateway, CIS Gaia benchmark requires telnet access to be disabled
 # @actions : disable telnet with set net-access telnet off and use ssh for management access (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality is protected
+# @nist800-53_ref : SC-8 | System and Communications Protection | Ensure transmission confidentiality and integrity is configured
 # @risk_level : high | low
 # @authors : cedric llorens
 # ------------------------------------------------------------

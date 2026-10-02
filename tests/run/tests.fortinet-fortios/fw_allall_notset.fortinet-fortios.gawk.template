@@ -24,10 +24,13 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_firewall = 0;
+	block_edit = 0;
 	pass = 1;
 	src = 0;
 	dst = 0;
 	service = 0;
+	accept = 0;
 }
 
 /^config firewall policy/ {
@@ -40,6 +43,7 @@ BEGINFILE {
 	src = 0;
 	dst = 0;
 	service = 0;
+	accept = 0;
 	next;
 }
 
@@ -59,14 +63,16 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%{2}set action accept/ && block_edit == 1 {
-	if ( src && dst && service ) {
-		print_err("fw_allall_notset.fortinet-fortios.gawk","firewall has rule src=all dst=all service=all action=accept",FNR,"high","error");
-		pass = 0;
-	}
+	accept = 1;
 	next;
 }
 
+# FortiOS writes <set action> before <set service>: judge the policy once complete
 /^%SED_BK_FORTI%next$/ && block_edit == 1 {
+	if ( src && dst && service && accept ) {
+		print_err("fw_allall_notset.fortinet-fortios.gawk","firewall has rule src=all dst=all service=all action=accept",FNR,"high","error");
+		pass = 0;
+	}
 	block_edit = 0;
 	next;
 }

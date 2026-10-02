@@ -13,7 +13,7 @@
 # @purpose : check if an interface has no <ip icmp-unreachable>
 # @description : icmp unreachables enabled on interfaces may reveal network topology information to potential attackers
 # @actions : disable ip icmp-unreachable on all interfaces (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
 # @risk_level : high
 # @authors : cedric llorens
 # -------------------------------------------------------------------

@@ -1,0 +1,68 @@
+cawk_host="203.0.113.7"
+
+iptables -A INPUT -i em1 -p tcp -d 192.0.2.1 --dport 22 -m comment --comment "s01-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em1 -p tcp -d 192.0.2.1 --dport 22 -m comment --comment "s01-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em2 -p tcp -d 192.0.2.1 --dport 22 -m comment --comment "s02-exp-pass" -j ACCEPT
+iptables -A INPUT -i em2 -p tcp -d 192.0.2.1 --dport 80 -m comment --comment "s02-exp-pass" -j DROP
+
+iptables -A INPUT -i em3 -p tcp --dport 22 -m comment --comment "s03-exp-pass" -j ACCEPT
+iptables -A OUTPUT -o em3 -p tcp --dport 22 -m comment --comment "s03-exp-pass" -j DROP
+
+iptables -A INPUT -i em4 -p tcp --dport 22 -m comment --comment "s04-exp-pass" -j ACCEPT
+iptables -A INPUT -i em5 -p tcp --dport 22 -m comment --comment "s04-exp-pass" -j DROP
+
+iptables -A INPUT -i em6 -p tcp --dport 1000:2000 -m comment --comment "s05-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em6 -p tcp --dport 1500 -m comment --comment "s05-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em7 -p tcp -m multiport --dports 80,443 -m comment --comment "s06-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em7 -p tcp --dport 443 -m comment --comment "s06-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em8 -p udp --dport 53 -m comment --comment "s07-exp-pass" -j ACCEPT
+iptables -A INPUT -i em8 -p tcp --dport 53 -m comment --comment "s07-exp-pass" -j DROP
+
+iptables -A INPUT -i em9 -m comment --comment "s08-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em9 -p tcp --dport 22 -m comment --comment "s08-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em10 -p tcp -s 198.51.100.1,198.51.100.2 --dport 22 -m comment --comment "s09-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em10 -p tcp -s 198.51.100.2 --dport 22 -m comment --comment "s09-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em11 -p tcp -s $cawk_host --dport 443 -m comment --comment "s10-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em11 -p tcp -s 203.0.113.0/24 --dport 443 -m comment --comment "s10-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em12 -p icmp --icmp-type echo-request -m comment --comment "s11-exp-pass" -j ACCEPT
+iptables -A INPUT -i em12 -p icmp --icmp-type echo-reply -m comment --comment "s11-exp-pass" -j DROP
+
+iptables -A INPUT -i em13 -p icmp --icmp-type echo-request -m comment --comment "s12-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em13 -p icmp --icmp-type echo-request -m comment --comment "s12-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em14 -p icmp --icmp-type host-unreachable -m comment --comment "s13-exp-pass" -j ACCEPT
+iptables -A INPUT -i em14 -p icmp --icmp-type port-unreachable -m comment --comment "s13-exp-pass" -j DROP
+
+iptables -A INPUT -i em15 -p tcp \
+    --dport 22 -m comment --comment "s14-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em15 -p tcp --dport 22 -m comment --comment "s14-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em16 -p tcp -s 10.0.0.0/8 --dport 22 -m comment --comment "s15-exp-1-redundant" -j ACCEPT
+iptables -A INPUT -i em16 -p tcp -s 10.1.1.1 --dport 22 -m comment --comment "s15-exp-1-redundant" -j ACCEPT
+
+iptables -A INPUT -i em17 -p tcp -s 10.0.0.0/8 --dport 22 -m comment --comment "s16-exp-pass" -j ACCEPT
+iptables -A INPUT -i em17 -p tcp -s 192.168.0.0/16 --dport 22 -m comment --comment "s16-exp-pass" -j DROP
+
+iptables -A INPUT -i em18 -p tcp -d 192.0.2.20 --dport 22 -m comment --comment "s17-exp-pass" -j ACCEPT
+iptables -A INPUT -i em18 -p tcp -d 192.0.2.21 --dport 22 -m comment --comment "s17-exp-pass" -j DROP
+
+iptables -A INPUT -i em19 -p tcp --dport 22 -m comment --comment "s18-exp-pass" -j ACCEPT
+iptables -A INPUT -i em19 -p tcp ! -s 10.0.0.0/8 --dport 22 -m comment --comment "s18-exp-pass" -j DROP
+
+iptables -A INPUT -i em20 -p tcp --dport 22 -m comment --comment "s19-exp-pass" -j ACCEPT
+iptables -A INPUT -i em20 -p tcp --dport 22 -m conntrack --ctstate INVALID -m comment --comment "s19-exp-pass" -j DROP
+
+iptables -A INPUT -i em21 -p tcp --dport 22 -m comment --comment "s20-exp-pass" -j ACCEPT
+iptables -A INPUT -i em21 -p tcp --dport 22 -m comment --comment "s20-exp-pass" -j LOG --log-prefix "s20: "
+
+iptables -A INPUT -i em22 -p tcp --sport 1024:65535 --dport 22 -m comment --comment "s21-exp-pass" -j ACCEPT
+iptables -A INPUT -i em22 -p tcp --sport 80 --dport 22 -m comment --comment "s21-exp-pass" -j DROP
+
+iptables -A INPUT -i em23 -p tcp --dport ssh -m comment --comment "s22-exp-1-inconsistent" -j ACCEPT
+iptables -A INPUT -i em23 -p tcp --dport 22 -m comment --comment "s22-exp-1-inconsistent" -j DROP

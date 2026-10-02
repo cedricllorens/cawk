@@ -42,7 +42,7 @@ dnl ----
 
 dnl ----
 
-`/%SED_BK_JUNI%[^ ]+ {/',`',
+`/%SED_BK_JUNI%[^ ]+ {/ && !/inactive/',`',
 `/^%SED_BK_JUNI%}$/',`',
 
 dnl ----
@@ -54,7 +54,7 @@ dnl ----
 ',
 `/^%SED_BK_JUNI%{2}}$/',`
 	if ( directedbroadcast == 1 ) {
-		print_err("int_directedbroadcast_notset.juniper-junos.gawk",interface" <directed-broadcast> is set",interfaceno,"high","error");
+		print_err("int_directedbroadcast_notset.juniper-junos.gawk",interface" <targeted-broadcast> is set",interfaceno,"high","error");
 		pass = 0;
 	}
 ',
@@ -66,7 +66,7 @@ dnl ----
 
 dnl ----
 
-`/^%SED_BK_JUNI%{4}directed-broadcast/',`directedbroadcast = 1;',
+`/^%SED_BK_JUNI%{4}targeted-broadcast/',`directedbroadcast = 1;',
 `', `'
 
 )
@@ -74,7 +74,7 @@ dnl ----
 dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( pass ) print_err("int_directedbroadcast_notset.juniper-junos.gawk","interface <directed-broadcast> is not set",0,"high","pass");
+	if ( pass ) print_err("int_directedbroadcast_notset.juniper-junos.gawk","interface <targeted-broadcast> is not set",0,"high","pass");
 }
 
 END {

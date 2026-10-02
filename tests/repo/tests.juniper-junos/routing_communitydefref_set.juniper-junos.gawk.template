@@ -14,6 +14,7 @@
 # @actions : Check community definitions, Check community references
 # @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high | info
+# @authors : cedric llorens
 # -----------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -52,13 +53,13 @@ BEGINFILE {
 	next;
 }
 
-/^[ ]+community (add|set|-|+|delete) [^ ]+;/ && !/community (add|set|-|+|delete) [0-9]+[:][0-9]+/ {
+/^[ ]+community (add|set|-|\+|delete) [^ ]+;/ && !/community (add|set|-|\+|delete) [0-9]+[:][0-9]+/ {
 	routing_ref[rm_last_char($3)] = rm_last_char(rm_blank_before($0));
 	routing_ref_lineno[rm_last_char($3)] = FNR;
 	next;
 }
 
-/^[ ]+(from )?community .*;/ && !/ (add|set|-|+|delete) /&& !/community authorization/ && !/community no-export/ && !/community no-advertise/ && !/community [0-9]+[:][0-9]+/ {
+/^[ ]+(from )?community .*;/ && !/ (add|set|-|\+|delete) /&& !/community authorization/ && !/community no-export/ && !/community no-advertise/ && !/community [0-9]+[:][0-9]+/ {
 	i = 2;
 	if ( $1 == "from" ) i = 3;
 
@@ -67,7 +68,7 @@ BEGINFILE {
 		routing_ref_lineno[rm_last_char($i)] = FNR;
 	} else {
 		i = i + 1;
-		while ( $i != "]" && $i !~ /;/ ) {
+		while ( i <= NF && $i != "]" && $i !~ /;/ ) {
 			if ( $i !~ /[0-9]+[:][0-9]+/ ) {
 				routing_ref[$i] = rm_last_char(rm_blank_before($0));
 				routing_ref_lineno[$i] = FNR;
@@ -80,12 +81,12 @@ BEGINFILE {
 
 /^[ ]+(import|export|vrf-import|vrf-export|egress-policy|import-policy|export-policy) \[ (.*) \]/ && !/(import|export) target/ {
 	i = 3;
-	while ( $i != "]" && $i !~ /;/ ) {
+	while ( i <= NF && $i != "]" && $i !~ /;/ ) {
 		if ( $i != "default" ) {
 			routing_ref[$i] = rm_last_char(rm_blank_before($0));
 			routing_ref_lineno[$i] = FNR;
-			i = i + 1;
 		}
+		i = i + 1;
 	}
 	next;
 }

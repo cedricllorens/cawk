@@ -11,7 +11,7 @@
 # @test_name : filter_defref_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check when <filter> def and not ref / check when <filter> ref and not def
-# @description : filter defined but not referenced represents dead configuration; filter referenced but not defined causes policy errors
+# @description : filter defined but not referenced represents dead configuration, filter referenced but not defined causes policy errors
 # @actions : align filter definitions and references to ensure all filters are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
 # @risk_level : high | info

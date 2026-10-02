@@ -1,0 +1,103 @@
+ipv4 access-list CAWK-PORT-EXP-1-INCONSISTENT
+ 10 remark same destination port with opposite actions
+ 20 permit tcp any host 192.0.2.1 eq ssh
+ 30 deny tcp any host 192.0.2.1 eq ssh
+!
+ipv4 access-list CAWK-PORT-EXP-PASS
+ 10 permit tcp any any eq www
+ 20 deny tcp any any eq 443
+!
+ipv4 access-list CAWK-PROTO-EXP-PASS
+ 10 permit tcp any any eq domain
+ 20 deny udp any any eq domain
+!
+ipv4 access-list CAWK-RANGE-EXP-1-INCONSISTENT
+ 10 permit tcp any any range ssh telnet
+ 20 deny tcp any any eq telnet
+!
+ipv4 access-list CAWK-RANGE-EXP-PASS
+ 10 permit tcp any any range ssh telnet
+ 20 deny tcp any any eq www
+!
+ipv4 access-list CAWK-GT-EXP-1-INCONSISTENT
+ 10 permit tcp any any gt 1023
+ 20 deny tcp any any eq 8080
+!
+ipv4 access-list CAWK-GT-EXP-PASS
+ 10 permit tcp any any gt 1023
+ 20 deny tcp any any eq ssh
+!
+ipv4 access-list CAWK-LT-EXP-1-INCONSISTENT
+ 10 permit udp any any lt 1024
+ 20 deny udp any any eq snmp
+!
+ipv4 access-list CAWK-LT-EXP-PASS
+ 10 permit udp any any lt 1024
+ 20 deny udp any any eq 5000
+!
+ipv4 access-list CAWK-NEQ-EXP-1-INCONSISTENT
+ 10 permit tcp any any neq ssh
+ 20 deny tcp any any eq www
+!
+ipv4 access-list CAWK-NEQ-EXP-PASS
+ 10 permit tcp any any neq ssh
+ 20 deny tcp any any eq ssh
+!
+ipv4 access-list CAWK-SRCPORT-EXP-1-INCONSISTENT
+ 10 permit udp any eq ntp any eq ntp
+ 20 deny udp any eq ntp any
+!
+ipv4 access-list CAWK-SRCPORT-EXP-PASS
+ 10 permit udp any eq 1024 any
+ 20 deny udp any eq 2048 any
+!
+ipv4 access-list CAWK-HOST-EXP-1-REDUNDANT
+ 10 permit tcp 198.51.100.0 0.0.0.255 any eq ssh
+ 20 permit tcp host 198.51.100.10 any eq ssh
+!
+ipv4 access-list CAWK-HOST-EXP-PASS
+ 10 permit tcp host 198.51.100.10 any eq ssh
+ 20 deny tcp host 198.51.100.11 any eq ssh
+!
+ipv4 access-list CAWK-IPV4-EXP-1-INCONSISTENT
+ 10 permit ipv4 203.0.113.0 0.0.0.255 any
+ 20 deny tcp host 203.0.113.5 any eq ssh
+!
+ipv4 access-list CAWK-ICMP-EXP-PASS
+ 10 permit icmp any any echo
+ 20 deny icmp any any echo-reply
+!
+ipv4 access-list CAWK-ICMP-CODE-EXP-1-INCONSISTENT
+ 10 permit icmp any any unreachable
+ 20 deny icmp any any port-unreachable
+!
+ipv4 access-list CAWK-ICMP-CODE-EXP-PASS
+ 10 permit icmp any any host-unreachable
+ 20 deny icmp any any port-unreachable
+!
+ipv4 access-list CAWK-ICMP-ANY-EXP-1-INCONSISTENT
+ 10 permit icmp any any
+ 20 deny icmp any any echo
+!
+ipv4 access-list CAWK-DST-EXP-PASS
+ 10 permit tcp any host 192.0.2.20 eq ssh
+ 20 deny tcp any host 192.0.2.21 eq ssh
+!
+ipv4 access-list CAWK-GT-EDGE-EXP-PASS
+ 10 permit tcp any any gt 1023
+ 20 deny tcp any any eq 1023
+!
+ipv4 access-list CAWK-LT-EDGE-EXP-PASS
+ 10 permit udp any any lt 1024
+ 20 deny udp any any eq 1024
+!
+ipv4 access-list CAWK-RANGE-EDGE-EXP-PASS
+ 10 permit tcp any any range ssh telnet
+ 20 deny tcp any any eq 24
+!
+ipv4 access-list CAWK-MULTI-EXP-2-INCONSISTENT
+ 10 permit tcp host 192.0.2.10 any eq ssh
+ 20 permit tcp host 192.0.2.11 any eq ssh
+ 30 deny tcp any any eq ssh
+!
+end

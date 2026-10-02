@@ -10,7 +10,7 @@
 # @test_name : global_vardefref_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check <vars> def not ref and ref not def
-# @description : variables defined but not referenced represent dead configuration; variables referenced but not defined cause rule processing errors
+# @description : variables defined but not referenced represent dead configuration, variables referenced but not defined cause rule processing errors
 # @actions : align variable definitions and references to ensure all vars are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : CM-6 | Configuration Management | Ensure configuration settings are established and enforced
 # @risk_level : high | info

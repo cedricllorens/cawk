@@ -1,0 +1,25 @@
+ip access-list standard CAWK-EXP-1-INCONSISTENT
+ permit 10.10.10.0 0.0.0.255
+ deny any log
+exit
+ip access-list standard CAWK-EXP-1-REDUNDANT
+ permit 10.20.0.0 0.0.255.255
+ permit 10.20.20.0 0.0.0.255
+exit
+ip access-list standard CAWK-EXP-PASS
+ permit 10.30.30.0 0.0.0.255
+ permit 10.40.40.0 0.0.0.255
+exit
+ip access-list standard CAWK-DENY-EXP-PASS
+ deny 10.50.50.0 0.0.0.255
+ permit 10.60.60.0 0.0.0.255
+exit
+ip access-list standard CAWK-ANY-EXP-1-INCONSISTENT
+ permit 10.70.70.0 0.0.0.255
+ deny 0.0.0.0 255.255.255.255
+exit
+ip access-list standard CAWK-MULTI-EXP-2-INCONSISTENT
+ permit 10.80.1.0 0.0.0.255
+ permit 10.80.2.0 0.0.0.255
+ deny any log
+exit

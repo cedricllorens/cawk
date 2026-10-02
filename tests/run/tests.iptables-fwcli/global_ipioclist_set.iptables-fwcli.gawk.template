@@ -67,7 +67,7 @@ BEGINFILE {
 
 !/\\$/ && rule != "" {
     rule = rule $0;
-    processrule($0,ioc);
+    processrule(rule,ioc);
     rule = "";
     next;
 }
@@ -82,7 +82,7 @@ ENDFILE {
         }
     }
     if (pass == 1) {
-        print_err("global_ipioclist_set.iptables-fwcli.gawk","all ioc ip are found ",0,"info","pass");
+        print_err("global_ipioclist_set.iptables-fwcli.gawk","all ioc ip are found",0,"info","pass");
     }
 }
 

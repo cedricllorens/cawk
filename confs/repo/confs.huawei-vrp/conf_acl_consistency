@@ -1,0 +1,138 @@
+#
+acl number 2001
+ description CAWK-BASIC-EXP-1-INCONSISTENT
+ rule 5 permit source 10.1.1.0 0.0.0.255
+ rule 10 deny source 10.1.0.0 0.0.255.255
+#
+acl number 2002
+ description CAWK-BASIC-EXP-1-REDUNDANT
+ rule 5 permit source 10.2.2.0 0.0.0.255
+ rule 10 permit source 10.2.2.2 0
+#
+acl number 2003
+ description CAWK-BASIC-EXP-PASS
+ rule 5 permit source 10.3.3.0 0.0.0.255
+ rule 10 permit source 10.4.4.0 0.0.0.255
+#
+acl number 3001
+ description CAWK-PORT-EXP-1-INCONSISTENT
+ rule 5 permit tcp source any destination 192.0.2.1 0 destination-port eq 3000
+ rule 10 deny tcp source any destination 192.0.2.1 0 destination-port eq 3000
+#
+acl number 3002
+ description CAWK-PORT-EXP-PASS
+ rule 5 permit tcp source any destination 192.0.2.1 0 destination-port eq 3000
+ rule 10 deny tcp source any destination 192.0.2.1 0 destination-port eq 3001
+#
+acl number 3003
+ description CAWK-PROTO-EXP-PASS
+ rule 5 permit tcp source any destination 192.0.2.2 0 destination-port eq 3000
+ rule 10 deny udp source any destination 192.0.2.2 0 destination-port eq 3000
+#
+acl number 3004
+ description CAWK-RANGE-EXP-1-INCONSISTENT
+ rule 5 permit tcp source any destination any destination-port range 3000 3100
+ rule 10 deny tcp source any destination any destination-port eq 3050
+#
+acl number 3005
+ description CAWK-RANGE-EXP-PASS
+ rule 5 permit tcp source any destination any destination-port range 3000 3100
+ rule 10 deny tcp source any destination any destination-port eq 3200
+#
+acl number 3006
+ description CAWK-GT-EXP-1-INCONSISTENT
+ rule 5 permit tcp source any destination any destination-port gt 4000
+ rule 10 deny tcp source any destination any destination-port eq 5000
+#
+acl number 3007
+ description CAWK-GT-EXP-PASS
+ rule 5 permit tcp source any destination any destination-port gt 4000
+ rule 10 deny tcp source any destination any destination-port eq 3000
+#
+acl number 3008
+ description CAWK-LT-EXP-1-INCONSISTENT
+ rule 5 permit udp source any destination any destination-port lt 3000
+ rule 10 deny udp source any destination any destination-port eq 2500
+#
+acl number 3009
+ description CAWK-LT-EXP-PASS
+ rule 5 permit udp source any destination any destination-port lt 3000
+ rule 10 deny udp source any destination any destination-port eq 3500
+#
+acl number 3010
+ description CAWK-SRCPORT-EXP-1-INCONSISTENT
+ rule 5 permit udp source 198.51.100.0 0.0.0.255 source-port eq 3000 destination any
+ rule 10 deny udp source 198.51.100.0 0.0.0.255 source-port eq 3000 destination any
+#
+acl number 3011
+ description CAWK-SRCPORT-EXP-PASS
+ rule 5 permit udp source 198.51.100.0 0.0.0.255 source-port eq 3000 destination any
+ rule 10 deny udp source 198.51.100.0 0.0.0.255 source-port eq 3001 destination any
+#
+acl number 3012
+ description CAWK-HOST-EXP-1-REDUNDANT
+ rule 5 permit tcp source 198.51.100.0 0.0.0.255 destination any
+ rule 10 permit tcp source 198.51.100.10 0 destination any
+#
+acl number 3013
+ description CAWK-HOST-EXP-PASS
+ rule 5 permit tcp source 198.51.100.10 0 destination any
+ rule 10 deny tcp source 198.51.100.11 0 destination any
+#
+acl number 3014
+ description CAWK-IP-EXP-1-INCONSISTENT
+ rule 5 permit ip source 203.0.113.0 0.0.0.255 destination any
+ rule 10 deny tcp source 203.0.113.5 0 destination any destination-port eq 3000
+#
+acl number 3015
+ description CAWK-ICMP-EXP-PASS
+ rule 5 permit icmp source 10.9.9.0 0.0.0.255 icmp-type echo
+ rule 10 deny icmp source 10.9.9.0 0.0.0.255 icmp-type echo-reply
+#
+acl number 3016
+ description CAWK-ICMP-CODE-EXP-PASS
+ rule 5 permit icmp source 10.9.9.0 0.0.0.255 icmp-type host-unreachable
+ rule 10 deny icmp source 10.9.9.0 0.0.0.255 icmp-type port-unreachable
+#
+acl number 3017
+ description CAWK-ICMP-NUM-EXP-1-INCONSISTENT
+ rule 5 permit icmp source 10.9.9.0 0.0.0.255 icmp-type 3 3
+ rule 10 deny icmp source 10.9.9.0 0.0.0.255 icmp-type port-unreachable
+#
+acl number 3018
+ description CAWK-ICMP-ANY-EXP-1-INCONSISTENT
+ rule 5 permit icmp source 10.9.9.0 0.0.0.255
+ rule 10 deny icmp source 10.9.9.0 0.0.0.255 icmp-type echo
+#
+acl number 3020
+ description CAWK-DST-EXP-PASS
+ rule 5 permit tcp source any destination 192.0.2.20 0 destination-port eq 3000
+ rule 10 deny tcp source any destination 192.0.2.21 0 destination-port eq 3000
+#
+acl number 3021
+ description CAWK-SRCRANGE-DST-EXP-PASS
+ rule 5 permit udp source any source-port range 3000 3100 destination 192.0.2.20 0
+ rule 10 deny udp source any source-port range 3000 3100 destination 192.0.2.21 0
+#
+acl number 3022
+ description CAWK-GT-EDGE-EXP-PASS
+ rule 5 permit tcp source any destination any destination-port gt 4000
+ rule 10 deny tcp source any destination any destination-port eq 4000
+#
+acl number 3023
+ description CAWK-LT-EDGE-EXP-PASS
+ rule 5 permit udp source any destination any destination-port lt 3000
+ rule 10 deny udp source any destination any destination-port eq 3000
+#
+acl number 3024
+ description CAWK-RANGE-EDGE-EXP-PASS
+ rule 5 permit tcp source any destination any destination-port range 3000 3100
+ rule 10 deny tcp source any destination any destination-port eq 3101
+#
+acl number 3019
+ description CAWK-MULTI-EXP-2-INCONSISTENT
+ rule 5 permit tcp source 192.0.2.10 0 destination any destination-port eq 3000
+ rule 10 permit tcp source 192.0.2.11 0 destination any destination-port eq 3000
+ rule 15 deny tcp source 192.0.2.0 0.0.0.255 destination any destination-port eq 3000
+#
+return

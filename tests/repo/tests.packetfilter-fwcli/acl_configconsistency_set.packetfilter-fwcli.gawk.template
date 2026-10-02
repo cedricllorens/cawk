@@ -40,6 +40,22 @@
 # ---------------------------------------------------------
 
 BEGIN {
+	# pf.conf icmp-type and code keywords
+	split("echorep 0 unreach 3 squench 4 redir 5 althost 6 echoreq 8 routeradv 9 routersol 10 timex 11 paramprob 12 timereq 13 timerep 14 inforeq 15 inforep 16 maskreq 17 maskrep 18 trace 30 dataconv 31 mobredir 32 ipv6-where 33 ipv6-here 34 mobregreq 35 mobregrep 36 skip 39 photuris 40", pf_kw, " ");
+	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp_types[pf_kw[kw_i]] = pf_kw[kw_i+1];
+	split("net-unr 0 host-unr 1 proto-unr 2 port-unr 3 needfrag 4 srcfail 5 net-unk 6 host-unk 7 isolate 8 net-prohib 9 host-prohib 10 net-tos 11 host-tos 12 filter-prohib 13 host-preced 14 cutoff-preced 15 redir-net 0 redir-host 1 redir-tos-net 2 redir-tos-host 3 transit 0 reassemb 1", pf_kw, " ");
+	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp_codes[pf_kw[kw_i]] = pf_kw[kw_i+1];
+}
+
+# record one icmp-type value into table_icmp as "type" or "type/code"; an unknown message matches any icmp
+function pf_icmp_add(name, code,    icmp_t, icmp_c) {
+	icmp_t = ( name ~ /^[0-9]+$/ ) ? name : ( name in pf_icmp_types ) ? pf_icmp_types[name] : "";
+	if ( icmp_t == "" ) {
+		table_icmp[""] = 1;
+		return;
+	}
+	icmp_c = ( code ~ /^[0-9]+$/ ) ? code : ( code in pf_icmp_codes ) ? pf_icmp_codes[code] : "";
+	table_icmp[icmp_t ( icmp_c == "" ? "" : "/" icmp_c )] = 1;
 }
 
 BEGINFILE {
@@ -53,6 +69,7 @@ BEGINFILE {
 	delete pf_tables;
 	table_build = 0;
 	table_raw = "";
+	pf_continued = "";
 
 }
 
@@ -65,6 +82,18 @@ BEGINFILE {
 # Skip comments and empty lines
 /^#/ { next }
 /^$/ { next }
+
+# pf.conf allows a statement to span several lines ending with "\" : rebuild it before parsing
+/\\$/ {
+	sub(/\\$/, "");
+	pf_continued = pf_continued $0 " ";
+	next;
+}
+
+pf_continued != "" {
+	$0 = pf_continued $0;
+	pf_continued = "";
+}
 
 # ---------------------------------------
 # ---------------------------------------
@@ -434,7 +463,8 @@ function build_src_addr_net(src_addr,state) {
 	
 	protocol = "none";
 	delete table_protocol;
-	
+	delete table_icmp;
+
 	found_port_src = 0
 	found_port_dst = 0
 	found_protocol = 0
@@ -1034,10 +1064,37 @@ function build_src_addr_net(src_addr,state) {
 					# last field is badly formatted ----
 					if ( $(i+1+j) != "}" && $(i+1+j) ~/}/ ) {
 						gsub(/[{}]/, "", $(i+1+j))
-						table_protocol[$(i+1+j)] = $(i+1+j);	
+						table_protocol[$(i+1+j)] = $(i+1+j);
 						found_protocol = 1;
 					}
-				}			
+				}
+			}
+		}
+
+		# ----------------------
+		# ICMP-TYPE ----
+		# ----------------------
+
+		if ($i == "icmp-type") {
+
+			delete table_icmp;
+
+			# set of icmp types (a code inside a set is ignored: the type alone is broader) ----
+			if ( $(i+1) ~ /^\{/ ) {
+				for ( icmp_j = i + 1; icmp_j <= NF; icmp_j++ ) {
+					icmp_name = $icmp_j;
+					gsub(/[{},]/, "", icmp_name);
+					if ( icmp_name == "code" ) {
+						icmp_j++;
+					} else if ( icmp_name != "" ) {
+						pf_icmp_add(icmp_name, "");
+					}
+					if ( $icmp_j ~ /\}/ ) break;
+				}
+
+			# single icmp type ----
+			} else {
+				pf_icmp_add($(i+1), ( $(i+2) == "code" ) ? $(i+3) : "");
 			}
 		}
 	}
@@ -1094,37 +1151,25 @@ function build_src_addr_net(src_addr,state) {
 				for (id1 in dst_table_port) {
 
 					if ( id1 == "none" ) {
-						
 						dst_port = 0;
 						dst_port_range = 0;
-
-						for(id2 in table_protocol) {
-
-							if ( id2 == "none" ) {
-								protocol = "none";
-								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
-							} else {
-								protocol = table_protocol[id2];
-								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
-							}
-						}
-
 					} else {
-
 						dst_port = dst_table_port[id1];
 						dst_port_range = dst_table_port_range[id1];
+					}
 
-						for(id2 in table_protocol) {
+					for(id2 in table_protocol) {
 
-							if ( id2 == "none" ) {
-								protocol = "none";
-								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
-							} else {
-								protocol = table_protocol[id2];
-								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+						protocol = table_protocol[id2];
+
+						# an icmp rule restricted to some icmp messages yields one rule per message ----
+						if ( protocol == "icmp" && length(table_icmp) > 0 ) {
+							for (id3 in table_icmp) {
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol, id3);
 							}
+						} else {
+							cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
 						}
-
 					}
 				}
 			}

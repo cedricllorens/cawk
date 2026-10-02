@@ -24,6 +24,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	neighbor_seen = 0;
 	block_protocols = 0;
 	block_bgp = 0;
 	block_neighbor = 0;
@@ -42,6 +43,7 @@ BEGINFILE {
 
 /^%SED_BK_JUNI%{2}neighbor .+ {/ && block_bgp == 1 {
 	block_neighbor = 1;
+	neighbor_seen = 1;
 	pass = 0;
 	neighbor_edit = rm_last_char(rm_blank_before($0));
 	neighbor_edit_no = FNR;
@@ -71,6 +73,7 @@ BEGINFILE {
 }
 
 ENDFILE {
+	if ( !neighbor_seen ) print_err("protocols_bgpneighborauth_set.juniper-junos.gawk","no bgp/neighbor configured",0,"high","pass");
 }
 
 END {

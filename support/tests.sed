@@ -13,29 +13,29 @@ s/%SED_INCLUDE_PATH_FWLIB%/"common\/common_hypercube-lib.gawk"/g
 # ----------------------------------------------
 # CISCO KEYWORDS
 # ----------------------------------------------
-s/%SED_AUTHUSER_CISCO%/\(admin\)/g
+s/%SED_AUTHUSER_CISCO%/\(admin\)( |$)/g
 #
 # ----------------------------------------------
 # CISCO_CEDGE KEYWORDS
 # ----------------------------------------------
-s/%SED_AUTHUSER_CEDGE%/\(admin\)/g
+s/%SED_AUTHUSER_CEDGE%/\(admin\)( |$)/g
 #
 # ----------------------------------------------
 # CISCO_VIPTELA KEYWORDS
 # ----------------------------------------------
-s/%SED_AUTHUSER_VIPTELA%/\(admin\)/g
+s/%SED_AUTHUSER_VIPTELA%/\(admin\)( |$)/g
 s/%SED_FORBIDPROTO_VIPTELA%/\(http|telnet|ftp|lldp|cdp\)/g
 #
 # ----------------------------------------------
 # HUAWEI KEYWORDS
 # ----------------------------------------------
-s/%SED_AUTHUSER_HUAWEI%/\(admin\)/g
+s/%SED_AUTHUSER_HUAWEI%/\(admin\)( |$)/g
 #
 # ----------------------------------------------
 # JUNIPER KEYWORDS
 # ----------------------------------------------
 s/%SED_BK_JUNI%/([ ][ ][ ][ ])/g
-s/%SED_AUTHUSER_JUNI%/admin/g
+s/%SED_AUTHUSER_JUNI%/admin( |$)/g
 s/%SED_AAASYSTEM_JUNI%/(tacacs|tacplus|radius)/g
 #
 # ----------------------------------------------
@@ -82,4 +82,4 @@ s/%SED_BK_WIND%/([ ][ ][ ][ ])/g
 s/%SED_SNMP_FORBID_COMMUNITY%/(private|public)/g
 s/%SED_MGNT_KW%/\(management|mgnt\)/g
 s/%SED_MGNT_BADPROTO%/\(http|telnet|ftp\)/g
-s/%SED_OLD_CRYPTO%/ \(hmac-\)?\(md5|3des|sha1|rc4|tlsv1\)\(-cbc\)?\(;| \)/g
+s/%SED_OLD_CRYPTO%/ \(hmac-\)?\(md5|3des|sha1|rc4|tlsv1\(\\.[01]\)?\)\(-96\)?\(-cbc\)?\(;| |$\)/g

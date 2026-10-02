@@ -74,6 +74,8 @@ ENDFILE {
         print_err("global_sshratelimit_set.packetfilter-fwcli.gawk","ssh accepted with rate limiting",0,"medium","pass");
     } else if ( ssh_accept && !ssh_ratelimit ) {
         print_err("global_sshratelimit_set.packetfilter-fwcli.gawk","ssh accepted without rate limiting <<"ssh_accept_line">>",0,"medium","error");
+    } else {
+        print_err("global_sshratelimit_set.packetfilter-fwcli.gawk","no ssh accept rule",0,"medium","pass");
     }
 }
 

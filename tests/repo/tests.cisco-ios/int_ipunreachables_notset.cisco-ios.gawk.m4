@@ -39,16 +39,20 @@ dnl level 0 --
 	interface = $0;
 	interfaceno = FNR;
 	unreachable = 0;
+	is_shutdown = 0;
 ',
 `/^!$/', `
-	if ( unreachable == 1 ) {
+	if ( unreachable == 1 && is_shutdown == 0 ) {
 		print_err("int_ipunreachables_notset.cisco-ios.gawk",interface" <ip unreachables> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
 dnl level 1 --
-`/^ ip unreachables/',`unreachable = 1;',
+`/^ (ip unreachables|shutdown)/',`
+	if ($0 ~ /^ ip unreachables/) unreachable = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

@@ -73,7 +73,7 @@ BEGINFILE {
     next;
 }
 
-/^%SED_BK_WIND%\.\.|exit|[^ ])/ {
+/^%SED_BK_WIND%(\.\.|exit|[^ ])/ {
     block = 1;
     next;
 }

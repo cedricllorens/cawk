@@ -47,7 +47,7 @@ BEGINFILE {
 	next;
 }
 
-/^ access-class .*( out)?/ && block_vty == 1 {
+/^ access-class [^ ]+ out( |$)/ && block_vty == 1 {
 	aclout = 1;
 	next;
 }

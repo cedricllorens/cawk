@@ -22,9 +22,9 @@ configure
                 exit
             exit
             snmp
-		shutdown
+                shutdown
             exit
-	exit
+        exit
     exit
     router
         interface FastEthernet1

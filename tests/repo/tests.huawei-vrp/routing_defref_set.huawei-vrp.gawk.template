@@ -11,7 +11,7 @@
 # @test_name : routing_defref_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
 # @purpose : check when an <routing> is def and not ref / check when an <routing> is ref and not def
-# @description : routing policy defined but not referenced represents dead configuration; routing policy referenced but not defined causes forwarding errors
+# @description : routing policy defined but not referenced represents dead configuration, routing policy referenced but not defined causes forwarding errors
 # @actions : align routing policy definitions and references to ensure consistency (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high | info

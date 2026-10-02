@@ -26,6 +26,6 @@ iptables -A INPUT -p tcp --dport 22 -m connlimit --connlimit-above 5 -j REJECT -
 iptables -A INPUT -p tcp --dport 22 -m connlimit --connlimit-above 5 -j REJECT --reject-with tcp-reset
 iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j REJECT --reject-with tcp-reset
 iptables -A INPUT -p tcp \
-	--dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j REJECT --reject-with tcp-reset
+    --dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j REJECT --reject-with tcp-reset
 iptables -A INPUT -p tcp \
-	--dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j DROP --reject-with tcp-reset
+    --dport 80 -m connlimit --connlimit-mask 24 --connlimit-above 20 -j DROP --reject-with tcp-reset

@@ -1,0 +1,40 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : aaa_user_notset.cisco-sdnios.gawk
+# @supplier : cisco-sdnios
+# @purpose : check if <aaa users> are not set locally
+# @description : local users can endanger the security of the system by allowing unauthorized access
+# @actions : remove local users or setup exceptions (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^username / && !/^username %SED_AUTHUSER_CISCO%/ {
+	print_err("aaa_user_notset.cisco-sdnios.gawk",$1" "$2" *DELETE*",FNR,"high","error");
+	pass = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("aaa_user_notset.cisco-sdnios.gawk","aaa forbidden users are not set",0,"high","pass");
+}
+
+END {
+}

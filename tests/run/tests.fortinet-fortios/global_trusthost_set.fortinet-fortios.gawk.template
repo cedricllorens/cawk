@@ -10,9 +10,9 @@
 # @test_name : global_trusthost_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check that <trusthost> is set for every admin account
-# @description : without trusthost restrictions the administrative interface is reachable from any source address; CIS FortiGate benchmark requires each admin account to restrict login sources
+# @description : without trusthost restrictions the administrative interface is reachable from any source address, CIS FortiGate benchmark requires each admin account to restrict login sources
 # @actions : set trusthost1..N on every account under config system admin to restrict management access to trusted networks (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : AC-17 | Access Control | Ensure remote access is restricted to trusted hosts
+# @nist800-53_ref : AC-17 | Access Control | Ensure remote access is controlled and monitored
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -27,7 +27,6 @@ BEGINFILE {
     admin_name = "";
     trusthost_seen = 0;
     admin_found = 0;
-    pass = 1;
 }
 
 /^config system admin/ {
@@ -52,7 +51,6 @@ BEGINFILE {
         print_err("global_trusthost_set.fortinet-fortios.gawk","trusthost set for admin <<"admin_name">>",FNR,"high","pass");
     } else {
         print_err("global_trusthost_set.fortinet-fortios.gawk","no trusthost set for admin <<"admin_name">>",FNR,"high","error");
-        pass = 0;
     }
     admin_name = "";
     next;

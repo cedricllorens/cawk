@@ -39,16 +39,20 @@ dnl level 0 --
 	interface = $0;
 	interfaceno = FNR;
 	ipredirects = 0;
+	is_shutdown = 0;
 ',
 `/^!$/', `
-	if ( ipredirects == 1 ) {
+	if ( ipredirects == 1 && is_shutdown == 0 ) {
 		print_err("int_ipredirects_notset.cisco-ios.gawk",interface" <ip redirects> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
 dnl level 1 --
-`/^ ip redirects/',`ipredirects = 1;',
+`/^ (ip redirects|shutdown)/',`
+	if ($0 ~ /^ ip redirects/) ipredirects = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

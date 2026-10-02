@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : ntp_enablestatus_set.fortinet.gawk
+# @test_name : ntp_enablestatus_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <ntp enable status> is set
 # @description : missing ntp enable status configuration can lead to time synchronization issues affecting log correlation and security auditing
@@ -39,7 +39,7 @@ m4_cawk_parse_block(
 `/^end$/', `',
 
 `/^%SED_BK_FORTI%set status enable/', `
-	print_err("ntp_enablestatus_set.fortinet.gawk",rm_blank_before($0),FNR,"high","pass");
+	print_err("ntp_enablestatus_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
 	pass = 0;
 ',
 `', `',
@@ -49,7 +49,7 @@ m4_cawk_parse_block(
 dnl MACRO END --------------------------
 
 ENDFILE {
-	if ( pass ) print_err("ntp_enablestatus_set.fortinet.gawk","ntp enable status is not set",0,"high","error");
+	if ( pass ) print_err("ntp_enablestatus_set.fortinet-fortios.gawk","ntp enable status is not set",0,"high","error");
 }
 
 END {

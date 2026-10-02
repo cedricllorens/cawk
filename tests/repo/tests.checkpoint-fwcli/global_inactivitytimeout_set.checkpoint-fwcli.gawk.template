@@ -10,7 +10,7 @@
 # @test_name : global_inactivitytimeout_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check that <inactivity-timeout> and <web session-timeout> are set to a safe value
-# @description : a disabled or excessive idle timeout leaves unattended clish and WebUI administrative sessions open and exploitable; CIS Gaia benchmark recommends 10 minutes or less
+# @description : a disabled or excessive idle timeout leaves unattended clish and WebUI administrative sessions open and exploitable, CIS Gaia benchmark recommends 10 minutes or less
 # @actions : set inactivity-timeout and web session-timeout to 10 minutes or less (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : AC-11 | Access Control | Ensure device lock after inactivity timeout is configured
 # @risk_level : medium

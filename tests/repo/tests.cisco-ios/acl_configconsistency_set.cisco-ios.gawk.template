@@ -43,6 +43,50 @@
 # ---------------------------------------------------------
 
 BEGIN {
+	# port keywords rendered by the running-config instead of their number
+	split("bgp 179 biff 512 bootpc 68 bootps 67 chargen 19 cmd 514 daytime 13 discard 9 dnsix 195 domain 53 drip 3949 echo 7 exec 512 finger 79 ftp 21 ftp-data 20 gopher 70 hostname 101 ident 113 irc 194 isakmp 500 klogin 543 kshell 544 login 513 lpd 515 mobile-ip 434 nameserver 42 netbios-dgm 138 netbios-ns 137 netbios-ss 139 nntp 119 non500-isakmp 4500 ntp 123 pim-auto-rp 496 pop2 109 pop3 110 rip 520 smtp 25 snmp 161 snmptrap 162 ssh 22 sunrpc 111 syslog 514 tacacs 49 talk 517 telnet 23 tftp 69 time 37 uucp 540 who 513 whois 43 www 80 xdmcp 177", cisco_kw, " ");
+	for ( kw_i = 1; kw_i in cisco_kw; kw_i += 2 ) cisco_port_names[cisco_kw[kw_i]] = cisco_kw[kw_i+1];
+
+	# icmp message keywords as "type" or "type/code"
+	split("administratively-prohibited 3/13 alternate-address 6 conversion-error 31 dod-host-prohibited 3/10 dod-net-prohibited 3/9 echo 8 echo-reply 0 general-parameter-problem 12/0 host-isolated 3/8 host-precedence-unreachable 3/14 host-redirect 5/1 host-tos-redirect 5/3 host-tos-unreachable 3/12 host-unknown 3/7 host-unreachable 3/1 information-reply 16 information-request 15 mask-reply 18 mask-request 17 mobile-redirect 32 net-redirect 5/0 net-tos-redirect 5/2 net-tos-unreachable 3/11 net-unreachable 3/0 network-unknown 3/6 no-room-for-option 12/2 option-missing 12/1 packet-too-big 3/4 parameter-problem 12 port-unreachable 3/3 precedence-unreachable 3/15 protocol-unreachable 3/2 reassembly-timeout 11/1 redirect 5 router-advertisement 9 router-solicitation 10 source-quench 4 source-route-failed 3/5 time-exceeded 11 timestamp-reply 14 timestamp-request 13 traceroute 30 ttl-exceeded 11/0 unreachable 3", cisco_kw, " ");
+	for ( kw_i = 1; kw_i in cisco_kw; kw_i += 2 ) cisco_icmp_names[cisco_kw[kw_i]] = cisco_kw[kw_i+1];
+}
+
+# icmp message at field pos (keyword or "type [code]"), empty for any message
+function cisco_icmp_type(pos) {
+	if ( $pos in cisco_icmp_names ) return cisco_icmp_names[$pos];
+	if ( $pos ~ /^[0-9]+$/ ) return ( $(pos+1) ~ /^[0-9]+$/ ) ? $pos"/"$(pos+1) : $pos;
+	return "";
+}
+
+function cisco_port_number(name) {
+	if ( name ~ /^[0-9]+$/ ) return name + 0;
+	if ( name in cisco_port_names ) return cisco_port_names[name];
+	return -1;
+}
+
+# decode the port operator at field pos into [cisco_lo[i],cisco_hi[i]] intervals and return their count:
+# neq needs two intervals, an empty one (gt 65535) none; no operator or an unknown keyword means any port
+function cisco_port_intervals(pos,    op, a, b, n) {
+	delete cisco_lo;
+	delete cisco_hi;
+	op = $pos;
+	a = cisco_port_number($(pos+1));
+	b = ( op == "range" ) ? cisco_port_number($(pos+2)) : a;
+
+	if ( op !~ /^(eq|neq|gt|lt|range)$/ || a < 0 || b < 0 ) {
+		cisco_lo[1] = 0;
+		cisco_hi[1] = 0;
+		return 1;
+	}
+
+	n = 0;
+	if ( op == "eq" ) { cisco_lo[++n] = a; cisco_hi[n] = a; }
+	if ( op == "range" ) { cisco_lo[++n] = a; cisco_hi[n] = b; }
+	if ( op == "gt" && a < 65535 ) { cisco_lo[++n] = a + 1; cisco_hi[n] = 65535; }
+	if ( ( op == "lt" || op == "neq" ) && a > 1 ) { cisco_lo[++n] = 1; cisco_hi[n] = a - 1; }
+	if ( op == "neq" && a < 65535 ) { cisco_lo[++n] = a + 1; cisco_hi[n] = 65535; }
+	return n;
 }
 
 BEGINFILE {
@@ -270,25 +314,17 @@ BEGINFILE {
 
 	}
 
+	# icmp message ----
+	local_icmp = ( local_protocol == "icmp" ) ? cisco_icmp_type(local_current) : "";
+
 	# port dst ----
-	if ( $local_current == "eq" ) {
-
-		if ( table_port[$(local_current+1)] == "" ) {
-			local_port_dst = $(local_current+1);
-		} else {
-			local_port_dst = table_port[$(local_current+1)];
-		}
-		local_port_dst_range = 0;
-		local_current = local_current + 2;
-
-	} else {
-		
-		local_port_dst = 0;
-		local_port_dst_range = 0;
-	
+	intervals = cisco_port_intervals(local_current);
+	for ( port_i = 1; port_i <= intervals; port_i++ ) {
+		local_port_dst = cisco_lo[port_i];
+		local_port_dst_range = ( cisco_hi[port_i] == cisco_lo[port_i] ) ? 0 : cisco_hi[port_i];
+		local_rule_desc = ( intervals > 1 ) ? rule_desc" (port interval "port_i"/"intervals")" : rule_desc;
+		cawk_add_hypercube_rules("acl_configconsistency_set.cisco-ios.gawk","access-list "acl" "local_rule_desc,local_action,"none","none","all",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol,local_icmp)
 	}
-
-	cawk_add_hypercube_rules("acl_configconsistency_set.cisco-ios.gawk","access-list "acl" "rule_desc,local_action,"none","none","all",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol)
 	next;
 }
 
@@ -308,5 +344,9 @@ BEGINFILE {
 # ---------------------------------------------------------
 
 ENDFILE { 
+	# the last acl is not assessed when the file ends without its terminator line
+	if ( acl != "" && cawk_hypercube_rules_assessment() ) {
+		print_err("acl_configconsistency_set.cisco-ios.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
 	if ( check == 0 ) print_err("acl_configconsistency_set.cisco-ios.gawk","no <ip access-list standard> found",FNR,"info","pass");
 }

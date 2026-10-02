@@ -12,7 +12,7 @@
 # @purpose : check if <ntp server ip> is set
 # @description : missing ntp server configuration means the device clock may drift, causing log timestamp inconsistencies and authentication issues
 # @actions : configure ntp server ip addresses to synchronize device time (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @nist800-53_ref : AU-8(1) | Audit and Accountability | Ensure time synchronization with authoritative source is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -44,7 +44,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_NOKIA%{4}server [0-9\0]+/ && block_ntp == 1 {
+/^%SED_BK_NOKIA%{4}server [0-9]+/ && block_ntp == 1 {
 	print_err("ntp_ip_set.nokia-sros.gawk",rm_blank_before($0),FNR,"high","pass");
 	pass = 1;
 	nextfile;

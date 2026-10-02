@@ -1,0 +1,41 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : crypto_isakmpkeyenc_set.cisco-ios.gawk
+# @supplier : cisco-ios
+# @purpose : check if <crypto isakmp key> encryption is set
+# @description : ISAKMP pre-shared keys stored in cleartext expose key material in the configuration file, keys must be stored using type 6 password encryption
+# @actions : enable password encryption (<key config-key password-encrypt> and <password encryption aes>) so ISAKMP pre-shared keys are stored encrypted (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^crypto isakmp key / {
+	if ( $0 !~ /^crypto isakmp key 6 .*$/ ) {
+		print_err("crypto_isakmpkeyenc_set.cisco-ios.gawk",$0,FNR,"high","error");
+		pass = 0;
+	}
+}
+
+ENDFILE {
+	if ( pass ) print_err("crypto_isakmpkeyenc_set.cisco-ios.gawk","<crypto isakmp key> encryption is set",0,"high","pass");
+}
+
+END {
+}

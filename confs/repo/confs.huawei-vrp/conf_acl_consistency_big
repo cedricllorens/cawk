@@ -1,0 +1,1955 @@
+#
+acl number 3001
+ rule 5 permit tcp source any destination 192.168.0.1 0 destination-port eq 10001
+ rule 10 permit tcp source any destination 192.168.0.1 0 destination-port eq 10002
+ rule 15 permit tcp source any destination 192.168.0.1 0 destination-port eq 10003
+ rule 20 permit tcp source any destination 192.168.0.1 0 destination-port eq 10004
+ rule 25 permit tcp source any destination 192.168.0.1 0 destination-port eq 10005
+ rule 30 permit tcp source any destination 192.168.0.1 0 destination-port eq 10006
+ rule 35 permit tcp source any destination 192.168.0.1 0 destination-port eq 10007
+ rule 40 permit tcp source any destination 192.168.0.1 0 destination-port eq 10008
+ rule 45 permit tcp source any destination 192.168.0.1 0 destination-port eq 10009
+ rule 50 permit tcp source any destination 192.168.0.1 0 destination-port eq 10010
+ rule 55 permit tcp source any destination 192.168.0.1 0 destination-port eq 10011
+ rule 60 permit tcp source any destination 192.168.0.1 0 destination-port eq 10012
+ rule 65 permit tcp source any destination 192.168.0.1 0 destination-port eq 10013
+ rule 70 permit tcp source any destination 192.168.0.1 0 destination-port eq 10014
+ rule 75 permit tcp source any destination 192.168.0.1 0 destination-port eq 10015
+ rule 80 permit tcp source any destination 192.168.0.1 0 destination-port eq 10016
+ rule 85 permit tcp source any destination 192.168.0.1 0 destination-port eq 10017
+ rule 90 permit tcp source any destination 192.168.0.1 0 destination-port eq 10018
+ rule 95 permit tcp source any destination 192.168.0.1 0 destination-port eq 10019
+ rule 100 permit tcp source any destination 192.168.0.1 0 destination-port eq 10020
+ rule 105 permit tcp source any destination 192.168.0.1 0 destination-port eq 10021
+ rule 110 permit tcp source any destination 192.168.0.1 0 destination-port eq 10022
+ rule 115 permit tcp source any destination 192.168.0.1 0 destination-port eq 10023
+ rule 120 permit tcp source any destination 192.168.0.1 0 destination-port eq 10024
+ rule 125 permit tcp source any destination 192.168.0.1 0 destination-port eq 10025
+ rule 130 permit tcp source any destination 192.168.0.1 0 destination-port eq 10026
+ rule 135 permit tcp source any destination 192.168.0.1 0 destination-port eq 10027
+ rule 140 permit tcp source any destination 192.168.0.1 0 destination-port eq 10028
+ rule 145 permit tcp source any destination 192.168.0.1 0 destination-port eq 10029
+ rule 150 permit tcp source any destination 192.168.0.1 0 destination-port eq 10030
+ rule 155 permit tcp source any destination 192.168.0.1 0 destination-port eq 10031
+ rule 160 permit tcp source any destination 192.168.0.1 0 destination-port eq 10032
+ rule 165 permit tcp source any destination 192.168.0.1 0 destination-port eq 10033
+ rule 170 permit tcp source any destination 192.168.0.1 0 destination-port eq 10034
+ rule 175 permit tcp source any destination 192.168.0.1 0 destination-port eq 10035
+ rule 180 permit tcp source any destination 192.168.0.1 0 destination-port eq 10036
+ rule 185 permit tcp source any destination 192.168.0.1 0 destination-port eq 10037
+ rule 190 permit tcp source any destination 192.168.0.1 0 destination-port eq 10038
+ rule 195 permit tcp source any destination 192.168.0.1 0 destination-port eq 10039
+ rule 200 permit tcp source any destination 192.168.0.1 0 destination-port eq 10040
+ rule 205 permit tcp source any destination 192.168.0.1 0 destination-port eq 10041
+ rule 210 permit tcp source any destination 192.168.0.1 0 destination-port eq 10042
+ rule 215 permit tcp source any destination 192.168.0.1 0 destination-port eq 10043
+ rule 220 permit tcp source any destination 192.168.0.1 0 destination-port eq 10044
+ rule 225 permit tcp source any destination 192.168.0.1 0 destination-port eq 10045
+ rule 230 permit tcp source any destination 192.168.0.1 0 destination-port eq 10046
+ rule 235 permit tcp source any destination 192.168.0.1 0 destination-port eq 10047
+ rule 240 permit tcp source any destination 192.168.0.1 0 destination-port eq 10048
+ rule 245 permit tcp source any destination 192.168.0.1 0 destination-port eq 10049
+ rule 250 permit tcp source any destination 192.168.0.1 0 destination-port eq 10050
+ rule 255 permit tcp source any destination 192.168.0.1 0 destination-port eq 10051
+ rule 260 permit tcp source any destination 192.168.0.1 0 destination-port eq 10052
+ rule 265 permit tcp source any destination 192.168.0.1 0 destination-port eq 10053
+ rule 270 permit tcp source any destination 192.168.0.1 0 destination-port eq 10054
+ rule 275 permit tcp source any destination 192.168.0.1 0 destination-port eq 10055
+ rule 280 permit tcp source any destination 192.168.0.1 0 destination-port eq 10056
+ rule 285 permit tcp source any destination 192.168.0.1 0 destination-port eq 10057
+ rule 290 permit tcp source any destination 192.168.0.1 0 destination-port eq 10058
+ rule 295 permit tcp source any destination 192.168.0.1 0 destination-port eq 10059
+ rule 300 permit tcp source any destination 192.168.0.1 0 destination-port eq 10060
+ rule 305 permit tcp source any destination 192.168.0.1 0 destination-port eq 10061
+ rule 310 permit tcp source any destination 192.168.0.1 0 destination-port eq 10062
+ rule 315 permit tcp source any destination 192.168.0.1 0 destination-port eq 10063
+ rule 320 permit tcp source any destination 192.168.0.1 0 destination-port eq 10064
+ rule 325 permit tcp source any destination 192.168.0.1 0 destination-port eq 10065
+ rule 330 permit tcp source any destination 192.168.0.1 0 destination-port eq 10066
+ rule 335 permit tcp source any destination 192.168.0.1 0 destination-port eq 10067
+ rule 340 permit tcp source any destination 192.168.0.1 0 destination-port eq 10068
+ rule 345 permit tcp source any destination 192.168.0.1 0 destination-port eq 10069
+ rule 350 permit tcp source any destination 192.168.0.1 0 destination-port eq 10070
+ rule 355 permit tcp source any destination 192.168.0.1 0 destination-port eq 10071
+ rule 360 permit tcp source any destination 192.168.0.1 0 destination-port eq 10072
+ rule 365 permit tcp source any destination 192.168.0.1 0 destination-port eq 10073
+ rule 370 permit tcp source any destination 192.168.0.1 0 destination-port eq 10074
+ rule 375 permit tcp source any destination 192.168.0.1 0 destination-port eq 10075
+ rule 380 permit tcp source any destination 192.168.0.1 0 destination-port eq 10076
+ rule 385 permit tcp source any destination 192.168.0.1 0 destination-port eq 10077
+ rule 390 permit tcp source any destination 192.168.0.1 0 destination-port eq 10078
+ rule 395 permit tcp source any destination 192.168.0.1 0 destination-port eq 10079
+ rule 400 permit tcp source any destination 192.168.0.1 0 destination-port eq 10080
+ rule 405 permit tcp source any destination 192.168.0.1 0 destination-port eq 10081
+ rule 410 permit tcp source any destination 192.168.0.1 0 destination-port eq 10082
+ rule 415 permit tcp source any destination 192.168.0.1 0 destination-port eq 10083
+ rule 420 permit tcp source any destination 192.168.0.1 0 destination-port eq 10084
+ rule 425 permit tcp source any destination 192.168.0.1 0 destination-port eq 10085
+ rule 430 permit tcp source any destination 192.168.0.1 0 destination-port eq 10086
+ rule 435 permit tcp source any destination 192.168.0.1 0 destination-port eq 10087
+ rule 440 permit tcp source any destination 192.168.0.1 0 destination-port eq 10088
+ rule 445 permit tcp source any destination 192.168.0.1 0 destination-port eq 10089
+ rule 450 permit tcp source any destination 192.168.0.1 0 destination-port eq 10090
+ rule 455 permit tcp source any destination 192.168.0.1 0 destination-port eq 10091
+ rule 460 permit tcp source any destination 192.168.0.1 0 destination-port eq 10092
+ rule 465 permit tcp source any destination 192.168.0.1 0 destination-port eq 10093
+ rule 470 permit tcp source any destination 192.168.0.1 0 destination-port eq 10094
+ rule 475 permit tcp source any destination 192.168.0.1 0 destination-port eq 10095
+ rule 480 permit tcp source any destination 192.168.0.1 0 destination-port eq 10096
+ rule 485 permit tcp source any destination 192.168.0.1 0 destination-port eq 10097
+ rule 490 permit tcp source any destination 192.168.0.1 0 destination-port eq 10098
+ rule 495 permit tcp source any destination 192.168.0.1 0 destination-port eq 10099
+ rule 500 permit tcp source any destination 192.168.0.1 0 destination-port eq 10100
+ rule 505 permit tcp source any destination 192.168.0.1 0 destination-port eq 10101
+ rule 510 permit tcp source any destination 192.168.0.1 0 destination-port eq 10102
+ rule 515 permit tcp source any destination 192.168.0.1 0 destination-port eq 10103
+ rule 520 permit tcp source any destination 192.168.0.1 0 destination-port eq 10104
+ rule 525 permit tcp source any destination 192.168.0.1 0 destination-port eq 10105
+ rule 530 permit tcp source any destination 192.168.0.1 0 destination-port eq 10106
+ rule 535 permit tcp source any destination 192.168.0.1 0 destination-port eq 10107
+ rule 540 permit tcp source any destination 192.168.0.1 0 destination-port eq 10108
+ rule 545 permit tcp source any destination 192.168.0.1 0 destination-port eq 10109
+ rule 550 permit tcp source any destination 192.168.0.1 0 destination-port eq 10110
+ rule 555 permit tcp source any destination 192.168.0.1 0 destination-port eq 10111
+ rule 560 permit tcp source any destination 192.168.0.1 0 destination-port eq 10112
+ rule 565 permit tcp source any destination 192.168.0.1 0 destination-port eq 10113
+ rule 570 permit tcp source any destination 192.168.0.1 0 destination-port eq 10114
+ rule 575 permit tcp source any destination 192.168.0.1 0 destination-port eq 10115
+ rule 580 permit tcp source any destination 192.168.0.1 0 destination-port eq 10116
+ rule 585 permit tcp source any destination 192.168.0.1 0 destination-port eq 10117
+ rule 590 permit tcp source any destination 192.168.0.1 0 destination-port eq 10118
+ rule 595 permit tcp source any destination 192.168.0.1 0 destination-port eq 10119
+ rule 600 permit tcp source any destination 192.168.0.1 0 destination-port eq 10120
+ rule 605 permit tcp source any destination 192.168.0.1 0 destination-port eq 10121
+ rule 610 permit tcp source any destination 192.168.0.1 0 destination-port eq 10122
+ rule 615 permit tcp source any destination 192.168.0.1 0 destination-port eq 10123
+ rule 620 permit tcp source any destination 192.168.0.1 0 destination-port eq 10124
+ rule 625 permit tcp source any destination 192.168.0.1 0 destination-port eq 10125
+ rule 630 permit tcp source any destination 192.168.0.1 0 destination-port eq 10126
+ rule 635 permit tcp source any destination 192.168.0.1 0 destination-port eq 10127
+ rule 640 permit tcp source any destination 192.168.0.1 0 destination-port eq 10128
+ rule 645 permit tcp source any destination 192.168.0.1 0 destination-port eq 10129
+ rule 650 permit tcp source any destination 192.168.0.1 0 destination-port eq 10130
+ rule 655 permit tcp source any destination 192.168.0.1 0 destination-port eq 10131
+ rule 660 permit tcp source any destination 192.168.0.1 0 destination-port eq 10132
+ rule 665 permit tcp source any destination 192.168.0.1 0 destination-port eq 10133
+ rule 670 permit tcp source any destination 192.168.0.1 0 destination-port eq 10134
+ rule 675 permit tcp source any destination 192.168.0.1 0 destination-port eq 10135
+ rule 680 permit tcp source any destination 192.168.0.1 0 destination-port eq 10136
+ rule 685 permit tcp source any destination 192.168.0.1 0 destination-port eq 10137
+ rule 690 permit tcp source any destination 192.168.0.1 0 destination-port eq 10138
+ rule 695 permit tcp source any destination 192.168.0.1 0 destination-port eq 10139
+ rule 700 permit tcp source any destination 192.168.0.1 0 destination-port eq 10140
+ rule 705 permit tcp source any destination 192.168.0.1 0 destination-port eq 10141
+ rule 710 permit tcp source any destination 192.168.0.1 0 destination-port eq 10142
+ rule 715 permit tcp source any destination 192.168.0.1 0 destination-port eq 10143
+ rule 720 permit tcp source any destination 192.168.0.1 0 destination-port eq 10144
+ rule 725 permit tcp source any destination 192.168.0.1 0 destination-port eq 10145
+ rule 730 permit tcp source any destination 192.168.0.1 0 destination-port eq 10146
+ rule 735 permit tcp source any destination 192.168.0.1 0 destination-port eq 10147
+ rule 740 permit tcp source any destination 192.168.0.1 0 destination-port eq 10148
+ rule 745 permit tcp source any destination 192.168.0.1 0 destination-port eq 10149
+ rule 750 permit tcp source any destination 192.168.0.1 0 destination-port eq 10150
+ rule 755 permit tcp source any destination 192.168.0.1 0 destination-port eq 10151
+ rule 760 permit tcp source any destination 192.168.0.1 0 destination-port eq 10152
+ rule 765 permit tcp source any destination 192.168.0.1 0 destination-port eq 10153
+ rule 770 permit tcp source any destination 192.168.0.1 0 destination-port eq 10154
+ rule 775 permit tcp source any destination 192.168.0.1 0 destination-port eq 10155
+ rule 780 permit tcp source any destination 192.168.0.1 0 destination-port eq 10156
+ rule 785 permit tcp source any destination 192.168.0.1 0 destination-port eq 10157
+ rule 790 permit tcp source any destination 192.168.0.1 0 destination-port eq 10158
+ rule 795 permit tcp source any destination 192.168.0.1 0 destination-port eq 10159
+ rule 800 permit tcp source any destination 192.168.0.1 0 destination-port eq 10160
+ rule 805 permit tcp source any destination 192.168.0.1 0 destination-port eq 10161
+ rule 810 permit tcp source any destination 192.168.0.1 0 destination-port eq 10162
+ rule 815 permit tcp source any destination 192.168.0.1 0 destination-port eq 10163
+ rule 820 permit tcp source any destination 192.168.0.1 0 destination-port eq 10164
+ rule 825 permit tcp source any destination 192.168.0.1 0 destination-port eq 10165
+ rule 830 permit tcp source any destination 192.168.0.1 0 destination-port eq 10166
+ rule 835 permit tcp source any destination 192.168.0.1 0 destination-port eq 10167
+ rule 840 permit tcp source any destination 192.168.0.1 0 destination-port eq 10168
+ rule 845 permit tcp source any destination 192.168.0.1 0 destination-port eq 10169
+ rule 850 permit tcp source any destination 192.168.0.1 0 destination-port eq 10170
+ rule 855 permit tcp source any destination 192.168.0.1 0 destination-port eq 10171
+ rule 860 permit tcp source any destination 192.168.0.1 0 destination-port eq 10172
+ rule 865 permit tcp source any destination 192.168.0.1 0 destination-port eq 10173
+ rule 870 permit tcp source any destination 192.168.0.1 0 destination-port eq 10174
+ rule 875 permit tcp source any destination 192.168.0.1 0 destination-port eq 10175
+ rule 880 permit tcp source any destination 192.168.0.1 0 destination-port eq 10176
+ rule 885 permit tcp source any destination 192.168.0.1 0 destination-port eq 10177
+ rule 890 permit tcp source any destination 192.168.0.1 0 destination-port eq 10178
+ rule 895 permit tcp source any destination 192.168.0.1 0 destination-port eq 10179
+ rule 900 permit tcp source any destination 192.168.0.1 0 destination-port eq 10180
+ rule 905 permit tcp source any destination 192.168.0.1 0 destination-port eq 10181
+ rule 910 permit tcp source any destination 192.168.0.1 0 destination-port eq 10182
+ rule 915 permit tcp source any destination 192.168.0.1 0 destination-port eq 10183
+ rule 920 permit tcp source any destination 192.168.0.1 0 destination-port eq 10184
+ rule 925 permit tcp source any destination 192.168.0.1 0 destination-port eq 10185
+ rule 930 permit tcp source any destination 192.168.0.1 0 destination-port eq 10186
+ rule 935 permit tcp source any destination 192.168.0.1 0 destination-port eq 10187
+ rule 940 permit tcp source any destination 192.168.0.1 0 destination-port eq 10188
+ rule 945 permit tcp source any destination 192.168.0.1 0 destination-port eq 10189
+ rule 950 permit tcp source any destination 192.168.0.1 0 destination-port eq 10190
+ rule 955 permit tcp source any destination 192.168.0.1 0 destination-port eq 10191
+ rule 960 permit tcp source any destination 192.168.0.1 0 destination-port eq 10192
+ rule 965 permit tcp source any destination 192.168.0.1 0 destination-port eq 10193
+ rule 970 permit tcp source any destination 192.168.0.1 0 destination-port eq 10194
+ rule 975 permit tcp source any destination 192.168.0.1 0 destination-port eq 10195
+ rule 980 permit tcp source any destination 192.168.0.1 0 destination-port eq 10196
+ rule 985 permit tcp source any destination 192.168.0.1 0 destination-port eq 10197
+ rule 990 permit tcp source any destination 192.168.0.1 0 destination-port eq 10198
+ rule 995 permit tcp source any destination 192.168.0.1 0 destination-port eq 10199
+ rule 1000 permit tcp source any destination 192.168.0.1 0 destination-port eq 10200
+ rule 1005 permit tcp source any destination 192.168.0.1 0 destination-port eq 10201
+ rule 1010 permit tcp source any destination 192.168.0.1 0 destination-port eq 10202
+ rule 1015 permit tcp source any destination 192.168.0.1 0 destination-port eq 10203
+ rule 1020 permit tcp source any destination 192.168.0.1 0 destination-port eq 10204
+ rule 1025 permit tcp source any destination 192.168.0.1 0 destination-port eq 10205
+ rule 1030 permit tcp source any destination 192.168.0.1 0 destination-port eq 10206
+ rule 1035 permit tcp source any destination 192.168.0.1 0 destination-port eq 10207
+ rule 1040 permit tcp source any destination 192.168.0.1 0 destination-port eq 10208
+ rule 1045 permit tcp source any destination 192.168.0.1 0 destination-port eq 10209
+ rule 1050 permit tcp source any destination 192.168.0.1 0 destination-port eq 10210
+ rule 1055 permit tcp source any destination 192.168.0.1 0 destination-port eq 10211
+ rule 1060 permit tcp source any destination 192.168.0.1 0 destination-port eq 10212
+ rule 1065 permit tcp source any destination 192.168.0.1 0 destination-port eq 10213
+ rule 1070 permit tcp source any destination 192.168.0.1 0 destination-port eq 10214
+ rule 1075 permit tcp source any destination 192.168.0.1 0 destination-port eq 10215
+ rule 1080 permit tcp source any destination 192.168.0.1 0 destination-port eq 10216
+ rule 1085 permit tcp source any destination 192.168.0.1 0 destination-port eq 10217
+ rule 1090 permit tcp source any destination 192.168.0.1 0 destination-port eq 10218
+ rule 1095 permit tcp source any destination 192.168.0.1 0 destination-port eq 10219
+ rule 1100 permit tcp source any destination 192.168.0.1 0 destination-port eq 10220
+ rule 1105 permit tcp source any destination 192.168.0.1 0 destination-port eq 10221
+ rule 1110 permit tcp source any destination 192.168.0.1 0 destination-port eq 10222
+ rule 1115 permit tcp source any destination 192.168.0.1 0 destination-port eq 10223
+ rule 1120 permit tcp source any destination 192.168.0.1 0 destination-port eq 10224
+ rule 1125 permit tcp source any destination 192.168.0.1 0 destination-port eq 10225
+ rule 1130 permit tcp source any destination 192.168.0.1 0 destination-port eq 10226
+ rule 1135 permit tcp source any destination 192.168.0.1 0 destination-port eq 10227
+ rule 1140 permit tcp source any destination 192.168.0.1 0 destination-port eq 10228
+ rule 1145 permit tcp source any destination 192.168.0.1 0 destination-port eq 10229
+ rule 1150 permit tcp source any destination 192.168.0.1 0 destination-port eq 10230
+ rule 1155 permit tcp source any destination 192.168.0.1 0 destination-port eq 10231
+ rule 1160 permit tcp source any destination 192.168.0.1 0 destination-port eq 10232
+ rule 1165 permit tcp source any destination 192.168.0.1 0 destination-port eq 10233
+ rule 1170 permit tcp source any destination 192.168.0.1 0 destination-port eq 10234
+ rule 1175 permit tcp source any destination 192.168.0.1 0 destination-port eq 10235
+ rule 1180 permit tcp source any destination 192.168.0.1 0 destination-port eq 10236
+ rule 1185 permit tcp source any destination 192.168.0.1 0 destination-port eq 10237
+ rule 1190 permit tcp source any destination 192.168.0.1 0 destination-port eq 10238
+ rule 1195 permit tcp source any destination 192.168.0.1 0 destination-port eq 10239
+ rule 1200 permit tcp source any destination 192.168.0.1 0 destination-port eq 10240
+ rule 1205 permit tcp source any destination 192.168.0.1 0 destination-port eq 10241
+ rule 1210 permit tcp source any destination 192.168.0.1 0 destination-port eq 10242
+ rule 1215 permit tcp source any destination 192.168.0.1 0 destination-port eq 10243
+ rule 1220 permit tcp source any destination 192.168.0.1 0 destination-port eq 10244
+ rule 1225 permit tcp source any destination 192.168.0.1 0 destination-port eq 10245
+ rule 1230 permit tcp source any destination 192.168.0.1 0 destination-port eq 10246
+ rule 1235 permit tcp source any destination 192.168.0.1 0 destination-port eq 10247
+ rule 1240 permit tcp source any destination 192.168.0.1 0 destination-port eq 10248
+ rule 1245 permit tcp source any destination 192.168.0.1 0 destination-port eq 10249
+ rule 1250 permit tcp source any destination 192.168.0.1 0 destination-port eq 10250
+ rule 1255 permit tcp source any destination 192.168.0.1 0 destination-port eq 10251
+ rule 1260 permit tcp source any destination 192.168.0.1 0 destination-port eq 10252
+ rule 1265 permit tcp source any destination 192.168.0.1 0 destination-port eq 10253
+ rule 1270 permit tcp source any destination 192.168.0.1 0 destination-port eq 10254
+ rule 1275 permit tcp source any destination 192.168.0.1 0 destination-port eq 10255
+ rule 1280 permit tcp source any destination 192.168.0.1 0 destination-port eq 10256
+ rule 1285 permit tcp source any destination 192.168.0.1 0 destination-port eq 10257
+ rule 1290 permit tcp source any destination 192.168.0.1 0 destination-port eq 10258
+ rule 1295 permit tcp source any destination 192.168.0.1 0 destination-port eq 10259
+ rule 1300 permit tcp source any destination 192.168.0.1 0 destination-port eq 10260
+ rule 1305 permit tcp source any destination 192.168.0.1 0 destination-port eq 10261
+ rule 1310 permit tcp source any destination 192.168.0.1 0 destination-port eq 10262
+ rule 1315 permit tcp source any destination 192.168.0.1 0 destination-port eq 10263
+ rule 1320 permit tcp source any destination 192.168.0.1 0 destination-port eq 10264
+ rule 1325 permit tcp source any destination 192.168.0.1 0 destination-port eq 10265
+ rule 1330 permit tcp source any destination 192.168.0.1 0 destination-port eq 10266
+ rule 1335 permit tcp source any destination 192.168.0.1 0 destination-port eq 10267
+ rule 1340 permit tcp source any destination 192.168.0.1 0 destination-port eq 10268
+ rule 1345 permit tcp source any destination 192.168.0.1 0 destination-port eq 10269
+ rule 1350 permit tcp source any destination 192.168.0.1 0 destination-port eq 10270
+ rule 1355 permit tcp source any destination 192.168.0.1 0 destination-port eq 10271
+ rule 1360 permit tcp source any destination 192.168.0.1 0 destination-port eq 10272
+ rule 1365 permit tcp source any destination 192.168.0.1 0 destination-port eq 10273
+ rule 1370 permit tcp source any destination 192.168.0.1 0 destination-port eq 10274
+ rule 1375 permit tcp source any destination 192.168.0.1 0 destination-port eq 10275
+ rule 1380 permit tcp source any destination 192.168.0.1 0 destination-port eq 10276
+ rule 1385 permit tcp source any destination 192.168.0.1 0 destination-port eq 10277
+ rule 1390 permit tcp source any destination 192.168.0.1 0 destination-port eq 10278
+ rule 1395 permit tcp source any destination 192.168.0.1 0 destination-port eq 10279
+ rule 1400 permit tcp source any destination 192.168.0.1 0 destination-port eq 10280
+ rule 1405 permit tcp source any destination 192.168.0.1 0 destination-port eq 10281
+ rule 1410 permit tcp source any destination 192.168.0.1 0 destination-port eq 10282
+ rule 1415 permit tcp source any destination 192.168.0.1 0 destination-port eq 10283
+ rule 1420 permit tcp source any destination 192.168.0.1 0 destination-port eq 10284
+ rule 1425 permit tcp source any destination 192.168.0.1 0 destination-port eq 10285
+ rule 1430 permit tcp source any destination 192.168.0.1 0 destination-port eq 10286
+ rule 1435 permit tcp source any destination 192.168.0.1 0 destination-port eq 10287
+ rule 1440 permit tcp source any destination 192.168.0.1 0 destination-port eq 10288
+ rule 1445 permit tcp source any destination 192.168.0.1 0 destination-port eq 10289
+ rule 1450 permit tcp source any destination 192.168.0.1 0 destination-port eq 10290
+ rule 1455 permit tcp source any destination 192.168.0.1 0 destination-port eq 10291
+ rule 1460 permit tcp source any destination 192.168.0.1 0 destination-port eq 10292
+ rule 1465 permit tcp source any destination 192.168.0.1 0 destination-port eq 10293
+ rule 1470 permit tcp source any destination 192.168.0.1 0 destination-port eq 10294
+ rule 1475 permit tcp source any destination 192.168.0.1 0 destination-port eq 10295
+ rule 1480 permit tcp source any destination 192.168.0.1 0 destination-port eq 10296
+ rule 1485 permit tcp source any destination 192.168.0.1 0 destination-port eq 10297
+ rule 1490 permit tcp source any destination 192.168.0.1 0 destination-port eq 10298
+ rule 1495 permit tcp source any destination 192.168.0.1 0 destination-port eq 10299
+ rule 1500 permit tcp source any destination 192.168.0.1 0 destination-port eq 10300
+ rule 1505 permit tcp source any destination 192.168.0.1 0 destination-port eq 10301
+ rule 1510 permit tcp source any destination 192.168.0.1 0 destination-port eq 10302
+ rule 1515 permit tcp source any destination 192.168.0.1 0 destination-port eq 10303
+ rule 1520 permit tcp source any destination 192.168.0.1 0 destination-port eq 10304
+ rule 1525 permit tcp source any destination 192.168.0.1 0 destination-port eq 10305
+ rule 1530 permit tcp source any destination 192.168.0.1 0 destination-port eq 10306
+ rule 1535 permit tcp source any destination 192.168.0.1 0 destination-port eq 10307
+ rule 1540 permit tcp source any destination 192.168.0.1 0 destination-port eq 10308
+ rule 1545 permit tcp source any destination 192.168.0.1 0 destination-port eq 10309
+ rule 1550 permit tcp source any destination 192.168.0.1 0 destination-port eq 10310
+ rule 1555 permit tcp source any destination 192.168.0.1 0 destination-port eq 10311
+ rule 1560 permit tcp source any destination 192.168.0.1 0 destination-port eq 10312
+ rule 1565 permit tcp source any destination 192.168.0.1 0 destination-port eq 10313
+ rule 1570 permit tcp source any destination 192.168.0.1 0 destination-port eq 10314
+ rule 1575 permit tcp source any destination 192.168.0.1 0 destination-port eq 10315
+ rule 1580 permit tcp source any destination 192.168.0.1 0 destination-port eq 10316
+ rule 1585 permit tcp source any destination 192.168.0.1 0 destination-port eq 10317
+ rule 1590 permit tcp source any destination 192.168.0.1 0 destination-port eq 10318
+ rule 1595 permit tcp source any destination 192.168.0.1 0 destination-port eq 10319
+ rule 1600 permit tcp source any destination 192.168.0.1 0 destination-port eq 10320
+ rule 1605 permit tcp source any destination 192.168.0.1 0 destination-port eq 10321
+ rule 1610 permit tcp source any destination 192.168.0.1 0 destination-port eq 10322
+ rule 1615 permit tcp source any destination 192.168.0.1 0 destination-port eq 10323
+ rule 1620 permit tcp source any destination 192.168.0.1 0 destination-port eq 10324
+ rule 1625 permit tcp source any destination 192.168.0.1 0 destination-port eq 10325
+ rule 1630 permit tcp source any destination 192.168.0.1 0 destination-port eq 10326
+ rule 1635 permit tcp source any destination 192.168.0.1 0 destination-port eq 10327
+ rule 1640 permit tcp source any destination 192.168.0.1 0 destination-port eq 10328
+ rule 1645 permit tcp source any destination 192.168.0.1 0 destination-port eq 10329
+ rule 1650 permit tcp source any destination 192.168.0.1 0 destination-port eq 10330
+ rule 1655 permit tcp source any destination 192.168.0.1 0 destination-port eq 10331
+ rule 1660 permit tcp source any destination 192.168.0.1 0 destination-port eq 10332
+ rule 1665 permit tcp source any destination 192.168.0.1 0 destination-port eq 10333
+ rule 1670 permit tcp source any destination 192.168.0.1 0 destination-port eq 10334
+ rule 1675 permit tcp source any destination 192.168.0.1 0 destination-port eq 10335
+ rule 1680 permit tcp source any destination 192.168.0.1 0 destination-port eq 10336
+ rule 1685 permit tcp source any destination 192.168.0.1 0 destination-port eq 10337
+ rule 1690 permit tcp source any destination 192.168.0.1 0 destination-port eq 10338
+ rule 1695 permit tcp source any destination 192.168.0.1 0 destination-port eq 10339
+ rule 1700 permit tcp source any destination 192.168.0.1 0 destination-port eq 10340
+ rule 1705 permit tcp source any destination 192.168.0.1 0 destination-port eq 10341
+ rule 1710 permit tcp source any destination 192.168.0.1 0 destination-port eq 10342
+ rule 1715 permit tcp source any destination 192.168.0.1 0 destination-port eq 10343
+ rule 1720 permit tcp source any destination 192.168.0.1 0 destination-port eq 10344
+ rule 1725 permit tcp source any destination 192.168.0.1 0 destination-port eq 10345
+ rule 1730 permit tcp source any destination 192.168.0.1 0 destination-port eq 10346
+ rule 1735 permit tcp source any destination 192.168.0.1 0 destination-port eq 10347
+ rule 1740 permit tcp source any destination 192.168.0.1 0 destination-port eq 10348
+ rule 1745 permit tcp source any destination 192.168.0.1 0 destination-port eq 10349
+ rule 1750 permit tcp source any destination 192.168.0.1 0 destination-port eq 10350
+ rule 1755 permit tcp source any destination 192.168.0.1 0 destination-port eq 10351
+ rule 1760 permit tcp source any destination 192.168.0.1 0 destination-port eq 10352
+ rule 1765 permit tcp source any destination 192.168.0.1 0 destination-port eq 10353
+ rule 1770 permit tcp source any destination 192.168.0.1 0 destination-port eq 10354
+ rule 1775 permit tcp source any destination 192.168.0.1 0 destination-port eq 10355
+ rule 1780 permit tcp source any destination 192.168.0.1 0 destination-port eq 10356
+ rule 1785 permit tcp source any destination 192.168.0.1 0 destination-port eq 10357
+ rule 1790 permit tcp source any destination 192.168.0.1 0 destination-port eq 10358
+ rule 1795 permit tcp source any destination 192.168.0.1 0 destination-port eq 10359
+ rule 1800 permit tcp source any destination 192.168.0.1 0 destination-port eq 10360
+ rule 1805 permit tcp source any destination 192.168.0.1 0 destination-port eq 10361
+ rule 1810 permit tcp source any destination 192.168.0.1 0 destination-port eq 10362
+ rule 1815 permit tcp source any destination 192.168.0.1 0 destination-port eq 10363
+ rule 1820 permit tcp source any destination 192.168.0.1 0 destination-port eq 10364
+ rule 1825 permit tcp source any destination 192.168.0.1 0 destination-port eq 10365
+ rule 1830 permit tcp source any destination 192.168.0.1 0 destination-port eq 10366
+ rule 1835 permit tcp source any destination 192.168.0.1 0 destination-port eq 10367
+ rule 1840 permit tcp source any destination 192.168.0.1 0 destination-port eq 10368
+ rule 1845 permit tcp source any destination 192.168.0.1 0 destination-port eq 10369
+ rule 1850 permit tcp source any destination 192.168.0.1 0 destination-port eq 10370
+ rule 1855 permit tcp source any destination 192.168.0.1 0 destination-port eq 10371
+ rule 1860 permit tcp source any destination 192.168.0.1 0 destination-port eq 10372
+ rule 1865 permit tcp source any destination 192.168.0.1 0 destination-port eq 10373
+ rule 1870 permit tcp source any destination 192.168.0.1 0 destination-port eq 10374
+ rule 1875 permit tcp source any destination 192.168.0.1 0 destination-port eq 10375
+ rule 1880 permit tcp source any destination 192.168.0.1 0 destination-port eq 10376
+ rule 1885 permit tcp source any destination 192.168.0.1 0 destination-port eq 10377
+ rule 1890 permit tcp source any destination 192.168.0.1 0 destination-port eq 10378
+ rule 1895 permit tcp source any destination 192.168.0.1 0 destination-port eq 10379
+ rule 1900 permit tcp source any destination 192.168.0.1 0 destination-port eq 10380
+ rule 1905 permit tcp source any destination 192.168.0.1 0 destination-port eq 10381
+ rule 1910 permit tcp source any destination 192.168.0.1 0 destination-port eq 10382
+ rule 1915 permit tcp source any destination 192.168.0.1 0 destination-port eq 10383
+ rule 1920 permit tcp source any destination 192.168.0.1 0 destination-port eq 10384
+ rule 1925 permit tcp source any destination 192.168.0.1 0 destination-port eq 10385
+ rule 1930 permit tcp source any destination 192.168.0.1 0 destination-port eq 10386
+ rule 1935 permit tcp source any destination 192.168.0.1 0 destination-port eq 10387
+ rule 1940 permit tcp source any destination 192.168.0.1 0 destination-port eq 10388
+ rule 1945 permit tcp source any destination 192.168.0.1 0 destination-port eq 10389
+ rule 1950 permit tcp source any destination 192.168.0.1 0 destination-port eq 10390
+ rule 1955 permit tcp source any destination 192.168.0.1 0 destination-port eq 10391
+ rule 1960 permit tcp source any destination 192.168.0.1 0 destination-port eq 10392
+ rule 1965 permit tcp source any destination 192.168.0.1 0 destination-port eq 10393
+ rule 1970 permit tcp source any destination 192.168.0.1 0 destination-port eq 10394
+ rule 1975 permit tcp source any destination 192.168.0.1 0 destination-port eq 10395
+ rule 1980 permit tcp source any destination 192.168.0.1 0 destination-port eq 10396
+ rule 1985 permit tcp source any destination 192.168.0.1 0 destination-port eq 10397
+ rule 1990 permit tcp source any destination 192.168.0.1 0 destination-port eq 10398
+ rule 1995 permit tcp source any destination 192.168.0.1 0 destination-port eq 10399
+ rule 2000 permit tcp source any destination 192.168.0.1 0 destination-port eq 10400
+ rule 2005 permit tcp source any destination 192.168.0.1 0 destination-port eq 10401
+ rule 2010 permit tcp source any destination 192.168.0.1 0 destination-port eq 10402
+ rule 2015 permit tcp source any destination 192.168.0.1 0 destination-port eq 10403
+ rule 2020 permit tcp source any destination 192.168.0.1 0 destination-port eq 10404
+ rule 2025 permit tcp source any destination 192.168.0.1 0 destination-port eq 10405
+ rule 2030 permit tcp source any destination 192.168.0.1 0 destination-port eq 10406
+ rule 2035 permit tcp source any destination 192.168.0.1 0 destination-port eq 10407
+ rule 2040 permit tcp source any destination 192.168.0.1 0 destination-port eq 10408
+ rule 2045 permit tcp source any destination 192.168.0.1 0 destination-port eq 10409
+ rule 2050 permit tcp source any destination 192.168.0.1 0 destination-port eq 10410
+ rule 2055 permit tcp source any destination 192.168.0.1 0 destination-port eq 10411
+ rule 2060 permit tcp source any destination 192.168.0.1 0 destination-port eq 10412
+ rule 2065 permit tcp source any destination 192.168.0.1 0 destination-port eq 10413
+ rule 2070 permit tcp source any destination 192.168.0.1 0 destination-port eq 10414
+ rule 2075 permit tcp source any destination 192.168.0.1 0 destination-port eq 10415
+ rule 2080 permit tcp source any destination 192.168.0.1 0 destination-port eq 10416
+ rule 2085 permit tcp source any destination 192.168.0.1 0 destination-port eq 10417
+ rule 2090 permit tcp source any destination 192.168.0.1 0 destination-port eq 10418
+ rule 2095 permit tcp source any destination 192.168.0.1 0 destination-port eq 10419
+ rule 2100 permit tcp source any destination 192.168.0.1 0 destination-port eq 10420
+ rule 2105 permit tcp source any destination 192.168.0.1 0 destination-port eq 10421
+ rule 2110 permit tcp source any destination 192.168.0.1 0 destination-port eq 10422
+ rule 2115 permit tcp source any destination 192.168.0.1 0 destination-port eq 10423
+ rule 2120 permit tcp source any destination 192.168.0.1 0 destination-port eq 10424
+ rule 2125 permit tcp source any destination 192.168.0.1 0 destination-port eq 10425
+ rule 2130 permit tcp source any destination 192.168.0.1 0 destination-port eq 10426
+ rule 2135 permit tcp source any destination 192.168.0.1 0 destination-port eq 10427
+ rule 2140 permit tcp source any destination 192.168.0.1 0 destination-port eq 10428
+ rule 2145 permit tcp source any destination 192.168.0.1 0 destination-port eq 10429
+ rule 2150 permit tcp source any destination 192.168.0.1 0 destination-port eq 10430
+ rule 2155 permit tcp source any destination 192.168.0.1 0 destination-port eq 10431
+ rule 2160 permit tcp source any destination 192.168.0.1 0 destination-port eq 10432
+ rule 2165 permit tcp source any destination 192.168.0.1 0 destination-port eq 10433
+ rule 2170 permit tcp source any destination 192.168.0.1 0 destination-port eq 10434
+ rule 2175 permit tcp source any destination 192.168.0.1 0 destination-port eq 10435
+ rule 2180 permit tcp source any destination 192.168.0.1 0 destination-port eq 10436
+ rule 2185 permit tcp source any destination 192.168.0.1 0 destination-port eq 10437
+ rule 2190 permit tcp source any destination 192.168.0.1 0 destination-port eq 10438
+ rule 2195 permit tcp source any destination 192.168.0.1 0 destination-port eq 10439
+ rule 2200 permit tcp source any destination 192.168.0.1 0 destination-port eq 10440
+ rule 2205 permit tcp source any destination 192.168.0.1 0 destination-port eq 10441
+ rule 2210 permit tcp source any destination 192.168.0.1 0 destination-port eq 10442
+ rule 2215 permit tcp source any destination 192.168.0.1 0 destination-port eq 10443
+ rule 2220 permit tcp source any destination 192.168.0.1 0 destination-port eq 10444
+ rule 2225 permit tcp source any destination 192.168.0.1 0 destination-port eq 10445
+ rule 2230 permit tcp source any destination 192.168.0.1 0 destination-port eq 10446
+ rule 2235 permit tcp source any destination 192.168.0.1 0 destination-port eq 10447
+ rule 2240 permit tcp source any destination 192.168.0.1 0 destination-port eq 10448
+ rule 2245 permit tcp source any destination 192.168.0.1 0 destination-port eq 10449
+ rule 2250 permit tcp source any destination 192.168.0.1 0 destination-port eq 10450
+ rule 2255 permit tcp source any destination 192.168.0.1 0 destination-port eq 10451
+ rule 2260 permit tcp source any destination 192.168.0.1 0 destination-port eq 10452
+ rule 2265 permit tcp source any destination 192.168.0.1 0 destination-port eq 10453
+ rule 2270 permit tcp source any destination 192.168.0.1 0 destination-port eq 10454
+ rule 2275 permit tcp source any destination 192.168.0.1 0 destination-port eq 10455
+ rule 2280 permit tcp source any destination 192.168.0.1 0 destination-port eq 10456
+ rule 2285 permit tcp source any destination 192.168.0.1 0 destination-port eq 10457
+ rule 2290 permit tcp source any destination 192.168.0.1 0 destination-port eq 10458
+ rule 2295 permit tcp source any destination 192.168.0.1 0 destination-port eq 10459
+ rule 2300 permit tcp source any destination 192.168.0.1 0 destination-port eq 10460
+ rule 2305 permit tcp source any destination 192.168.0.1 0 destination-port eq 10461
+ rule 2310 permit tcp source any destination 192.168.0.1 0 destination-port eq 10462
+ rule 2315 permit tcp source any destination 192.168.0.1 0 destination-port eq 10463
+ rule 2320 permit tcp source any destination 192.168.0.1 0 destination-port eq 10464
+ rule 2325 permit tcp source any destination 192.168.0.1 0 destination-port eq 10465
+ rule 2330 permit tcp source any destination 192.168.0.1 0 destination-port eq 10466
+ rule 2335 permit tcp source any destination 192.168.0.1 0 destination-port eq 10467
+ rule 2340 permit tcp source any destination 192.168.0.1 0 destination-port eq 10468
+ rule 2345 permit tcp source any destination 192.168.0.1 0 destination-port eq 10469
+ rule 2350 permit tcp source any destination 192.168.0.1 0 destination-port eq 10470
+ rule 2355 permit tcp source any destination 192.168.0.1 0 destination-port eq 10471
+ rule 2360 permit tcp source any destination 192.168.0.1 0 destination-port eq 10472
+ rule 2365 permit tcp source any destination 192.168.0.1 0 destination-port eq 10473
+ rule 2370 permit tcp source any destination 192.168.0.1 0 destination-port eq 10474
+ rule 2375 permit tcp source any destination 192.168.0.1 0 destination-port eq 10475
+ rule 2380 permit tcp source any destination 192.168.0.1 0 destination-port eq 10476
+ rule 2385 permit tcp source any destination 192.168.0.1 0 destination-port eq 10477
+ rule 2390 permit tcp source any destination 192.168.0.1 0 destination-port eq 10478
+ rule 2395 permit tcp source any destination 192.168.0.1 0 destination-port eq 10479
+ rule 2400 permit tcp source any destination 192.168.0.1 0 destination-port eq 10480
+ rule 2405 permit tcp source any destination 192.168.0.1 0 destination-port eq 10481
+ rule 2410 permit tcp source any destination 192.168.0.1 0 destination-port eq 10482
+ rule 2415 permit tcp source any destination 192.168.0.1 0 destination-port eq 10483
+ rule 2420 permit tcp source any destination 192.168.0.1 0 destination-port eq 10484
+ rule 2425 permit tcp source any destination 192.168.0.1 0 destination-port eq 10485
+ rule 2430 permit tcp source any destination 192.168.0.1 0 destination-port eq 10486
+ rule 2435 permit tcp source any destination 192.168.0.1 0 destination-port eq 10487
+ rule 2440 permit tcp source any destination 192.168.0.1 0 destination-port eq 10488
+ rule 2445 permit tcp source any destination 192.168.0.1 0 destination-port eq 10489
+ rule 2450 permit tcp source any destination 192.168.0.1 0 destination-port eq 10490
+ rule 2455 permit tcp source any destination 192.168.0.1 0 destination-port eq 10491
+ rule 2460 permit tcp source any destination 192.168.0.1 0 destination-port eq 10492
+ rule 2465 permit tcp source any destination 192.168.0.1 0 destination-port eq 10493
+ rule 2470 permit tcp source any destination 192.168.0.1 0 destination-port eq 10494
+ rule 2475 permit tcp source any destination 192.168.0.1 0 destination-port eq 10495
+ rule 2480 permit tcp source any destination 192.168.0.1 0 destination-port eq 10496
+ rule 2485 permit tcp source any destination 192.168.0.1 0 destination-port eq 10497
+ rule 2490 permit tcp source any destination 192.168.0.1 0 destination-port eq 10498
+ rule 2495 permit tcp source any destination 192.168.0.1 0 destination-port eq 10499
+ rule 2500 permit tcp source any destination 192.168.0.1 0 destination-port eq 10500
+ rule 2505 permit tcp source any destination 192.168.0.1 0 destination-port eq 10501
+ rule 2510 permit tcp source any destination 192.168.0.1 0 destination-port eq 10502
+ rule 2515 permit tcp source any destination 192.168.0.1 0 destination-port eq 10503
+ rule 2520 permit tcp source any destination 192.168.0.1 0 destination-port eq 10504
+ rule 2525 permit tcp source any destination 192.168.0.1 0 destination-port eq 10505
+ rule 2530 permit tcp source any destination 192.168.0.1 0 destination-port eq 10506
+ rule 2535 permit tcp source any destination 192.168.0.1 0 destination-port eq 10507
+ rule 2540 permit tcp source any destination 192.168.0.1 0 destination-port eq 10508
+ rule 2545 permit tcp source any destination 192.168.0.1 0 destination-port eq 10509
+ rule 2550 permit tcp source any destination 192.168.0.1 0 destination-port eq 10510
+ rule 2555 permit tcp source any destination 192.168.0.1 0 destination-port eq 10511
+ rule 2560 permit tcp source any destination 192.168.0.1 0 destination-port eq 10512
+ rule 2565 permit tcp source any destination 192.168.0.1 0 destination-port eq 10513
+ rule 2570 permit tcp source any destination 192.168.0.1 0 destination-port eq 10514
+ rule 2575 permit tcp source any destination 192.168.0.1 0 destination-port eq 10515
+ rule 2580 permit tcp source any destination 192.168.0.1 0 destination-port eq 10516
+ rule 2585 permit tcp source any destination 192.168.0.1 0 destination-port eq 10517
+ rule 2590 permit tcp source any destination 192.168.0.1 0 destination-port eq 10518
+ rule 2595 permit tcp source any destination 192.168.0.1 0 destination-port eq 10519
+ rule 2600 permit tcp source any destination 192.168.0.1 0 destination-port eq 10520
+ rule 2605 permit tcp source any destination 192.168.0.1 0 destination-port eq 10521
+ rule 2610 permit tcp source any destination 192.168.0.1 0 destination-port eq 10522
+ rule 2615 permit tcp source any destination 192.168.0.1 0 destination-port eq 10523
+ rule 2620 permit tcp source any destination 192.168.0.1 0 destination-port eq 10524
+ rule 2625 permit tcp source any destination 192.168.0.1 0 destination-port eq 10525
+ rule 2630 permit tcp source any destination 192.168.0.1 0 destination-port eq 10526
+ rule 2635 permit tcp source any destination 192.168.0.1 0 destination-port eq 10527
+ rule 2640 permit tcp source any destination 192.168.0.1 0 destination-port eq 10528
+ rule 2645 permit tcp source any destination 192.168.0.1 0 destination-port eq 10529
+ rule 2650 permit tcp source any destination 192.168.0.1 0 destination-port eq 10530
+ rule 2655 permit tcp source any destination 192.168.0.1 0 destination-port eq 10531
+ rule 2660 permit tcp source any destination 192.168.0.1 0 destination-port eq 10532
+ rule 2665 permit tcp source any destination 192.168.0.1 0 destination-port eq 10533
+ rule 2670 permit tcp source any destination 192.168.0.1 0 destination-port eq 10534
+ rule 2675 permit tcp source any destination 192.168.0.1 0 destination-port eq 10535
+ rule 2680 permit tcp source any destination 192.168.0.1 0 destination-port eq 10536
+ rule 2685 permit tcp source any destination 192.168.0.1 0 destination-port eq 10537
+ rule 2690 permit tcp source any destination 192.168.0.1 0 destination-port eq 10538
+ rule 2695 permit tcp source any destination 192.168.0.1 0 destination-port eq 10539
+ rule 2700 permit tcp source any destination 192.168.0.1 0 destination-port eq 10540
+ rule 2705 permit tcp source any destination 192.168.0.1 0 destination-port eq 10541
+ rule 2710 permit tcp source any destination 192.168.0.1 0 destination-port eq 10542
+ rule 2715 permit tcp source any destination 192.168.0.1 0 destination-port eq 10543
+ rule 2720 permit tcp source any destination 192.168.0.1 0 destination-port eq 10544
+ rule 2725 permit tcp source any destination 192.168.0.1 0 destination-port eq 10545
+ rule 2730 permit tcp source any destination 192.168.0.1 0 destination-port eq 10546
+ rule 2735 permit tcp source any destination 192.168.0.1 0 destination-port eq 10547
+ rule 2740 permit tcp source any destination 192.168.0.1 0 destination-port eq 10548
+ rule 2745 permit tcp source any destination 192.168.0.1 0 destination-port eq 10549
+ rule 2750 permit tcp source any destination 192.168.0.1 0 destination-port eq 10550
+ rule 2755 permit tcp source any destination 192.168.0.1 0 destination-port eq 10551
+ rule 2760 permit tcp source any destination 192.168.0.1 0 destination-port eq 10552
+ rule 2765 permit tcp source any destination 192.168.0.1 0 destination-port eq 10553
+ rule 2770 permit tcp source any destination 192.168.0.1 0 destination-port eq 10554
+ rule 2775 permit tcp source any destination 192.168.0.1 0 destination-port eq 10555
+ rule 2780 permit tcp source any destination 192.168.0.1 0 destination-port eq 10556
+ rule 2785 permit tcp source any destination 192.168.0.1 0 destination-port eq 10557
+ rule 2790 permit tcp source any destination 192.168.0.1 0 destination-port eq 10558
+ rule 2795 permit tcp source any destination 192.168.0.1 0 destination-port eq 10559
+ rule 2800 permit tcp source any destination 192.168.0.1 0 destination-port eq 10560
+ rule 2805 permit tcp source any destination 192.168.0.1 0 destination-port eq 10561
+ rule 2810 permit tcp source any destination 192.168.0.1 0 destination-port eq 10562
+ rule 2815 permit tcp source any destination 192.168.0.1 0 destination-port eq 10563
+ rule 2820 permit tcp source any destination 192.168.0.1 0 destination-port eq 10564
+ rule 2825 permit tcp source any destination 192.168.0.1 0 destination-port eq 10565
+ rule 2830 permit tcp source any destination 192.168.0.1 0 destination-port eq 10566
+ rule 2835 permit tcp source any destination 192.168.0.1 0 destination-port eq 10567
+ rule 2840 permit tcp source any destination 192.168.0.1 0 destination-port eq 10568
+ rule 2845 permit tcp source any destination 192.168.0.1 0 destination-port eq 10569
+ rule 2850 permit tcp source any destination 192.168.0.1 0 destination-port eq 10570
+ rule 2855 permit tcp source any destination 192.168.0.1 0 destination-port eq 10571
+ rule 2860 permit tcp source any destination 192.168.0.1 0 destination-port eq 10572
+ rule 2865 permit tcp source any destination 192.168.0.1 0 destination-port eq 10573
+ rule 2870 permit tcp source any destination 192.168.0.1 0 destination-port eq 10574
+ rule 2875 permit tcp source any destination 192.168.0.1 0 destination-port eq 10575
+ rule 2880 permit tcp source any destination 192.168.0.1 0 destination-port eq 10576
+ rule 2885 permit tcp source any destination 192.168.0.1 0 destination-port eq 10577
+ rule 2890 permit tcp source any destination 192.168.0.1 0 destination-port eq 10578
+ rule 2895 permit tcp source any destination 192.168.0.1 0 destination-port eq 10579
+ rule 2900 permit tcp source any destination 192.168.0.1 0 destination-port eq 10580
+ rule 2905 permit tcp source any destination 192.168.0.1 0 destination-port eq 10581
+ rule 2910 permit tcp source any destination 192.168.0.1 0 destination-port eq 10582
+ rule 2915 permit tcp source any destination 192.168.0.1 0 destination-port eq 10583
+ rule 2920 permit tcp source any destination 192.168.0.1 0 destination-port eq 10584
+ rule 2925 permit tcp source any destination 192.168.0.1 0 destination-port eq 10585
+ rule 2930 permit tcp source any destination 192.168.0.1 0 destination-port eq 10586
+ rule 2935 permit tcp source any destination 192.168.0.1 0 destination-port eq 10587
+ rule 2940 permit tcp source any destination 192.168.0.1 0 destination-port eq 10588
+ rule 2945 permit tcp source any destination 192.168.0.1 0 destination-port eq 10589
+ rule 2950 permit tcp source any destination 192.168.0.1 0 destination-port eq 10590
+ rule 2955 permit tcp source any destination 192.168.0.1 0 destination-port eq 10591
+ rule 2960 permit tcp source any destination 192.168.0.1 0 destination-port eq 10592
+ rule 2965 permit tcp source any destination 192.168.0.1 0 destination-port eq 10593
+ rule 2970 permit tcp source any destination 192.168.0.1 0 destination-port eq 10594
+ rule 2975 permit tcp source any destination 192.168.0.1 0 destination-port eq 10595
+ rule 2980 permit tcp source any destination 192.168.0.1 0 destination-port eq 10596
+ rule 2985 permit tcp source any destination 192.168.0.1 0 destination-port eq 10597
+ rule 2990 permit tcp source any destination 192.168.0.1 0 destination-port eq 10598
+ rule 2995 permit tcp source any destination 192.168.0.1 0 destination-port eq 10599
+ rule 3000 permit tcp source any destination 192.168.0.1 0 destination-port eq 10600
+#
+acl number 3002
+ rule 5 permit tcp source any destination 10.2.0.1 0 destination-port eq 22
+ rule 10 permit tcp source any destination 10.2.0.2 0 destination-port eq 22
+ rule 15 permit tcp source any destination 10.2.0.3 0 destination-port eq 22
+ rule 20 permit tcp source any destination 10.2.0.4 0 destination-port eq 22
+ rule 25 permit tcp source any destination 10.2.0.5 0 destination-port eq 22
+ rule 30 permit tcp source any destination 10.2.0.6 0 destination-port eq 22
+ rule 35 permit tcp source any destination 10.2.0.7 0 destination-port eq 22
+ rule 40 permit tcp source any destination 10.2.0.8 0 destination-port eq 22
+ rule 45 permit tcp source any destination 10.2.0.9 0 destination-port eq 22
+ rule 50 permit tcp source any destination 10.2.0.10 0 destination-port eq 22
+ rule 55 permit tcp source any destination 10.2.0.11 0 destination-port eq 22
+ rule 60 permit tcp source any destination 10.2.0.12 0 destination-port eq 22
+ rule 65 permit tcp source any destination 10.2.0.13 0 destination-port eq 22
+ rule 70 permit tcp source any destination 10.2.0.14 0 destination-port eq 22
+ rule 75 permit tcp source any destination 10.2.0.15 0 destination-port eq 22
+ rule 80 permit tcp source any destination 10.2.0.16 0 destination-port eq 22
+ rule 85 permit tcp source any destination 10.2.0.17 0 destination-port eq 22
+ rule 90 permit tcp source any destination 10.2.0.18 0 destination-port eq 22
+ rule 95 permit tcp source any destination 10.2.0.19 0 destination-port eq 22
+ rule 100 permit tcp source any destination 10.2.0.20 0 destination-port eq 22
+ rule 105 permit tcp source any destination 10.2.0.21 0 destination-port eq 22
+ rule 110 permit tcp source any destination 10.2.0.22 0 destination-port eq 22
+ rule 115 permit tcp source any destination 10.2.0.23 0 destination-port eq 22
+ rule 120 permit tcp source any destination 10.2.0.24 0 destination-port eq 22
+ rule 125 permit tcp source any destination 10.2.0.25 0 destination-port eq 22
+ rule 130 permit tcp source any destination 10.2.0.26 0 destination-port eq 22
+ rule 135 permit tcp source any destination 10.2.0.27 0 destination-port eq 22
+ rule 140 permit tcp source any destination 10.2.0.28 0 destination-port eq 22
+ rule 145 permit tcp source any destination 10.2.0.29 0 destination-port eq 22
+ rule 150 permit tcp source any destination 10.2.0.30 0 destination-port eq 22
+ rule 155 permit tcp source any destination 10.2.0.31 0 destination-port eq 22
+ rule 160 permit tcp source any destination 10.2.0.32 0 destination-port eq 22
+ rule 165 permit tcp source any destination 10.2.0.33 0 destination-port eq 22
+ rule 170 permit tcp source any destination 10.2.0.34 0 destination-port eq 22
+ rule 175 permit tcp source any destination 10.2.0.35 0 destination-port eq 22
+ rule 180 permit tcp source any destination 10.2.0.36 0 destination-port eq 22
+ rule 185 permit tcp source any destination 10.2.0.37 0 destination-port eq 22
+ rule 190 permit tcp source any destination 10.2.0.38 0 destination-port eq 22
+ rule 195 permit tcp source any destination 10.2.0.39 0 destination-port eq 22
+ rule 200 permit tcp source any destination 10.2.0.40 0 destination-port eq 22
+ rule 205 permit tcp source any destination 10.2.0.41 0 destination-port eq 22
+ rule 210 permit tcp source any destination 10.2.0.42 0 destination-port eq 22
+ rule 215 permit tcp source any destination 10.2.0.43 0 destination-port eq 22
+ rule 220 permit tcp source any destination 10.2.0.44 0 destination-port eq 22
+ rule 225 permit tcp source any destination 10.2.0.45 0 destination-port eq 22
+ rule 230 permit tcp source any destination 10.2.0.46 0 destination-port eq 22
+ rule 235 permit tcp source any destination 10.2.0.47 0 destination-port eq 22
+ rule 240 permit tcp source any destination 10.2.0.48 0 destination-port eq 22
+ rule 245 permit tcp source any destination 10.2.0.49 0 destination-port eq 22
+ rule 250 permit tcp source any destination 10.2.0.50 0 destination-port eq 22
+ rule 255 permit tcp source any destination 10.2.0.51 0 destination-port eq 22
+ rule 260 permit tcp source any destination 10.2.0.52 0 destination-port eq 22
+ rule 265 permit tcp source any destination 10.2.0.53 0 destination-port eq 22
+ rule 270 permit tcp source any destination 10.2.0.54 0 destination-port eq 22
+ rule 275 permit tcp source any destination 10.2.0.55 0 destination-port eq 22
+ rule 280 permit tcp source any destination 10.2.0.56 0 destination-port eq 22
+ rule 285 permit tcp source any destination 10.2.0.57 0 destination-port eq 22
+ rule 290 permit tcp source any destination 10.2.0.58 0 destination-port eq 22
+ rule 295 permit tcp source any destination 10.2.0.59 0 destination-port eq 22
+ rule 300 permit tcp source any destination 10.2.0.60 0 destination-port eq 22
+ rule 305 permit tcp source any destination 10.2.0.61 0 destination-port eq 22
+ rule 310 permit tcp source any destination 10.2.0.62 0 destination-port eq 22
+ rule 315 permit tcp source any destination 10.2.0.63 0 destination-port eq 22
+ rule 320 permit tcp source any destination 10.2.0.64 0 destination-port eq 22
+ rule 325 permit tcp source any destination 10.2.0.65 0 destination-port eq 22
+ rule 330 permit tcp source any destination 10.2.0.66 0 destination-port eq 22
+ rule 335 permit tcp source any destination 10.2.0.67 0 destination-port eq 22
+ rule 340 permit tcp source any destination 10.2.0.68 0 destination-port eq 22
+ rule 345 permit tcp source any destination 10.2.0.69 0 destination-port eq 22
+ rule 350 permit tcp source any destination 10.2.0.70 0 destination-port eq 22
+ rule 355 permit tcp source any destination 10.2.0.71 0 destination-port eq 22
+ rule 360 permit tcp source any destination 10.2.0.72 0 destination-port eq 22
+ rule 365 permit tcp source any destination 10.2.0.73 0 destination-port eq 22
+ rule 370 permit tcp source any destination 10.2.0.74 0 destination-port eq 22
+ rule 375 permit tcp source any destination 10.2.0.75 0 destination-port eq 22
+ rule 380 permit tcp source any destination 10.2.0.76 0 destination-port eq 22
+ rule 385 permit tcp source any destination 10.2.0.77 0 destination-port eq 22
+ rule 390 permit tcp source any destination 10.2.0.78 0 destination-port eq 22
+ rule 395 permit tcp source any destination 10.2.0.79 0 destination-port eq 22
+ rule 400 permit tcp source any destination 10.2.0.80 0 destination-port eq 22
+ rule 405 permit tcp source any destination 10.2.0.81 0 destination-port eq 22
+ rule 410 permit tcp source any destination 10.2.0.82 0 destination-port eq 22
+ rule 415 permit tcp source any destination 10.2.0.83 0 destination-port eq 22
+ rule 420 permit tcp source any destination 10.2.0.84 0 destination-port eq 22
+ rule 425 permit tcp source any destination 10.2.0.85 0 destination-port eq 22
+ rule 430 permit tcp source any destination 10.2.0.86 0 destination-port eq 22
+ rule 435 permit tcp source any destination 10.2.0.87 0 destination-port eq 22
+ rule 440 permit tcp source any destination 10.2.0.88 0 destination-port eq 22
+ rule 445 permit tcp source any destination 10.2.0.89 0 destination-port eq 22
+ rule 450 permit tcp source any destination 10.2.0.90 0 destination-port eq 22
+ rule 455 permit tcp source any destination 10.2.0.91 0 destination-port eq 22
+ rule 460 permit tcp source any destination 10.2.0.92 0 destination-port eq 22
+ rule 465 permit tcp source any destination 10.2.0.93 0 destination-port eq 22
+ rule 470 permit tcp source any destination 10.2.0.94 0 destination-port eq 22
+ rule 475 permit tcp source any destination 10.2.0.95 0 destination-port eq 22
+ rule 480 permit tcp source any destination 10.2.0.96 0 destination-port eq 22
+ rule 485 permit tcp source any destination 10.2.0.97 0 destination-port eq 22
+ rule 490 permit tcp source any destination 10.2.0.98 0 destination-port eq 22
+ rule 495 permit tcp source any destination 10.2.0.99 0 destination-port eq 22
+ rule 500 permit tcp source any destination 10.2.0.100 0 destination-port eq 22
+ rule 505 permit tcp source any destination 10.2.0.101 0 destination-port eq 22
+ rule 510 permit tcp source any destination 10.2.0.102 0 destination-port eq 22
+ rule 515 permit tcp source any destination 10.2.0.103 0 destination-port eq 22
+ rule 520 permit tcp source any destination 10.2.0.104 0 destination-port eq 22
+ rule 525 permit tcp source any destination 10.2.0.105 0 destination-port eq 22
+ rule 530 permit tcp source any destination 10.2.0.106 0 destination-port eq 22
+ rule 535 permit tcp source any destination 10.2.0.107 0 destination-port eq 22
+ rule 540 permit tcp source any destination 10.2.0.108 0 destination-port eq 22
+ rule 545 permit tcp source any destination 10.2.0.109 0 destination-port eq 22
+ rule 550 permit tcp source any destination 10.2.0.110 0 destination-port eq 22
+ rule 555 permit tcp source any destination 10.2.0.111 0 destination-port eq 22
+ rule 560 permit tcp source any destination 10.2.0.112 0 destination-port eq 22
+ rule 565 permit tcp source any destination 10.2.0.113 0 destination-port eq 22
+ rule 570 permit tcp source any destination 10.2.0.114 0 destination-port eq 22
+ rule 575 permit tcp source any destination 10.2.0.115 0 destination-port eq 22
+ rule 580 permit tcp source any destination 10.2.0.116 0 destination-port eq 22
+ rule 585 permit tcp source any destination 10.2.0.117 0 destination-port eq 22
+ rule 590 permit tcp source any destination 10.2.0.118 0 destination-port eq 22
+ rule 595 permit tcp source any destination 10.2.0.119 0 destination-port eq 22
+ rule 600 permit tcp source any destination 10.2.0.120 0 destination-port eq 22
+ rule 605 permit tcp source any destination 10.2.0.121 0 destination-port eq 22
+ rule 610 permit tcp source any destination 10.2.0.122 0 destination-port eq 22
+ rule 615 permit tcp source any destination 10.2.0.123 0 destination-port eq 22
+ rule 620 permit tcp source any destination 10.2.0.124 0 destination-port eq 22
+ rule 625 permit tcp source any destination 10.2.0.125 0 destination-port eq 22
+ rule 630 permit tcp source any destination 10.2.0.126 0 destination-port eq 22
+ rule 635 permit tcp source any destination 10.2.0.127 0 destination-port eq 22
+ rule 640 permit tcp source any destination 10.2.0.128 0 destination-port eq 22
+ rule 645 permit tcp source any destination 10.2.0.129 0 destination-port eq 22
+ rule 650 permit tcp source any destination 10.2.0.130 0 destination-port eq 22
+ rule 655 permit tcp source any destination 10.2.0.131 0 destination-port eq 22
+ rule 660 permit tcp source any destination 10.2.0.132 0 destination-port eq 22
+ rule 665 permit tcp source any destination 10.2.0.133 0 destination-port eq 22
+ rule 670 permit tcp source any destination 10.2.0.134 0 destination-port eq 22
+ rule 675 permit tcp source any destination 10.2.0.135 0 destination-port eq 22
+ rule 680 permit tcp source any destination 10.2.0.136 0 destination-port eq 22
+ rule 685 permit tcp source any destination 10.2.0.137 0 destination-port eq 22
+ rule 690 permit tcp source any destination 10.2.0.138 0 destination-port eq 22
+ rule 695 permit tcp source any destination 10.2.0.139 0 destination-port eq 22
+ rule 700 permit tcp source any destination 10.2.0.140 0 destination-port eq 22
+ rule 705 permit tcp source any destination 10.2.0.141 0 destination-port eq 22
+ rule 710 permit tcp source any destination 10.2.0.142 0 destination-port eq 22
+ rule 715 permit tcp source any destination 10.2.0.143 0 destination-port eq 22
+ rule 720 permit tcp source any destination 10.2.0.144 0 destination-port eq 22
+ rule 725 permit tcp source any destination 10.2.0.145 0 destination-port eq 22
+ rule 730 permit tcp source any destination 10.2.0.146 0 destination-port eq 22
+ rule 735 permit tcp source any destination 10.2.0.147 0 destination-port eq 22
+ rule 740 permit tcp source any destination 10.2.0.148 0 destination-port eq 22
+ rule 745 permit tcp source any destination 10.2.0.149 0 destination-port eq 22
+ rule 750 permit tcp source any destination 10.2.0.150 0 destination-port eq 22
+ rule 755 permit tcp source any destination 10.2.0.151 0 destination-port eq 22
+ rule 760 permit tcp source any destination 10.2.0.152 0 destination-port eq 22
+ rule 765 permit tcp source any destination 10.2.0.153 0 destination-port eq 22
+ rule 770 permit tcp source any destination 10.2.0.154 0 destination-port eq 22
+ rule 775 permit tcp source any destination 10.2.0.155 0 destination-port eq 22
+ rule 780 permit tcp source any destination 10.2.0.156 0 destination-port eq 22
+ rule 785 permit tcp source any destination 10.2.0.157 0 destination-port eq 22
+ rule 790 permit tcp source any destination 10.2.0.158 0 destination-port eq 22
+ rule 795 permit tcp source any destination 10.2.0.159 0 destination-port eq 22
+ rule 800 permit tcp source any destination 10.2.0.160 0 destination-port eq 22
+ rule 805 permit tcp source any destination 10.2.0.161 0 destination-port eq 22
+ rule 810 permit tcp source any destination 10.2.0.162 0 destination-port eq 22
+ rule 815 permit tcp source any destination 10.2.0.163 0 destination-port eq 22
+ rule 820 permit tcp source any destination 10.2.0.164 0 destination-port eq 22
+ rule 825 permit tcp source any destination 10.2.0.165 0 destination-port eq 22
+ rule 830 permit tcp source any destination 10.2.0.166 0 destination-port eq 22
+ rule 835 permit tcp source any destination 10.2.0.167 0 destination-port eq 22
+ rule 840 permit tcp source any destination 10.2.0.168 0 destination-port eq 22
+ rule 845 permit tcp source any destination 10.2.0.169 0 destination-port eq 22
+ rule 850 permit tcp source any destination 10.2.0.170 0 destination-port eq 22
+ rule 855 permit tcp source any destination 10.2.0.171 0 destination-port eq 22
+ rule 860 permit tcp source any destination 10.2.0.172 0 destination-port eq 22
+ rule 865 permit tcp source any destination 10.2.0.173 0 destination-port eq 22
+ rule 870 permit tcp source any destination 10.2.0.174 0 destination-port eq 22
+ rule 875 permit tcp source any destination 10.2.0.175 0 destination-port eq 22
+ rule 880 permit tcp source any destination 10.2.0.176 0 destination-port eq 22
+ rule 885 permit tcp source any destination 10.2.0.177 0 destination-port eq 22
+ rule 890 permit tcp source any destination 10.2.0.178 0 destination-port eq 22
+ rule 895 permit tcp source any destination 10.2.0.179 0 destination-port eq 22
+ rule 900 permit tcp source any destination 10.2.0.180 0 destination-port eq 22
+ rule 905 permit tcp source any destination 10.2.0.181 0 destination-port eq 22
+ rule 910 permit tcp source any destination 10.2.0.182 0 destination-port eq 22
+ rule 915 permit tcp source any destination 10.2.0.183 0 destination-port eq 22
+ rule 920 permit tcp source any destination 10.2.0.184 0 destination-port eq 22
+ rule 925 permit tcp source any destination 10.2.0.185 0 destination-port eq 22
+ rule 930 permit tcp source any destination 10.2.0.186 0 destination-port eq 22
+ rule 935 permit tcp source any destination 10.2.0.187 0 destination-port eq 22
+ rule 940 permit tcp source any destination 10.2.0.188 0 destination-port eq 22
+ rule 945 permit tcp source any destination 10.2.0.189 0 destination-port eq 22
+ rule 950 permit tcp source any destination 10.2.0.190 0 destination-port eq 22
+ rule 955 permit tcp source any destination 10.2.0.191 0 destination-port eq 22
+ rule 960 permit tcp source any destination 10.2.0.192 0 destination-port eq 22
+ rule 965 permit tcp source any destination 10.2.0.193 0 destination-port eq 22
+ rule 970 permit tcp source any destination 10.2.0.194 0 destination-port eq 22
+ rule 975 permit tcp source any destination 10.2.0.195 0 destination-port eq 22
+ rule 980 permit tcp source any destination 10.2.0.196 0 destination-port eq 22
+ rule 985 permit tcp source any destination 10.2.0.197 0 destination-port eq 22
+ rule 990 permit tcp source any destination 10.2.0.198 0 destination-port eq 22
+ rule 995 permit tcp source any destination 10.2.0.199 0 destination-port eq 22
+ rule 1000 permit tcp source any destination 10.2.0.200 0 destination-port eq 22
+ rule 1005 permit tcp source any destination 10.2.0.201 0 destination-port eq 22
+ rule 1010 permit tcp source any destination 10.2.0.202 0 destination-port eq 22
+ rule 1015 permit tcp source any destination 10.2.0.203 0 destination-port eq 22
+ rule 1020 permit tcp source any destination 10.2.0.204 0 destination-port eq 22
+ rule 1025 permit tcp source any destination 10.2.0.205 0 destination-port eq 22
+ rule 1030 permit tcp source any destination 10.2.0.206 0 destination-port eq 22
+ rule 1035 permit tcp source any destination 10.2.0.207 0 destination-port eq 22
+ rule 1040 permit tcp source any destination 10.2.0.208 0 destination-port eq 22
+ rule 1045 permit tcp source any destination 10.2.0.209 0 destination-port eq 22
+ rule 1050 permit tcp source any destination 10.2.0.210 0 destination-port eq 22
+ rule 1055 permit tcp source any destination 10.2.0.211 0 destination-port eq 22
+ rule 1060 permit tcp source any destination 10.2.0.212 0 destination-port eq 22
+ rule 1065 permit tcp source any destination 10.2.0.213 0 destination-port eq 22
+ rule 1070 permit tcp source any destination 10.2.0.214 0 destination-port eq 22
+ rule 1075 permit tcp source any destination 10.2.0.215 0 destination-port eq 22
+ rule 1080 permit tcp source any destination 10.2.0.216 0 destination-port eq 22
+ rule 1085 permit tcp source any destination 10.2.0.217 0 destination-port eq 22
+ rule 1090 permit tcp source any destination 10.2.0.218 0 destination-port eq 22
+ rule 1095 permit tcp source any destination 10.2.0.219 0 destination-port eq 22
+ rule 1100 permit tcp source any destination 10.2.0.220 0 destination-port eq 22
+ rule 1105 permit tcp source any destination 10.2.0.221 0 destination-port eq 22
+ rule 1110 permit tcp source any destination 10.2.0.222 0 destination-port eq 22
+ rule 1115 permit tcp source any destination 10.2.0.223 0 destination-port eq 22
+ rule 1120 permit tcp source any destination 10.2.0.224 0 destination-port eq 22
+ rule 1125 permit tcp source any destination 10.2.0.225 0 destination-port eq 22
+ rule 1130 permit tcp source any destination 10.2.0.226 0 destination-port eq 22
+ rule 1135 permit tcp source any destination 10.2.0.227 0 destination-port eq 22
+ rule 1140 permit tcp source any destination 10.2.0.228 0 destination-port eq 22
+ rule 1145 permit tcp source any destination 10.2.0.229 0 destination-port eq 22
+ rule 1150 permit tcp source any destination 10.2.0.230 0 destination-port eq 22
+ rule 1155 permit tcp source any destination 10.2.0.231 0 destination-port eq 22
+ rule 1160 permit tcp source any destination 10.2.0.232 0 destination-port eq 22
+ rule 1165 permit tcp source any destination 10.2.0.233 0 destination-port eq 22
+ rule 1170 permit tcp source any destination 10.2.0.234 0 destination-port eq 22
+ rule 1175 permit tcp source any destination 10.2.0.235 0 destination-port eq 22
+ rule 1180 permit tcp source any destination 10.2.0.236 0 destination-port eq 22
+ rule 1185 permit tcp source any destination 10.2.0.237 0 destination-port eq 22
+ rule 1190 permit tcp source any destination 10.2.0.238 0 destination-port eq 22
+ rule 1195 permit tcp source any destination 10.2.0.239 0 destination-port eq 22
+ rule 1200 permit tcp source any destination 10.2.0.240 0 destination-port eq 22
+ rule 1205 permit tcp source any destination 10.2.0.241 0 destination-port eq 22
+ rule 1210 permit tcp source any destination 10.2.0.242 0 destination-port eq 22
+ rule 1215 permit tcp source any destination 10.2.0.243 0 destination-port eq 22
+ rule 1220 permit tcp source any destination 10.2.0.244 0 destination-port eq 22
+ rule 1225 permit tcp source any destination 10.2.0.245 0 destination-port eq 22
+ rule 1230 permit tcp source any destination 10.2.0.246 0 destination-port eq 22
+ rule 1235 permit tcp source any destination 10.2.0.247 0 destination-port eq 22
+ rule 1240 permit tcp source any destination 10.2.0.248 0 destination-port eq 22
+ rule 1245 permit tcp source any destination 10.2.0.249 0 destination-port eq 22
+ rule 1250 permit tcp source any destination 10.2.1.0 0 destination-port eq 22
+ rule 1255 permit tcp source any destination 10.2.1.1 0 destination-port eq 22
+ rule 1260 permit tcp source any destination 10.2.1.2 0 destination-port eq 22
+ rule 1265 permit tcp source any destination 10.2.1.3 0 destination-port eq 22
+ rule 1270 permit tcp source any destination 10.2.1.4 0 destination-port eq 22
+ rule 1275 permit tcp source any destination 10.2.1.5 0 destination-port eq 22
+ rule 1280 permit tcp source any destination 10.2.1.6 0 destination-port eq 22
+ rule 1285 permit tcp source any destination 10.2.1.7 0 destination-port eq 22
+ rule 1290 permit tcp source any destination 10.2.1.8 0 destination-port eq 22
+ rule 1295 permit tcp source any destination 10.2.1.9 0 destination-port eq 22
+ rule 1300 permit tcp source any destination 10.2.1.10 0 destination-port eq 22
+ rule 1305 permit tcp source any destination 10.2.1.11 0 destination-port eq 22
+ rule 1310 permit tcp source any destination 10.2.1.12 0 destination-port eq 22
+ rule 1315 permit tcp source any destination 10.2.1.13 0 destination-port eq 22
+ rule 1320 permit tcp source any destination 10.2.1.14 0 destination-port eq 22
+ rule 1325 permit tcp source any destination 10.2.1.15 0 destination-port eq 22
+ rule 1330 permit tcp source any destination 10.2.1.16 0 destination-port eq 22
+ rule 1335 permit tcp source any destination 10.2.1.17 0 destination-port eq 22
+ rule 1340 permit tcp source any destination 10.2.1.18 0 destination-port eq 22
+ rule 1345 permit tcp source any destination 10.2.1.19 0 destination-port eq 22
+ rule 1350 permit tcp source any destination 10.2.1.20 0 destination-port eq 22
+ rule 1355 permit tcp source any destination 10.2.1.21 0 destination-port eq 22
+ rule 1360 permit tcp source any destination 10.2.1.22 0 destination-port eq 22
+ rule 1365 permit tcp source any destination 10.2.1.23 0 destination-port eq 22
+ rule 1370 permit tcp source any destination 10.2.1.24 0 destination-port eq 22
+ rule 1375 permit tcp source any destination 10.2.1.25 0 destination-port eq 22
+ rule 1380 permit tcp source any destination 10.2.1.26 0 destination-port eq 22
+ rule 1385 permit tcp source any destination 10.2.1.27 0 destination-port eq 22
+ rule 1390 permit tcp source any destination 10.2.1.28 0 destination-port eq 22
+ rule 1395 permit tcp source any destination 10.2.1.29 0 destination-port eq 22
+ rule 1400 permit tcp source any destination 10.2.1.30 0 destination-port eq 22
+ rule 1405 permit tcp source any destination 10.2.1.31 0 destination-port eq 22
+ rule 1410 permit tcp source any destination 10.2.1.32 0 destination-port eq 22
+ rule 1415 permit tcp source any destination 10.2.1.33 0 destination-port eq 22
+ rule 1420 permit tcp source any destination 10.2.1.34 0 destination-port eq 22
+ rule 1425 permit tcp source any destination 10.2.1.35 0 destination-port eq 22
+ rule 1430 permit tcp source any destination 10.2.1.36 0 destination-port eq 22
+ rule 1435 permit tcp source any destination 10.2.1.37 0 destination-port eq 22
+ rule 1440 permit tcp source any destination 10.2.1.38 0 destination-port eq 22
+ rule 1445 permit tcp source any destination 10.2.1.39 0 destination-port eq 22
+ rule 1450 permit tcp source any destination 10.2.1.40 0 destination-port eq 22
+ rule 1455 permit tcp source any destination 10.2.1.41 0 destination-port eq 22
+ rule 1460 permit tcp source any destination 10.2.1.42 0 destination-port eq 22
+ rule 1465 permit tcp source any destination 10.2.1.43 0 destination-port eq 22
+ rule 1470 permit tcp source any destination 10.2.1.44 0 destination-port eq 22
+ rule 1475 permit tcp source any destination 10.2.1.45 0 destination-port eq 22
+ rule 1480 permit tcp source any destination 10.2.1.46 0 destination-port eq 22
+ rule 1485 permit tcp source any destination 10.2.1.47 0 destination-port eq 22
+ rule 1490 permit tcp source any destination 10.2.1.48 0 destination-port eq 22
+ rule 1495 permit tcp source any destination 10.2.1.49 0 destination-port eq 22
+ rule 1500 permit tcp source any destination 10.2.1.50 0 destination-port eq 22
+ rule 1505 permit tcp source any destination 10.2.1.51 0 destination-port eq 22
+ rule 1510 permit tcp source any destination 10.2.1.52 0 destination-port eq 22
+ rule 1515 permit tcp source any destination 10.2.1.53 0 destination-port eq 22
+ rule 1520 permit tcp source any destination 10.2.1.54 0 destination-port eq 22
+ rule 1525 permit tcp source any destination 10.2.1.55 0 destination-port eq 22
+ rule 1530 permit tcp source any destination 10.2.1.56 0 destination-port eq 22
+ rule 1535 permit tcp source any destination 10.2.1.57 0 destination-port eq 22
+ rule 1540 permit tcp source any destination 10.2.1.58 0 destination-port eq 22
+ rule 1545 permit tcp source any destination 10.2.1.59 0 destination-port eq 22
+ rule 1550 permit tcp source any destination 10.2.1.60 0 destination-port eq 22
+ rule 1555 permit tcp source any destination 10.2.1.61 0 destination-port eq 22
+ rule 1560 permit tcp source any destination 10.2.1.62 0 destination-port eq 22
+ rule 1565 permit tcp source any destination 10.2.1.63 0 destination-port eq 22
+ rule 1570 permit tcp source any destination 10.2.1.64 0 destination-port eq 22
+ rule 1575 permit tcp source any destination 10.2.1.65 0 destination-port eq 22
+ rule 1580 permit tcp source any destination 10.2.1.66 0 destination-port eq 22
+ rule 1585 permit tcp source any destination 10.2.1.67 0 destination-port eq 22
+ rule 1590 permit tcp source any destination 10.2.1.68 0 destination-port eq 22
+ rule 1595 permit tcp source any destination 10.2.1.69 0 destination-port eq 22
+ rule 1600 permit tcp source any destination 10.2.1.70 0 destination-port eq 22
+ rule 1605 permit tcp source any destination 10.2.1.71 0 destination-port eq 22
+ rule 1610 permit tcp source any destination 10.2.1.72 0 destination-port eq 22
+ rule 1615 permit tcp source any destination 10.2.1.73 0 destination-port eq 22
+ rule 1620 permit tcp source any destination 10.2.1.74 0 destination-port eq 22
+ rule 1625 permit tcp source any destination 10.2.1.75 0 destination-port eq 22
+ rule 1630 permit tcp source any destination 10.2.1.76 0 destination-port eq 22
+ rule 1635 permit tcp source any destination 10.2.1.77 0 destination-port eq 22
+ rule 1640 permit tcp source any destination 10.2.1.78 0 destination-port eq 22
+ rule 1645 permit tcp source any destination 10.2.1.79 0 destination-port eq 22
+ rule 1650 permit tcp source any destination 10.2.1.80 0 destination-port eq 22
+ rule 1655 permit tcp source any destination 10.2.1.81 0 destination-port eq 22
+ rule 1660 permit tcp source any destination 10.2.1.82 0 destination-port eq 22
+ rule 1665 permit tcp source any destination 10.2.1.83 0 destination-port eq 22
+ rule 1670 permit tcp source any destination 10.2.1.84 0 destination-port eq 22
+ rule 1675 permit tcp source any destination 10.2.1.85 0 destination-port eq 22
+ rule 1680 permit tcp source any destination 10.2.1.86 0 destination-port eq 22
+ rule 1685 permit tcp source any destination 10.2.1.87 0 destination-port eq 22
+ rule 1690 permit tcp source any destination 10.2.1.88 0 destination-port eq 22
+ rule 1695 permit tcp source any destination 10.2.1.89 0 destination-port eq 22
+ rule 1700 permit tcp source any destination 10.2.1.90 0 destination-port eq 22
+ rule 1705 permit tcp source any destination 10.2.1.91 0 destination-port eq 22
+ rule 1710 permit tcp source any destination 10.2.1.92 0 destination-port eq 22
+ rule 1715 permit tcp source any destination 10.2.1.93 0 destination-port eq 22
+ rule 1720 permit tcp source any destination 10.2.1.94 0 destination-port eq 22
+ rule 1725 permit tcp source any destination 10.2.1.95 0 destination-port eq 22
+ rule 1730 permit tcp source any destination 10.2.1.96 0 destination-port eq 22
+ rule 1735 permit tcp source any destination 10.2.1.97 0 destination-port eq 22
+ rule 1740 permit tcp source any destination 10.2.1.98 0 destination-port eq 22
+ rule 1745 permit tcp source any destination 10.2.1.99 0 destination-port eq 22
+ rule 1750 permit tcp source any destination 10.2.1.100 0 destination-port eq 22
+ rule 1755 permit tcp source any destination 10.2.1.101 0 destination-port eq 22
+ rule 1760 permit tcp source any destination 10.2.1.102 0 destination-port eq 22
+ rule 1765 permit tcp source any destination 10.2.1.103 0 destination-port eq 22
+ rule 1770 permit tcp source any destination 10.2.1.104 0 destination-port eq 22
+ rule 1775 permit tcp source any destination 10.2.1.105 0 destination-port eq 22
+ rule 1780 permit tcp source any destination 10.2.1.106 0 destination-port eq 22
+ rule 1785 permit tcp source any destination 10.2.1.107 0 destination-port eq 22
+ rule 1790 permit tcp source any destination 10.2.1.108 0 destination-port eq 22
+ rule 1795 permit tcp source any destination 10.2.1.109 0 destination-port eq 22
+ rule 1800 permit tcp source any destination 10.2.1.110 0 destination-port eq 22
+ rule 1805 permit tcp source any destination 10.2.1.111 0 destination-port eq 22
+ rule 1810 permit tcp source any destination 10.2.1.112 0 destination-port eq 22
+ rule 1815 permit tcp source any destination 10.2.1.113 0 destination-port eq 22
+ rule 1820 permit tcp source any destination 10.2.1.114 0 destination-port eq 22
+ rule 1825 permit tcp source any destination 10.2.1.115 0 destination-port eq 22
+ rule 1830 permit tcp source any destination 10.2.1.116 0 destination-port eq 22
+ rule 1835 permit tcp source any destination 10.2.1.117 0 destination-port eq 22
+ rule 1840 permit tcp source any destination 10.2.1.118 0 destination-port eq 22
+ rule 1845 permit tcp source any destination 10.2.1.119 0 destination-port eq 22
+ rule 1850 permit tcp source any destination 10.2.1.120 0 destination-port eq 22
+ rule 1855 permit tcp source any destination 10.2.1.121 0 destination-port eq 22
+ rule 1860 permit tcp source any destination 10.2.1.122 0 destination-port eq 22
+ rule 1865 permit tcp source any destination 10.2.1.123 0 destination-port eq 22
+ rule 1870 permit tcp source any destination 10.2.1.124 0 destination-port eq 22
+ rule 1875 permit tcp source any destination 10.2.1.125 0 destination-port eq 22
+ rule 1880 permit tcp source any destination 10.2.1.126 0 destination-port eq 22
+ rule 1885 permit tcp source any destination 10.2.1.127 0 destination-port eq 22
+ rule 1890 permit tcp source any destination 10.2.1.128 0 destination-port eq 22
+ rule 1895 permit tcp source any destination 10.2.1.129 0 destination-port eq 22
+ rule 1900 permit tcp source any destination 10.2.1.130 0 destination-port eq 22
+ rule 1905 permit tcp source any destination 10.2.1.131 0 destination-port eq 22
+ rule 1910 permit tcp source any destination 10.2.1.132 0 destination-port eq 22
+ rule 1915 permit tcp source any destination 10.2.1.133 0 destination-port eq 22
+ rule 1920 permit tcp source any destination 10.2.1.134 0 destination-port eq 22
+ rule 1925 permit tcp source any destination 10.2.1.135 0 destination-port eq 22
+ rule 1930 permit tcp source any destination 10.2.1.136 0 destination-port eq 22
+ rule 1935 permit tcp source any destination 10.2.1.137 0 destination-port eq 22
+ rule 1940 permit tcp source any destination 10.2.1.138 0 destination-port eq 22
+ rule 1945 permit tcp source any destination 10.2.1.139 0 destination-port eq 22
+ rule 1950 permit tcp source any destination 10.2.1.140 0 destination-port eq 22
+ rule 1955 permit tcp source any destination 10.2.1.141 0 destination-port eq 22
+ rule 1960 permit tcp source any destination 10.2.1.142 0 destination-port eq 22
+ rule 1965 permit tcp source any destination 10.2.1.143 0 destination-port eq 22
+ rule 1970 permit tcp source any destination 10.2.1.144 0 destination-port eq 22
+ rule 1975 permit tcp source any destination 10.2.1.145 0 destination-port eq 22
+ rule 1980 permit tcp source any destination 10.2.1.146 0 destination-port eq 22
+ rule 1985 permit tcp source any destination 10.2.1.147 0 destination-port eq 22
+ rule 1990 permit tcp source any destination 10.2.1.148 0 destination-port eq 22
+ rule 1995 permit tcp source any destination 10.2.1.149 0 destination-port eq 22
+ rule 2000 permit tcp source any destination 10.2.1.150 0 destination-port eq 22
+ rule 2005 permit tcp source any destination 10.2.1.151 0 destination-port eq 22
+ rule 2010 permit tcp source any destination 10.2.1.152 0 destination-port eq 22
+ rule 2015 permit tcp source any destination 10.2.1.153 0 destination-port eq 22
+ rule 2020 permit tcp source any destination 10.2.1.154 0 destination-port eq 22
+ rule 2025 permit tcp source any destination 10.2.1.155 0 destination-port eq 22
+ rule 2030 permit tcp source any destination 10.2.1.156 0 destination-port eq 22
+ rule 2035 permit tcp source any destination 10.2.1.157 0 destination-port eq 22
+ rule 2040 permit tcp source any destination 10.2.1.158 0 destination-port eq 22
+ rule 2045 permit tcp source any destination 10.2.1.159 0 destination-port eq 22
+ rule 2050 permit tcp source any destination 10.2.1.160 0 destination-port eq 22
+ rule 2055 permit tcp source any destination 10.2.1.161 0 destination-port eq 22
+ rule 2060 permit tcp source any destination 10.2.1.162 0 destination-port eq 22
+ rule 2065 permit tcp source any destination 10.2.1.163 0 destination-port eq 22
+ rule 2070 permit tcp source any destination 10.2.1.164 0 destination-port eq 22
+ rule 2075 permit tcp source any destination 10.2.1.165 0 destination-port eq 22
+ rule 2080 permit tcp source any destination 10.2.1.166 0 destination-port eq 22
+ rule 2085 permit tcp source any destination 10.2.1.167 0 destination-port eq 22
+ rule 2090 permit tcp source any destination 10.2.1.168 0 destination-port eq 22
+ rule 2095 permit tcp source any destination 10.2.1.169 0 destination-port eq 22
+ rule 2100 permit tcp source any destination 10.2.1.170 0 destination-port eq 22
+ rule 2105 permit tcp source any destination 10.2.1.171 0 destination-port eq 22
+ rule 2110 permit tcp source any destination 10.2.1.172 0 destination-port eq 22
+ rule 2115 permit tcp source any destination 10.2.1.173 0 destination-port eq 22
+ rule 2120 permit tcp source any destination 10.2.1.174 0 destination-port eq 22
+ rule 2125 permit tcp source any destination 10.2.1.175 0 destination-port eq 22
+ rule 2130 permit tcp source any destination 10.2.1.176 0 destination-port eq 22
+ rule 2135 permit tcp source any destination 10.2.1.177 0 destination-port eq 22
+ rule 2140 permit tcp source any destination 10.2.1.178 0 destination-port eq 22
+ rule 2145 permit tcp source any destination 10.2.1.179 0 destination-port eq 22
+ rule 2150 permit tcp source any destination 10.2.1.180 0 destination-port eq 22
+ rule 2155 permit tcp source any destination 10.2.1.181 0 destination-port eq 22
+ rule 2160 permit tcp source any destination 10.2.1.182 0 destination-port eq 22
+ rule 2165 permit tcp source any destination 10.2.1.183 0 destination-port eq 22
+ rule 2170 permit tcp source any destination 10.2.1.184 0 destination-port eq 22
+ rule 2175 permit tcp source any destination 10.2.1.185 0 destination-port eq 22
+ rule 2180 permit tcp source any destination 10.2.1.186 0 destination-port eq 22
+ rule 2185 permit tcp source any destination 10.2.1.187 0 destination-port eq 22
+ rule 2190 permit tcp source any destination 10.2.1.188 0 destination-port eq 22
+ rule 2195 permit tcp source any destination 10.2.1.189 0 destination-port eq 22
+ rule 2200 permit tcp source any destination 10.2.1.190 0 destination-port eq 22
+ rule 2205 permit tcp source any destination 10.2.1.191 0 destination-port eq 22
+ rule 2210 permit tcp source any destination 10.2.1.192 0 destination-port eq 22
+ rule 2215 permit tcp source any destination 10.2.1.193 0 destination-port eq 22
+ rule 2220 permit tcp source any destination 10.2.1.194 0 destination-port eq 22
+ rule 2225 permit tcp source any destination 10.2.1.195 0 destination-port eq 22
+ rule 2230 permit tcp source any destination 10.2.1.196 0 destination-port eq 22
+ rule 2235 permit tcp source any destination 10.2.1.197 0 destination-port eq 22
+ rule 2240 permit tcp source any destination 10.2.1.198 0 destination-port eq 22
+ rule 2245 permit tcp source any destination 10.2.1.199 0 destination-port eq 22
+ rule 2250 permit tcp source any destination 10.2.1.200 0 destination-port eq 22
+ rule 2255 permit tcp source any destination 10.2.1.201 0 destination-port eq 22
+ rule 2260 permit tcp source any destination 10.2.1.202 0 destination-port eq 22
+ rule 2265 permit tcp source any destination 10.2.1.203 0 destination-port eq 22
+ rule 2270 permit tcp source any destination 10.2.1.204 0 destination-port eq 22
+ rule 2275 permit tcp source any destination 10.2.1.205 0 destination-port eq 22
+ rule 2280 permit tcp source any destination 10.2.1.206 0 destination-port eq 22
+ rule 2285 permit tcp source any destination 10.2.1.207 0 destination-port eq 22
+ rule 2290 permit tcp source any destination 10.2.1.208 0 destination-port eq 22
+ rule 2295 permit tcp source any destination 10.2.1.209 0 destination-port eq 22
+ rule 2300 permit tcp source any destination 10.2.1.210 0 destination-port eq 22
+ rule 2305 permit tcp source any destination 10.2.1.211 0 destination-port eq 22
+ rule 2310 permit tcp source any destination 10.2.1.212 0 destination-port eq 22
+ rule 2315 permit tcp source any destination 10.2.1.213 0 destination-port eq 22
+ rule 2320 permit tcp source any destination 10.2.1.214 0 destination-port eq 22
+ rule 2325 permit tcp source any destination 10.2.1.215 0 destination-port eq 22
+ rule 2330 permit tcp source any destination 10.2.1.216 0 destination-port eq 22
+ rule 2335 permit tcp source any destination 10.2.1.217 0 destination-port eq 22
+ rule 2340 permit tcp source any destination 10.2.1.218 0 destination-port eq 22
+ rule 2345 permit tcp source any destination 10.2.1.219 0 destination-port eq 22
+ rule 2350 permit tcp source any destination 10.2.1.220 0 destination-port eq 22
+ rule 2355 permit tcp source any destination 10.2.1.221 0 destination-port eq 22
+ rule 2360 permit tcp source any destination 10.2.1.222 0 destination-port eq 22
+ rule 2365 permit tcp source any destination 10.2.1.223 0 destination-port eq 22
+ rule 2370 permit tcp source any destination 10.2.1.224 0 destination-port eq 22
+ rule 2375 permit tcp source any destination 10.2.1.225 0 destination-port eq 22
+ rule 2380 permit tcp source any destination 10.2.1.226 0 destination-port eq 22
+ rule 2385 permit tcp source any destination 10.2.1.227 0 destination-port eq 22
+ rule 2390 permit tcp source any destination 10.2.1.228 0 destination-port eq 22
+ rule 2395 permit tcp source any destination 10.2.1.229 0 destination-port eq 22
+ rule 2400 permit tcp source any destination 10.2.1.230 0 destination-port eq 22
+ rule 2405 permit tcp source any destination 10.2.1.231 0 destination-port eq 22
+ rule 2410 permit tcp source any destination 10.2.1.232 0 destination-port eq 22
+ rule 2415 permit tcp source any destination 10.2.1.233 0 destination-port eq 22
+ rule 2420 permit tcp source any destination 10.2.1.234 0 destination-port eq 22
+ rule 2425 permit tcp source any destination 10.2.1.235 0 destination-port eq 22
+ rule 2430 permit tcp source any destination 10.2.1.236 0 destination-port eq 22
+ rule 2435 permit tcp source any destination 10.2.1.237 0 destination-port eq 22
+ rule 2440 permit tcp source any destination 10.2.1.238 0 destination-port eq 22
+ rule 2445 permit tcp source any destination 10.2.1.239 0 destination-port eq 22
+ rule 2450 permit tcp source any destination 10.2.1.240 0 destination-port eq 22
+ rule 2455 permit tcp source any destination 10.2.1.241 0 destination-port eq 22
+ rule 2460 permit tcp source any destination 10.2.1.242 0 destination-port eq 22
+ rule 2465 permit tcp source any destination 10.2.1.243 0 destination-port eq 22
+ rule 2470 permit tcp source any destination 10.2.1.244 0 destination-port eq 22
+ rule 2475 permit tcp source any destination 10.2.1.245 0 destination-port eq 22
+ rule 2480 permit tcp source any destination 10.2.1.246 0 destination-port eq 22
+ rule 2485 permit tcp source any destination 10.2.1.247 0 destination-port eq 22
+ rule 2490 permit tcp source any destination 10.2.1.248 0 destination-port eq 22
+ rule 2495 permit tcp source any destination 10.2.1.249 0 destination-port eq 22
+ rule 2500 permit tcp source any destination 10.2.2.0 0 destination-port eq 22
+ rule 2505 permit tcp source any destination 10.2.2.1 0 destination-port eq 22
+ rule 2510 permit tcp source any destination 10.2.2.2 0 destination-port eq 22
+ rule 2515 permit tcp source any destination 10.2.2.3 0 destination-port eq 22
+ rule 2520 permit tcp source any destination 10.2.2.4 0 destination-port eq 22
+ rule 2525 permit tcp source any destination 10.2.2.5 0 destination-port eq 22
+ rule 2530 permit tcp source any destination 10.2.2.6 0 destination-port eq 22
+ rule 2535 permit tcp source any destination 10.2.2.7 0 destination-port eq 22
+ rule 2540 permit tcp source any destination 10.2.2.8 0 destination-port eq 22
+ rule 2545 permit tcp source any destination 10.2.2.9 0 destination-port eq 22
+ rule 2550 permit tcp source any destination 10.2.2.10 0 destination-port eq 22
+ rule 2555 permit tcp source any destination 10.2.2.11 0 destination-port eq 22
+ rule 2560 permit tcp source any destination 10.2.2.12 0 destination-port eq 22
+ rule 2565 permit tcp source any destination 10.2.2.13 0 destination-port eq 22
+ rule 2570 permit tcp source any destination 10.2.2.14 0 destination-port eq 22
+ rule 2575 permit tcp source any destination 10.2.2.15 0 destination-port eq 22
+ rule 2580 permit tcp source any destination 10.2.2.16 0 destination-port eq 22
+ rule 2585 permit tcp source any destination 10.2.2.17 0 destination-port eq 22
+ rule 2590 permit tcp source any destination 10.2.2.18 0 destination-port eq 22
+ rule 2595 permit tcp source any destination 10.2.2.19 0 destination-port eq 22
+ rule 2600 permit tcp source any destination 10.2.2.20 0 destination-port eq 22
+ rule 2605 permit tcp source any destination 10.2.2.21 0 destination-port eq 22
+ rule 2610 permit tcp source any destination 10.2.2.22 0 destination-port eq 22
+ rule 2615 permit tcp source any destination 10.2.2.23 0 destination-port eq 22
+ rule 2620 permit tcp source any destination 10.2.2.24 0 destination-port eq 22
+ rule 2625 permit tcp source any destination 10.2.2.25 0 destination-port eq 22
+ rule 2630 permit tcp source any destination 10.2.2.26 0 destination-port eq 22
+ rule 2635 permit tcp source any destination 10.2.2.27 0 destination-port eq 22
+ rule 2640 permit tcp source any destination 10.2.2.28 0 destination-port eq 22
+ rule 2645 permit tcp source any destination 10.2.2.29 0 destination-port eq 22
+ rule 2650 permit tcp source any destination 10.2.2.30 0 destination-port eq 22
+ rule 2655 permit tcp source any destination 10.2.2.31 0 destination-port eq 22
+ rule 2660 permit tcp source any destination 10.2.2.32 0 destination-port eq 22
+ rule 2665 permit tcp source any destination 10.2.2.33 0 destination-port eq 22
+ rule 2670 permit tcp source any destination 10.2.2.34 0 destination-port eq 22
+ rule 2675 permit tcp source any destination 10.2.2.35 0 destination-port eq 22
+ rule 2680 permit tcp source any destination 10.2.2.36 0 destination-port eq 22
+ rule 2685 permit tcp source any destination 10.2.2.37 0 destination-port eq 22
+ rule 2690 permit tcp source any destination 10.2.2.38 0 destination-port eq 22
+ rule 2695 permit tcp source any destination 10.2.2.39 0 destination-port eq 22
+ rule 2700 permit tcp source any destination 10.2.2.40 0 destination-port eq 22
+ rule 2705 permit tcp source any destination 10.2.2.41 0 destination-port eq 22
+ rule 2710 permit tcp source any destination 10.2.2.42 0 destination-port eq 22
+ rule 2715 permit tcp source any destination 10.2.2.43 0 destination-port eq 22
+ rule 2720 permit tcp source any destination 10.2.2.44 0 destination-port eq 22
+ rule 2725 permit tcp source any destination 10.2.2.45 0 destination-port eq 22
+ rule 2730 permit tcp source any destination 10.2.2.46 0 destination-port eq 22
+ rule 2735 permit tcp source any destination 10.2.2.47 0 destination-port eq 22
+ rule 2740 permit tcp source any destination 10.2.2.48 0 destination-port eq 22
+ rule 2745 permit tcp source any destination 10.2.2.49 0 destination-port eq 22
+ rule 2750 permit tcp source any destination 10.2.2.50 0 destination-port eq 22
+ rule 2755 permit tcp source any destination 10.2.2.51 0 destination-port eq 22
+ rule 2760 permit tcp source any destination 10.2.2.52 0 destination-port eq 22
+ rule 2765 permit tcp source any destination 10.2.2.53 0 destination-port eq 22
+ rule 2770 permit tcp source any destination 10.2.2.54 0 destination-port eq 22
+ rule 2775 permit tcp source any destination 10.2.2.55 0 destination-port eq 22
+ rule 2780 permit tcp source any destination 10.2.2.56 0 destination-port eq 22
+ rule 2785 permit tcp source any destination 10.2.2.57 0 destination-port eq 22
+ rule 2790 permit tcp source any destination 10.2.2.58 0 destination-port eq 22
+ rule 2795 permit tcp source any destination 10.2.2.59 0 destination-port eq 22
+ rule 2800 permit tcp source any destination 10.2.2.60 0 destination-port eq 22
+ rule 2805 permit tcp source any destination 10.2.2.61 0 destination-port eq 22
+ rule 2810 permit tcp source any destination 10.2.2.62 0 destination-port eq 22
+ rule 2815 permit tcp source any destination 10.2.2.63 0 destination-port eq 22
+ rule 2820 permit tcp source any destination 10.2.2.64 0 destination-port eq 22
+ rule 2825 permit tcp source any destination 10.2.2.65 0 destination-port eq 22
+ rule 2830 permit tcp source any destination 10.2.2.66 0 destination-port eq 22
+ rule 2835 permit tcp source any destination 10.2.2.67 0 destination-port eq 22
+ rule 2840 permit tcp source any destination 10.2.2.68 0 destination-port eq 22
+ rule 2845 permit tcp source any destination 10.2.2.69 0 destination-port eq 22
+ rule 2850 permit tcp source any destination 10.2.2.70 0 destination-port eq 22
+ rule 2855 permit tcp source any destination 10.2.2.71 0 destination-port eq 22
+ rule 2860 permit tcp source any destination 10.2.2.72 0 destination-port eq 22
+ rule 2865 permit tcp source any destination 10.2.2.73 0 destination-port eq 22
+ rule 2870 permit tcp source any destination 10.2.2.74 0 destination-port eq 22
+ rule 2875 permit tcp source any destination 10.2.2.75 0 destination-port eq 22
+ rule 2880 permit tcp source any destination 10.2.2.76 0 destination-port eq 22
+ rule 2885 permit tcp source any destination 10.2.2.77 0 destination-port eq 22
+ rule 2890 permit tcp source any destination 10.2.2.78 0 destination-port eq 22
+ rule 2895 permit tcp source any destination 10.2.2.79 0 destination-port eq 22
+ rule 2900 permit tcp source any destination 10.2.2.80 0 destination-port eq 22
+ rule 2905 permit tcp source any destination 10.2.2.81 0 destination-port eq 22
+ rule 2910 permit tcp source any destination 10.2.2.82 0 destination-port eq 22
+ rule 2915 permit tcp source any destination 10.2.2.83 0 destination-port eq 22
+ rule 2920 permit tcp source any destination 10.2.2.84 0 destination-port eq 22
+ rule 2925 permit tcp source any destination 10.2.2.85 0 destination-port eq 22
+ rule 2930 permit tcp source any destination 10.2.2.86 0 destination-port eq 22
+ rule 2935 permit tcp source any destination 10.2.2.87 0 destination-port eq 22
+ rule 2940 permit tcp source any destination 10.2.2.88 0 destination-port eq 22
+ rule 2945 permit tcp source any destination 10.2.2.89 0 destination-port eq 22
+ rule 2950 permit tcp source any destination 10.2.2.90 0 destination-port eq 22
+ rule 2955 permit tcp source any destination 10.2.2.91 0 destination-port eq 22
+ rule 2960 permit tcp source any destination 10.2.2.92 0 destination-port eq 22
+ rule 2965 permit tcp source any destination 10.2.2.93 0 destination-port eq 22
+ rule 2970 permit tcp source any destination 10.2.2.94 0 destination-port eq 22
+ rule 2975 permit tcp source any destination 10.2.2.95 0 destination-port eq 22
+ rule 2980 permit tcp source any destination 10.2.2.96 0 destination-port eq 22
+ rule 2985 permit tcp source any destination 10.2.2.97 0 destination-port eq 22
+ rule 2990 permit tcp source any destination 10.2.2.98 0 destination-port eq 22
+ rule 2995 permit tcp source any destination 10.2.2.99 0 destination-port eq 22
+ rule 3000 permit tcp source any destination 10.2.2.100 0 destination-port eq 22
+#
+acl number 2001
+ rule 5 permit source 10.10.1.0 0.0.0.255
+ rule 10 permit source 10.10.1.5 0
+#
+acl number 2002
+ rule 5 permit source 10.10.2.0 0.0.0.255
+ rule 10 deny source 10.10.2.5 0
+#
+acl number 2003
+ rule 5 permit source 10.10.3.0 0.0.0.255
+ rule 10 permit source 10.10.3.5 0
+#
+acl number 2004
+ rule 5 permit source 10.10.4.0 0.0.0.255
+ rule 10 deny source 10.10.4.5 0
+#
+acl number 2005
+ rule 5 permit source 10.10.5.0 0.0.0.255
+ rule 10 permit source 10.10.5.5 0
+#
+acl number 2006
+ rule 5 permit source 10.10.6.0 0.0.0.255
+ rule 10 deny source 10.10.6.5 0
+#
+acl number 2007
+ rule 5 permit source 10.10.7.0 0.0.0.255
+ rule 10 permit source 10.10.7.5 0
+#
+acl number 2008
+ rule 5 permit source 10.10.8.0 0.0.0.255
+ rule 10 deny source 10.10.8.5 0
+#
+acl number 2009
+ rule 5 permit source 10.10.9.0 0.0.0.255
+ rule 10 permit source 10.10.9.5 0
+#
+acl number 2010
+ rule 5 permit source 10.10.10.0 0.0.0.255
+ rule 10 deny source 10.10.10.5 0
+#
+acl number 2011
+ rule 5 permit source 10.10.11.0 0.0.0.255
+ rule 10 permit source 10.10.11.5 0
+#
+acl number 2012
+ rule 5 permit source 10.10.12.0 0.0.0.255
+ rule 10 deny source 10.10.12.5 0
+#
+acl number 2013
+ rule 5 permit source 10.10.13.0 0.0.0.255
+ rule 10 permit source 10.10.13.5 0
+#
+acl number 2014
+ rule 5 permit source 10.10.14.0 0.0.0.255
+ rule 10 deny source 10.10.14.5 0
+#
+acl number 2015
+ rule 5 permit source 10.10.15.0 0.0.0.255
+ rule 10 permit source 10.10.15.5 0
+#
+acl number 2016
+ rule 5 permit source 10.10.16.0 0.0.0.255
+ rule 10 deny source 10.10.16.5 0
+#
+acl number 2017
+ rule 5 permit source 10.10.17.0 0.0.0.255
+ rule 10 permit source 10.10.17.5 0
+#
+acl number 2018
+ rule 5 permit source 10.10.18.0 0.0.0.255
+ rule 10 deny source 10.10.18.5 0
+#
+acl number 2019
+ rule 5 permit source 10.10.19.0 0.0.0.255
+ rule 10 permit source 10.10.19.5 0
+#
+acl number 2020
+ rule 5 permit source 10.10.20.0 0.0.0.255
+ rule 10 deny source 10.10.20.5 0
+#
+acl number 2021
+ rule 5 permit source 10.10.21.0 0.0.0.255
+ rule 10 permit source 10.10.21.5 0
+#
+acl number 2022
+ rule 5 permit source 10.10.22.0 0.0.0.255
+ rule 10 deny source 10.10.22.5 0
+#
+acl number 2023
+ rule 5 permit source 10.10.23.0 0.0.0.255
+ rule 10 permit source 10.10.23.5 0
+#
+acl number 2024
+ rule 5 permit source 10.10.24.0 0.0.0.255
+ rule 10 deny source 10.10.24.5 0
+#
+acl number 2025
+ rule 5 permit source 10.10.25.0 0.0.0.255
+ rule 10 permit source 10.10.25.5 0
+#
+acl number 2026
+ rule 5 permit source 10.10.26.0 0.0.0.255
+ rule 10 deny source 10.10.26.5 0
+#
+acl number 2027
+ rule 5 permit source 10.10.27.0 0.0.0.255
+ rule 10 permit source 10.10.27.5 0
+#
+acl number 2028
+ rule 5 permit source 10.10.28.0 0.0.0.255
+ rule 10 deny source 10.10.28.5 0
+#
+acl number 2029
+ rule 5 permit source 10.10.29.0 0.0.0.255
+ rule 10 permit source 10.10.29.5 0
+#
+acl number 2030
+ rule 5 permit source 10.10.30.0 0.0.0.255
+ rule 10 deny source 10.10.30.5 0
+#
+acl number 2031
+ rule 5 permit source 10.10.31.0 0.0.0.255
+ rule 10 permit source 10.10.31.5 0
+#
+acl number 2032
+ rule 5 permit source 10.10.32.0 0.0.0.255
+ rule 10 deny source 10.10.32.5 0
+#
+acl number 2033
+ rule 5 permit source 10.10.33.0 0.0.0.255
+ rule 10 permit source 10.10.33.5 0
+#
+acl number 2034
+ rule 5 permit source 10.10.34.0 0.0.0.255
+ rule 10 deny source 10.10.34.5 0
+#
+acl number 2035
+ rule 5 permit source 10.10.35.0 0.0.0.255
+ rule 10 permit source 10.10.35.5 0
+#
+acl number 2036
+ rule 5 permit source 10.10.36.0 0.0.0.255
+ rule 10 deny source 10.10.36.5 0
+#
+acl number 2037
+ rule 5 permit source 10.10.37.0 0.0.0.255
+ rule 10 permit source 10.10.37.5 0
+#
+acl number 2038
+ rule 5 permit source 10.10.38.0 0.0.0.255
+ rule 10 deny source 10.10.38.5 0
+#
+acl number 2039
+ rule 5 permit source 10.10.39.0 0.0.0.255
+ rule 10 permit source 10.10.39.5 0
+#
+acl number 2040
+ rule 5 permit source 10.10.40.0 0.0.0.255
+ rule 10 deny source 10.10.40.5 0
+#
+acl number 2041
+ rule 5 permit source 10.10.41.0 0.0.0.255
+ rule 10 permit source 10.10.41.5 0
+#
+acl number 2042
+ rule 5 permit source 10.10.42.0 0.0.0.255
+ rule 10 deny source 10.10.42.5 0
+#
+acl number 2043
+ rule 5 permit source 10.10.43.0 0.0.0.255
+ rule 10 permit source 10.10.43.5 0
+#
+acl number 2044
+ rule 5 permit source 10.10.44.0 0.0.0.255
+ rule 10 deny source 10.10.44.5 0
+#
+acl number 2045
+ rule 5 permit source 10.10.45.0 0.0.0.255
+ rule 10 permit source 10.10.45.5 0
+#
+acl number 2046
+ rule 5 permit source 10.10.46.0 0.0.0.255
+ rule 10 deny source 10.10.46.5 0
+#
+acl number 2047
+ rule 5 permit source 10.10.47.0 0.0.0.255
+ rule 10 permit source 10.10.47.5 0
+#
+acl number 2048
+ rule 5 permit source 10.10.48.0 0.0.0.255
+ rule 10 deny source 10.10.48.5 0
+#
+acl number 2049
+ rule 5 permit source 10.10.49.0 0.0.0.255
+ rule 10 permit source 10.10.49.5 0
+#
+acl number 2050
+ rule 5 permit source 10.10.50.0 0.0.0.255
+ rule 10 deny source 10.10.50.5 0
+#
+acl number 2051
+ rule 5 permit source 10.10.51.0 0.0.0.255
+ rule 10 permit source 10.10.51.5 0
+#
+acl number 2052
+ rule 5 permit source 10.10.52.0 0.0.0.255
+ rule 10 deny source 10.10.52.5 0
+#
+acl number 2053
+ rule 5 permit source 10.10.53.0 0.0.0.255
+ rule 10 permit source 10.10.53.5 0
+#
+acl number 2054
+ rule 5 permit source 10.10.54.0 0.0.0.255
+ rule 10 deny source 10.10.54.5 0
+#
+acl number 2055
+ rule 5 permit source 10.10.55.0 0.0.0.255
+ rule 10 permit source 10.10.55.5 0
+#
+acl number 2056
+ rule 5 permit source 10.10.56.0 0.0.0.255
+ rule 10 deny source 10.10.56.5 0
+#
+acl number 2057
+ rule 5 permit source 10.10.57.0 0.0.0.255
+ rule 10 permit source 10.10.57.5 0
+#
+acl number 2058
+ rule 5 permit source 10.10.58.0 0.0.0.255
+ rule 10 deny source 10.10.58.5 0
+#
+acl number 2059
+ rule 5 permit source 10.10.59.0 0.0.0.255
+ rule 10 permit source 10.10.59.5 0
+#
+acl number 2060
+ rule 5 permit source 10.10.60.0 0.0.0.255
+ rule 10 deny source 10.10.60.5 0
+#
+acl number 2061
+ rule 5 permit source 10.10.61.0 0.0.0.255
+ rule 10 permit source 10.10.61.5 0
+#
+acl number 2062
+ rule 5 permit source 10.10.62.0 0.0.0.255
+ rule 10 deny source 10.10.62.5 0
+#
+acl number 2063
+ rule 5 permit source 10.10.63.0 0.0.0.255
+ rule 10 permit source 10.10.63.5 0
+#
+acl number 2064
+ rule 5 permit source 10.10.64.0 0.0.0.255
+ rule 10 deny source 10.10.64.5 0
+#
+acl number 2065
+ rule 5 permit source 10.10.65.0 0.0.0.255
+ rule 10 permit source 10.10.65.5 0
+#
+acl number 2066
+ rule 5 permit source 10.10.66.0 0.0.0.255
+ rule 10 deny source 10.10.66.5 0
+#
+acl number 2067
+ rule 5 permit source 10.10.67.0 0.0.0.255
+ rule 10 permit source 10.10.67.5 0
+#
+acl number 2068
+ rule 5 permit source 10.10.68.0 0.0.0.255
+ rule 10 deny source 10.10.68.5 0
+#
+acl number 2069
+ rule 5 permit source 10.10.69.0 0.0.0.255
+ rule 10 permit source 10.10.69.5 0
+#
+acl number 2070
+ rule 5 permit source 10.10.70.0 0.0.0.255
+ rule 10 deny source 10.10.70.5 0
+#
+acl number 2071
+ rule 5 permit source 10.10.71.0 0.0.0.255
+ rule 10 permit source 10.10.71.5 0
+#
+acl number 2072
+ rule 5 permit source 10.10.72.0 0.0.0.255
+ rule 10 deny source 10.10.72.5 0
+#
+acl number 2073
+ rule 5 permit source 10.10.73.0 0.0.0.255
+ rule 10 permit source 10.10.73.5 0
+#
+acl number 2074
+ rule 5 permit source 10.10.74.0 0.0.0.255
+ rule 10 deny source 10.10.74.5 0
+#
+acl number 2075
+ rule 5 permit source 10.10.75.0 0.0.0.255
+ rule 10 permit source 10.10.75.5 0
+#
+acl number 2076
+ rule 5 permit source 10.10.76.0 0.0.0.255
+ rule 10 deny source 10.10.76.5 0
+#
+acl number 2077
+ rule 5 permit source 10.10.77.0 0.0.0.255
+ rule 10 permit source 10.10.77.5 0
+#
+acl number 2078
+ rule 5 permit source 10.10.78.0 0.0.0.255
+ rule 10 deny source 10.10.78.5 0
+#
+acl number 2079
+ rule 5 permit source 10.10.79.0 0.0.0.255
+ rule 10 permit source 10.10.79.5 0
+#
+acl number 2080
+ rule 5 permit source 10.10.80.0 0.0.0.255
+ rule 10 deny source 10.10.80.5 0
+#
+acl number 2081
+ rule 5 permit source 10.10.81.0 0.0.0.255
+ rule 10 permit source 10.10.81.5 0
+#
+acl number 2082
+ rule 5 permit source 10.10.82.0 0.0.0.255
+ rule 10 deny source 10.10.82.5 0
+#
+acl number 2083
+ rule 5 permit source 10.10.83.0 0.0.0.255
+ rule 10 permit source 10.10.83.5 0
+#
+acl number 2084
+ rule 5 permit source 10.10.84.0 0.0.0.255
+ rule 10 deny source 10.10.84.5 0
+#
+acl number 2085
+ rule 5 permit source 10.10.85.0 0.0.0.255
+ rule 10 permit source 10.10.85.5 0
+#
+acl number 2086
+ rule 5 permit source 10.10.86.0 0.0.0.255
+ rule 10 deny source 10.10.86.5 0
+#
+acl number 2087
+ rule 5 permit source 10.10.87.0 0.0.0.255
+ rule 10 permit source 10.10.87.5 0
+#
+acl number 2088
+ rule 5 permit source 10.10.88.0 0.0.0.255
+ rule 10 deny source 10.10.88.5 0
+#
+acl number 2089
+ rule 5 permit source 10.10.89.0 0.0.0.255
+ rule 10 permit source 10.10.89.5 0
+#
+acl number 2090
+ rule 5 permit source 10.10.90.0 0.0.0.255
+ rule 10 deny source 10.10.90.5 0
+#
+acl number 2091
+ rule 5 permit source 10.10.91.0 0.0.0.255
+ rule 10 permit source 10.10.91.5 0
+#
+acl number 2092
+ rule 5 permit source 10.10.92.0 0.0.0.255
+ rule 10 deny source 10.10.92.5 0
+#
+acl number 2093
+ rule 5 permit source 10.10.93.0 0.0.0.255
+ rule 10 permit source 10.10.93.5 0
+#
+acl number 2094
+ rule 5 permit source 10.10.94.0 0.0.0.255
+ rule 10 deny source 10.10.94.5 0
+#
+acl number 2095
+ rule 5 permit source 10.10.95.0 0.0.0.255
+ rule 10 permit source 10.10.95.5 0
+#
+acl number 2096
+ rule 5 permit source 10.10.96.0 0.0.0.255
+ rule 10 deny source 10.10.96.5 0
+#
+acl number 2097
+ rule 5 permit source 10.10.97.0 0.0.0.255
+ rule 10 permit source 10.10.97.5 0
+#
+acl number 2098
+ rule 5 permit source 10.10.98.0 0.0.0.255
+ rule 10 deny source 10.10.98.5 0
+#
+acl number 2099
+ rule 5 permit source 10.10.99.0 0.0.0.255
+ rule 10 permit source 10.10.99.5 0
+#
+acl number 2100
+ rule 5 permit source 10.10.100.0 0.0.0.255
+ rule 10 deny source 10.10.100.5 0
+#
+acl number 2101
+ rule 5 permit source 10.20.1.1 0
+ rule 10 permit source 10.20.1.2 0
+ rule 15 permit source 10.20.1.3 0
+ rule 20 permit source 10.20.1.4 0
+ rule 25 permit source 10.20.1.5 0
+#
+acl number 2102
+ rule 5 permit source 10.20.2.1 0
+ rule 10 permit source 10.20.2.2 0
+ rule 15 permit source 10.20.2.3 0
+ rule 20 permit source 10.20.2.4 0
+ rule 25 permit source 10.20.2.5 0
+#
+acl number 2103
+ rule 5 permit source 10.20.3.1 0
+ rule 10 permit source 10.20.3.2 0
+ rule 15 permit source 10.20.3.3 0
+ rule 20 permit source 10.20.3.4 0
+ rule 25 permit source 10.20.3.5 0
+#
+acl number 2104
+ rule 5 permit source 10.20.4.1 0
+ rule 10 permit source 10.20.4.2 0
+ rule 15 permit source 10.20.4.3 0
+ rule 20 permit source 10.20.4.4 0
+ rule 25 permit source 10.20.4.5 0
+#
+acl number 2105
+ rule 5 permit source 10.20.5.1 0
+ rule 10 permit source 10.20.5.2 0
+ rule 15 permit source 10.20.5.3 0
+ rule 20 permit source 10.20.5.4 0
+ rule 25 permit source 10.20.5.5 0
+#
+acl number 2106
+ rule 5 permit source 10.20.6.1 0
+ rule 10 permit source 10.20.6.2 0
+ rule 15 permit source 10.20.6.3 0
+ rule 20 permit source 10.20.6.4 0
+ rule 25 permit source 10.20.6.5 0
+#
+acl number 2107
+ rule 5 permit source 10.20.7.1 0
+ rule 10 permit source 10.20.7.2 0
+ rule 15 permit source 10.20.7.3 0
+ rule 20 permit source 10.20.7.4 0
+ rule 25 permit source 10.20.7.5 0
+#
+acl number 2108
+ rule 5 permit source 10.20.8.1 0
+ rule 10 permit source 10.20.8.2 0
+ rule 15 permit source 10.20.8.3 0
+ rule 20 permit source 10.20.8.4 0
+ rule 25 permit source 10.20.8.5 0
+#
+acl number 2109
+ rule 5 permit source 10.20.9.1 0
+ rule 10 permit source 10.20.9.2 0
+ rule 15 permit source 10.20.9.3 0
+ rule 20 permit source 10.20.9.4 0
+ rule 25 permit source 10.20.9.5 0
+#
+acl number 2110
+ rule 5 permit source 10.20.10.1 0
+ rule 10 permit source 10.20.10.2 0
+ rule 15 permit source 10.20.10.3 0
+ rule 20 permit source 10.20.10.4 0
+ rule 25 permit source 10.20.10.5 0
+#
+acl number 2111
+ rule 5 permit source 10.20.11.1 0
+ rule 10 permit source 10.20.11.2 0
+ rule 15 permit source 10.20.11.3 0
+ rule 20 permit source 10.20.11.4 0
+ rule 25 permit source 10.20.11.5 0
+#
+acl number 2112
+ rule 5 permit source 10.20.12.1 0
+ rule 10 permit source 10.20.12.2 0
+ rule 15 permit source 10.20.12.3 0
+ rule 20 permit source 10.20.12.4 0
+ rule 25 permit source 10.20.12.5 0
+#
+acl number 2113
+ rule 5 permit source 10.20.13.1 0
+ rule 10 permit source 10.20.13.2 0
+ rule 15 permit source 10.20.13.3 0
+ rule 20 permit source 10.20.13.4 0
+ rule 25 permit source 10.20.13.5 0
+#
+acl number 2114
+ rule 5 permit source 10.20.14.1 0
+ rule 10 permit source 10.20.14.2 0
+ rule 15 permit source 10.20.14.3 0
+ rule 20 permit source 10.20.14.4 0
+ rule 25 permit source 10.20.14.5 0
+#
+acl number 2115
+ rule 5 permit source 10.20.15.1 0
+ rule 10 permit source 10.20.15.2 0
+ rule 15 permit source 10.20.15.3 0
+ rule 20 permit source 10.20.15.4 0
+ rule 25 permit source 10.20.15.5 0
+#
+acl number 2116
+ rule 5 permit source 10.20.16.1 0
+ rule 10 permit source 10.20.16.2 0
+ rule 15 permit source 10.20.16.3 0
+ rule 20 permit source 10.20.16.4 0
+ rule 25 permit source 10.20.16.5 0
+#
+acl number 2117
+ rule 5 permit source 10.20.17.1 0
+ rule 10 permit source 10.20.17.2 0
+ rule 15 permit source 10.20.17.3 0
+ rule 20 permit source 10.20.17.4 0
+ rule 25 permit source 10.20.17.5 0
+#
+acl number 2118
+ rule 5 permit source 10.20.18.1 0
+ rule 10 permit source 10.20.18.2 0
+ rule 15 permit source 10.20.18.3 0
+ rule 20 permit source 10.20.18.4 0
+ rule 25 permit source 10.20.18.5 0
+#
+acl number 2119
+ rule 5 permit source 10.20.19.1 0
+ rule 10 permit source 10.20.19.2 0
+ rule 15 permit source 10.20.19.3 0
+ rule 20 permit source 10.20.19.4 0
+ rule 25 permit source 10.20.19.5 0
+#
+acl number 2120
+ rule 5 permit source 10.20.20.1 0
+ rule 10 permit source 10.20.20.2 0
+ rule 15 permit source 10.20.20.3 0
+ rule 20 permit source 10.20.20.4 0
+ rule 25 permit source 10.20.20.5 0
+#
+acl number 2121
+ rule 5 permit source 10.20.21.1 0
+ rule 10 permit source 10.20.21.2 0
+ rule 15 permit source 10.20.21.3 0
+ rule 20 permit source 10.20.21.4 0
+ rule 25 permit source 10.20.21.5 0
+#
+acl number 2122
+ rule 5 permit source 10.20.22.1 0
+ rule 10 permit source 10.20.22.2 0
+ rule 15 permit source 10.20.22.3 0
+ rule 20 permit source 10.20.22.4 0
+ rule 25 permit source 10.20.22.5 0
+#
+acl number 2123
+ rule 5 permit source 10.20.23.1 0
+ rule 10 permit source 10.20.23.2 0
+ rule 15 permit source 10.20.23.3 0
+ rule 20 permit source 10.20.23.4 0
+ rule 25 permit source 10.20.23.5 0
+#
+acl number 2124
+ rule 5 permit source 10.20.24.1 0
+ rule 10 permit source 10.20.24.2 0
+ rule 15 permit source 10.20.24.3 0
+ rule 20 permit source 10.20.24.4 0
+ rule 25 permit source 10.20.24.5 0
+#
+acl number 2125
+ rule 5 permit source 10.20.25.1 0
+ rule 10 permit source 10.20.25.2 0
+ rule 15 permit source 10.20.25.3 0
+ rule 20 permit source 10.20.25.4 0
+ rule 25 permit source 10.20.25.5 0
+#
+acl number 2126
+ rule 5 permit source 10.20.26.1 0
+ rule 10 permit source 10.20.26.2 0
+ rule 15 permit source 10.20.26.3 0
+ rule 20 permit source 10.20.26.4 0
+ rule 25 permit source 10.20.26.5 0
+#
+acl number 2127
+ rule 5 permit source 10.20.27.1 0
+ rule 10 permit source 10.20.27.2 0
+ rule 15 permit source 10.20.27.3 0
+ rule 20 permit source 10.20.27.4 0
+ rule 25 permit source 10.20.27.5 0
+#
+acl number 2128
+ rule 5 permit source 10.20.28.1 0
+ rule 10 permit source 10.20.28.2 0
+ rule 15 permit source 10.20.28.3 0
+ rule 20 permit source 10.20.28.4 0
+ rule 25 permit source 10.20.28.5 0
+#
+acl number 2129
+ rule 5 permit source 10.20.29.1 0
+ rule 10 permit source 10.20.29.2 0
+ rule 15 permit source 10.20.29.3 0
+ rule 20 permit source 10.20.29.4 0
+ rule 25 permit source 10.20.29.5 0
+#
+acl number 2130
+ rule 5 permit source 10.20.30.1 0
+ rule 10 permit source 10.20.30.2 0
+ rule 15 permit source 10.20.30.3 0
+ rule 20 permit source 10.20.30.4 0
+ rule 25 permit source 10.20.30.5 0
+#
+acl number 2131
+ rule 5 permit source 10.20.31.1 0
+ rule 10 permit source 10.20.31.2 0
+ rule 15 permit source 10.20.31.3 0
+ rule 20 permit source 10.20.31.4 0
+ rule 25 permit source 10.20.31.5 0
+#
+acl number 2132
+ rule 5 permit source 10.20.32.1 0
+ rule 10 permit source 10.20.32.2 0
+ rule 15 permit source 10.20.32.3 0
+ rule 20 permit source 10.20.32.4 0
+ rule 25 permit source 10.20.32.5 0
+#
+acl number 2133
+ rule 5 permit source 10.20.33.1 0
+ rule 10 permit source 10.20.33.2 0
+ rule 15 permit source 10.20.33.3 0
+ rule 20 permit source 10.20.33.4 0
+ rule 25 permit source 10.20.33.5 0
+#
+acl number 2134
+ rule 5 permit source 10.20.34.1 0
+ rule 10 permit source 10.20.34.2 0
+ rule 15 permit source 10.20.34.3 0
+ rule 20 permit source 10.20.34.4 0
+ rule 25 permit source 10.20.34.5 0
+#
+acl number 2135
+ rule 5 permit source 10.20.35.1 0
+ rule 10 permit source 10.20.35.2 0
+ rule 15 permit source 10.20.35.3 0
+ rule 20 permit source 10.20.35.4 0
+ rule 25 permit source 10.20.35.5 0
+#
+acl number 2136
+ rule 5 permit source 10.20.36.1 0
+ rule 10 permit source 10.20.36.2 0
+ rule 15 permit source 10.20.36.3 0
+ rule 20 permit source 10.20.36.4 0
+ rule 25 permit source 10.20.36.5 0
+#
+acl number 2137
+ rule 5 permit source 10.20.37.1 0
+ rule 10 permit source 10.20.37.2 0
+ rule 15 permit source 10.20.37.3 0
+ rule 20 permit source 10.20.37.4 0
+ rule 25 permit source 10.20.37.5 0
+#
+acl number 2138
+ rule 5 permit source 10.20.38.1 0
+ rule 10 permit source 10.20.38.2 0
+ rule 15 permit source 10.20.38.3 0
+ rule 20 permit source 10.20.38.4 0
+ rule 25 permit source 10.20.38.5 0
+#
+acl number 2139
+ rule 5 permit source 10.20.39.1 0
+ rule 10 permit source 10.20.39.2 0
+ rule 15 permit source 10.20.39.3 0
+ rule 20 permit source 10.20.39.4 0
+ rule 25 permit source 10.20.39.5 0
+#
+acl number 2140
+ rule 5 permit source 10.20.40.1 0
+ rule 10 permit source 10.20.40.2 0
+ rule 15 permit source 10.20.40.3 0
+ rule 20 permit source 10.20.40.4 0
+ rule 25 permit source 10.20.40.5 0
+#
+acl number 2141
+ rule 5 permit source 10.20.41.1 0
+ rule 10 permit source 10.20.41.2 0
+ rule 15 permit source 10.20.41.3 0
+ rule 20 permit source 10.20.41.4 0
+ rule 25 permit source 10.20.41.5 0
+#
+acl number 2142
+ rule 5 permit source 10.20.42.1 0
+ rule 10 permit source 10.20.42.2 0
+ rule 15 permit source 10.20.42.3 0
+ rule 20 permit source 10.20.42.4 0
+ rule 25 permit source 10.20.42.5 0
+#
+acl number 2143
+ rule 5 permit source 10.20.43.1 0
+ rule 10 permit source 10.20.43.2 0
+ rule 15 permit source 10.20.43.3 0
+ rule 20 permit source 10.20.43.4 0
+ rule 25 permit source 10.20.43.5 0
+#
+acl number 2144
+ rule 5 permit source 10.20.44.1 0
+ rule 10 permit source 10.20.44.2 0
+ rule 15 permit source 10.20.44.3 0
+ rule 20 permit source 10.20.44.4 0
+ rule 25 permit source 10.20.44.5 0
+#
+acl number 2145
+ rule 5 permit source 10.20.45.1 0
+ rule 10 permit source 10.20.45.2 0
+ rule 15 permit source 10.20.45.3 0
+ rule 20 permit source 10.20.45.4 0
+ rule 25 permit source 10.20.45.5 0
+#
+acl number 2146
+ rule 5 permit source 10.20.46.1 0
+ rule 10 permit source 10.20.46.2 0
+ rule 15 permit source 10.20.46.3 0
+ rule 20 permit source 10.20.46.4 0
+ rule 25 permit source 10.20.46.5 0
+#
+acl number 2147
+ rule 5 permit source 10.20.47.1 0
+ rule 10 permit source 10.20.47.2 0
+ rule 15 permit source 10.20.47.3 0
+ rule 20 permit source 10.20.47.4 0
+ rule 25 permit source 10.20.47.5 0
+#
+acl number 2148
+ rule 5 permit source 10.20.48.1 0
+ rule 10 permit source 10.20.48.2 0
+ rule 15 permit source 10.20.48.3 0
+ rule 20 permit source 10.20.48.4 0
+ rule 25 permit source 10.20.48.5 0
+#
+acl number 2149
+ rule 5 permit source 10.20.49.1 0
+ rule 10 permit source 10.20.49.2 0
+ rule 15 permit source 10.20.49.3 0
+ rule 20 permit source 10.20.49.4 0
+ rule 25 permit source 10.20.49.5 0
+#
+acl number 2150
+ rule 5 permit source 10.20.50.1 0
+ rule 10 permit source 10.20.50.2 0
+ rule 15 permit source 10.20.50.3 0
+ rule 20 permit source 10.20.50.4 0
+ rule 25 permit source 10.20.50.5 0
+#

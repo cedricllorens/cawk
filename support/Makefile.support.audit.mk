@@ -11,9 +11,11 @@
 create_audit:
 	if [ -z "$(audit)" ]; then \
 		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		exit 1; \
 	elif [ -z "$(supplier)" ]; then \
 		if [ -d "$(REPORT_PATH)/run_$(audit)" ]; then \
 			$(ECHO) "cawk error audit=$(audit) already exist ----"; \
+			exit 1; \
 		else \
 			cp -r $(TESTS_PATH)/repo $(TESTS_PATH)/run_$(audit); \
 			cp -r $(EXCEPTION_PATH)/repo exceptions/run_$(audit); \
@@ -25,6 +27,7 @@ create_audit:
 	else \
 		if [ ! -d "$(REPORT_PATH)/run_$(audit)" ]; then \
 			$(ECHO) "cawk error audit=$(audit) do not exist  ----"; \
+			exit 1; \
 		else \
 			[ -d "$(TESTS_PATH)/repo/tests.$(supplier)" ] && [ ! -d "$(TESTS_PATH)/run_$(audit)/tests.$(supplier)" ] && cp -r "$(TESTS_PATH)/repo/tests.$(supplier)" "$(TESTS_PATH)/run_$(audit)/" || true; \
 			[ -d "$(TESTS_PATH)/repo/tests.$(supplier).psirt" ] && [ ! -d "$(TESTS_PATH)/run_$(audit)/tests.$(supplier).psirt" ] && cp -r "$(TESTS_PATH)/repo/tests.$(supplier).psirt" "$(TESTS_PATH)/run_$(audit)/" || true; \
@@ -34,7 +37,7 @@ create_audit:
 	fi
 	$(GMAKE) database_postaudit_add audit=$(audit)
 	$(GMAKE) database_email_add audit=$(audit) dst=none cc=none
-	$(GMAKE) database_sync_add audit=$(audit) dir=none regex=.* scope=none regexos=.* regexpathexclude=none
+	$(GMAKE) database_sync_add audit=$(audit) dir=none regexinventory=.* scope=none regexos=.* regexpathexclude=none regexinventoryexclude=none
 	$(GMAKE) catalog_build
 	$(GMAKE) exceptions_build
 	$(ECHO) "cawk create_audit $(audit) done ----"
@@ -42,6 +45,7 @@ create_audit:
 delete_audit:
 	if [ -z "$(audit)" ]; then \
 		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		exit 1; \
 	elif [ ! -d "$(REPORT_PATH)/run_$(audit)" ]; then \
 		$(ECHO) "cawk error audit=$(audit) do not exist  ----"; \
 	elif [ -z "$(supplier)" ]; then \

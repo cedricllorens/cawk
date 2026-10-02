@@ -39,16 +39,20 @@ dnl level 0 --
 	interface = $0;
 	interfaceno = FNR;
 	proxyarp = 0;
+	is_shutdown = 0;
 ',
 `/^!$/', `
-	if ( proxyarp == 1 ) {
+	if ( proxyarp == 1 && is_shutdown == 0 ) {
 		print_err("int_proxyarp_notset.cisco-ios.gawk",interface" <ip proxy-arp> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
 dnl level 1 --
-`/^ ip proxy-arp/',`proxyarp = 1;',
+`/^ (ip proxy-arp|shutdown)/',`
+	if ($0 ~ /^ ip proxy-arp/) proxyarp = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

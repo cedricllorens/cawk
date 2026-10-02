@@ -61,6 +61,12 @@ gmake list_audit
 
 # Clean generated files
 gmake clean
+
+# Clean persisted execution logs (not touched by gmake clean)
+gmake clean_logs_repo
+gmake clean_logs_run
+gmake clean_logs_run audit=client1
+gmake clean_logs_run_audit
 ```
 
 ## Test Template Pipeline
@@ -135,6 +141,11 @@ exceptions/
   repo/             # Exception rules (applied during reporting)
   run/, run_<audit>/
 
+validate/
+  test-sync/
+    source/         # Fixture config files for sync pipeline testing
+    scope.txt       # Device allow-list for sync scope validation
+
 reports/
   repo/, run/, run_<audit>/   # Assessment output + archives/
 
@@ -154,7 +165,7 @@ database/           # Flat-file databases for sync, email, post-audit config
 
 Tests and confs are organized per supplier. Current scope (defined in `Makefile` and support files):
 
-`cisco-ios`, `cisco-xr`, `cisco-xe`, `cisco-cedge`, `cisco-viptela`, `juniper-junos`, `huawei-vrp`, `fortinet-fortios`, `nokia-sros`, `paloalto-panos`, `checkpoint-fwcli`, `packetfilter-fwcli`, `iptables-fwcli`, `6wind-linux`, `ekinops-oneos`
+`cisco-ios`, `cisco-xr`, `cisco-xe`, `cisco-cedge`, `cisco-viptela`, `cisco-sdnios`, `juniper-junos`, `huawei-vrp`, `fortinet-fortios`, `nokia-sros`, `paloalto-panos`, `checkpoint-fwcli`, `packetfilter-fwcli`, `iptables-fwcli`, `6wind-linux`, `ekinops-oneos`
 
 ## Test Naming Convention
 
@@ -201,6 +212,89 @@ Test filenames follow a strict pattern:
 5. Valid status codes: `pass`, `error`, `warning`, `psirt`
 6. Run `gmake tests_repo` to compile, then `gmake check_repo` to validate
 
+### M4 Block Macro Best Practices
+
+When using M4 templates with `m4_cawk_parse_block()` macro (for interface or block-level iteration):
+
+**✅ CORRECT: Single Combined Regex with Inline Processing**
+
+```awk
+m4_cawk_parse_block(
+
+dnl level 0 - interface/block start/end
+`/^interface .*$/',`
+	interface = $0;
+	block_var1 = 0;
+	block_var2 = 0;
+',
+`/^!$/', `
+	if ( block_var1 == 1 && block_var2 == 0 ) {
+		print_err(...);
+		pass = 0;
+	}
+',
+
+dnl level 1 - SINGLE combined pattern with inline if statements
+`/^ (pattern1|pattern2)/',`
+	if ($0 ~ /^ pattern1/) block_var1 = 1;
+	if ($0 ~ /^ pattern2/) block_var2 = 1;
+',
+`', `'
+
+)
+```
+
+**❌ WRONG: Multiple Separate Level-1 Patterns**
+
+```awk
+dnl AVOID THIS - causes bl_level state confusion
+`/^ pattern1/',`block_var1 = 1;',
+`/^ pattern2/',`block_var2 = 1;',
+`', `'
+```
+
+**Why:** Multiple level-1 patterns cause the M4 macro to generate conflicting `bl_level` state changes, breaking block-end detection. Use a single combined regex pattern with inline `if` statements instead. To exclude whole blocks (e.g. skip `[Ll]oopback` interfaces, or Juniper `inactive:` stanzas), add the condition to the block's own begin hook (e.g. `/^interface .*$/ && !/[Ll]oopback/`, or `/%SED_BK_JUNI%[^ ]+ {/ && !/inactive/` for Juniper physical interfaces) rather than a flag checked at block-end — the begin action never fires, so `bl_level` never advances and nothing inside the block is tracked. Add the exclusion once at the begin hook that opens the block to skip, not repeated at every nested hook underneath it.
+
+### acl_configconsistency_set Golden Rule: No Wrapper Around cawk_add_hypercube_rules()
+
+**Applies only to the `acl_configconsistency_set.<supplier>` tests.** In these tests, `cawk_add_hypercube_rules()` must be called **directly** at the point where a rule is emitted. Never introduce a per-supplier wrapper function (`pf_add_rule()`, `cisco_add_rule()`, …) that forwards its 14+ arguments to it.
+
+**❌ WRONG:**
+
+```awk
+function pf_add_rule(rule_desc, action, inoutgress, interface, family, src_ip, ... , protocol,    icmp_k) {
+	if ( protocol != "icmp" || length(table_icmp) == 0 ) {
+		cawk_add_hypercube_rules("...gawk", rule_desc, ... , protocol);
+		return;
+	}
+	for ( icmp_k in table_icmp ) cawk_add_hypercube_rules("...gawk", rule_desc, ... , protocol, icmp_k);
+}
+...
+pf_add_rule(rule_desc, action, inoutgress, interface, family, src_ip, ... , protocol);
+```
+
+**✅ CORRECT** — emit from the combinatory loops themselves, expanding extra dimensions (icmp type/code, port intervals, …) inline:
+
+```awk
+for (id2 in table_protocol) {
+
+	protocol = table_protocol[id2];
+
+	# an icmp rule restricted to some icmp messages yields one rule per message ----
+	if ( protocol == "icmp" && length(table_icmp) > 0 ) {
+		for (id3 in table_icmp) {
+			cawk_add_hypercube_rules("...gawk", rule_desc, ... , protocol, id3);
+		}
+	} else {
+		cawk_add_hypercube_rules("...gawk", rule_desc, ... , protocol);
+	}
+}
+```
+
+**Why:** the whole point of these tests is that every rule pushed into the hypercube is visible at its emission site. A wrapper re-declares the full argument list a second time, so any change to `cawk_add_hypercube_rules()` (a new dimension, a reordered argument) must be mirrored in every wrapper of every supplier — and a silent mismatch shifts arguments without an AWK error, producing wrong `inconsistent`/`redundant` verdicts that look like parsing bugs. It also hides the rule combinatory (address × port × protocol × icmp) that the loops are there to express.
+
+**How to apply:** if the same call appears several times, collapse the *loops* (hoist the assignments that differ, as the `dst_port` / `src_port` blocks do) rather than extracting a function. Small **parsing** helpers that return a value and take few arguments stay welcome (e.g. `pf_icmp_add()`, `cisco_port_intervals()`, `huawei_port()`) — the rule targets only wrappers around the cube-insertion call.
+
 See [Working with Tests](#working-with-tests) for the full workflow on creating, modifying, and validating tests.
 
 ## Build System Architecture
@@ -219,6 +313,7 @@ The cawk build system has been modularized into focused Makefile support files f
 | `support/Makefile.support.backup.mk` | Backup, restore, and migrate targets |
 | `support/Makefile.support.sync.mk` | Config synchronization targets |
 | `support/Makefile.support.tests.mk` | Test compilation and validation targets |
+| `support/Makefile.support.deprecated.mk` | Deprecated test function detection (`DEPRECATED_FUNCTIONS` regex, `check_deprecated_repo`/`check_deprecated_run`) |
 | `support/Makefile.support.view.mk` | Report viewing targets (view_repo, view_run, errors) |
 | `support/Makefile.support.archive.mk` | Archive management targets |
 | `support/Makefile.support.clean.mk` | Cleanup targets (reports, backups, temporary files) |
@@ -236,9 +331,12 @@ Global options that affect all assessments (defined in `support/Makefile.support
 | `CAWK_RELEASE` | version string | (varies) | Current cawk release version |
 | `MAKE_PARALLEL` | `yes` / `no` | `no` | Spawn multiple make jobs for parallel test execution |
 | `MAKE_J` / `MAKE_FILES_PER_TARGET` | number | 4 / 100 | Parallel job count and config files per target job |
-| `PSIRT` | `yes` / `no` | `no` | Assessment mode: `no` = standard **plus** PSIRT tests; `yes` = PSIRT tests **only** (standard skipped). PSIRT tests are always compiled; this flag only selects which run. |
+| `MAKE_FILES_PER_TARGET_MAX` | number | 2000 | Safety ceiling for `MAKE_FILES_PER_TARGET`/`MAKE_FILES_PER_TARGET_PSIRT` (see Makefile Gotchas — ARG_MAX) |
+| `PSIRT_ONLY` | `yes` / `no` | `no` | Assessment mode: `no` = standard **plus** PSIRT tests; `yes` = PSIRT tests **only** (standard skipped). PSIRT tests are always compiled; this flag only selects which run. |
 | `DEADBEEF` | `yes` / `no` | `no` | Flag configs older than threshold |
 | `DEADBEEF_THRESHOLD_DAYS` | number | 30 | Days to consider a config "old" |
+| `BADFORMAT` | `yes` / `no` | `no` | Exclude badformat configs (first-level indentation violations, detected by `common/badformat_cawk_conf.gawk`) from the final reports; the badformat scan itself always runs |
+| `CRLF` | `yes` / `no` | `yes` | Exclude crlf configs (windows format, detected by `common/crlf_cawk_conf.gawk`) from the final reports — forced to `yes` by default since CRLF results are wrong; the crlf scan itself always runs |
 | `JSON` | `yes` / `no` | `no` | Generate JSON reports alongside text |
 | `CATALOG_BUILD` | `yes` / `no` | `no` | Rebuild test catalog (db_info.txt) before assessment |
 | `ARCHIVE_OLDER_DAYS` | number | 120 | Auto-cleanup of old report archives |
@@ -246,7 +344,7 @@ Global options that affect all assessments (defined in `support/Makefile.support
 All options can be overridden per-invocation:
 
 ```bash
-gmake check_run audit=client1 PSIRT=yes JSON=yes DEADBEEF_THRESHOLD_DAYS=180
+gmake check_run audit=client1 PSIRT_ONLY=yes JSON=yes DEADBEEF_THRESHOLD_DAYS=180
 ```
 
 ## Makefile Gotchas & Conventions
@@ -256,11 +354,58 @@ Hard-won lessons when editing the Makefile — verify against these before chang
 - **`check_repo` and `check_run` bodies are duplicated ~12×** (across the supplier × parallel × audit branches). The tail is factored into the `cawk_report_tail` canned recipe, but the collection/exception/summary blocks are copy-pasted and **drift easily**. When you change one branch, mirror the change across all matching branches, and diff `repo` vs `run` variants to keep them aligned.
 - **`$(findstring x,LIST)` matches substrings, not words.** For membership validation (e.g. `supplier=`), use `$(filter x,LIST)` which compares whole space-separated words. `findstring` wrongly accepted partial names like `cisco`, `ios`, `juni`.
 - **`ECHO = echo` has no `-e`.** Do not rely on `\n` inside `$(ECHO) "...\n..."` — interpretation depends on the shell (`dash` expands, `bash` doesn't). Use one `$(ECHO)` per line instead.
-- **`exit 0` in an error branch masks the failure** — the recipe (and any prerequisite like `check_supplier`) reports success, so callers/CI can't detect it and assessments silently produce empty reports. Use `exit 1` for genuine user errors.
-- **`PSIRT` is an assessment *mode*, not an enable flag** — see the options table. PSIRT `.gawk` are always compiled; `PSIRT=yes` runs them *exclusively*.
+- **`exit 0` in an error branch masks the failure** — the recipe (and any prerequisite like `check_supplier`) reports success, so callers/CI can't detect it and assessments silently produce empty reports. Use `exit 1` for genuine user errors. Note that each recipe line runs in its own shell: an `exit 0` standing alone on its line (e.g. after an `ifeq` error message) ends only that line, and Make then **continues with the next recipe lines** — only a non-zero exit stops the recipe.
+- **`PSIRT_ONLY` (formerly `PSIRT`) is an assessment *mode*, not an enable flag** — see the options table. PSIRT `.gawk` are always compiled; `PSIRT_ONLY=yes` runs them *exclusively*. The old `PSIRT` name is rejected by `check_supplier` with a `cawk error:` so a stale `PSIRT=yes` cannot silently run all tests.
+- **Prefer `find … -exec cmd {} +` over `-exec cmd {} \;`** when `cmd` accepts several files (`grep`, `touch`, `deadbeef_cawk_conf.script`): `\;` forks one process per file, which dominates run time at audit scale. Keep `\;` only for commands that take exactly one file.
 - **Quoted shell globs don't expand**: `[ -d "$(TESTS_PATH)/run_*" ]` is always false (literal `run_*`). Prefer an unguarded `find $(TESTS_PATH)/run_* ... 2>/dev/null || true`, matching the style already used elsewhere in `clean`.
 - **Anchor audit-name matching.** `sed`/`grep` on an audit name must be anchored (trailing space for space-separated DBs, `$` for one-name-per-line), otherwise `client1` also matches `client1_backup` / `client10`. Likewise avoid `run_${audit}*` globs in backup/delete recipes.
 - **`archive_repo` archives into `reports/repo/archives/`** (not `run/`); keep the `tar` destination and the echoed path in sync.
+- **`MAKE_PARALLEL=yes` recipes are not `ARG_MAX`-safe by default.** The sequential path (`cawk_test_execution`) uses `find -exec ./test {} +`, which `find` batches automatically to respect the OS argument-length limit. `common/gen_cawk_makefile(.psirt).gawk` (used by `cawk_test_gen_parallel` and the parallel PSIRT branches) instead concatenates up to `MAKE_FILES_PER_TARGET`/`MAKE_FILES_PER_TARGET_PSIRT` config paths literally into one recipe line — no batching. `check_supplier` enforces `MAKE_FILES_PER_TARGET_MAX` (default 2000) as a ceiling; don't remove that check or raise the ceiling without re-checking against a realistic `ARG_MAX` (varies by OS/container, `getconf ARG_MAX`). A failure here surfaces as a `cawk warning:` line (stderr captured to `$(LOGS_PATH)/parallel_gmake.<scope>.err`, i.e. `logs/parallel_gmake.<scope>.err` — persists across runs, unlike `tmp/`; purge explicitly with `gmake clean_logs`), not a hard stop — keep it that way so one supplier's failure doesn't abort the whole assessment.
+
+## Configuration Variables: Make ↔ Shell Consistency
+
+**CRITICAL RULE: Path variables defined in `support/Makefile.support.mk` MUST be kept in sync with `database/include/scripts_config.sh`.**
+
+These files are the source of truth for directory paths used across cawk:
+
+| Variable | Makefile (Make syntax) | Shell Script (POSIX syntax) | Purpose |
+|----------|---------|--------|---------|
+| `CONFS_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Configuration directory |
+| `COMMON_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Common AWK libraries |
+| `BACKUP_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Backup archives |
+| `DATABASE_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Flat-file databases |
+| `LOGS_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Logs directory |
+| `REPORT_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Generated reports |
+| `EXCEPTION_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Exception rules |
+| `TESTS_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Test templates |
+| `TESTS_COMMON_PATH` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Common test libraries |
+| `TESTS_SYSTEM` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | System tests |
+| `TESTS_TMP` | `support/Makefile.support.mk` | `database/include/scripts_config.sh` | Temporary test files |
+| `DATABASE_PATH/db_info.txt` | `DATABASE_CIS_INFO` in Makefile | `database/include/scripts_config.sh` | Test catalog |
+
+### Why This Matters
+
+Shell scripts (`.script.sh`) source `database/include/scripts_config.sh` to access these paths; Make targets read them from `support/Makefile.support.mk`. When values drift:
+
+- Shell scripts may operate on wrong directories
+- Assessments can fail silently or produce incomplete results
+- Database sync/post-audit operations may target incorrect locations
+
+### Enforcement
+
+**When adding or modifying a path variable:**
+
+1. Edit `support/Makefile.support.mk` (Make version)
+2. Edit `database/include/scripts_config.sh` (POSIX shell version)
+3. Verify both define identical paths: `grep "^CONFS_PATH" support/Makefile.support.mk database/include/scripts_config.sh`
+4. Update `ChangeLog.md` with the change
+5. Run `gmake check_repo` to validate the build system
+
+**Gotcha:** Variable names are identical (`CONFS_PATH`, not `MAKE_CONFS_PATH` vs `SH_CONFS_PATH`), but their syntax differs:
+- Make: `CONFS_PATH = confs` (spaces around `=`)
+- Shell: `CONFS_PATH="confs"` (quotes, no spaces)
+
+The shell version also includes helper functions like `get_database_scripts()` to expand glob patterns (Make's `$(wildcard ...)` equivalent in POSIX shell).
 
 ## Assessment Types
 
@@ -278,19 +423,20 @@ cawk uses flat-file databases stored in the `database/` directory for managing a
 
 Stores configuration for automatic config synchronization across devices.
 
-**Format:** Space-separated fields (6 fields). Each field must contain no spaces; multi-value fields use commas as the internal sub-separator.
+**Format:** Space-separated fields (7 fields). Each field must contain no spaces; multi-value fields use commas as the internal sub-separator.
 
 - Field 1: `audit_name` — Name of the audit context (matches `audit=AUDIT_NAME`)
 - Field 2: `sync_paths` — Comma-separated list of remote paths to sync (e.g., `/conf/,/conf/backup/`)
-- Field 3: `device_regex` — Extended regex pattern to match device names (e.g., `.*switch.*`)
-- Field 4: `scope_file` — File path containing device inventory scope, or `none` for all devices
+- Field 3: `inventory_regex` — Extended regex pattern a `scope_file` line (field 4) must match to be kept as an allowed device. **Only applied when `scope_file` is set** — if `scope_file` is `none`, this field has no effect and every file found under `sync_paths` is synced (see [`sync_cawk_conf.gawk.template`](common/sync_cawk_conf.gawk.template))
+- Field 4: `scope_file` — File path containing device inventory scope (one entry per line; only the first whitespace-separated column is used as the device path), or `none` for all devices
 - Field 5: `os_regex` — Extended regex pattern to match OS types (e.g., `(cisco-ios|cisco-xe)`)
 - Field 6: `path_exclude` — Extended regex pattern to exclude paths (e.g., `_backup`), or `none` for no exclusions
+- Field 7: `inventory_regex_exclude` — Extended regex pattern a `scope_file` line must **not** match to be kept, or `none` for no exclusion. Same "only applies with `scope_file`" restriction as field 3
 
 **Example:**
 
 ```text
-client1 /conf/,/conf/cawk/ .*switch.* /inventory/scope.txt cisco-ios|cisco-xe _backup
+client1 /conf/,/conf/cawk/ .*switch.* /inventory/scope.txt cisco-ios|cisco-xe _backup none
 ```
 
 **Created by:** `gmake database_sync_add audit=AUDIT_NAME ...`
@@ -354,8 +500,9 @@ Stores metadata for all compiled tests including test names, purposes, descripti
 
 ```bash
 gmake database_sync_add audit=client1 dir=/conf/,/conf/backup/ \
-      regex=.*switch.* scope=/inventory/scope.txt \
-      regexos=cisco-ios|cisco-xe regexpathexclude=_backup
+      regexinventory=.*switch.* scope=/inventory/scope.txt \
+      regexos=cisco-ios|cisco-xe regexpathexclude=_backup \
+      regexinventoryexclude=none
 
 gmake database_email_add audit=client1 dst=john@example.com,jane@example.com \
       cc=manager@example.com
@@ -404,6 +551,7 @@ ls file.awk.orig  # Returns non-zero if not found
    - Template changes: `gmake tests_repo` or `gmake tests_run`
    - Build system changes: `gmake check_repo` or `gmake check_run`
    - Database changes: `gmake catalog_build`
+   - **Makefile/support/*.mk recipe changes: check `ARG_MAX` before running** — `gmake -n <target> 2>/dev/null | awk '{print length, NR}' | sort -rn | head -3` and confirm the longest expanded line stays under 131072 bytes (Linux's per-argument `MAX_ARG_STRLEN` — `PAGE_SIZE * 32`). This is a *different, stricter* limit than the overall `getconf ARG_MAX` (~2MB): `/bin/sh -c "<recipe>"` passes the entire recipe as **one** argv string, so a single long line can fail with "Argument list too long" (exit 127) well before total `ARG_MAX` is reached. **Never write `$(foreach x,$(shell find ...), <recipe-line>)`** — Make expands this into one copy of `<recipe-line>` per match *before* the shell ever runs, so the line grows linearly with however many files/tests/suppliers exist (as of this writing, sequential test execution alone was already at ~70% of the limit with room for only ~170 more tests, and structurally could only grow). Use a **shell-level loop** instead — `find ... | while read -r x; do ...; done` — so the recipe text stays constant-size regardless of match count; this is what `cawk_test_execution` and its Makefile duplicates do. The same rule applies to any future `$(foreach ...,$(shell find/wildcard ...), ...)` pattern, and to per-iteration `|| $(ECHO) "..."` inside a loop: prefer logging to a file and reporting once after the loop over inline per-iteration messages. **Also watch plain `for x in $(SOME_LIST); do ...; done` loops** (no `foreach` involved): if `SOME_LIST` is a Make variable whose size is *unbounded* over the tool's lifetime — e.g. `RUN_DIRS`/`RUN_DIRS_FIND` (one entry per `create_audit` ever run, unlike `SUPPLIER_SCOPE` which is fixed at ~18) — Make still substitutes the whole list literally into the `for x in ...` line before the shell runs it, so the line grows with audit count even though the loop body is written once. Prefer `$(RUN_DIRS_FIND) | while read -r audit; do ...; done` (defined once in `support/Makefile.support.mk`, re-run fresh by the shell on each use) over `for dir in $(RUN_DIRS)`; when the loop also needs a "list is empty" message, count first with `count=$$($(RUN_DIRS_FIND) | wc -l); if [ "$$count" -eq 0 ]; then ...; else $(RUN_DIRS_FIND) | while read -r audit; do ...; done; fi` — do *not* try to set a flag variable inside the `| while read` body and test it afterward, since the pipe runs the loop in a subshell and any variable assigned inside it is lost once the pipe exits. A `for x in $(SUPPLIER_SCOPE)` or a shell glob bounded to the supplier list (`for f in $(EXCEPTION_PATH)/repo/*.m4`) is fine as-is — the risk is specifically lists that grow with audits/history, not ones bounded by the fixed supplier count.
 3. **Document the change** — update `README.md` (if a feature/command/option changes) and `ChangeLog.md` (always, with a brief summary and date).
 
 ### Compiled vs Source Files: Critical Rule
@@ -559,17 +707,27 @@ gmake catalog_build       # Validate test metadata
 
 ### ChangeLog.md
 
-**Always update with:**
-- **Category** (e.g., `Fix`, `Feature`, `Docs`, `Build`)
-- **Description** — one short sentence, no dates
+**Group by technical area, not by change type.** Each version's entries are organized under topic headings — `Makefile`, `Tests`, `Database`, `Supplier`, `Docs`, `CI/CD`, `Build`, or another area name that fits — never under `Fixed`/`Added`/`Changed`. A given version uses only the headings its changes actually need; a version touching only tests and the Makefile has just those two sections. Put a change under the section matching *what it touches* (a Makefile recipe, a test file, a database script), not under whether it happened to fix a bug or add a feature — a section can (and usually does) freely mix fixes and additions.
 
-**Example:**
+**One line per entry, no exceptions.** Every bullet is a single line: `<Fix|Add|Rename|...> <what> <where>` — state the change, not the reasoning, the investigation, or the "why". Drop rationale, file-line counts, before/after code snippets, and multi-clause justifications; if the change needs more context than one line can hold, that context belongs in the commit message or PR description, not here. A single Markdown line may run long in raw characters — that's fine — but it must never wrap into a second bullet, a sub-bullet, or a colon-separated list block.
+
+**Example (one version, several topic sections):**
 ```markdown
-### Fixed
-- Fix CIS database: add missing CIS IDs 1.1, 2.2.3-5 to db_info.txt
+## [v4.1.0] - ... 2026
 
-### Added
-- Add CIS benchmark references to error stats section in report output
+### Makefile
+
+- Fix `check_run` swallowing a failed `sync_cawk_conf.gawk` call
+- Add `clean_logs_repo`/`clean_logs_run` to `check_repo`/`check_run`
+
+### Tests
+
+- Add `acl_configconsistency_set.juniper-junos` (10th supplier)
+- Fix `int_ipv6redirects_notset`: skip shutdown interfaces
+
+### Database
+
+- Add `db_sync.txt` field 7 `regexinventoryexclude`
 ```
 
 ## Git Workflow Details

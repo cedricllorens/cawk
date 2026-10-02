@@ -16,3 +16,51 @@
 # @nist800-53_ref : AC-17(1) | Access Control | Ensure monitoring and control of remote access is automated
 # @risk_level : high
 # @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function sshinput_summary() {
+	if ( sshinput == 0 ) {
+		print_err("linevty_sshinput_set.cisco-ios.gawk",linevty" : transport input (none|ssh) is missing",linenovty,"high","error");
+		pass = 0;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_vty = 0;
+	pass = 1;
+}
+
+/^line vty .*$/ {
+	if ( block_vty == 1 ) sshinput_summary();
+	linevty = $0;
+	linenovty = FNR;
+	sshinput = 0;
+        block_vty = 1;
+	next;
+}
+
+/^ transport input (none|ssh)$/ && block_vty == 1 {
+	sshinput = 1;
+	next;
+}
+
+/^!$/ && block_vty == 1 {
+	sshinput_summary();
+	block_vty = 0;
+}
+
+ENDFILE {
+	if ( pass ) print_err("linevty_sshinput_set.cisco-ios.gawk","line vty transport input (none|ssh) are set",0,"high","pass");
+}
+
+END {
+}

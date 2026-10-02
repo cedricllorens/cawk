@@ -39,15 +39,19 @@ m4_cawk_parse_block(
 	interface = $0;
 	interfaceno = FNR;
 	arpproxy = 0;
+	is_shutdown = 0;
 ',
-`/^!$/', `
-	if ( arpproxy == 1 ) {
+`/^\043$/', `
+	if ( arpproxy == 1 && is_shutdown == 0 ) {
 		print_err("int_arpproxy_notset.huawei-vrp.gawk",interface" <arp proxy> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
-`/^ arp proxy/',`arpproxy = 1;',
+`/^ (arp proxy|shutdown)/',`
+	if ($0 ~ /^ arp proxy/) arpproxy = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

@@ -73,7 +73,7 @@ tests_run_copy:
 	$(ECHO) "cawk tests_run_copy done ----"
 
 tests_run_audit_copy:
-	for dir in $(RUN_DIRS); do \
+	$(RUN_DIRS_FIND) | while read -r dir; do \
 		$(GMAKE) tests_run_copy audit=$$dir; \
 	done
 	$(ECHO) "cawk tests_run_audit_copy done ----"
@@ -82,7 +82,7 @@ tests_run: tests_target_run
 	$(ECHO) "cawk tests_run audit=${audit} done ----"
 
 tests_run_audit:
-	@for dir in $(RUN_DIRS); do \
+	@$(RUN_DIRS_FIND) | while read -r dir; do \
 		$(GMAKE) tests_run audit=$$dir; \
 	done
 	$(ECHO) "cawk tests_run_audit done ----"

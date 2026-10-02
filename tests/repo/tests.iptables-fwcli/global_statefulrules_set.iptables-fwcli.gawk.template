@@ -39,7 +39,7 @@ function check_rule(line) {
         return
 
     # Looks for a stateful ACCEPT rule for ESTABLISHED,RELATED traffic
-    if (!statefull_rules_found && line ~ /-j *ACCEPT/ &&((line ~ /-m *conntrack/ && line ~ /--ctstate *ESTABLISHED,RELATED/) ||(line ~ /-m *state/ && line ~ /--state *ESTABLISHED,RELATED/))) {
+    if (!statefull_rules_found && line ~ /-j *ACCEPT/ &&((line ~ /-m *conntrack/ && line ~ /--ctstate *(ESTABLISHED,RELATED|RELATED,ESTABLISHED)/) ||(line ~ /-m *state/ && line ~ /--state *(ESTABLISHED,RELATED|RELATED,ESTABLISHED)/))) {
         statefull_rules_found = 1
         statefull_rules_line = line
         statefull_rules_lineno = FNR

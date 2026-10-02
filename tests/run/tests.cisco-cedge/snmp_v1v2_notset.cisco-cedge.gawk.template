@@ -28,12 +28,12 @@ BEGINFILE {
 
 /^snmp-server community / {
 	print_err("snmp_v1v2_notset.cisco-cedge.gawk",$0,FNR,"high","error");
-        pass = 0;
-	nextfile;
+	pass = 0;
+	next;
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2_notset.cisco-cedge.gawk","snmp v1v2 is not set",0,"high","pass");
+	if ( pass ) print_err("snmp_v1v2_notset.cisco-cedge.gawk","snmp v1v2 is not set",0,"high","pass");
 }
 
 END {

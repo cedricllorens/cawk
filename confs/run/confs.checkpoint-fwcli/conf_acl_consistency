@@ -1,0 +1,46 @@
+set s03_dst="10.3.2.1"
+set s04_src="10.4.1.7"
+
+add access-rule name "s01-exp-1-inconsistent" layer "Network" position 1 source 10.1.1.0/24 destination 10.1.2.1 service "ssh" action "Accept" track "Log"
+add access-rule name "s01-exp-1-inconsistent" layer "Network" position 2 source 10.1.1.0/24 destination 10.1.2.1 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s02-exp-pass" layer "Network" position 3 source 10.2.1.0/24 destination 10.2.2.1 service "ssh" action "Accept" track "Log"
+add access-rule name "s02-exp-pass" layer "Network" position 4 source 10.2.1.0/24 destination 10.2.2.1 service "http" action "Drop" track "Log"
+
+add access-rule name "s03-exp-1-inconsistent" layer "Network" position 5 source 10.3.1.0/24 destination "S03_Dst" service "ssh" action "Accept" track "Log"
+add access-rule name "s03-exp-1-inconsistent" layer "Network" position 6 source 10.3.1.0/24 destination 10.3.2.1 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s04-exp-1-inconsistent" layer "Network" position 7 source $s04_src destination 10.4.2.0/24 service "https" action "Accept" track "Log"
+add access-rule name "s04-exp-1-inconsistent" layer "Network" position 8 source 10.4.1.0/24 destination 10.4.2.0/24 service "https" action "Drop" track "Log"
+
+add access-rule name "s05-exp-pass" layer "Network" position 9 source 10.5.1.0/24 destination 10.5.2.0/24 service "ssh" action "Accept" track "Log"
+add access-rule name "s05-exp-pass" layer "Network" position 10 source 10.5.3.0/24 destination 10.5.2.0/24 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s06-exp-1-redundant" layer "Network" position 11 source 10.6.1.0/24 destination 10.6.2.0/24 service "ssh" action "Accept" track "Log"
+add access-rule name "s06-exp-1-redundant" layer "Network" position 12 source 10.6.1.9 destination 10.6.2.5 service "ssh" action "Accept" track "Log"
+
+add access-rule name "s07-exp-1-inconsistent" layer "Network" position 13 source 10.7.1.0/24 destination 10.7.2.0/24 service "http-https" action "Accept" track "Log"
+add access-rule name "s07-exp-1-inconsistent" layer "Network" position 14 source 10.7.1.0/24 destination 10.7.2.0/24 service "https" action "Drop" track "Log"
+
+add access-rule name "s08-exp-1-inconsistent" layer "Network" position 15 source 10.8.1.0/24 destination 10.8.2.0/24 service "smb,telnet" action "Accept" track "Log"
+add access-rule name "s08-exp-1-inconsistent" layer "Network" position 16 source 10.8.1.0/24 destination 10.8.2.0/24 service "telnet" action "Drop" track "Log"
+
+add access-rule name "s09-exp-1-inconsistent" layer "Network" position 17 source 10.9.1.0/24 destination 10.9.2.0/24 service "Any" action "Accept" track "Log"
+add access-rule name "s09-exp-1-inconsistent" layer "Network" position 18 source 10.9.1.0/24 destination 10.9.2.0/24 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s10-exp-pass" layer "Network" position 19 source 10.10.1.0/24 destination 10.10.2.0/24 service "ssh" action "Accept" track "Log"
+add access-rule name "s10-exp-pass" layer "Network" position 20 source 10.10.1.0/24 destination ! 10.10.2.0/24 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s11-exp-pass" layer "Network" position 21 source 10.11.1.0/24 destination 10.11.2.0/24 service "ssh" action "Accept" track "Log"
+add access-rule name "s11-exp-pass" layer "Network" position 22 action "Drop" connection-state invalid track "Log"
+
+add access-rule name "s12-exp-1-inconsistent" layer "Network" position 23 \
+    source 10.12.1.0/24 destination 10.12.2.0/24 \
+    service "ssh" action "Accept" track "Log"
+add access-rule name "s12-exp-1-inconsistent" layer "Network" position 24 source 10.12.1.0/24 destination 10.12.2.0/24 service "ssh" action "Drop" track "Log"
+
+add nat-rule name "s13-exp-pass" original-source 10.13.1.0/24 translated-source 10.13.9.1 original-destination 10.13.2.0/24 method "Static" position 1
+add access-rule name "s13-exp-pass" layer "Network" position 25 source 10.13.1.0/24 destination 10.13.2.0/24 service "ssh" action "Accept" track "Log"
+
+add access-rule name "s14-exp-pass" layer "Network" position 26 source "S14_Unknown_Object" destination 10.14.2.0/24 service "ssh" action "Accept" track "Log"
+add access-rule name "s14-exp-pass" layer "Network" position 27 source 10.14.1.0/24 destination 10.14.2.0/24 service "ssh" action "Drop" track "Log"

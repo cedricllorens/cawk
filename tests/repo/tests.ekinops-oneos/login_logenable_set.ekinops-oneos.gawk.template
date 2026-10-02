@@ -38,7 +38,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-    if ( pass == 0) print_err("login_logenable_set.ekinops-oneos.gawk","<login log enable> not configured",FNR,"high","pass");
+    if ( pass == 0) print_err("login_logenable_set.ekinops-oneos.gawk","<login log enable> not configured",0,"high","error");
 }
 
 END {

@@ -7,19 +7,43 @@
 
 .PHONY: \
   exceptions_build exceptions_build_repo exceptions_build_run exceptions_repo  \
-  exceptions_run exceptions_run_audit_copy exceptions_run_copy
+  exceptions_run exceptions_run_audit exceptions_run_audit_copy exceptions_run_copy
 
 exceptions_repo:
-	$(foreach exc,$(wildcard $(EXCEPTION_PATH)/repo/*.m4),m4 -I m4 $(exc) | sed '/^$$/d' > $(basename $(exc)) || true ; chmod 650 $(basename $(exc)) ;)
+	mkdir -p $(LOGS_PATH)/repo
+	: > $(LOGS_PATH)/repo/exceptions.repo.err
+	$(call cawk_exceptions_compile,$(EXCEPTION_PATH)/repo,$(LOGS_PATH)/repo/exceptions.repo.err)
+	@if [ -s $(LOGS_PATH)/repo/exceptions.repo.err ]; then \
+		$(ECHO) "cawk error: exceptions_repo failed (see $(LOGS_PATH)/repo/exceptions.repo.err) ----"; \
+		exit 1; \
+	fi
 	$(ECHO) "cawk exceptions_repo done ----"
 
 exceptions_run:
 ifeq ($(strip $(audit)),)
-	$(foreach exc,$(wildcard $(EXCEPTION_PATH)/run/*.m4),m4 -I m4 $(exc) | sed '/^$$/d' > $(basename $(exc)) || true ; chmod 650 $(basename $(exc)) ;)
+	mkdir -p $(LOGS_PATH)/run
+	: > $(LOGS_PATH)/run/exceptions.run.err
+	$(call cawk_exceptions_compile,$(EXCEPTION_PATH)/run,$(LOGS_PATH)/run/exceptions.run.err)
+	@if [ -s $(LOGS_PATH)/run/exceptions.run.err ]; then \
+		$(ECHO) "cawk error: exceptions_run failed (see $(LOGS_PATH)/run/exceptions.run.err) ----"; \
+		exit 1; \
+	fi
 else
-	$(foreach exc,$(wildcard $(EXCEPTION_PATH)/run_$(audit)/*.m4),m4 -I m4 $(exc) | sed '/^$$/d' > $(basename $(exc)) || true ; chmod 650 $(basename $(exc)) ;)
+	mkdir -p $(LOGS_PATH)/run_$(audit)
+	: > $(LOGS_PATH)/run_$(audit)/exceptions.$(audit).err
+	$(call cawk_exceptions_compile,$(EXCEPTION_PATH)/run_$(audit),$(LOGS_PATH)/run_$(audit)/exceptions.$(audit).err)
+	@if [ -s $(LOGS_PATH)/run_$(audit)/exceptions.$(audit).err ]; then \
+		$(ECHO) "cawk error: exceptions_run failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/exceptions.$(audit).err) ----"; \
+		exit 1; \
+	fi
 endif
 	$(ECHO) "cawk exceptions_run done ----"
+
+exceptions_run_audit:
+	$(RUN_DIRS_FIND) | while read -r audit; do \
+		$(GMAKE) exceptions_run audit=$$audit; \
+	done
+	$(ECHO) "cawk exceptions_run_audit done ----"
 
 exceptions_build_repo: tests_target_common
 	if [ -d exceptions/repo ]; then \
@@ -51,11 +75,11 @@ exceptions_build: tests_target_common
 	touch $(DATABASE_PATH)/db_exception.txt
 	$(GMAKE) exceptions_build_repo
 	$(GMAKE) exceptions_build_run audit=
-	@RUN_DIRS="$$(find -L exceptions -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u || echo '')"; \
-	if [ -z "$$RUN_DIRS" ]; then \
+	@count=$$(find -L exceptions -name '*run_*' -type d 2>/dev/null | wc -l); \
+	if [ "$$count" -eq 0 ]; then \
 		$(ECHO) "cawk exceptions_build: no run audits found, skipping exceptions_build_run"; \
 	else \
-		for audit in $$RUN_DIRS; do \
+		find -L exceptions -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u | while read -r audit; do \
 			$(GMAKE) exceptions_build_run audit=$$audit; \
 		done; \
 	fi
@@ -79,7 +103,7 @@ exceptions_run_copy:
 	$(ECHO) "cawk exceptions_run_copy to $$RUN_TARGET done ----"
 
 exceptions_run_audit_copy:
-	for dir in $(RUN_DIRS); do \
+	$(RUN_DIRS_FIND) | while read -r dir; do \
 		$(GMAKE) exceptions_run_copy audit=$$dir; \
 	done
 	$(ECHO) "cawk exceptions_run_audit_copy done ----"

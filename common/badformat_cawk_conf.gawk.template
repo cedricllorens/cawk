@@ -1,0 +1,65 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# this script detects first-level indentation violations
+# Such a configuration is called a badformat configuration
+#
+# a block opens when a column-0 line is followed by an indented
+# line: that line's indentation becomes the block reference; any
+# later indented line shallower than the reference is a violation
+# until the next column-0 line closes the block (reference = 0)
+#
+# windows format (CRLF) is reported by crlf_cawk_conf.gawk instead
+#
+# usage: badformat_cawk_conf.gawk conf_file [conf_file ...]
+# output: one line per badformat file (first violation + count)
+# ------------------------------------------------------------
+
+BEGINFILE {
+	block_reference_indent = 0;
+	previous_line_at_column0 = 0;
+	violation_count = 0;
+	first_violation_line_number = 0;
+	first_violation_text = "";
+}
+
+# blank lines neither open nor close a block
+/^[ \t\r]*$/ { next }
+
+{
+	# a trailing '\r' must not break the indentation analysis of a CRLF conf
+	sub(/\r$/, "");
+	match($0, /^[ \t]*/);
+	current_indent = RLENGTH;
+
+	if (current_indent == 0) {
+		block_reference_indent = 0;
+		previous_line_at_column0 = 1;
+		next;
+	}
+
+	if (previous_line_at_column0 == 1) {
+		block_reference_indent = current_indent;
+	} else if (block_reference_indent > 0 && current_indent < block_reference_indent) {
+		violation_count++;
+		if (first_violation_line_number == 0) {
+			first_violation_line_number = FNR;
+			first_violation_text = $0;
+			# keep the output CSV well-formed
+			gsub(/;/, ",", first_violation_text);
+			sub(/^[ \t]+/, "", first_violation_text);
+		}
+	}
+	previous_line_at_column0 = 0;
+}
+
+ENDFILE {
+	if (violation_count > 0)
+		print FILENAME ";cawk_badformat_internal_test;first-level indentation violation(s): " violation_count " (first: " first_violation_text ");" first_violation_line_number ";info;warning";
+}

@@ -1,0 +1,41 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : aaa_configlogin_set.cisco-xr.gawk
+# @supplier : cisco-xr
+# @purpose : check if <aaa authentication login> is set
+# @description : AAA login authentication must be configured to ensure users are properly authenticated when accessing the device
+# @actions : configure AAA authentication login with at least one authentication method (tacacs+, radius, or local) using 'aaa authentication login' command (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+}
+
+BEGINFILE {
+	pass = 1;
+}
+
+/^aaa authentication login / {
+	print_err("aaa_configlogin_set.cisco-xr.gawk",$0,FNR,"high","pass");
+	pass = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("aaa_configlogin_set.cisco-xr.gawk","<aaa authentication login> is not set",0,"high","error");
+}
+
+END {
+}

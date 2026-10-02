@@ -1,13 +1,24 @@
 dnl ---------------------------------------------------
+dnl This macro is used to generate an exception
 dnl m4_cawk_exception($1,$2,$3)
 dnl  $1 : device name   : extended regex
 dnl  $2 : test name     : extended regex
 dnl  $3 : error message : extended regex
-dnl
-dnl m4_cawk_exception(`device100',`',`')
-dnl m4_cawk_exception(`',`fw_',`')
-dnl m4_cawk_exception(`',`',`ike')
-dnl m4_cawk_exception(`device100',`fw_',`ike')
+dnl ---------------------------------------------------
+
+dnl ---------------------------------------------------
+dnl This macro is used to generate an exception
+dnl m4_cawk_exception_prefixsuffix($1,$2,$3,$4,$5,$6,$7,$8,$9)
+dnl  $1 : device name   : extended regex
+dnl  $2 : test name     : extended regex
+dnl  $3 : error message : extended regex
+dnl  $4 : prefix for device name   : default 1=add [^;]* , 0=no prefix
+dnl  $5 : suffix for device name   : default 1=add [^;]* , 0=no suffix
+dnl  $6 : prefix for test name     : default 1=add [^;]* , 0=no prefix
+dnl  $7 : suffix for test name     : default 1=add [^;]* , 0=no suffix
+dnl  $8 : prefix for error message : default 1=add [^;]* , 0=no prefix
+dnl  $9 : suffix for error message : default 1=add [^;]* , 0=no suffix
+dnl ---------------------------------------------------
 dnl ---------------------------------------------------
 
 include(`cawk.m4')

@@ -13,7 +13,7 @@
 # @purpose : check if <ssh version v1> is not set
 # @description : ssh version v1 is insecure and should not be enabled for remote management
 # @actions : ensure ssh protocol-version is set to v2 only or configure protocol-version to exclude v1 (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection is used for data in transit
+# @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

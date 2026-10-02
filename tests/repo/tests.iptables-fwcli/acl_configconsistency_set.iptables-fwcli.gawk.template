@@ -1,0 +1,463 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : acl_configconsistency_set.iptables-fwcli.gawk
+# @supplier : iptables-fwcli
+# @purpose : check if <iptables rules> are consistent
+# @description : inconsistent or redundant iptables rules reduce security effectiveness and complicate policy management
+# @actions : remove inconsistent or redundant rules (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+# rule format ----------------------------------
+# 1  rule_name          : string
+# 2  rule_description   : string
+# 3  action             : permit/deny
+# 4  ingress/outgress   : "none","in","out","all"
+# 5  interface          : "none",string
+# 6  family             : "all", inet, inet6
+# 7  src@               : ip
+# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 9  port_src           : port_src			set 0 if empty
+# 10 port_src_range     : port_src_range	set 0 if empty
+# 11 dst@               : ip				set 0 if empty
+# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 13 port_dst           : port_dst			set 0 if empty
+# 14 port_dst_range     : port_dst_range	set 0 if empty
+# 15 protocol           : protocol			set "none" if empty
+# rule format ----------------------------------
+
+@include %SED_INCLUDE_PATH%
+@include %SED_INCLUDE_PATH_FWLIB%
+
+# ---------------------------------------------------------
+# START
+# ---------------------------------------------------------
+
+BEGIN {
+	# iptables --icmp-type keywords, as "type" or "type/code"
+	split("echo-reply 0 destination-unreachable 3 network-unreachable 3/0 host-unreachable 3/1 protocol-unreachable 3/2 port-unreachable 3/3 fragmentation-needed 3/4 source-route-failed 3/5 network-unknown 3/6 host-unknown 3/7 network-prohibited 3/9 host-prohibited 3/10 TOS-network-unreachable 3/11 TOS-host-unreachable 3/12 communication-prohibited 3/13 host-precedence-violation 3/14 precedence-cutoff 3/15 source-quench 4 redirect 5 network-redirect 5/0 host-redirect 5/1 TOS-network-redirect 5/2 TOS-host-redirect 5/3 echo-request 8 router-advertisement 9 router-solicitation 10 time-exceeded 11 ttl-zero-during-transit 11/0 ttl-zero-during-reassembly 11/1 parameter-problem 12 ip-header-bad 12/0 required-option-missing 12/1 timestamp-request 13 timestamp-reply 14 address-mask-request 17 address-mask-reply 18", ipt_kw, " ");
+	for ( kw_i = 1; kw_i in ipt_kw; kw_i += 2 ) ipt_icmp_types[ipt_kw[kw_i]] = ipt_kw[kw_i+1];
+}
+
+# record one --icmp-type value into table_icmp as "type" or "type/code"; an unknown message matches any icmp
+function ipt_icmp_add(name,    icmp_v) {
+	icmp_v = ( name ~ /^[0-9]+(\/[0-9]+)?$/ ) ? name : ( name in ipt_icmp_types ) ? ipt_icmp_types[name] : "";
+	table_icmp[icmp_v] = 1;
+}
+
+BEGINFILE {
+
+	# clean cube ----
+	cawk_init_hypercube_rules();
+	check = 0;
+
+	# initialize vars ----
+	delete ipt_variables;
+	ipt_continued = "";
+
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# UNWANTED LINES
+# ---------------------------------------
+# ---------------------------------------
+
+# Skip comments and empty lines
+/^#/ { next }
+/^$/ { next }
+
+# a shell statement may span several lines ending with "\" : rebuild it before parsing
+/\\$/ {
+	sub(/\\$/, "");
+	ipt_continued = ipt_continued $0 " ";
+	next;
+}
+
+ipt_continued != "" {
+	$0 = ipt_continued $0;
+	ipt_continued = "";
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# VARIABLES
+# ---------------------------------------
+# ---------------------------------------
+
+/^[a-zA-Z0-9_]+[ \t]*=/ {
+
+	match($0, /^([a-zA-Z0-9_]+)[ \t]*=[ \t]*(.*)$/, var_match);
+	var_value = var_match[2];
+	gsub(/"/, "", var_value);
+	ipt_variables[var_match[1]] = var_value;
+
+	if ( trace == 1 ) print "TRACE = VARIABLE : ",var_match[1],var_value
+
+	next;
+}
+
+# specific function
+function resolve_address(addr,    var_name) {
+	gsub(/["{}]/, "", addr);
+	if (addr ~ /^\$/) {
+		var_name = substr(addr, 2);
+		if (var_name in ipt_variables) {
+			return ipt_variables[var_name];
+		}
+	}
+	return addr;
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# ACCEPT/DROP SUPPORT FUNCTIONS
+# ---------------------------------------
+# ---------------------------------------
+
+function build_dst_addr_net(dst_addr,    k, addr_list, number_of_addr, parts_net) {
+
+	# iptables accepts a comma separated list of addresses ----
+	number_of_addr = split(dst_addr, addr_list, ",");
+
+	for ( k = 1; k <= number_of_addr; k++ ) {
+
+		# an unresolved variable cannot be placed in the cube ----
+		if ( addr_list[k] ~ /\$/ ) continue;
+
+		# any case ----
+		if ( addr_list[k] == "any" || addr_list[k] == "0.0.0.0/0" ) {
+			dst_ip = "any";
+			dst_net = "any";
+
+		# network case ----
+		} else if ( addr_list[k] ~ /\// ) {
+			split(addr_list[k], parts_net, "/");
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+		# host case ----
+		} else {
+			dst_ip = addr_list[k];
+			dst_net = "host";
+		}
+
+		dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+	}
+}
+
+# ---------------------------------------
+
+function build_src_addr_net(src_addr,    k, addr_list, number_of_addr, parts_net) {
+
+	# iptables accepts a comma separated list of addresses ----
+	number_of_addr = split(src_addr, addr_list, ",");
+
+	for ( k = 1; k <= number_of_addr; k++ ) {
+
+		# an unresolved variable cannot be placed in the cube ----
+		if ( addr_list[k] ~ /\$/ ) continue;
+
+		# any case ----
+		if ( addr_list[k] == "any" || addr_list[k] == "0.0.0.0/0" ) {
+			src_ip = "any";
+			src_net = "any";
+
+		# network case ----
+		} else if ( addr_list[k] ~ /\// ) {
+			split(addr_list[k], parts_net, "/");
+			src_ip = parts_net[1];
+			src_net = parts_net[2];
+
+		# host case ----
+		} else {
+			src_ip = addr_list[k];
+			src_net = "host";
+		}
+
+		src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+	}
+}
+
+# ---------------------------------------
+
+# fill a port table from a --sport/--dport/--sports/--dports value ("22", "ssh", "1000:2000", "80,443")
+function build_port(value, port_table, port_range_table,    k, port_list, number_of_ports, port_parts) {
+
+	number_of_ports = split(value, port_list, ",");
+
+	for ( k = 1; k <= number_of_ports; k++ ) {
+
+		# range case, an open bound means 0 or 65535 ----
+		if ( port_list[k] ~ /:/ ) {
+			split(port_list[k], port_parts, ":");
+			port_table[port_list[k]] = ( port_parts[1] == "" ) ? 0 : port_parts[1];
+			port_range_table[port_list[k]] = ( port_parts[2] == "" ) ? 65535 : port_parts[2];
+
+		# service name case ----
+		} else if ( port_list[k] in table_port ) {
+			port_table[port_list[k]] = table_port[port_list[k]];
+			port_range_table[port_list[k]] = 0;
+
+		# numeric case ----
+		} else {
+			port_table[port_list[k]] = port_list[k];
+			port_range_table[port_list[k]] = 0;
+		}
+	}
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# ACCEPT/DROP RULE
+# ---------------------------------------
+# ---------------------------------------
+
+/^iptables -A (INPUT|FORWARD|OUTPUT) / {
+
+	check = 1;
+
+	# the target gives the action, and only a terminal one is a filtering decision ----
+	action = "none";
+
+	# the chain gives the direction ----
+	inoutgress = ( $3 == "INPUT" ) ? "in" : ( $3 == "OUTPUT" ) ? "out" : "all";
+
+	interface = "none";
+
+	family = "all";
+
+	src_ip = "0";
+	src_net = "none";
+	src_port = 0;
+	src_port_range = 0;
+	delete src_table_port
+	delete src_table_port_range
+	delete src_table_ip
+
+	dst_ip = "0";
+	dst_net = "none";
+	dst_port = 0;
+	dst_port_range = 0;
+	delete dst_table_port
+	delete dst_table_port_range
+	delete dst_table_ip
+
+	protocol = "none";
+	delete table_protocol;
+	delete table_icmp;
+
+	found_src = 0
+	found_dst = 0
+	found_port_src = 0
+	found_port_dst = 0
+	found_protocol = 0
+
+	negated = 0;
+	state_rule = 0;
+
+	# rule name ----
+	rule_desc = "iptables rule_line_"FNR" <"$0">";
+
+	# ------------------------------
+	# start of the rule parsing ----
+	# ------------------------------
+
+	for (i = 1; i <= NF; i++) {
+
+		# ----------------------
+		# NEGATION ----
+		# ----------------------
+
+		if ($i == "!") negated = 1;
+
+		# ----------------------
+		# INTERFACE ----
+		# ----------------------
+
+		if ($i == "-i" || $i == "--in-interface" || $i == "-o" || $i == "--out-interface") {
+			interface = $(i+1);
+		}
+
+		# ----------------------
+		# SOURCE ----
+		# ----------------------
+
+		if ($i == "-s" || $i == "--source" || $i == "--src") {
+			delete src_table_ip;
+			build_src_addr_net(resolve_address($(i+1)));
+			found_src = 1;
+		}
+
+		# ----------------------
+		# DESTINATION ----
+		# ----------------------
+
+		if ($i == "-d" || $i == "--destination" || $i == "--dst") {
+			delete dst_table_ip;
+			build_dst_addr_net(resolve_address($(i+1)));
+			found_dst = 1;
+		}
+
+		# ----------------------
+		# PORT ----
+		# ----------------------
+
+		if ($i == "--sport" || $i == "--sports" || $i == "--source-port") {
+			delete src_table_port;
+			delete src_table_port_range;
+			build_port($(i+1), src_table_port, src_table_port_range);
+			found_port_src = 1;
+		}
+
+		if ($i == "--dport" || $i == "--dports" || $i == "--destination-port") {
+			delete dst_table_port;
+			delete dst_table_port_range;
+			build_port($(i+1), dst_table_port, dst_table_port_range);
+			found_port_dst = 1;
+		}
+
+		# ----------------------
+		# PROTO ----
+		# ----------------------
+
+		# "all" matches every protocol, which the cube expresses as "none" ----
+		if ( ($i == "-p" || $i == "--protocol") && $(i+1) != "all" ) {
+			delete table_protocol;
+			table_protocol[$(i+1)] = $(i+1);
+			found_protocol = 1;
+		}
+
+		# ----------------------
+		# ICMP-TYPE ----
+		# ----------------------
+
+		if ($i == "--icmp-type" || $i == "--icmpv6-type") {
+			delete table_icmp;
+			ipt_icmp_add($(i+1));
+		}
+
+		# ----------------------
+		# CONNECTION STATE ----
+		# ----------------------
+
+		if ($i == "--ctstate" || $i == "--state") state_rule = 1;
+
+		# ----------------------
+		# TARGET ----
+		# ----------------------
+
+		if ($i == "-j" || $i == "--jump") {
+			if ( $(i+1) == "ACCEPT" ) {
+				action = "pass";
+			} else if ( $(i+1) == "DROP" || $(i+1) == "REJECT" ) {
+				action = "block";
+			}
+		}
+	}
+
+	# --------------------
+	# Build all rules ----
+	# --------------------
+
+	# filter exceptions : a non terminal target, a negated selector and a connection state
+	# restrict the rule to a traffic subset the cube cannot express ----
+	if ( action == "none" || negated == 1 || state_rule == 1 ) {
+		if ( trace ==1 ) {
+			print "TRACE EXCEPTION RULE = descr:"rule_desc" action:"action" negated:"negated" state:"state_rule
+		}
+		next;
+	}
+
+	# an omitted address matches any address ----
+	if ( found_src == 0 ) src_table_ip["any any"] = "any any";
+	if ( found_dst == 0 ) dst_table_ip["any any"] = "any any";
+
+	# compute all the rules ----
+	for (id in src_table_ip) {
+
+		# src addr ----
+		split(src_table_ip[id], parts_net, " ")
+		src_ip = parts_net[1];
+		src_net = parts_net[2];
+
+		for (id1 in dst_table_ip) {
+
+			# dst addr ----
+			split(dst_table_ip[id1], parts_net, " ")
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+			# port : parse all the src && dst port combinatory ------
+			if ( found_port_src == 0 ) src_table_port["none"]="none";
+			if ( found_port_dst == 0 ) dst_table_port["none"]="none";
+			if ( found_protocol == 0 ) table_protocol["none"]="none";
+
+			# compute all the possible rules ----
+			for (id in src_table_port) {
+
+				# src port ----
+				if ( id == "none" ) {
+					src_port = 0;
+					src_port_range = 0;
+				} else {
+					src_port = src_table_port[id];
+					src_port_range = src_table_port_range[id];
+				}
+
+				# dst port ----
+				for (id1 in dst_table_port) {
+
+					if ( id1 == "none" ) {
+						dst_port = 0;
+						dst_port_range = 0;
+					} else {
+						dst_port = dst_table_port[id1];
+						dst_port_range = dst_table_port_range[id1];
+					}
+
+					for(id2 in table_protocol) {
+
+						protocol = table_protocol[id2];
+
+						# an icmp rule restricted to some icmp messages yields one rule per message ----
+						if ( protocol ~ /^icmp/ && length(table_icmp) > 0 ) {
+							for (id3 in table_icmp) {
+								cawk_add_hypercube_rules("acl_configconsistency_set.iptables-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol, id3);
+							}
+						} else {
+							cawk_add_hypercube_rules("acl_configconsistency_set.iptables-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+						}
+					}
+				}
+			}
+
+		}
+	}
+}
+
+# ---------------------------------------------------------
+# END
+# ---------------------------------------------------------
+
+ENDFILE {
+	if (cawk_hypercube_rules_assessment()) {
+		print_err("acl_configconsistency_set.iptables-fwcli.gawk", "iptables rules have no redundant/inconsistent rules", FNR, "info", "pass");
+	}
+
+	if (check == 0) {
+		print_err("acl_configconsistency_set.iptables-fwcli.gawk", "no iptables rules found", FNR, "info", "pass");
+	}
+}
+
+END {
+}

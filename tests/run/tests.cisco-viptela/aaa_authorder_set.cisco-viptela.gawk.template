@@ -23,6 +23,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_aaa = 0;
 	pass = 0;
 	block_system = 0;
 }

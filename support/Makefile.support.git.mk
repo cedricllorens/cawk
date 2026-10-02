@@ -19,7 +19,7 @@
 # ------------------------------------------------------------
 
 .PHONY: \
-  gitcheck gitcommit gitinstallcicd gitpush  \
+  gitcheck gitcheck_orthogonality gitcommit gitinstallcicd gitpush  \
   gitpushtag gitnewbranch gitpushbranch \
   gitpr gitprmerge gitmasterupdate \
   git_branch_master_check git_branch_not_master_check
@@ -48,6 +48,50 @@ gitnewbranch: git_branch_master_check
 	fi	
 
 # ------------------------------------------------------------
+
+gitcheck_orthogonality:
+	@rc=0; \
+	report() { \
+		if [ -n "$$2" ]; then \
+			$(ECHO) "\033[31mcawk error: $$1\033[0m"; \
+			$(ECHO) "$$2" | awk '{print "\033[37m  " $$0 "\033[0m"}'; \
+			rc=1; \
+		fi; \
+	}; \
+	srcs="-name *.gawk.template -o -name *.gawk.m4 -o -name *.gawk.include"; \
+	for tag in test_name supplier purpose description actions nist800-53_ref risk_level authors; do \
+		report "test sources without tag @$$tag" "$$(find tests/repo -type f \( $$srcs \) -exec grep -L "^# @$$tag " {} +)"; \
+	done; \
+	report "test sources with invalid @risk_level (high|medium|low|info)" "$$(find tests/repo -type f \( $$srcs \) -exec grep -H -m1 '^# @risk_level' {} + | \
+		awk -F' : ' '{ n = split($$2, a, / *\| */); for (i = 1; i <= n; i++) { x = a[i]; gsub(/^ +| +$$/, "", x); if (x !~ /^(high|medium|low|info)$$/) { sub(/:.*/, "", $$1); print $$1 " -> " x; break } } }')"; \
+	report "%SED_*% placeholders used but not defined in support/tests.sed" "$$(grep -rhoE '%SED_[A-Z0-9_]+%' tests/repo common m4 --include='*.template' --include='*.m4' --include='*.include' 2>/dev/null | sort -u | grep -v '^%SED_VAR%$$' | \
+		while read -r p; do grep -qF "$$p" support/tests.sed || $(ECHO) "$$p"; done)"; \
+	pathdiff=""; \
+	for v in CONFS_PATH COMMON_PATH BACKUP_PATH DATABASE_PATH LOGS_PATH REPORT_PATH EXCEPTION_PATH TESTS_PATH TESTS_COMMON_PATH TESTS_SYSTEM TESTS_TMP; do \
+		m=$$(sed -n "s/^$$v *= *//p" support/Makefile.support.mk | head -n 1 | sed 's/ *$$//'); \
+		s=$$(sed -n "s/^$$v=\"\(.*\)\"/\1/p" database/include/scripts_config.sh | head -n 1); \
+		[ "$$m" = "$$s" ] || pathdiff="$$pathdiff$$v: Makefile.support.mk='$$m' scripts_config.sh='$$s'\n"; \
+	done; \
+	report "path variables differ between Makefile.support.mk and scripts_config.sh" "$$(printf '%b' "$$pathdiff")"; \
+	missing=""; \
+	for s in $(SUPPLIER_SCOPE); do \
+		[ -d "$(TESTS_PATH)/repo/tests.$$s" ] || missing="$${missing}$(TESTS_PATH)/repo/tests.$$s\n"; \
+		[ -d "$(CONFS_PATH)/repo/confs.$$s" ] || missing="$${missing}$(CONFS_PATH)/repo/confs.$$s\n"; \
+		[ -f "$(EXCEPTION_PATH)/repo/exceptions.$$s.m4" ] || missing="$${missing}$(EXCEPTION_PATH)/repo/exceptions.$$s.m4\n"; \
+	done; \
+	report "supplier of SUPPLIER_SCOPE without tests/confs/exceptions in repo" "$$(printf '%b' "$$missing")"; \
+	unknown=""; \
+	for d in $(TESTS_PATH)/repo/tests.* $(CONFS_PATH)/repo/confs.* $(EXCEPTION_PATH)/repo/exceptions.*.m4; do \
+		s=$${d##*/}; s=$${s#tests.}; s=$${s#confs.}; s=$${s#exceptions.}; s=$${s%.m4}; s=$${s%.psirt}; \
+		case " $(SUPPLIER_SCOPE) " in *" $$s "*) ;; *) unknown="$$unknown$$d\n";; esac; \
+	done; \
+	report "repo supplier directories/files not in SUPPLIER_SCOPE" "$$(printf '%b' "$$unknown")"; \
+	nopsirt=""; \
+	for d in $(TESTS_PATH)/repo/tests.*.psirt; do \
+		[ -d "$${d%.psirt}" ] || nopsirt="$$nopsirt$$d\n"; \
+	done; \
+	report "psirt test directories without standard tests directory" "$$(printf '%b' "$$nopsirt")"; \
+	exit $$rc
 
 gitcheck: tests_target_common
 	$(GMAKE) clean clean_force FORCE=yes
@@ -97,14 +141,29 @@ gitcheck: tests_target_common
 	@$(ECHO) "\033[31m================================================== : end audit list\033[0m"
 
 	$(ECHO) ""
+	@$(ECHO) "\033[31m================================================== : start run_ directories not in audit list\033[0m"
+	@audits=$$($(RUN_DIRS_FIND)); \
+	orphans=$$(for d in $(LOGS_PATH) $(REPORT_PATH) $(TESTS_PATH) $(EXCEPTION_PATH) $(CONFS_PATH); do \
+		find -L $$d -maxdepth 1 -type d -name 'run_*' 2>/dev/null; \
+	done | while read -r p; do \
+		printf '%s\n' "$$audits" | grep -Fxq -- "$${p##*/run_}" || $(ECHO) "$$p"; \
+	done); \
+	if [ -n "$$orphans" ]; then \
+		$(ECHO) "$$orphans" | awk '{print "\033[37m" $$0 "\033[0m"}'; \
+		$(ECHO) "\033[31mcawk error: run_ directories above do not belong to any audit of list_audit\033[0m"; \
+		exit 1; \
+	fi
+	@$(ECHO) "\033[31m================================================== : end run_ directories not in audit list\033[0m"
+
+	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start no *.gawk must be there\033[0m"
-	find . -name *.gawk | awk '{print "\033[37m" $$0 "\033[0m"}'
+	find . -name '*.gawk' | awk '{print "\033[37m" $$0 "\033[0m"}'
 	@$(ECHO) "\033[31m================================================== : end no *.gawk must be there\033[0m"
 
 	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start no *.script must be there\033[0m"
-	find . -name .DS_Store | xargs $(RM) -f
-	@$(ECHO) "\033[31m================================================== : end clean DS store file\033[0m"
+	find . -name '*.script' | awk '{print "\033[37m" $$0 "\033[0m"}'
+	@$(ECHO) "\033[31m================================================== : end no *.script must be there\033[0m"
 
 	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start clean vscode param\033[0m"
@@ -152,12 +211,9 @@ gitcheck: tests_target_common
 	@$(ECHO) "\033[31m================================================== : end check CRLF in test templates\033[0m"
 
 	$(ECHO) ""
-	@$(ECHO) "\033[31m================================================== : start check metadata in test templates\033[0m"
-	@missing=$$(find tests/repo -type f \( -name "*.gawk.template" -o -name "*.gawk.m4" -o -name "*.gawk.include" \) -exec grep -L "# @test_name\|# @supplier\|# @purpose\|# @description\|# @actions\|# @nist800-53_ref\|# @authors" {} \;); \
-	if [ -n "$$missing" ]; then \
-		echo "$$missing" | sed 's/^/  /' | awk '{print "\033[37m❌ " $$0 "\033[0m"}'; \
-	fi
-	@$(ECHO) "\033[31m================================================== : end check metadata in test templates\033[0m"
+	@$(ECHO) "\033[31m================================================== : start check orthogonality\033[0m"
+	$(GMAKE) gitcheck_orthogonality
+	@$(ECHO) "\033[31m================================================== : end check orthogonality\033[0m"
 
 	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start check databases are not empty\033[0m"

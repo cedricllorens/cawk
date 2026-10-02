@@ -34,7 +34,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_JUNI%(lldp|cdp) {/ && block_protocols == 1 {
-	print_err("protocols_lldpcdp_notset.juniper-junos.gawk",group_edit" "rm_last_char(rm_blank_before($0)),FNR,"high","error");
+	print_err("protocols_lldpcdp_notset.juniper-junos.gawk",rm_last_char(rm_blank_before($0)),FNR,"high","error");
 	pass = 0;
 	next;
 }
@@ -45,7 +45,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("protocols_lldpcdp_notset.juniper-junos.gawk","protocols lldp/cdp is not set",1,"high","pass");
+	if ( pass ) print_err("protocols_lldpcdp_notset.juniper-junos.gawk","protocols lldp/cdp is not set",0,"high","pass");
 }
 
 END {

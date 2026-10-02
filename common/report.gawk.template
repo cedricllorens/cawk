@@ -9,8 +9,10 @@
 #
 # this script generates a cawk report:
 #  - $1 : deadbeef file
-#  - $2 : exceptions file
-#  - $3 : assessment file
+#  - $2 : badformat file
+#  - $3 : crlf file
+#  - $4 : exceptions file
+#  - $5 : assessment file
 # ------------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%
@@ -20,6 +22,14 @@ BEGIN {
 	deadbeef_error = 0;
 	deadbeef_warning = 0;
 	deadbeef_psirt = 0;
+	badformat_pass = 0;
+	badformat_error = 0;
+	badformat_warning = 0;
+	badformat_psirt = 0;
+	crlf_pass = 0;
+	crlf_error = 0;
+	crlf_warning = 0;
+	crlf_psirt = 0;
 	exception_pass = 0;
 	exception_error = 0;
 	exception_warning = 0;
@@ -36,6 +46,8 @@ BEGIN {
 
 BEGINFILE {
 
+	badformat_file = 0;
+	crlf_file = 0;
 	if (FILENAME ~ /db_info/ && FILENAME ~ /\.txt/) {
 		db_info_file = 1;
 		deadbeef_file = 0;
@@ -50,6 +62,28 @@ BEGINFILE {
 		deadbeef_error = 0;
 		deadbeef_warning = 0;
 		deadbeef_psirt = 0;
+	} else if (FILENAME ~ /badformat/ && FILENAME ~ /\.csv/) {
+		# tested before /assessment/ since the file is named assessment.all.badformat.csv
+		badformat_file = 1;
+		db_info_file = 0;
+		assessment_file = 0;
+		exceptions_file = 0;
+		deadbeef_file = 0;
+		badformat_pass = 0;
+		badformat_error = 0;
+		badformat_warning = 0;
+		badformat_psirt = 0;
+	} else if (FILENAME ~ /crlf/ && FILENAME ~ /\.csv/) {
+		# tested before /assessment/ since the file is named assessment.all.crlf.csv
+		crlf_file = 1;
+		db_info_file = 0;
+		assessment_file = 0;
+		exceptions_file = 0;
+		deadbeef_file = 0;
+		crlf_pass = 0;
+		crlf_error = 0;
+		crlf_warning = 0;
+		crlf_psirt = 0;
 	} else if (FILENAME ~ /exception/ && FILENAME ~ /\.csv/) {
 		exceptions_file = 1;
 		db_info_file = 0;
@@ -191,6 +225,8 @@ function trim(str) {
 		}
 	}
 	if ( deadbeef_file ) deadbeef_error += 1;
+	if ( badformat_file ) badformat_error += 1;
+	if ( crlf_file ) crlf_error += 1;
 	if ( exceptions_file ) exception_error += 1;
 }
 
@@ -213,6 +249,8 @@ function trim(str) {
 		}
 	}
 	if ( deadbeef_file ) deadbeef_pass += 1;
+	if ( badformat_file ) badformat_pass += 1;
+	if ( crlf_file ) crlf_pass += 1;
 	if ( exceptions_file ) exception_pass += 1;
 }
 
@@ -235,6 +273,8 @@ function trim(str) {
 		}
 	}
 	if ( deadbeef_file ) deadbeef_warning += 1;
+	if ( badformat_file ) badformat_warning += 1;
+	if ( crlf_file ) crlf_warning += 1;
 	if ( exceptions_file ) exception_warning += 1;
 }
 
@@ -257,6 +297,8 @@ function trim(str) {
 		}
 	}
 	if ( deadbeef_file ) deadbeef_psirt += 1;
+	if ( badformat_file ) badformat_psirt += 1;
+	if ( crlf_file ) crlf_psirt += 1;
 	if ( exceptions_file ) exception_psirt += 1;
 }
 
@@ -273,7 +315,9 @@ if ( assessment_file ) {
 	print "--------------------------";
 	print "number_of_confs  = " length(files); 
 	print "number_of_confs_deadbeef = " deadbeef_pass + deadbeef_error + deadbeef_warning + deadbeef_psirt;
-	print "number_of_checks = " pass + error + warning + psirt + exception_error + exception_pass + exception_warning + exception_psirt + deadbeef_pass + deadbeef_error + deadbeef_warning + deadbeef_psirt;
+	print "number_of_confs_badformat = " badformat_pass + badformat_error + badformat_warning + badformat_psirt;
+	print "number_of_confs_crlf = " crlf_pass + crlf_error + crlf_warning + crlf_psirt;
+	print "number_of_checks = " pass + error + warning + psirt + exception_error + exception_pass + exception_warning + exception_psirt + deadbeef_pass + deadbeef_error + deadbeef_warning + deadbeef_psirt + badformat_pass + badformat_error + badformat_warning + badformat_psirt + crlf_pass + crlf_error + crlf_warning + crlf_psirt;
 	print "number_of_checks_exceptions = " exception_error + exception_pass + exception_warning + exception_psirt;
 
 	# ------------------------------------------------------------------

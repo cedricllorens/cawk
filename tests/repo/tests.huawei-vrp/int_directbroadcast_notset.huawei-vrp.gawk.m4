@@ -39,15 +39,19 @@ m4_cawk_parse_block(
 	interface = $0;
 	interfaceno = FNR;
 	directbroadcast = 0;
+	is_shutdown = 0;
 ',
-`/^!$/', `
-	if ( directbroadcast == 1 ) {
+`/^\043$/', `
+	if ( directbroadcast == 1 && is_shutdown == 0 ) {
 		print_err("int_directbroadcast_notset.huawei-vrp.gawk",interface" <direct-broadcast> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
-`/ direct-broadcast/',`directbroadcast = 1;',
+`/(direct-broadcast|^ shutdown)/',`
+	if ($0 ~ / direct-broadcast/) directbroadcast = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

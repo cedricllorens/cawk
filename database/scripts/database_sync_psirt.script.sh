@@ -13,8 +13,19 @@
 # with the exact following name psirt_os_inventory_scope.txt
 #
 # usage: database_sync_psirt.script
-# THIS SCRIPT IS CENTRAL FOR ALL THE audit=AUDIT_NAME
 # ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+# check section
+# ---------------------------------------------------------------------
+
+CONFIG_FILE="database/include/scripts_config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    . "$CONFIG_FILE"
+else
+    echo "cawk error: configuration file not found: $CONFIG_FILE"
+    exit 0
+fi
 
 # ---------------------------------------------------------------------
 # to be updated 

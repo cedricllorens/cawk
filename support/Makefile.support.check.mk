@@ -49,11 +49,57 @@ check:
 
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
 	$(GMAKE) create_audit audit=client1_skffqsfqhsf10948494
+
+	$(GMAKE) database_sync_update audit=client1_skffqsfqhsf10948494 \
+		dir=../../validate/test-sync/source/,../../validate/test-sync/source/_backup/ \
+		regexinventory=.*\\.cfg$$ \
+		scope=validate/test-sync/scope.txt \
+		regexos=cisco-ios\|cisco-sdnios\|fortinet-fortios\|juniper-junos \
+		regexpathexclude=_backup \
+		regexinventoryexclude=none
+
 	$(GMAKE) sync_run audit=client1_skffqsfqhsf10948494
+	find confs/run_client1_skffqsfqhsf10948494/confs.* -type l 2>/dev/null | sort | wc -l >> checkdiff/checkdiff.new
+	find confs/run_client1_skffqsfqhsf10948494 -maxdepth 1 -type d -name 'confs.*' | sort | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) sync_teststoconfs_run audit=client1_skffqsfqhsf10948494
+	find tests/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'zz.sync.save.*' | sort | wc -l >> checkdiff/checkdiff.new
+	find tests/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'tests.*' | sort | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) sync_exceptionstoconfs_run audit=client1_skffqsfqhsf10948494
+	find exceptions/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'zz.sync.save.*' | sort | wc -l >> checkdiff/checkdiff.new
+	find exceptions/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'exceptions.*' | sort | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) sync_psirt audit=client1_skffqsfqhsf10948494
+	wc -c < database/psirt_scopes/psirt_os_inventory_scope.txt >> checkdiff/checkdiff.new
+
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 PSIRT_ONLY=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 supplier=cisco-ios PSIRT_ONLY=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) database_sync_del audit=client1_skffqsfqhsf10948494
+	$(EGREP) "^client1_skffqsfqhsf10948494 " database/db_sync.txt && $(ECHO) "cawk error: db_sync.txt still holds a test entry ----" || $(ECHO) "cawk db_sync.txt cleanly reset ----"
+	wc -c < database/db_sync.txt >> checkdiff/checkdiff.new
+
+	$(GMAKE) database_email_update audit=client1_skffqsfqhsf10948494 dst=test1@example.com,test2@example.com cc=test3@example.com
+	$(EGREP) "^client1_skffqsfqhsf10948494 " database/db_email.txt | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) database_email_del audit=client1_skffqsfqhsf10948494
+	$(EGREP) "^client1_skffqsfqhsf10948494 " database/db_email.txt && $(ECHO) "cawk error: db_email.txt still holds a test entry ----" || $(ECHO) "cawk db_email.txt cleanly reset ----"
+	wc -c < database/db_email.txt >> checkdiff/checkdiff.new
+
+	$(GMAKE) database_postaudit_update audit=client1_skffqsfqhsf10948494
+	$(EGREP) "^client1_skffqsfqhsf10948494$$" database/db_postaudit.txt | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) database_postaudit_del audit=client1_skffqsfqhsf10948494
+	$(EGREP) "^client1_skffqsfqhsf10948494$$" database/db_postaudit.txt && $(ECHO) "cawk error: db_postaudit.txt still holds a test entry ----" || $(ECHO) "cawk db_postaudit.txt cleanly reset ----"
+	wc -c < database/db_postaudit.txt >> checkdiff/checkdiff.new
 
 	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) create_audit audit=client2_mqsdhqndqqos198440
@@ -61,7 +107,12 @@ check:
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 	$(GMAKE) check_run audit=client2_mqsdhqndqqos198440 supplier=cisco-ios
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	
+
+	$(GMAKE) sync_run_audit
+	$(GMAKE) sync_teststoconfs_run_audit
+	$(GMAKE) sync_exceptionstoconfs_run_audit
+	$(GMAKE) list_audit | wc -l >> checkdiff/checkdiff.new
+
 	$(GMAKE) clean
 	$(GMAKE) check_repo
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
@@ -89,7 +140,7 @@ check:
 	$(GMAKE) clean
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
 	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
-	$(GMAKE) restore_run_audit file=backup/run_audit_$(shell date +%Y-%m-%d).tar.gz
+	$(GMAKE) restore_run_audit file=backup/run_audit_$(TODAY).tar.gz
 	
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
@@ -99,7 +150,7 @@ check:
 	$(GMAKE) clean
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
 	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
-	$(GMAKE) restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(shell date +%Y-%m-%d).tar.gz
+	$(GMAKE) restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(TODAY).tar.gz
 
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
@@ -118,6 +169,7 @@ check:
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=yes supplier=cisco-ios
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
 	$(GMAKE) clean clean_force FORCE=yes
+	$(GMAKE) clean_logs FORCE=yes
 
 	$(RM) -f checkdiff/cawk-crypto-image.new
 	sha512sum checkdiff/checkdiff.new > checkdiff/cawk-crypto-image.new

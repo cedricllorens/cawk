@@ -24,6 +24,8 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_system = 0;
+	block_snmp = 0;
 	pass = 1;
 }
 

@@ -42,7 +42,7 @@ dnl ----
 
 dnl ----
 
-`/%SED_BK_JUNI%[^ ]+ {/',`',
+`/%SED_BK_JUNI%[^ ]+ {/ && !/inactive/',`',
 `/^%SED_BK_JUNI%}$/',`',
 
 dnl ----

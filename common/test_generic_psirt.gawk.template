@@ -97,13 +97,14 @@ BEGINFILE {
         if (match(os_device_line, "^" filename_only " (.*)", arr)) {
             os_device = arr[1]
         }
+        close(grep_cmd)
     } else {
         print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because not found in " inventory_file, FNR, "info", "psirt");
         psirt_inventory_file_error = 1
+        close(grep_cmd)
         nextfile
     }
-    close(grep_cmd)
-      
+
     # Convert user arrays to internal format
     os_psirt_patterns_count = 0
     for (i in OS) { 

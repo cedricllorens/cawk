@@ -52,7 +52,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%next$/ && block_edit == 1 {
-	if ( ! passlocal ) print_err("syslogd_enable_set.fortinet-fortios.gawk",block_edit_str" : syslogd is no enable",FNR,"high","error");
+	if ( ! passlocal ) print_err("syslogd_enable_set.fortinet-fortios.gawk",block_edit_str" : syslogd is not enabled",FNR,"high","error");
 	block_edit = 0;
 	next;
 }
@@ -62,7 +62,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( ! passglobal ) print_err("syslogd_enable_set.fortinet-fortios.gawk","syslogd is no set",0,"high","error");
+	if ( ! passglobal ) print_err("syslogd_enable_set.fortinet-fortios.gawk","syslogd is not set",0,"high","error");
 }
 
 END {

@@ -64,7 +64,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("line_aclin_set.cisco-xr.gawk","line  acls in are set",0,"high","pass");
+	if ( pass ) print_err("line_aclin_set.cisco-xr.gawk","line acls in are set",0,"high","pass");
 }
 
 END {

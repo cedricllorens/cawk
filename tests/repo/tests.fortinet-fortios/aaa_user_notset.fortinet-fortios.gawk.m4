@@ -8,7 +8,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_user_notset.fortinet.gawk
+# @test_name : aaa_user_notset.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <aaa users> are not set locally
 # @description : local users can endanger the security of the system by allowing unauthorized access
@@ -40,7 +40,7 @@ m4_cawk_parse_block(
 
 
 `/^%SED_BK_FORTI%edit .*$/ && !/edit %SED_AUTHUSER_FORTI%/', `
-	print_err("aaa_user_notset.fortinet.gawk",$0,FNR,"high","error");
+	print_err("aaa_user_notset.fortinet-fortios.gawk",$0,FNR,"high","error");
 	pass = 0;
 ',
 `', `'
@@ -50,7 +50,7 @@ m4_cawk_parse_block(
 dnl MACRO END --------------------------
 
 ENDFILE {
-	if ( pass ) print_err("aaa_user_notset.fortinet.gawk","aaa forbidden users are not set",0,"high","pass");
+	if ( pass ) print_err("aaa_user_notset.fortinet-fortios.gawk","aaa forbidden users are not set",0,"high","pass");
 }
 
 END {

@@ -1,0 +1,14 @@
+hostname r1
+!
+interface GigabitEthernet1
+ ip address 10.0.0.1 255.255.255.0
+
+ no shutdown
+!
+router bgp 65000
+ neighbor 10.0.0.2 remote-as 65001
+ address-family ipv4
+  neighbor 10.0.0.2 activate
+ exit-address-family
+!
+end

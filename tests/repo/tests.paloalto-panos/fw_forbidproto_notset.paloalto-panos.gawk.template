@@ -24,6 +24,8 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_firewall = 0;
+	block_rules = 0;
 	pass = 1;
 }
 

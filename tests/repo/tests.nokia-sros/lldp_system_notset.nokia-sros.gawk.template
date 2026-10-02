@@ -12,7 +12,7 @@
 # @purpose : check if <lldp> at system is not set
 # @description : lldp enabled at the system level discloses network topology information to adjacent devices and may be exploited
 # @actions : disable lldp at the system level if not required for network operations (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : AU-12 | Audit and Accountability | Ensure audit record generation is enabled
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -33,7 +33,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_NOKIA%{2}lldp/ && block_system == 1 {
-	print_err("lldp_system_notset.nokia-sros.gawk",rm_blank_before($0),FNR,"high","pass");
+	print_err("lldp_system_notset.nokia-sros.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }

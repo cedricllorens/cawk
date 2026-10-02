@@ -24,6 +24,8 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_community = 0;
+	block_community_name = "";
 	pass = 1;
 	block_snmp = 0;
 }
@@ -36,13 +38,14 @@ BEGINFILE {
 
 /^%SED_BK_JUNI%community / && block_snmp == 1 {
 	block_community = 1;
+	block_community_name = rm_blank_before(rm_last_char($0));
 	next;
 }
 
-/^%SED_BK_JUNI%{2}authorization write/ && block_community == 1 {
-	print_err("snmp_v1v2rw_notset.juniper-junos.gawk",rm_blank_before(rm_last_char($0)),FNR,"high","error");
-        pass = 0;
-	nextfile;
+/^%SED_BK_JUNI%{2}authorization read-write/ && block_community == 1 {
+	print_err("snmp_v1v2rw_notset.juniper-junos.gawk",block_community_name" / "rm_blank_before(rm_last_char($0)),FNR,"high","error");
+	pass = 0;
+	next;
 }
 
 /^%SED_BK_JUNI%}$/ && block_community == 1 {
@@ -55,7 +58,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2rw_notset.juniper-junos.gawk","snmp v1v2 write is not set",0,"high","pass");
+	if ( pass ) print_err("snmp_v1v2rw_notset.juniper-junos.gawk","snmp v1v2 write is not set",0,"high","pass");
 }
 
 END {

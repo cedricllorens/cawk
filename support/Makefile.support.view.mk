@@ -37,7 +37,7 @@ ifeq ($(strip $(audit)),)
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_$(audit)/.),)
 	$(ECHO) "cawk error audit=$(audit) do not exist  ----"
-	exit 0
+	exit 1
 endif
 	$(ECHO) "------------------------------------"
 	$(ECHO) "---- Assessment $(audit) all devices"
@@ -60,11 +60,11 @@ view_repo_error: check_supplier
 	$(ECHO) "------------------------------------"
 ifeq ($(strip $(supplier)),)
 	if [ -f $(REPORT_PATH)/repo/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/repo/assessment.all.csv | $(EGREP) ";error"; \
+		$(EGREP) ";error" $(REPORT_PATH)/repo/assessment.all.csv; \
 	fi
 else
 	if [ -f $(REPORT_PATH)/repo/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/repo/assessment.all.csv | $(EGREP) ";error" | $(EGREP) "|$(supplier)|"; \
+		$(EGREP) ";error" $(REPORT_PATH)/repo/assessment.all.csv | $(EGREP) "\.$(supplier)\.gawk"; \
 	fi
 endif
 	$(ECHO) "cawk view_repo_error done ----"
@@ -76,21 +76,21 @@ view_run_error: check_supplier
 ifeq ($(strip $(audit)),)
 ifeq ($(strip $(supplier)),)
 	if [ -f $(REPORT_PATH)/run/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/run/assessment.all.csv | $(EGREP) ";error"; \
+		$(EGREP) ";error" $(REPORT_PATH)/run/assessment.all.csv; \
 	fi
 else
 	if [ -f $(REPORT_PATH)/run/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/run/assessment.all.csv | $(EGREP) ";error" | $(EGREP) "|$(supplier)|"; \
+		$(EGREP) ";error" $(REPORT_PATH)/run/assessment.all.csv | $(EGREP) "\.$(supplier)\.gawk"; \
 	fi
 endif
 else
 ifeq ($(strip $(supplier)),)
 	if [ -f $(REPORT_PATH)/run_$(audit)/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/run_$(audit)/assessment.all.csv | $(EGREP) ";error"; \
+		$(EGREP) ";error" $(REPORT_PATH)/run_$(audit)/assessment.all.csv; \
 	fi
 else
 	if [ -f $(REPORT_PATH)/run_$(audit)/assessment.all.csv ]; then \
-		cat $(REPORT_PATH)/run_$(audit)/assessment.all.csv | $(EGREP) ";error" | $(EGREP) "|$(supplier)|"; \
+		$(EGREP) ";error" $(REPORT_PATH)/run_$(audit)/assessment.all.csv | $(EGREP) "\.$(supplier)\.gawk"; \
 	fi
 endif
 endif

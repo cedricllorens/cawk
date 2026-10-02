@@ -14,6 +14,7 @@
 # @actions : Check rib-group definitions, Check rib-group references (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high | info
+# @authors : cedric llorens
 # -----------------------------------------------------------
 
 @include %SED_INCLUDE_PATH%

@@ -12,7 +12,7 @@
 # @purpose : list and monitor default policies
 # @description : missing or permissive default policies means traffic not matched by explicit rules may be allowed by default instead of denied
 # @actions : set and monitor default deny policies on all chains (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high | info
 # @authors : adrien lebout
 # ------------------------------------------------------------
@@ -39,7 +39,7 @@ BEGINFILE {
     j = 4
     DEFAULT_POLICY_NAME["$"$1] = ""
     gsub(/,/, "", DEFAULT_POLICY_VAR["$"$1])
-    while ($j != "}\"") {
+    while (j <= NF && $j != "}\"") {
       DEFAULT_POLICY_VAR["$"$1] = DEFAULT_POLICY_VAR["$"$1]" "$j
       j++
     }
@@ -87,32 +87,32 @@ BEGINFILE {
 
     # ---------------------
     case "max-mss":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option max-mss : "$0,FNR,"info","pass");
       next;
 
     # ---------------------
     case "strict-rfc1323":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option strict-rfc1323 : "$0,FNR,"info","pass");
       next;
 
     # ---------------------
     case "debug":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option diagnostics : "$0,FNR,"info","pass");
       next;
 
     # ---------------------
     case "skip-step":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option skip-step : "$0,FNR,"info","pass");
       next;
     
     # ---------------------
     case "max-src-nodes":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option max-src-nodes : "$0,FNR,"info","pass");
       next;
     
     # ---------------------
     case "max-dst-nodes":
-      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option limit : "$0,FNR,"info","pass");
+      print_err("global_defaultpolicy_set.packetfilter-fwcli.gawk","policy option max-dst-nodes : "$0,FNR,"info","pass");
       next;
     
     # ---------------------

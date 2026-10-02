@@ -26,10 +26,10 @@ BEGINFILE {
 	pass = 1;
 }
 
-/^snmp-server community / && /RW/ {
+/^snmp-server community / && / RW( |$)/ {
 	print_err("snmp_v1v2rw_notset.cisco-xe.gawk",$0,FNR,"high","error");
         pass = 0;
-	nextfile;
+	next;
 }
 
 ENDFILE {

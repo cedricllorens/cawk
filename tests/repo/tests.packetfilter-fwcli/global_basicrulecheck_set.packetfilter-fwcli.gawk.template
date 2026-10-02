@@ -27,14 +27,14 @@ BEGINFILE {
 }
 
 # check block option ----
-/^block[ ]/ && $2 !~/^(in|out|all|return|quick|drop|log)$/ {
+/^block[ ]/ && $2 !~/^(in|out|all|return(-[a-z0-9]+)?|quick|drop|log|on|inet|inet6|proto|from|to)$/ {
 	print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","block option error <<"$0">>",FNR,"high","error");
 	pass = 0;
 	next;
 }
 
 # check pass option ----
-/^pass[ ]/ && $2 !~/^(in|inet|out|all|log|quick)$/ {
+/^pass[ ]/ && $2 !~/^(in|out|all|log|quick|on|inet|inet6|proto|from|to)$/ {
 	print_err("global_basicrulecheck_set.packetfilter-fwcli.gawk","pass option error <<"$0">>",FNR,"high","error");
 	pass = 0;
 	next;

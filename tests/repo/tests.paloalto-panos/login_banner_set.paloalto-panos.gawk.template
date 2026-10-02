@@ -13,7 +13,7 @@
 # @purpose : check if <login-banner> is set
 # @description : missing login banner deprives the organisation of the legal notice required to warn unauthorized users and to support prosecution of unauthorized access
 # @actions : configure a login-banner with an explicit authorized-use legal notice (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification is displayed before granting access
+# @nist800-53_ref : AC-8 | Access Control | Ensure system use notification banner is configured
 # @risk_level : medium
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -24,6 +24,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_system = 0;
 	pass = 0;
 }
 

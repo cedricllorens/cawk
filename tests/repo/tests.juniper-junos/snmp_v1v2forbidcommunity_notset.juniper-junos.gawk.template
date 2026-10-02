@@ -35,8 +35,8 @@ BEGINFILE {
 
 /^%SED_BK_JUNI%community / && /%SED_SNMP_FORBID_COMMUNITY%/ && block_snmp == 1 {
 	print_err("snmp_v1v2forbidcommunity_notset.juniper-junos.gawk",rm_blank_before($0),FNR,"high","error");
-        pass = 0;
-	nextfile;
+	pass = 0;
+	next;
 }
 
 /^}/ {
@@ -44,7 +44,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-        if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.juniper-junos.gawk","snmp v1v2 forbidden communities are not set",0,"high","pass");
+	if ( pass ) print_err("snmp_v1v2forbidcommunity_notset.juniper-junos.gawk","snmp v1v2 forbidden communities are not set",0,"high","pass");
 }
 
 END {

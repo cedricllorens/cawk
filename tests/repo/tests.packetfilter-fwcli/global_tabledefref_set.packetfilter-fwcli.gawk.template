@@ -10,7 +10,7 @@
 # @test_name : global_tabledefref_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
 # @purpose : check <tables> def not ref and ref not def
-# @description : tables defined but not referenced represent dead configuration; tables referenced but not defined cause rule processing errors
+# @description : tables defined but not referenced represent dead configuration, tables referenced but not defined cause rule processing errors
 # @actions : align table definitions and references to ensure all tables are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
 # @risk_level : high | info
@@ -25,6 +25,7 @@ BEGIN {
 BEGINFILE {
     delete TABLESDEF;
     delete TABLESREF;
+    delete line_number;
 }
 
 # table def ----
@@ -66,6 +67,7 @@ ENDFILE {
     for (id in TABLESREF) {
         if (!(id in TABLESDEF)) {
             print_err("global_tabledefref_set.packetfilter-fwcli.gawk","table ref not def "id"",line_number[id],"high","error");
+            pass = 0;
         }
     }
     if ( pass ) print_err("global_tabledefref_set.packetfilter-fwcli.gawk","no table ref not def",0,"high","pass");

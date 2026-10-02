@@ -33,13 +33,14 @@
     "system_networkstackipcompliant_set": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
+    "acl_configconsistency_set": {
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
     "global_adminlockout_set": {
       "default": "ac-7 | access control | ensure unsuccessful login attempts are limited"
     },
     "global_duplicaterule_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "iptables-fwcli": "cm-6 | configuration management | ensure configuration settings are established and enforced",
-      "checkpoint-fwcli": "sc-7 | system and communications protection | ensure boundary protection is configured"
+      "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
     },
     "global_inactivitytimeout_set": {
       "default": "ac-11 | access control | ensure device lock after inactivity timeout is configured"
@@ -66,8 +67,7 @@
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "global_rulelog_set": {
-      "default": "sc-7 | system and communications protection | ensure boundary protection is configured",
-      "checkpoint-fwcli": "au-12 | audit and accountability | ensure audit record generation is enabled"
+      "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
     },
     "global_snmpv1v2forbidcommunity_notset": {
       "default": "ac-3 | access control | ensure access enforcement is configured"
@@ -82,7 +82,7 @@
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "global_telnet_notset": {
-      "default": "sc-8 | system and communications protection | ensure transmission confidentiality is protected"
+      "default": "sc-8 | system and communications protection | ensure transmission confidentiality and integrity is configured"
     },
     "global_vardefref_set": {
       "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
@@ -93,11 +93,11 @@
     "aaa_user_notset": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
-    "acl_configconsistency_set": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
-    },
     "acl_defref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
+    "crypto_isakmpkeyenc_set": {
+      "default": "sc-13 | system and communications protection | ensure cryptographic protection using approved algorithms is configured"
     },
     "fw_zonesecurity_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -109,8 +109,7 @@
       "default": "ia-5 | identification and authentication | ensure authenticator management is configured"
     },
     "global_http_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "huawei-vrp": "sc-7 | system and communications protection | ensure boundary protection is configured"
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "global_logging_set": {
       "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
@@ -148,6 +147,9 @@
     "ipsec_oldercryptoalg_notset": {
       "default": "sc-13 | system and communications protection | ensure cryptographic protection using approved algorithms is configured"
     },
+    "linevty_loginauth_set": {
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
+    },
     "linevty_transportinputssh_set": {
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
     },
@@ -158,13 +160,7 @@
       "default": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured"
     },
     "ntp_ip_set": {
-      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured",
-      "cisco-ios": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured",
-      "ekinops-oneos": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured",
-      "cisco-xr": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured",
-      "cisco-xe": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured",
-      "cisco-viptela": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured",
-      "cisco-cedge": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured"
+      "default": "au-8(1) | audit and accountability | ensure time synchronization with authoritative source is configured"
     },
     "routing_defref_set": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
@@ -185,12 +181,7 @@
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "snmp_v3user_set": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "cisco-ios": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured",
-      "fortinet-fortios": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured",
-      "cisco-xe": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured",
-      "cisco-viptela": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured",
-      "cisco-cedge": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "snmp_viewdefref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -207,6 +198,9 @@
     "global_timestamps_set": {
       "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
     },
+    "int_ipv6redirects_notset": {
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
     "lineaux_aclin_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
@@ -215,6 +209,9 @@
     },
     "lineaux_exectimeout00_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
+    "lineaux_loginauth_set": {
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "lineaux_noexec_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -241,7 +238,7 @@
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "tcl_script_notset": {
-      "default": "sc-7 | boundary protection | ensure unauthorized remote execution of commands is prevented"
+      "default": "cm-7 | configuration management | ensure least functionality principle is applied"
     },
     "aaa_authorder_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
@@ -250,16 +247,16 @@
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "global_lldp_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "paloalto-panos": "au-12 | audit and accountability | ensure audit record generation is enabled",
-      "huawei-vrp": "au-12 | audit and accountability | ensure audit record generation is enabled",
-      "cisco-viptela": "sc-7 | system and communications protection | ensure boundary protection is configured"
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "int_allowall_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "int_allowforbidproto_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
+    "aaa_configlogin_set": {
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "line_aclin_set": {
       "default": "ac-17 | access control | ensure remote access is controlled and monitored"
@@ -310,7 +307,7 @@
       "default": "ac-11 | access control | ensure device lock after inactivity timeout is configured"
     },
     "global_httpsonly_set": {
-      "default": "sc-8 | system and communications protection | ensure transmission confidentiality is protected"
+      "default": "sc-8 | system and communications protection | ensure transmission confidentiality and integrity is configured"
     },
     "global_sourcerouting_notset": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
@@ -319,21 +316,16 @@
       "default": "sc-13 | system and communications protection | ensure cryptographic protection using approved algorithms is configured"
     },
     "global_trusthost_set": {
-      "default": "ac-17 | access control | ensure remote access is restricted to trusted hosts"
+      "default": "ac-17 | access control | ensure remote access is controlled and monitored"
     },
     "int_icmpredirect_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "int_icmpunreachable_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "nokia-sros": "au-12 | audit and accountability | ensure audit record generation is enabled",
-      "paloalto-panos": "au-12 | audit and accountability | ensure audit record generation is enabled"
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "int_lldp_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "nokia-sros": "au-12 | audit and accountability | ensure audit record generation is enabled",
-      "paloalto-panos": "au-12 | audit and accountability | ensure audit record generation is enabled",
-      "huawei-vrp": "au-12 | audit and accountability | ensure audit record generation is enabled"
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "int_mgntforbidallow_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -384,8 +376,7 @@
       "default": "cm-6 | configuration management | ensure configuration settings are established and enforced"
     },
     "global_defaultpolicy_set": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured",
-      "iptables-fwcli": "sc-7 | system and communications protection | ensure boundary protection is configured"
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "global_icmpratelimit_set": {
       "default": "sc-5 | system and communications protection | ensure denial-of-service protection is configured"
@@ -403,16 +394,16 @@
       "default": "si-4 | system and information integrity | ensure system monitoring is configured"
     },
     "aaa_classdefref_set": {
-      "default": "ac-2 | access control | account management | ensure user accounts reference valid and active login classes"
+      "default": "ac-2 | access control | ensure account management is implemented"
     },
     "aaa_classpermissions_notset": {
-      "default": "ac-6 | access control | least privilege | ensure least-privilege access is enforced through explicit permission assignment"
+      "default": "ac-6 | access control | ensure least privilege is enforced"
     },
     "aaa_rightorder_set": {
       "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "aaa_userclass_notset": {
-      "default": "ac-2 | access control | account management | ensure user accounts have defined roles and permissions"
+      "default": "ac-2 | access control | ensure account management is implemented"
     },
     "filter_defref_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
@@ -457,7 +448,7 @@
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
     },
     "services_sshv1_notset": {
-      "default": "sc-13 | system and communications protection | ensure cryptographic protection is used for data in transit"
+      "default": "sc-13 | system and communications protection | ensure cryptographic protection using approved algorithms is configured"
     },
     "snmp_v1v2viewdefref_set": {
       "default": "ac-3 | access control | ensure access enforcement is configured"
@@ -487,7 +478,7 @@
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "lldp_system_notset": {
-      "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
+      "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "login_forbidproto_notset": {
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
@@ -520,13 +511,13 @@
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "aaa_authprofile_set": {
-      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users"
+      "default": "ia-2 | identification and authentication | ensure unique identification and authentication of organizational users is configured"
     },
     "fw_anyany_notset": {
       "default": "sc-7 | system and communications protection | ensure boundary protection is configured"
     },
     "login_banner_set": {
-      "default": "ac-8 | access control | ensure system use notification is displayed before granting access"
+      "default": "ac-8 | access control | ensure system use notification banner is configured"
     }
   }
 }

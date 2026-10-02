@@ -11,7 +11,7 @@
 # @test_name : global_chaindefref_set.iptables-fwcli.gawk
 # @supplier : iptables-fwcli
 # @purpose : check <-N chains> ref not def and def not ref
-# @description : custom chains defined but not referenced represent dead configuration; chains referenced but not defined cause rule processing errors
+# @description : custom chains defined but not referenced represent dead configuration, chains referenced but not defined cause rule processing errors
 # @actions : align chain definitions and references to ensure all custom chains are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : CM-6 | Configuration Management | Ensure configuration settings are established and enforced
 # @risk_level : high | low
@@ -46,17 +46,16 @@ BEGINFILE {
 }
 
 # chain def ----
-/^iptables -N / {
-    chain_name = $3;
-    chains_defined[chain_name] = NR;
+/^iptables .*-N [A-Za-z0-9_\-]+/ {
+    match($0, /-N ([A-Za-z0-9_\-]+)/, arr);
+    chains_defined[arr[1]] = FNR;
 }
 
 # chain ref -----
-/^iptables .* -j [A-Za-z0-9_\-]+/ {
-    match($0, /-j ([A-Za-z0-9_\-]+)/, arr);
+/^iptables .* -[jg] [A-Za-z0-9_\-]+/ {
+    match($0, /-[jg] ([A-Za-z0-9_\-]+)/, arr);
     if (arr[1] != "" && !(arr[1] in default_chains)) {
-        chain_name = arr[1];
-        chains_referenced[chain_name] = NR;
+        chains_referenced[arr[1]] = FNR;
     }
 }
 

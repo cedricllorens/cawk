@@ -24,6 +24,8 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_firewall = 0;
+	block_rules = 0;
 	src = 0;
 	dst = 0;
 	service = 0;
@@ -41,7 +43,6 @@ BEGINFILE {
 }
 
 /^%SED_BK_PALO%{2}[^ ]/ && !/^%SED_BK_PALO%{2}\}/ && block_rules == 1 {
-	block_rule = 1;
 	src = 0;
 	dst = 0;
 	service = 0;

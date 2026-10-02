@@ -10,7 +10,7 @@
 # @test_name : snmp_v1v2viewdefref_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check when <view> def and not ref / check when <view> ref and not def
-# @description : SNMP view defined but not referenced represents dead configuration; view referenced but not defined causes SNMP policy errors and access failures
+# @description : SNMP view defined but not referenced represents dead configuration, view referenced but not defined causes SNMP policy errors and access failures
 # @actions : align SNMP view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
 # @risk_level : high | info
@@ -23,6 +23,8 @@ BEGIN {
 }
 
 BEGINFILE {
+	in_snmp = 0;
+	in_community = 0;
 	pass = 1;
 	delete view_def;
 	delete view_ref;

@@ -1,0 +1,3 @@
+This file has no vendor markers.
+It should be skipped during sync.
+No router/firewall/switch configuration here.

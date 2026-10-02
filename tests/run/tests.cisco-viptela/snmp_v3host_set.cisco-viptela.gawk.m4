@@ -37,7 +37,7 @@ dnl level 0 --
 
 dnl level 1 --
 `/^ trap(s)?$/',`',
-`', `',
+`/^ !$/', `',
 
 dnl level 2 --
 `/^[ ][ ]host /',`

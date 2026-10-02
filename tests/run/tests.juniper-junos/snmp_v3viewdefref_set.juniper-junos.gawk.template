@@ -10,7 +10,7 @@
 # @test_name : snmp_v3viewdefref_set.juniper-junos.gawk
 # @supplier : juniper-junos
 # @purpose : check when <snmp v3 mib-view> def and not ref / check when <snmp v3 mib-view> ref and not def
-# @description : SNMP v3 mib-view defined but not referenced represents dead configuration; mib-view referenced but not defined causes SNMP policy errors and access failures
+# @description : SNMP v3 mib-view defined but not referenced represents dead configuration, mib-view referenced but not defined causes SNMP policy errors and access failures
 # @actions : align SNMP v3 mib-view definitions and references to ensure all views are used and all references are valid (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : AC-3 | Access Control | Ensure access enforcement is configured
 # @risk_level : high | info
@@ -23,6 +23,11 @@ BEGIN {
 }
 
 BEGINFILE {
+	in_snmp = 0;
+	in_v3 = 0;
+	in_vacm = 0;
+	in_access = 0;
+	in_group = 0;
 	pass = 1;
 	delete mib_view_def;
 	delete mib_view_ref;

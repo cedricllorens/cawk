@@ -29,7 +29,7 @@ BEGINFILE {
 /^snmp-server community / && /%SED_SNMP_FORBID_COMMUNITY%/ {
 	print_err("snmp_v1v2forbidcommunity_notset.cisco-xr.gawk",$0,FNR,"high","error");
 	pass = 0;
-	nextfile;
+	next;
 }
 
 ENDFILE {

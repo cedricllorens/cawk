@@ -205,7 +205,7 @@ use of the internal inventory
 
 cawk organizes all tests, configurations, and exceptions by supplier (network platform). Current scope:
 
-`cisco-ios`, `cisco-xr`, `cisco-xe`, `cisco-cedge`, `cisco-viptela`, `juniper-junos`, `huawei-vrp`, `fortinet-fortios`, `nokia-sros`, `paloalto-panos`, `checkpoint-fwcli`, `packetfilter-fwcli`, `iptables-fwcli`, `6wind-linux`, `ekinops-oneos`
+`cisco-ios`, `cisco-xr`, `cisco-xe`, `cisco-cedge`, `cisco-viptela`, `cisco-sdnios`, `juniper-junos`, `huawei-vrp`, `fortinet-fortios`, `nokia-sros`, `paloalto-panos`, `checkpoint-fwcli`, `packetfilter-fwcli`, `iptables-fwcli`, `6wind-linux`, `ekinops-oneos`
 
 Each supplier is organized in per-directory format:
 - `tests/repo/tests.cisco-ios/` — Tests for Cisco IOS
@@ -271,6 +271,85 @@ Each supplier is organized in per-directory format:
 		  are kept in the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
 		- a device is considered by default as deadbeef if the configuration is older than the days value 
 		set in DEADBEEF_THRESHOLD_DAYS  (default value is 30 days)
+
+# cawk Configuration Variables
+
+cawk uses two synchronized configuration sources for directory paths:
+
+1. **`support/Makefile.support.mk`** — Make/gmake configuration for build system and assessment targets
+2. **`database/include/scripts_config.sh`** — POSIX shell configuration for database and post-audit scripts
+
+Both files define identical path variables to ensure consistency across Make targets and shell scripts. When modifying any path, **both files must be updated together** to prevent silent failures or operations on wrong directories.
+
+## Core Path Variables
+
+The following variables are defined in both configuration files:
+
+- `CONFS_PATH` — Configuration directory (confs)
+- `COMMON_PATH` — Common AWK libraries (common)
+- `BACKUP_PATH` — Backup archives (backup)
+- `DATABASE_PATH` — Flat-file databases (database)
+- `LOGS_PATH` — Execution-result logs (logs): `test_exec.*`, `gen_makefile.*`/`gen_makefile_psirt.*`, `parallel_gmake.*`/`parallel_gmake_psirt.*`, `deadbeef.*`, `catalog_precompute.*`, `backup.*`, `restore.*`, `email.*`, `sync.*`/`sync_psirt.*`, `postaudit.*`, `archive.*`; each `<name>.<scope|audit>.err` file captures stderr for that operation, paired with a `cawk error:` message on failure. Persists across runs (not touched by `gmake clean`/`clean_tmp`), purged only via `gmake clean_logs` (all scopes), or per-scope via `gmake clean_logs_repo`, `gmake clean_logs_run` (or `audit=AUDIT_NAME`), `gmake clean_logs_run_audit` (all audits)
+- `REPORT_PATH` — Generated reports (reports)
+- `EXCEPTION_PATH` — Exception rules (exceptions)
+- `TESTS_PATH` — Test templates (tests)
+- `TESTS_COMMON_PATH` — Common test libraries (common)
+- `TESTS_SYSTEM` — System test configurations (system)
+- `TESTS_TMP` — Temporary test files (tmp)
+
+## Scripts Configuration File
+
+`database/include/scripts_config.sh` is a POSIX-compatible shell include file for use in database scripts:
+
+```bash
+. database/include/scripts_config.sh
+echo "${DATABASE_PATH}"          # Access variables
+get_database_scripts              # Get list of database scripts
+get_test_common_templates         # Get list of test templates
+```
+
+Helper functions in the script provide POSIX-compatible alternatives to Make's `$(wildcard ...)`:
+
+- `get_database_scripts()` — Lists all database/*.script.sh files
+- `get_test_common_templates()` — Lists all common/*.template files
+- `get_test_common_scripts()` — Lists all common/*.script.sh files
+
+## Enforcement Rule
+
+Refer to CLAUDE.md section **"Configuration Variables: Make ↔ Shell Consistency"** for the mandatory enforcement procedure when modifying configuration variables. This ensures that Make targets and shell scripts always operate on the correct directories.
+
+## CRLF Concept
+
+cawk tests anchor their regexes on end of line (`$`); a configuration saved in windows format (CRLF) keeps a trailing `\r` on every line, so those regexes no longer match and the results are wrong. Every assessment therefore scans each configuration with `common/crlf_cawk_conf.gawk`, modeled on deadbeef/badformat: each configuration in windows format produces one `info;error` line in `assessment.all.crlf.csv` (and `assessment.all.crlf.timeline.csv`), and the summary reports `number_of_confs_crlf`.
+
+Unlike deadbeef and badformat, the filter is **forced to yes by default** (`CRLF ?= yes`), since the results of a CRLF configuration are wrong, not just doubtful:
+
+1. **CRLF=yes** (default) — crlf configurations are removed from the final reports (`.all.csv`, `.all.security.`, `.all.audit.`, `.all.psirt.`)
+2. **CRLF=no** — crlf configurations stay in all reports; the crlf report is still produced
+
+```bash
+gmake check_run audit=AUDIT_NAME CRLF=no
+```
+
+A test fixture is available under `validate/crlf/` (`conf_crlf`). To fix a listed file, convert it to unix format (e.g. `sed -i 's/\r$//' FILE`).
+
+## Badformat Concept
+
+**What is "Badformat"?**
+Badformat refers to configurations with first-level indentation violations, which make block-based cawk results unreliable. Every assessment scans each configuration with `common/badformat_cawk_conf.gawk` (`info;warning`): when a column-0 line is followed by an indented line, that line's indentation becomes the block reference; until the next column-0 line, no indented line may be shallower than the reference (a tab counts as one character, blank lines are ignored). Windows format (CRLF) is not part of badformat: see the CRLF Concept section.
+
+Each badformat configuration produces one line in `assessment.all.badformat.csv` (and `assessment.all.badformat.timeline.csv`); the summary reports `number_of_confs_badformat`.
+
+**Two Operating Modes (same as deadbeef):**
+
+1. **BADFORMAT=yes** — badformat configurations are removed from the final reports (`.all.csv`, `.all.security.`, `.all.audit.`, `.all.psirt.`)
+2. **BADFORMAT=no** (default) — badformat configurations stay in all reports; the badformat report is still produced
+
+```bash
+gmake check_run audit=AUDIT_NAME BADFORMAT=yes
+```
+
+Test fixtures are available under `validate/badformat/` (`conf_ok`, `conf_ko`).
 
 ## Deadbeef Concept Clarification
 
@@ -512,6 +591,9 @@ cawk allows to manage flat file databases in order to use cawk options like sync
 sending emails, etc. this is only available for audit=AUDIT_NAME assessment
 	
 	- gmake database_view : view all the databases
+	- gmake database_view_sync : view only the sync database
+	- gmake database_view_email : view only the email database
+	- gmake database_view_postaudit : view only the postaudit database
 
 ## sync database
 
@@ -525,8 +607,10 @@ cawk sync database format is the following where fields are separated by spaces 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
 		- 2 field is the various sync paths separated by comma (no space) 
 		    like /conf/ or /conf/cawk/,/conf/cawk_2/ (i.e. dir=SYNC_PATH_DIR)
-		- 3 field is an extended regex to select devices pattern matching 
-		    like .* or .*switch.* (i.e. regex=REGEX_DEVICE)
+		- 3 field is an extended regex to select inventory (field 4) lines pattern matching 
+		    like .* or .*switch.* (i.e. regexinventory=REGEX_INVENTORY) -- only applied when field 4
+		    (scope) is set to an actual file; if scope=none, this field has no effect and
+		    every file found under the sync paths (field 2) is synced
 		- 4 field is a file containing a list of devices matching a device scope based on internal inventory
 		    the file is located in database/sync_scopes directory and generated by database_postaudit.script
 			audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
@@ -534,16 +618,22 @@ cawk sync database format is the following where fields are separated by spaces 
 		    like (cisco-ios|cisco-xr) or .* (i.e. regexos=REGEX)
 		- 6 field is an extended regex to exclude some specific paths or device names if required 
 		    like (_home_|_earth) or .* (i.e. regexpathexclude=REGEX)
+		- 7 field is an extended regex to exclude inventory (field 4) lines pattern matching,
+		    same "only applied with a scope file" restriction as field 3
+		    like (_home_|_earth) or none (i.e. regexinventoryexclude=REGEX/none)
 
 		note : common/sync_cawk_conf.gawk script is in charge to apply the database configuration 
 		per audit=AUDIT_NAME
 
-	- gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH regex=REGEX_PATTERN/.* scope=SCOPE_FILE/none: 
+	- gmake database_view_sync : view only the cawk sync database
+
+	- gmake database_sync_(add,update) audit=AUDIT_NAME dir=SYNC_PATH regexinventory=REGEX_PATTERN/.* scope=SCOPE_FILE/none
+	  regexos=REGEX_PATTERN/.* regexpathexclude=REGEX_PATTERN/none regexinventoryexclude=REGEX_PATTERN/none: 
 	  add/update an entry in the cawk sync database
 
-	  note : regex may allow to build sub-scope of an assessment like
-		     audit=cawk_customer1_router with regex matching only routers
-			 audit=cawk_customer1_switch with regex matching only switches
+	  note : when a scope file (field 4) is used, regexinventory/regexinventoryexclude may allow to build
+		     sub-scopes of an assessment like audit=cawk_customer1_router with regexinventory matching only
+			 routers, audit=cawk_customer1_switch with regexinventory matching only switches
 	
 	- gmake database_sync_del audit=AUDIT_NAME : delete an entry in the cawk sync database
 	
@@ -554,6 +644,8 @@ cawk email sync database format is the following where fields are separated by s
 		- 1 field is the audit name"
 		- 2 field is the dst list of emails separated by comma (no space) like email1,email2,email3"
 		- 3 field is the cc list of emails separated by comma (no space) like email1,email2,email3"
+
+	- gmake database_view_email : view only the cawk email database
 
 	- gmake database_email_(add,update) audit=AUDIT_NAME dst=EMAIL_LIST/none cc=EMAIL_LIST/none: 
 	  add/update an entry in the cawk email database
@@ -568,6 +660,8 @@ cawk postaudit database format follows the same structure where fields are separ
 		is launched allowing to run specific tasks like to generate helpdesk tickets, etc.
 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
+
+	- gmake database_view_postaudit : view only the cawk postaudit database
 
 	- gmake database_postaudit_(add,del) audit=AUDIT_NAME :
 	  add/delete an entry in the cawk postaudit database
@@ -814,13 +908,13 @@ Each file is self-contained with its own `.PHONY` declarations and targets:
 
 # cawk support/Makefile.support.mk
 
-You may thanks to the file support/Makefile.support.mk control all the cawk options like PSIRT,
+You may thanks to the file support/Makefile.support.mk control all the cawk options like PSIRT_ONLY,
 DEADBEEF, etc. Please note that all these options can be called with gmake like:
-gmake check_repo DEADBEEF=yes PSIRT=yes ....
+gmake check_repo DEADBEEF=yes PSIRT_ONLY=yes ....
 
-Note on PSIRT (assessment mode):
-	- PSIRT=no (default): run standard tests + psirt tests
-	- PSIRT=yes        : run ONLY psirt tests (standard tests are skipped)
+Note on PSIRT_ONLY (assessment mode, formerly PSIRT):
+	- PSIRT_ONLY=no (default): run standard tests + psirt tests
+	- PSIRT_ONLY=yes        : run ONLY psirt tests (standard tests are skipped)
 	psirt tests are always compiled; this flag only selects which tests run at assessment time.
 
 # cawk version migration

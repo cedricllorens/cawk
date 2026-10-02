@@ -10,7 +10,7 @@
 # @test_name : global_remotesyslog_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check <syslog log-remote-address> is set
-# @description : without a remote syslog server local logs can be lost or tampered with after a compromise; centralized log retention supports investigations, regulatory audits and compliance evidence
+# @description : without a remote syslog server local logs can be lost or tampered with after a compromise, centralized log retention supports investigations, regulatory audits and compliance evidence
 # @actions : add syslog log-remote-address pointing to a centralized log server (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : AU-4 | Audit and Accountability | Ensure audit log storage capacity is configured
 # @risk_level : medium

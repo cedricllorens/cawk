@@ -1,0 +1,72 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : lineaux_loginauth_set.cisco-xe.gawk
+# @supplier : cisco-xe
+# @purpose : check if a line aux has <login authentication>
+# @description : line aux without AAA login authentication can allow unauthorized management access to the device without proper credential verification
+# @actions : set <login authentication> on line aux with a valid AAA method list (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
+# @risk_level : high
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+# ----
+
+function auth_summary() {
+	if ( loginauth == 0 && transportnone == 0 ) {
+		print_err("lineaux_loginauth_set.cisco-xe.gawk",lineaux" : login authentication missing",linenoaux,"high","error");
+		pass = 0;
+	}
+}
+
+# ----
+
+BEGIN {
+}
+
+BEGINFILE {
+	block_aux = 0;
+	pass = 1;
+}
+
+/^line aux .*$/ {
+	if ( block_aux == 1 ) auth_summary();
+	lineaux = $0;
+	linenoaux = FNR;
+	loginauth = 0;
+	transportnone = 0;
+	block_aux = 1;
+	next;
+}
+
+/^ login authentication / && block_aux == 1 {
+	loginauth = 1;
+	next;
+}
+
+/^ transport input none$/ && block_aux == 1 {
+	transportnone = 1;
+	next;
+}
+
+( /^!$/ || ( /^line / && !/ aux / ) ) && block_aux == 1 {
+	auth_summary();
+	block_aux = 0;
+	next;
+}
+
+ENDFILE {
+	if ( pass ) print_err("lineaux_loginauth_set.cisco-xe.gawk","line aux login authentication is set",0,"high","pass");
+}
+
+END {
+}

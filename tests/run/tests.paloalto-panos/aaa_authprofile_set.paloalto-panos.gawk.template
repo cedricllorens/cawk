@@ -13,7 +13,7 @@
 # @purpose : check if <aaa authentication-profile> is set
 # @description : missing aaa authentication profile means administrative access relies on local accounts only with no centralized authentication, logging or revocation
 # @actions : configure an aaa authentication-profile bound to radius or tacacs+ servers for administrative access (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users
+# @nist800-53_ref : IA-2 | Identification and Authentication | Ensure unique identification and authentication of organizational users is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -24,6 +24,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_aaa = 0;
 	pass = 0;
 }
 

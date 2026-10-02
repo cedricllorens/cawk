@@ -37,6 +37,7 @@ BEGINFILE {
 /^ interface/ && block_vpn == 1 {
 	block_interface = 1;
 	block_tunnelinterface = 0;
+	interface = $0;
 	next;
 }
 
@@ -46,7 +47,7 @@ BEGINFILE {
 }
 
 /^   allow-service %SED_FORBIDPROTO_VIPTELA%/ && block_tunnelinterface == 1 {
-	print_err("int_allowforbidproto_notset.cisco-viptela.gawk",rm_blank_before($0),FNR,"high","error");
+	print_err("int_allowforbidproto_notset.cisco-viptela.gawk",rm_blank_before(interface)" "rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }

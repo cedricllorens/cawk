@@ -1,0 +1,405 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : acl_configconsistency_set.checkpoint-fwcli.gawk
+# @supplier : checkpoint-fwcli
+# @purpose : check if <access rules> are consistent
+# @description : inconsistent or redundant access rules reduce security effectiveness and complicate policy management
+# @actions : remove inconsistent or redundant rules (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+# rule format ----------------------------------
+# 1  rule_name          : string
+# 2  rule_description   : string
+# 3  action             : permit/deny
+# 4  ingress/outgress   : "none","in","out","all"
+# 5  interface          : "none",string
+# 6  family             : "all", inet, inet6
+# 7  src@               : ip
+# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 9  port_src           : port_src			set 0 if empty
+# 10 port_src_range     : port_src_range	set 0 if empty
+# 11 dst@               : ip				set 0 if empty
+# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 13 port_dst           : port_dst			set 0 if empty
+# 14 port_dst_range     : port_dst_range	set 0 if empty
+# 15 protocol           : protocol			set "none" if empty
+# rule format ----------------------------------
+
+@include %SED_INCLUDE_PATH%
+@include %SED_INCLUDE_PATH_FWLIB%
+
+# ---------------------------------------------------------
+# START
+# ---------------------------------------------------------
+
+BEGINFILE {
+
+	# clean cube ----
+	cawk_init_hypercube_rules();
+	check = 0;
+
+	# initialize vars ----
+	delete cp_variables;
+	cp_continued = "";
+
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# UNWANTED LINES
+# ---------------------------------------
+# ---------------------------------------
+
+# Skip comments and empty lines
+/^#/ { next }
+/^$/ { next }
+
+# a clish statement may span several lines ending with "\" : rebuild it before parsing
+/\\$/ {
+	sub(/\\$/, "");
+	cp_continued = cp_continued $0 " ";
+	next;
+}
+
+cp_continued != "" {
+	$0 = cp_continued $0;
+	cp_continued = "";
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# VARIABLES
+# ---------------------------------------
+# ---------------------------------------
+
+/^set[ \t]+[a-zA-Z0-9_]+[ \t]*=/ {
+
+	match($0, /^set[ \t]+([a-zA-Z0-9_]+)[ \t]*=[ \t]*(.*)$/, var_match);
+	var_value = var_match[2];
+	gsub(/"/, "", var_value);
+	cp_variables[var_match[1]] = var_value;
+
+	if ( trace == 1 ) print "TRACE = VARIABLE : ",var_match[1],var_value
+
+	next;
+}
+
+# specific function
+function resolve_address(addr,    var_name) {
+
+	gsub(/"/, "", addr);
+
+	# variable reference ----
+	if (addr ~ /^\$/) {
+		var_name = substr(addr, 2);
+		if (var_name in cp_variables) {
+			return cp_variables[var_name];
+		}
+		return addr;
+	}
+
+	# a network object holds no address in the cli dump : the variable named after it carries it ----
+	var_name = tolower(addr);
+	if (var_name in cp_variables) {
+		return cp_variables[var_name];
+	}
+
+	return addr;
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# ACCESS RULE SUPPORT FUNCTIONS
+# ---------------------------------------
+# ---------------------------------------
+
+function build_dst_addr_net(dst_addr,    k, addr_list, number_of_addr, parts_net) {
+
+	# an object group is comma separated ----
+	number_of_addr = split(dst_addr, addr_list, ",");
+
+	for ( k = 1; k <= number_of_addr; k++ ) {
+
+		# any case ----
+		if ( tolower(addr_list[k]) == "any" ) {
+			dst_ip = "any";
+			dst_net = "any";
+
+		# network case ----
+		} else if ( addr_list[k] ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\/[0-9.]+$/ ) {
+			split(addr_list[k], parts_net, "/");
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+		# host case ----
+		} else if ( addr_list[k] ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ ) {
+			dst_ip = addr_list[k];
+			dst_net = "host";
+
+		# an object with no resolvable address cannot be placed in the cube ----
+		} else {
+			continue;
+		}
+
+		dst_table_ip[dst_ip" "dst_net] = dst_ip" "dst_net;
+	}
+}
+
+# ---------------------------------------
+
+function build_src_addr_net(src_addr,    k, addr_list, number_of_addr, parts_net) {
+
+	# an object group is comma separated ----
+	number_of_addr = split(src_addr, addr_list, ",");
+
+	for ( k = 1; k <= number_of_addr; k++ ) {
+
+		# any case ----
+		if ( tolower(addr_list[k]) == "any" ) {
+			src_ip = "any";
+			src_net = "any";
+
+		# network case ----
+		} else if ( addr_list[k] ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\/[0-9.]+$/ ) {
+			split(addr_list[k], parts_net, "/");
+			src_ip = parts_net[1];
+			src_net = parts_net[2];
+
+		# host case ----
+		} else if ( addr_list[k] ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ ) {
+			src_ip = addr_list[k];
+			src_net = "host";
+
+		# an object with no resolvable address cannot be placed in the cube ----
+		} else {
+			continue;
+		}
+
+		src_table_ip[src_ip" "src_net] = src_ip" "src_net;
+	}
+}
+
+# ---------------------------------------
+
+# fill the destination port table from a service value ("ssh", "http-https", "smb,telnet") ; a
+# service group joins its members with a comma or a dash, an unknown service matches any port
+function build_service(value,    k, svc_list, number_of_svc) {
+
+	gsub(/"/, "", value);
+
+	if ( tolower(value) == "any" ) return;
+
+	if ( value in table_port ) {
+		dst_table_port[value] = table_port[value];
+		dst_table_port_range[value] = 0;
+		return;
+	}
+
+	number_of_svc = split(value, svc_list, /[,-]/);
+
+	for ( k = 1; k <= number_of_svc; k++ ) {
+
+		if ( svc_list[k] in table_port ) {
+			dst_table_port[svc_list[k]] = table_port[svc_list[k]];
+			dst_table_port_range[svc_list[k]] = 0;
+
+		} else if ( svc_list[k] ~ /^[0-9]+$/ ) {
+			dst_table_port[svc_list[k]] = svc_list[k];
+			dst_table_port_range[svc_list[k]] = 0;
+		}
+	}
+}
+
+# ---------------------------------------
+# ---------------------------------------
+# ACCESS RULE
+# ---------------------------------------
+# ---------------------------------------
+
+/^add access-rule / {
+
+	check = 1;
+
+	# the action keyword gives the action, and only a filtering one is a decision ----
+	action = "none";
+
+	# an access rule carries no direction and no interface ----
+	inoutgress = "all";
+	interface = "none";
+
+	family = "all";
+
+	src_ip = "0";
+	src_net = "none";
+	src_port = 0;
+	src_port_range = 0;
+	delete src_table_port
+	delete src_table_port_range
+	delete src_table_ip
+
+	dst_ip = "0";
+	dst_net = "none";
+	dst_port = 0;
+	dst_port_range = 0;
+	delete dst_table_port
+	delete dst_table_port_range
+	delete dst_table_ip
+
+	# a service carries no protocol in the cli dump ----
+	protocol = "none";
+	delete table_protocol;
+
+	found_src = 0
+	found_dst = 0
+	found_port_dst = 0
+
+	negated = 0;
+	state_rule = 0;
+
+	# rule name ----
+	rule_desc = "checkpoint rule_line_"FNR" <"$0">";
+
+	# ------------------------------
+	# start of the rule parsing ----
+	# ------------------------------
+
+	for (i = 1; i <= NF; i++) {
+
+		# ----------------------
+		# NEGATION ----
+		# ----------------------
+
+		if ($i == "!") negated = 1;
+
+		# ----------------------
+		# SOURCE ----
+		# ----------------------
+
+		if ($i == "source") {
+			delete src_table_ip;
+			build_src_addr_net(resolve_address($(i+1)));
+			found_src = 1;
+		}
+
+		# ----------------------
+		# DESTINATION ----
+		# ----------------------
+
+		if ($i == "destination") {
+			delete dst_table_ip;
+			build_dst_addr_net(resolve_address($(i+1)));
+			found_dst = 1;
+		}
+
+		# ----------------------
+		# SERVICE ----
+		# ----------------------
+
+		if ($i == "service") {
+			delete dst_table_port;
+			delete dst_table_port_range;
+			build_service($(i+1));
+			found_port_dst = ( length(dst_table_port) > 0 );
+		}
+
+		# ----------------------
+		# CONNECTION STATE ----
+		# ----------------------
+
+		if ($i == "connection-state") state_rule = 1;
+
+		# ----------------------
+		# ACTION ----
+		# ----------------------
+
+		if ($i == "action") {
+			action_value = tolower($(i+1));
+			gsub(/"/, "", action_value);
+			if ( action_value == "accept" ) {
+				action = "pass";
+			} else if ( action_value == "drop" || action_value == "reject" ) {
+				action = "block";
+			}
+		}
+	}
+
+	# --------------------
+	# Build all rules ----
+	# --------------------
+
+	# filter exceptions : a non filtering action, a negated selector and a connection state
+	# restrict the rule to a traffic subset the cube cannot express ----
+	if ( action == "none" || negated == 1 || state_rule == 1 ) {
+		if ( trace ==1 ) {
+			print "TRACE EXCEPTION RULE = descr:"rule_desc" action:"action" negated:"negated" state:"state_rule
+		}
+		next;
+	}
+
+	# an omitted source or destination matches any address ----
+	if ( found_src == 0 ) src_table_ip["any any"] = "any any";
+	if ( found_dst == 0 ) dst_table_ip["any any"] = "any any";
+
+	# compute all the rules ----
+	for (id in src_table_ip) {
+
+		# src addr ----
+		split(src_table_ip[id], parts_net, " ")
+		src_ip = parts_net[1];
+		src_net = parts_net[2];
+
+		for (id1 in dst_table_ip) {
+
+			# dst addr ----
+			split(dst_table_ip[id1], parts_net, " ")
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+			# port : an access rule carries no source port ------
+			if ( found_port_dst == 0 ) dst_table_port["none"]="none";
+
+			# compute all the possible rules ----
+			for (id1 in dst_table_port) {
+
+				# dst port ----
+				if ( id1 == "none" ) {
+					dst_port = 0;
+					dst_port_range = 0;
+				} else {
+					dst_port = dst_table_port[id1];
+					dst_port_range = dst_table_port_range[id1];
+				}
+
+				cawk_add_hypercube_rules("acl_configconsistency_set.checkpoint-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+			}
+
+		}
+	}
+}
+
+# ---------------------------------------------------------
+# END
+# ---------------------------------------------------------
+
+ENDFILE {
+	if (cawk_hypercube_rules_assessment()) {
+		print_err("acl_configconsistency_set.checkpoint-fwcli.gawk", "CheckPoint access rules have no redundant/inconsistent rules", FNR, "info", "pass");
+	}
+
+	if (check == 0) {
+		print_err("acl_configconsistency_set.checkpoint-fwcli.gawk", "no CheckPoint access rules found", FNR, "info", "pass");
+	}
+}
+
+END {
+}

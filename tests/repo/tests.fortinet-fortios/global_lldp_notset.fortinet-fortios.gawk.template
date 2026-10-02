@@ -13,7 +13,7 @@
 # @purpose : check if <lldp> is not set
 # @description : lldp can be used to gain unauthorized access to the device or reveal sensitive information
 # @actions : disable lldp globally (please refer to engineering/operations guidelines for further information)
-# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

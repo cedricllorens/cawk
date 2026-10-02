@@ -13,13 +13,23 @@
 # you may set in the database/sync_scopes directory a full device
 # path as only the device name will taken into consideration
 #
-# usage: database_sync.script audit=AUDIT_NAME
-# THIS SCRIPT IS CENTRAL FOR ALL THE audit=AUDIT_NAME
+# usage: database_sync.script <AUDIT_NAME>
 # ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
+# check section
+# ---------------------------------------------------------------------
 if [ -z "$1" ]; then
 	echo "cawk error: audit=AUDIT_NAME is missing ----"
 	exit 0
+fi
+
+CONFIG_FILE="database/include/scripts_config.sh"
+if [ -f "$CONFIG_FILE" ]; then
+    . "$CONFIG_FILE"
+else
+    echo "cawk error: configuration file not found: $CONFIG_FILE"
+    exit 0
 fi
 
 # ---------------------------------------------------------------------

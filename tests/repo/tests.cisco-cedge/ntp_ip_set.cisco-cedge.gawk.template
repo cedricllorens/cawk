@@ -27,7 +27,7 @@ BEGINFILE {
 	pass = 1;
 }
 
-/^(s)?ntp server ([^ ]+ )?[0-9\.]+/ {
+/^(s)?ntp server (vrf [^ ]+ )?((ip|ipv6) )?[0-9\.]+/ {
 	print_err("ntp_ip_set.cisco-cedge.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;

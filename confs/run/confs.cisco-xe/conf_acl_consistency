@@ -1,0 +1,98 @@
+access-list 10 remark CAWK-EXP-1-INCONSISTENT
+access-list 10 permit 10.1.1.0 0.0.0.255
+access-list 10 deny 10.1.0.0 0.0.255.255
+access-list 11 remark CAWK-EXP-1-REDUNDANT
+access-list 11 permit 10.2.2.0 0.0.0.255
+access-list 11 permit 10.2.2.2
+access-list 12 remark CAWK-EXP-PASS
+access-list 12 permit 10.3.3.0 0.0.0.255
+access-list 12 permit 10.4.4.0 0.0.0.255
+!
+ip access-list standard CAWK-STD-EXP-1-INCONSISTENT
+ 10 permit 10.5.0.0 0.0.255.255
+ 20 deny   10.5.5.0 0.0.0.255
+ip access-list standard CAWK-STD-EXP-1-REDUNDANT
+ 10 permit 10.6.0.0 0.0.255.255
+ 20 permit 10.6.6.6
+ip access-list standard CAWK-STD-EXP-PASS
+ 10 permit 10.7.0.0 0.0.255.255
+ 20 deny   10.8.0.0 0.0.255.255
+ip access-list extended CAWK-EXT-PORT-EXP-1-INCONSISTENT
+ 10 remark same destination port with opposite actions
+ 20 permit tcp any host 192.0.2.1 eq 22
+ 30 deny   tcp any host 192.0.2.1 eq 22 log
+ip access-list extended CAWK-EXT-PORT-EXP-PASS
+ 10 permit tcp any any eq www
+ 20 deny   tcp any any eq 443
+ip access-list extended CAWK-EXT-PROTO-EXP-PASS
+ 10 permit tcp any any eq domain
+ 20 deny   udp any any eq domain
+ip access-list extended CAWK-EXT-RANGE-EXP-1-INCONSISTENT
+ 10 permit tcp any any range 22 telnet
+ 20 deny   tcp any any eq telnet
+ip access-list extended CAWK-EXT-RANGE-EXP-PASS
+ 10 permit tcp any any range 22 telnet
+ 20 deny   tcp any any eq www
+ip access-list extended CAWK-EXT-GT-EXP-1-INCONSISTENT
+ 10 permit tcp any any gt 1023
+ 20 deny   tcp any any eq 8080
+ip access-list extended CAWK-EXT-GT-EXP-PASS
+ 10 permit tcp any any gt 1023
+ 20 deny   tcp any any eq 22
+ip access-list extended CAWK-EXT-LT-EXP-1-INCONSISTENT
+ 10 permit udp any any lt 1024
+ 20 deny   udp any any eq snmp
+ip access-list extended CAWK-EXT-LT-EXP-PASS
+ 10 permit udp any any lt 1024
+ 20 deny   udp any any eq 5000
+ip access-list extended CAWK-EXT-NEQ-EXP-1-INCONSISTENT
+ 10 permit tcp any any neq 22
+ 20 deny   tcp any any eq www
+ip access-list extended CAWK-EXT-NEQ-EXP-PASS
+ 10 permit tcp any any neq 22
+ 20 deny   tcp any any eq 22
+ip access-list extended CAWK-EXT-SRCPORT-EXP-1-INCONSISTENT
+ 10 permit udp any eq ntp any eq ntp
+ 20 deny   udp any eq ntp any
+ip access-list extended CAWK-EXT-SRCPORT-EXP-PASS
+ 10 permit udp any eq 1024 any
+ 20 deny   udp any eq 2048 any
+ip access-list extended CAWK-EXT-HOST-EXP-1-REDUNDANT
+ 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22
+ 20 permit tcp host 198.51.100.10 any eq 22
+ip access-list extended CAWK-EXT-HOST-EXP-PASS
+ 10 permit tcp host 198.51.100.10 any eq 22
+ 20 deny   tcp host 198.51.100.11 any eq 22
+ip access-list extended CAWK-EXT-IP-EXP-1-INCONSISTENT
+ 10 permit ip 203.0.113.0 0.0.0.255 any
+ 20 deny   tcp host 203.0.113.5 any eq 22
+ip access-list extended CAWK-EXT-ICMP-EXP-PASS
+ 10 permit icmp any any echo
+ 20 deny   icmp any any echo-reply
+ip access-list extended CAWK-EXT-ICMP-CODE-EXP-1-INCONSISTENT
+ 10 permit icmp any any unreachable
+ 20 deny   icmp any any port-unreachable
+ip access-list extended CAWK-EXT-ICMP-CODE-EXP-PASS
+ 10 permit icmp any any host-unreachable
+ 20 deny   icmp any any port-unreachable
+ip access-list extended CAWK-EXT-ICMP-ANY-EXP-1-INCONSISTENT
+ 10 permit icmp any any
+ 20 deny   icmp any any echo
+ip access-list extended CAWK-EXT-DST-EXP-PASS
+ 10 permit tcp any host 192.0.2.20 eq 22
+ 20 deny   tcp any host 192.0.2.21 eq 22
+ip access-list extended CAWK-EXT-GT-EDGE-EXP-PASS
+ 10 permit tcp any any gt 1023
+ 20 deny   tcp any any eq 1023
+ip access-list extended CAWK-EXT-LT-EDGE-EXP-PASS
+ 10 permit udp any any lt 1024
+ 20 deny   udp any any eq 1024
+ip access-list extended CAWK-EXT-RANGE-EDGE-EXP-PASS
+ 10 permit tcp any any range 22 telnet
+ 20 deny   tcp any any eq 24
+ip access-list extended CAWK-EXT-MULTI-EXP-2-INCONSISTENT
+ 10 permit tcp host 192.0.2.10 any eq 22
+ 20 permit tcp host 192.0.2.11 any eq 22
+ 30 deny   tcp any any eq 22
+!
+end

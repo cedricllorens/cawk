@@ -11,8 +11,8 @@
 # @supplier : cisco-xe
 # @purpose : check if TCL scripts are forbidden on device
 # @description : TCL scripts on network devices can pose security risks if not properly controlled and monitored. TCL scripting capabilities should be disabled or restricted to authorized users only to prevent unauthorized automation and potential malicious scripts
-# @actions : remove TCL scripting commands or restrict TCL access; ensure tclsh and related TCL commands are not configured in device startup or running configuration
-# @nist800-53_ref : SC-7 | Boundary Protection | Ensure unauthorized remote execution of commands is prevented
+# @actions : remove TCL scripting commands or restrict TCL access, ensure tclsh and related TCL commands are not configured in device startup or running configuration
+# @nist800-53_ref : CM-7 | Configuration Management | Ensure least functionality principle is applied
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

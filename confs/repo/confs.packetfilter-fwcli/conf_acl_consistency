@@ -1,0 +1,60 @@
+cawk_host = "203.0.113.7"
+table <cawk_mgmt> { 198.51.100.1, 198.51.100.2 }
+
+pass in on em1 proto tcp from any to 192.0.2.1 port 22 label "s01-exp-1-inconsistent"
+block in on em1 proto tcp from any to 192.0.2.1 port 22 label "s01-exp-1-inconsistent"
+
+pass in on em2 proto tcp from any to 192.0.2.1 port 22 label "s02-exp-pass"
+block in on em2 proto tcp from any to 192.0.2.1 port 80 label "s02-exp-pass"
+
+pass in on em3 proto tcp from any to any port 22 label "s03-exp-pass"
+block out on em3 proto tcp from any to any port 22 label "s03-exp-pass"
+
+pass in on em4 proto tcp from any to any port 22 label "s04-exp-pass"
+block in on em5 proto tcp from any to any port 22 label "s04-exp-pass"
+
+pass in on em6 proto tcp from any to any port 1000:2000 label "s05-exp-1-inconsistent"
+block in on em6 proto tcp from any to any port 1500 label "s05-exp-1-inconsistent"
+
+pass in on em7 proto tcp from any to any port > 1023 label "s06-exp-pass"
+block in on em7 proto tcp from any to any port 22 label "s06-exp-pass"
+
+pass in on em8 proto tcp from any to any port { 80 443 } label "s07-exp-1-inconsistent"
+block in on em8 proto tcp from any to any port 443 label "s07-exp-1-inconsistent"
+
+pass in on em9 proto { tcp udp } from any to any port 53 label "s08-exp-1-inconsistent"
+block in on em9 proto udp from any to any port 53 label "s08-exp-1-inconsistent"
+
+pass in on em10 proto tcp from <cawk_mgmt> to any port 22 label "s09-exp-1-inconsistent"
+block in on em10 proto tcp from 198.51.100.2 to any port 22 label "s09-exp-1-inconsistent"
+
+pass in on em11 proto tcp from $cawk_host to any port 443 label "s10-exp-1-inconsistent"
+block in on em11 proto tcp from 203.0.113.0/24 to any port 443 label "s10-exp-1-inconsistent"
+
+pass in on em12 inet proto icmp from any to any icmp-type echoreq label "s11-exp-pass"
+block in on em12 inet proto icmp from any to any icmp-type unreach label "s11-exp-pass"
+
+pass in on em13 inet proto icmp from any to any icmp-type echoreq label "s12-exp-1-inconsistent"
+block in on em13 inet proto icmp from any to any icmp-type echoreq label "s12-exp-1-inconsistent"
+
+pass in on em14 inet proto icmp from any to any icmp-type unreach code port-unr label "s13-exp-pass"
+block in on em14 inet proto icmp from any to any icmp-type unreach code host-unr label "s13-exp-pass"
+
+pass in on em15 proto tcp from any to any \
+    port 22 keep state label "s14-exp-pass"
+block in on em15 proto tcp from any to any port 80 label "s14-exp-pass"
+
+pass in on em16 proto tcp from 10.0.0.0/8 to any port 22 label "s15-exp-1-redundant"
+pass in on em16 proto tcp from 10.1.1.1 to any port 22 label "s15-exp-1-redundant"
+
+pass in on em17 proto tcp from 10.0.0.0/8 to any port 22 label "s16-exp-pass"
+block in on em17 proto tcp from 192.168.0.0/16 to any port 22 label "s16-exp-pass"
+
+pass in on em18 proto tcp from any to 192.0.2.20 port 22 label "s17-exp-pass"
+block in on em18 proto tcp from any to 192.0.2.21 port 22 label "s17-exp-pass"
+
+pass in on em19 proto tcp from any to any port > 1023 label "s18-exp-pass"
+block in on em19 proto tcp from any to any port 1023 label "s18-exp-pass"
+
+pass in on em20 proto tcp from any to any port 1000:2000 label "s19-exp-pass"
+block in on em20 proto tcp from any to any port 2001 label "s19-exp-pass"

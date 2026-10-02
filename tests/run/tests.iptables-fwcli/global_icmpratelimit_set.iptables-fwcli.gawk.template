@@ -46,6 +46,8 @@ ENDFILE {
         print_err("global_icmpratelimit_set.iptables-fwcli.gawk","icmp echo-request accepted with rate limiting",0,"low","pass");
     } else if ( icmp_unlimited ) {
         print_err("global_icmpratelimit_set.iptables-fwcli.gawk","icmp accepted without rate limiting <<"icmp_line">>",0,"low","error");
+    } else {
+        print_err("global_icmpratelimit_set.iptables-fwcli.gawk","no icmp accept rule",0,"low","pass");
     }
 }
 

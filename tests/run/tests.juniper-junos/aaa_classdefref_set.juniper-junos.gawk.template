@@ -13,7 +13,7 @@
 # @purpose : check that login classes are defined and referenced by users
 # @description : login classes must be referenced by at least one user (unused classes indicate configuration drift) and users must reference existing classes (missing class is a security risk)
 # @actions : remove unused login classes and ensure all users reference a valid defined class
-# @nist800-53_ref : AC-2 | Access Control | Account Management | Ensure user accounts reference valid and active login classes
+# @nist800-53_ref : AC-2 | Access Control | Ensure account management is implemented
 # @risk_level : high | info
 # @authors : cedric llorens
 # ------------------------------------------------------------
@@ -58,7 +58,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_JUNI%{3}class / && block_user == 1 && !/class (unauthorized|none)/ && !/inactive/ {
+/^%SED_BK_JUNI%{3}class / && block_user == 1 && !/class (unauthorized|none|super-user|operator|read-only)( |;|$)/ && !/inactive/ {
 	match($0, /class ([^ ;]+)/, arr);
 	class_referenced[arr[1]] = 1;
 	next;

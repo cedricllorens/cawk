@@ -127,7 +127,7 @@ git push origin cawk_feature_xyz
 
 ### 6. Create the Pull Request
 
-Visit the GitHub repository and create a pull request from your branch to `main`.
+Visit the GitHub repository and create a pull request from your branch to `master`.
 
 In the PR description:
 - Reference related issues (e.g., `Fixes #123`)
@@ -156,7 +156,7 @@ gmake check
 ### Switch Back to Main
 
 ```bash
-git checkout main
+git checkout master
 git branch -D branch_name  # Remove local branch if done
 ```
 
@@ -165,7 +165,7 @@ git branch -D branch_name  # Remove local branch if done
 ## Update Your Local Repository
 
 ```bash
-git pull origin main
+git pull origin master
 ```
 
 ---

@@ -1,0 +1,1955 @@
+ip access-list extended BIG-PORTS
+ permit tcp any host 192.168.0.1 eq 10001
+ permit tcp any host 192.168.0.1 eq 10002
+ permit tcp any host 192.168.0.1 eq 10003
+ permit tcp any host 192.168.0.1 eq 10004
+ permit tcp any host 192.168.0.1 eq 10005
+ permit tcp any host 192.168.0.1 eq 10006
+ permit tcp any host 192.168.0.1 eq 10007
+ permit tcp any host 192.168.0.1 eq 10008
+ permit tcp any host 192.168.0.1 eq 10009
+ permit tcp any host 192.168.0.1 eq 10010
+ permit tcp any host 192.168.0.1 eq 10011
+ permit tcp any host 192.168.0.1 eq 10012
+ permit tcp any host 192.168.0.1 eq 10013
+ permit tcp any host 192.168.0.1 eq 10014
+ permit tcp any host 192.168.0.1 eq 10015
+ permit tcp any host 192.168.0.1 eq 10016
+ permit tcp any host 192.168.0.1 eq 10017
+ permit tcp any host 192.168.0.1 eq 10018
+ permit tcp any host 192.168.0.1 eq 10019
+ permit tcp any host 192.168.0.1 eq 10020
+ permit tcp any host 192.168.0.1 eq 10021
+ permit tcp any host 192.168.0.1 eq 10022
+ permit tcp any host 192.168.0.1 eq 10023
+ permit tcp any host 192.168.0.1 eq 10024
+ permit tcp any host 192.168.0.1 eq 10025
+ permit tcp any host 192.168.0.1 eq 10026
+ permit tcp any host 192.168.0.1 eq 10027
+ permit tcp any host 192.168.0.1 eq 10028
+ permit tcp any host 192.168.0.1 eq 10029
+ permit tcp any host 192.168.0.1 eq 10030
+ permit tcp any host 192.168.0.1 eq 10031
+ permit tcp any host 192.168.0.1 eq 10032
+ permit tcp any host 192.168.0.1 eq 10033
+ permit tcp any host 192.168.0.1 eq 10034
+ permit tcp any host 192.168.0.1 eq 10035
+ permit tcp any host 192.168.0.1 eq 10036
+ permit tcp any host 192.168.0.1 eq 10037
+ permit tcp any host 192.168.0.1 eq 10038
+ permit tcp any host 192.168.0.1 eq 10039
+ permit tcp any host 192.168.0.1 eq 10040
+ permit tcp any host 192.168.0.1 eq 10041
+ permit tcp any host 192.168.0.1 eq 10042
+ permit tcp any host 192.168.0.1 eq 10043
+ permit tcp any host 192.168.0.1 eq 10044
+ permit tcp any host 192.168.0.1 eq 10045
+ permit tcp any host 192.168.0.1 eq 10046
+ permit tcp any host 192.168.0.1 eq 10047
+ permit tcp any host 192.168.0.1 eq 10048
+ permit tcp any host 192.168.0.1 eq 10049
+ permit tcp any host 192.168.0.1 eq 10050
+ permit tcp any host 192.168.0.1 eq 10051
+ permit tcp any host 192.168.0.1 eq 10052
+ permit tcp any host 192.168.0.1 eq 10053
+ permit tcp any host 192.168.0.1 eq 10054
+ permit tcp any host 192.168.0.1 eq 10055
+ permit tcp any host 192.168.0.1 eq 10056
+ permit tcp any host 192.168.0.1 eq 10057
+ permit tcp any host 192.168.0.1 eq 10058
+ permit tcp any host 192.168.0.1 eq 10059
+ permit tcp any host 192.168.0.1 eq 10060
+ permit tcp any host 192.168.0.1 eq 10061
+ permit tcp any host 192.168.0.1 eq 10062
+ permit tcp any host 192.168.0.1 eq 10063
+ permit tcp any host 192.168.0.1 eq 10064
+ permit tcp any host 192.168.0.1 eq 10065
+ permit tcp any host 192.168.0.1 eq 10066
+ permit tcp any host 192.168.0.1 eq 10067
+ permit tcp any host 192.168.0.1 eq 10068
+ permit tcp any host 192.168.0.1 eq 10069
+ permit tcp any host 192.168.0.1 eq 10070
+ permit tcp any host 192.168.0.1 eq 10071
+ permit tcp any host 192.168.0.1 eq 10072
+ permit tcp any host 192.168.0.1 eq 10073
+ permit tcp any host 192.168.0.1 eq 10074
+ permit tcp any host 192.168.0.1 eq 10075
+ permit tcp any host 192.168.0.1 eq 10076
+ permit tcp any host 192.168.0.1 eq 10077
+ permit tcp any host 192.168.0.1 eq 10078
+ permit tcp any host 192.168.0.1 eq 10079
+ permit tcp any host 192.168.0.1 eq 10080
+ permit tcp any host 192.168.0.1 eq 10081
+ permit tcp any host 192.168.0.1 eq 10082
+ permit tcp any host 192.168.0.1 eq 10083
+ permit tcp any host 192.168.0.1 eq 10084
+ permit tcp any host 192.168.0.1 eq 10085
+ permit tcp any host 192.168.0.1 eq 10086
+ permit tcp any host 192.168.0.1 eq 10087
+ permit tcp any host 192.168.0.1 eq 10088
+ permit tcp any host 192.168.0.1 eq 10089
+ permit tcp any host 192.168.0.1 eq 10090
+ permit tcp any host 192.168.0.1 eq 10091
+ permit tcp any host 192.168.0.1 eq 10092
+ permit tcp any host 192.168.0.1 eq 10093
+ permit tcp any host 192.168.0.1 eq 10094
+ permit tcp any host 192.168.0.1 eq 10095
+ permit tcp any host 192.168.0.1 eq 10096
+ permit tcp any host 192.168.0.1 eq 10097
+ permit tcp any host 192.168.0.1 eq 10098
+ permit tcp any host 192.168.0.1 eq 10099
+ permit tcp any host 192.168.0.1 eq 10100
+ permit tcp any host 192.168.0.1 eq 10101
+ permit tcp any host 192.168.0.1 eq 10102
+ permit tcp any host 192.168.0.1 eq 10103
+ permit tcp any host 192.168.0.1 eq 10104
+ permit tcp any host 192.168.0.1 eq 10105
+ permit tcp any host 192.168.0.1 eq 10106
+ permit tcp any host 192.168.0.1 eq 10107
+ permit tcp any host 192.168.0.1 eq 10108
+ permit tcp any host 192.168.0.1 eq 10109
+ permit tcp any host 192.168.0.1 eq 10110
+ permit tcp any host 192.168.0.1 eq 10111
+ permit tcp any host 192.168.0.1 eq 10112
+ permit tcp any host 192.168.0.1 eq 10113
+ permit tcp any host 192.168.0.1 eq 10114
+ permit tcp any host 192.168.0.1 eq 10115
+ permit tcp any host 192.168.0.1 eq 10116
+ permit tcp any host 192.168.0.1 eq 10117
+ permit tcp any host 192.168.0.1 eq 10118
+ permit tcp any host 192.168.0.1 eq 10119
+ permit tcp any host 192.168.0.1 eq 10120
+ permit tcp any host 192.168.0.1 eq 10121
+ permit tcp any host 192.168.0.1 eq 10122
+ permit tcp any host 192.168.0.1 eq 10123
+ permit tcp any host 192.168.0.1 eq 10124
+ permit tcp any host 192.168.0.1 eq 10125
+ permit tcp any host 192.168.0.1 eq 10126
+ permit tcp any host 192.168.0.1 eq 10127
+ permit tcp any host 192.168.0.1 eq 10128
+ permit tcp any host 192.168.0.1 eq 10129
+ permit tcp any host 192.168.0.1 eq 10130
+ permit tcp any host 192.168.0.1 eq 10131
+ permit tcp any host 192.168.0.1 eq 10132
+ permit tcp any host 192.168.0.1 eq 10133
+ permit tcp any host 192.168.0.1 eq 10134
+ permit tcp any host 192.168.0.1 eq 10135
+ permit tcp any host 192.168.0.1 eq 10136
+ permit tcp any host 192.168.0.1 eq 10137
+ permit tcp any host 192.168.0.1 eq 10138
+ permit tcp any host 192.168.0.1 eq 10139
+ permit tcp any host 192.168.0.1 eq 10140
+ permit tcp any host 192.168.0.1 eq 10141
+ permit tcp any host 192.168.0.1 eq 10142
+ permit tcp any host 192.168.0.1 eq 10143
+ permit tcp any host 192.168.0.1 eq 10144
+ permit tcp any host 192.168.0.1 eq 10145
+ permit tcp any host 192.168.0.1 eq 10146
+ permit tcp any host 192.168.0.1 eq 10147
+ permit tcp any host 192.168.0.1 eq 10148
+ permit tcp any host 192.168.0.1 eq 10149
+ permit tcp any host 192.168.0.1 eq 10150
+ permit tcp any host 192.168.0.1 eq 10151
+ permit tcp any host 192.168.0.1 eq 10152
+ permit tcp any host 192.168.0.1 eq 10153
+ permit tcp any host 192.168.0.1 eq 10154
+ permit tcp any host 192.168.0.1 eq 10155
+ permit tcp any host 192.168.0.1 eq 10156
+ permit tcp any host 192.168.0.1 eq 10157
+ permit tcp any host 192.168.0.1 eq 10158
+ permit tcp any host 192.168.0.1 eq 10159
+ permit tcp any host 192.168.0.1 eq 10160
+ permit tcp any host 192.168.0.1 eq 10161
+ permit tcp any host 192.168.0.1 eq 10162
+ permit tcp any host 192.168.0.1 eq 10163
+ permit tcp any host 192.168.0.1 eq 10164
+ permit tcp any host 192.168.0.1 eq 10165
+ permit tcp any host 192.168.0.1 eq 10166
+ permit tcp any host 192.168.0.1 eq 10167
+ permit tcp any host 192.168.0.1 eq 10168
+ permit tcp any host 192.168.0.1 eq 10169
+ permit tcp any host 192.168.0.1 eq 10170
+ permit tcp any host 192.168.0.1 eq 10171
+ permit tcp any host 192.168.0.1 eq 10172
+ permit tcp any host 192.168.0.1 eq 10173
+ permit tcp any host 192.168.0.1 eq 10174
+ permit tcp any host 192.168.0.1 eq 10175
+ permit tcp any host 192.168.0.1 eq 10176
+ permit tcp any host 192.168.0.1 eq 10177
+ permit tcp any host 192.168.0.1 eq 10178
+ permit tcp any host 192.168.0.1 eq 10179
+ permit tcp any host 192.168.0.1 eq 10180
+ permit tcp any host 192.168.0.1 eq 10181
+ permit tcp any host 192.168.0.1 eq 10182
+ permit tcp any host 192.168.0.1 eq 10183
+ permit tcp any host 192.168.0.1 eq 10184
+ permit tcp any host 192.168.0.1 eq 10185
+ permit tcp any host 192.168.0.1 eq 10186
+ permit tcp any host 192.168.0.1 eq 10187
+ permit tcp any host 192.168.0.1 eq 10188
+ permit tcp any host 192.168.0.1 eq 10189
+ permit tcp any host 192.168.0.1 eq 10190
+ permit tcp any host 192.168.0.1 eq 10191
+ permit tcp any host 192.168.0.1 eq 10192
+ permit tcp any host 192.168.0.1 eq 10193
+ permit tcp any host 192.168.0.1 eq 10194
+ permit tcp any host 192.168.0.1 eq 10195
+ permit tcp any host 192.168.0.1 eq 10196
+ permit tcp any host 192.168.0.1 eq 10197
+ permit tcp any host 192.168.0.1 eq 10198
+ permit tcp any host 192.168.0.1 eq 10199
+ permit tcp any host 192.168.0.1 eq 10200
+ permit tcp any host 192.168.0.1 eq 10201
+ permit tcp any host 192.168.0.1 eq 10202
+ permit tcp any host 192.168.0.1 eq 10203
+ permit tcp any host 192.168.0.1 eq 10204
+ permit tcp any host 192.168.0.1 eq 10205
+ permit tcp any host 192.168.0.1 eq 10206
+ permit tcp any host 192.168.0.1 eq 10207
+ permit tcp any host 192.168.0.1 eq 10208
+ permit tcp any host 192.168.0.1 eq 10209
+ permit tcp any host 192.168.0.1 eq 10210
+ permit tcp any host 192.168.0.1 eq 10211
+ permit tcp any host 192.168.0.1 eq 10212
+ permit tcp any host 192.168.0.1 eq 10213
+ permit tcp any host 192.168.0.1 eq 10214
+ permit tcp any host 192.168.0.1 eq 10215
+ permit tcp any host 192.168.0.1 eq 10216
+ permit tcp any host 192.168.0.1 eq 10217
+ permit tcp any host 192.168.0.1 eq 10218
+ permit tcp any host 192.168.0.1 eq 10219
+ permit tcp any host 192.168.0.1 eq 10220
+ permit tcp any host 192.168.0.1 eq 10221
+ permit tcp any host 192.168.0.1 eq 10222
+ permit tcp any host 192.168.0.1 eq 10223
+ permit tcp any host 192.168.0.1 eq 10224
+ permit tcp any host 192.168.0.1 eq 10225
+ permit tcp any host 192.168.0.1 eq 10226
+ permit tcp any host 192.168.0.1 eq 10227
+ permit tcp any host 192.168.0.1 eq 10228
+ permit tcp any host 192.168.0.1 eq 10229
+ permit tcp any host 192.168.0.1 eq 10230
+ permit tcp any host 192.168.0.1 eq 10231
+ permit tcp any host 192.168.0.1 eq 10232
+ permit tcp any host 192.168.0.1 eq 10233
+ permit tcp any host 192.168.0.1 eq 10234
+ permit tcp any host 192.168.0.1 eq 10235
+ permit tcp any host 192.168.0.1 eq 10236
+ permit tcp any host 192.168.0.1 eq 10237
+ permit tcp any host 192.168.0.1 eq 10238
+ permit tcp any host 192.168.0.1 eq 10239
+ permit tcp any host 192.168.0.1 eq 10240
+ permit tcp any host 192.168.0.1 eq 10241
+ permit tcp any host 192.168.0.1 eq 10242
+ permit tcp any host 192.168.0.1 eq 10243
+ permit tcp any host 192.168.0.1 eq 10244
+ permit tcp any host 192.168.0.1 eq 10245
+ permit tcp any host 192.168.0.1 eq 10246
+ permit tcp any host 192.168.0.1 eq 10247
+ permit tcp any host 192.168.0.1 eq 10248
+ permit tcp any host 192.168.0.1 eq 10249
+ permit tcp any host 192.168.0.1 eq 10250
+ permit tcp any host 192.168.0.1 eq 10251
+ permit tcp any host 192.168.0.1 eq 10252
+ permit tcp any host 192.168.0.1 eq 10253
+ permit tcp any host 192.168.0.1 eq 10254
+ permit tcp any host 192.168.0.1 eq 10255
+ permit tcp any host 192.168.0.1 eq 10256
+ permit tcp any host 192.168.0.1 eq 10257
+ permit tcp any host 192.168.0.1 eq 10258
+ permit tcp any host 192.168.0.1 eq 10259
+ permit tcp any host 192.168.0.1 eq 10260
+ permit tcp any host 192.168.0.1 eq 10261
+ permit tcp any host 192.168.0.1 eq 10262
+ permit tcp any host 192.168.0.1 eq 10263
+ permit tcp any host 192.168.0.1 eq 10264
+ permit tcp any host 192.168.0.1 eq 10265
+ permit tcp any host 192.168.0.1 eq 10266
+ permit tcp any host 192.168.0.1 eq 10267
+ permit tcp any host 192.168.0.1 eq 10268
+ permit tcp any host 192.168.0.1 eq 10269
+ permit tcp any host 192.168.0.1 eq 10270
+ permit tcp any host 192.168.0.1 eq 10271
+ permit tcp any host 192.168.0.1 eq 10272
+ permit tcp any host 192.168.0.1 eq 10273
+ permit tcp any host 192.168.0.1 eq 10274
+ permit tcp any host 192.168.0.1 eq 10275
+ permit tcp any host 192.168.0.1 eq 10276
+ permit tcp any host 192.168.0.1 eq 10277
+ permit tcp any host 192.168.0.1 eq 10278
+ permit tcp any host 192.168.0.1 eq 10279
+ permit tcp any host 192.168.0.1 eq 10280
+ permit tcp any host 192.168.0.1 eq 10281
+ permit tcp any host 192.168.0.1 eq 10282
+ permit tcp any host 192.168.0.1 eq 10283
+ permit tcp any host 192.168.0.1 eq 10284
+ permit tcp any host 192.168.0.1 eq 10285
+ permit tcp any host 192.168.0.1 eq 10286
+ permit tcp any host 192.168.0.1 eq 10287
+ permit tcp any host 192.168.0.1 eq 10288
+ permit tcp any host 192.168.0.1 eq 10289
+ permit tcp any host 192.168.0.1 eq 10290
+ permit tcp any host 192.168.0.1 eq 10291
+ permit tcp any host 192.168.0.1 eq 10292
+ permit tcp any host 192.168.0.1 eq 10293
+ permit tcp any host 192.168.0.1 eq 10294
+ permit tcp any host 192.168.0.1 eq 10295
+ permit tcp any host 192.168.0.1 eq 10296
+ permit tcp any host 192.168.0.1 eq 10297
+ permit tcp any host 192.168.0.1 eq 10298
+ permit tcp any host 192.168.0.1 eq 10299
+ permit tcp any host 192.168.0.1 eq 10300
+ permit tcp any host 192.168.0.1 eq 10301
+ permit tcp any host 192.168.0.1 eq 10302
+ permit tcp any host 192.168.0.1 eq 10303
+ permit tcp any host 192.168.0.1 eq 10304
+ permit tcp any host 192.168.0.1 eq 10305
+ permit tcp any host 192.168.0.1 eq 10306
+ permit tcp any host 192.168.0.1 eq 10307
+ permit tcp any host 192.168.0.1 eq 10308
+ permit tcp any host 192.168.0.1 eq 10309
+ permit tcp any host 192.168.0.1 eq 10310
+ permit tcp any host 192.168.0.1 eq 10311
+ permit tcp any host 192.168.0.1 eq 10312
+ permit tcp any host 192.168.0.1 eq 10313
+ permit tcp any host 192.168.0.1 eq 10314
+ permit tcp any host 192.168.0.1 eq 10315
+ permit tcp any host 192.168.0.1 eq 10316
+ permit tcp any host 192.168.0.1 eq 10317
+ permit tcp any host 192.168.0.1 eq 10318
+ permit tcp any host 192.168.0.1 eq 10319
+ permit tcp any host 192.168.0.1 eq 10320
+ permit tcp any host 192.168.0.1 eq 10321
+ permit tcp any host 192.168.0.1 eq 10322
+ permit tcp any host 192.168.0.1 eq 10323
+ permit tcp any host 192.168.0.1 eq 10324
+ permit tcp any host 192.168.0.1 eq 10325
+ permit tcp any host 192.168.0.1 eq 10326
+ permit tcp any host 192.168.0.1 eq 10327
+ permit tcp any host 192.168.0.1 eq 10328
+ permit tcp any host 192.168.0.1 eq 10329
+ permit tcp any host 192.168.0.1 eq 10330
+ permit tcp any host 192.168.0.1 eq 10331
+ permit tcp any host 192.168.0.1 eq 10332
+ permit tcp any host 192.168.0.1 eq 10333
+ permit tcp any host 192.168.0.1 eq 10334
+ permit tcp any host 192.168.0.1 eq 10335
+ permit tcp any host 192.168.0.1 eq 10336
+ permit tcp any host 192.168.0.1 eq 10337
+ permit tcp any host 192.168.0.1 eq 10338
+ permit tcp any host 192.168.0.1 eq 10339
+ permit tcp any host 192.168.0.1 eq 10340
+ permit tcp any host 192.168.0.1 eq 10341
+ permit tcp any host 192.168.0.1 eq 10342
+ permit tcp any host 192.168.0.1 eq 10343
+ permit tcp any host 192.168.0.1 eq 10344
+ permit tcp any host 192.168.0.1 eq 10345
+ permit tcp any host 192.168.0.1 eq 10346
+ permit tcp any host 192.168.0.1 eq 10347
+ permit tcp any host 192.168.0.1 eq 10348
+ permit tcp any host 192.168.0.1 eq 10349
+ permit tcp any host 192.168.0.1 eq 10350
+ permit tcp any host 192.168.0.1 eq 10351
+ permit tcp any host 192.168.0.1 eq 10352
+ permit tcp any host 192.168.0.1 eq 10353
+ permit tcp any host 192.168.0.1 eq 10354
+ permit tcp any host 192.168.0.1 eq 10355
+ permit tcp any host 192.168.0.1 eq 10356
+ permit tcp any host 192.168.0.1 eq 10357
+ permit tcp any host 192.168.0.1 eq 10358
+ permit tcp any host 192.168.0.1 eq 10359
+ permit tcp any host 192.168.0.1 eq 10360
+ permit tcp any host 192.168.0.1 eq 10361
+ permit tcp any host 192.168.0.1 eq 10362
+ permit tcp any host 192.168.0.1 eq 10363
+ permit tcp any host 192.168.0.1 eq 10364
+ permit tcp any host 192.168.0.1 eq 10365
+ permit tcp any host 192.168.0.1 eq 10366
+ permit tcp any host 192.168.0.1 eq 10367
+ permit tcp any host 192.168.0.1 eq 10368
+ permit tcp any host 192.168.0.1 eq 10369
+ permit tcp any host 192.168.0.1 eq 10370
+ permit tcp any host 192.168.0.1 eq 10371
+ permit tcp any host 192.168.0.1 eq 10372
+ permit tcp any host 192.168.0.1 eq 10373
+ permit tcp any host 192.168.0.1 eq 10374
+ permit tcp any host 192.168.0.1 eq 10375
+ permit tcp any host 192.168.0.1 eq 10376
+ permit tcp any host 192.168.0.1 eq 10377
+ permit tcp any host 192.168.0.1 eq 10378
+ permit tcp any host 192.168.0.1 eq 10379
+ permit tcp any host 192.168.0.1 eq 10380
+ permit tcp any host 192.168.0.1 eq 10381
+ permit tcp any host 192.168.0.1 eq 10382
+ permit tcp any host 192.168.0.1 eq 10383
+ permit tcp any host 192.168.0.1 eq 10384
+ permit tcp any host 192.168.0.1 eq 10385
+ permit tcp any host 192.168.0.1 eq 10386
+ permit tcp any host 192.168.0.1 eq 10387
+ permit tcp any host 192.168.0.1 eq 10388
+ permit tcp any host 192.168.0.1 eq 10389
+ permit tcp any host 192.168.0.1 eq 10390
+ permit tcp any host 192.168.0.1 eq 10391
+ permit tcp any host 192.168.0.1 eq 10392
+ permit tcp any host 192.168.0.1 eq 10393
+ permit tcp any host 192.168.0.1 eq 10394
+ permit tcp any host 192.168.0.1 eq 10395
+ permit tcp any host 192.168.0.1 eq 10396
+ permit tcp any host 192.168.0.1 eq 10397
+ permit tcp any host 192.168.0.1 eq 10398
+ permit tcp any host 192.168.0.1 eq 10399
+ permit tcp any host 192.168.0.1 eq 10400
+ permit tcp any host 192.168.0.1 eq 10401
+ permit tcp any host 192.168.0.1 eq 10402
+ permit tcp any host 192.168.0.1 eq 10403
+ permit tcp any host 192.168.0.1 eq 10404
+ permit tcp any host 192.168.0.1 eq 10405
+ permit tcp any host 192.168.0.1 eq 10406
+ permit tcp any host 192.168.0.1 eq 10407
+ permit tcp any host 192.168.0.1 eq 10408
+ permit tcp any host 192.168.0.1 eq 10409
+ permit tcp any host 192.168.0.1 eq 10410
+ permit tcp any host 192.168.0.1 eq 10411
+ permit tcp any host 192.168.0.1 eq 10412
+ permit tcp any host 192.168.0.1 eq 10413
+ permit tcp any host 192.168.0.1 eq 10414
+ permit tcp any host 192.168.0.1 eq 10415
+ permit tcp any host 192.168.0.1 eq 10416
+ permit tcp any host 192.168.0.1 eq 10417
+ permit tcp any host 192.168.0.1 eq 10418
+ permit tcp any host 192.168.0.1 eq 10419
+ permit tcp any host 192.168.0.1 eq 10420
+ permit tcp any host 192.168.0.1 eq 10421
+ permit tcp any host 192.168.0.1 eq 10422
+ permit tcp any host 192.168.0.1 eq 10423
+ permit tcp any host 192.168.0.1 eq 10424
+ permit tcp any host 192.168.0.1 eq 10425
+ permit tcp any host 192.168.0.1 eq 10426
+ permit tcp any host 192.168.0.1 eq 10427
+ permit tcp any host 192.168.0.1 eq 10428
+ permit tcp any host 192.168.0.1 eq 10429
+ permit tcp any host 192.168.0.1 eq 10430
+ permit tcp any host 192.168.0.1 eq 10431
+ permit tcp any host 192.168.0.1 eq 10432
+ permit tcp any host 192.168.0.1 eq 10433
+ permit tcp any host 192.168.0.1 eq 10434
+ permit tcp any host 192.168.0.1 eq 10435
+ permit tcp any host 192.168.0.1 eq 10436
+ permit tcp any host 192.168.0.1 eq 10437
+ permit tcp any host 192.168.0.1 eq 10438
+ permit tcp any host 192.168.0.1 eq 10439
+ permit tcp any host 192.168.0.1 eq 10440
+ permit tcp any host 192.168.0.1 eq 10441
+ permit tcp any host 192.168.0.1 eq 10442
+ permit tcp any host 192.168.0.1 eq 10443
+ permit tcp any host 192.168.0.1 eq 10444
+ permit tcp any host 192.168.0.1 eq 10445
+ permit tcp any host 192.168.0.1 eq 10446
+ permit tcp any host 192.168.0.1 eq 10447
+ permit tcp any host 192.168.0.1 eq 10448
+ permit tcp any host 192.168.0.1 eq 10449
+ permit tcp any host 192.168.0.1 eq 10450
+ permit tcp any host 192.168.0.1 eq 10451
+ permit tcp any host 192.168.0.1 eq 10452
+ permit tcp any host 192.168.0.1 eq 10453
+ permit tcp any host 192.168.0.1 eq 10454
+ permit tcp any host 192.168.0.1 eq 10455
+ permit tcp any host 192.168.0.1 eq 10456
+ permit tcp any host 192.168.0.1 eq 10457
+ permit tcp any host 192.168.0.1 eq 10458
+ permit tcp any host 192.168.0.1 eq 10459
+ permit tcp any host 192.168.0.1 eq 10460
+ permit tcp any host 192.168.0.1 eq 10461
+ permit tcp any host 192.168.0.1 eq 10462
+ permit tcp any host 192.168.0.1 eq 10463
+ permit tcp any host 192.168.0.1 eq 10464
+ permit tcp any host 192.168.0.1 eq 10465
+ permit tcp any host 192.168.0.1 eq 10466
+ permit tcp any host 192.168.0.1 eq 10467
+ permit tcp any host 192.168.0.1 eq 10468
+ permit tcp any host 192.168.0.1 eq 10469
+ permit tcp any host 192.168.0.1 eq 10470
+ permit tcp any host 192.168.0.1 eq 10471
+ permit tcp any host 192.168.0.1 eq 10472
+ permit tcp any host 192.168.0.1 eq 10473
+ permit tcp any host 192.168.0.1 eq 10474
+ permit tcp any host 192.168.0.1 eq 10475
+ permit tcp any host 192.168.0.1 eq 10476
+ permit tcp any host 192.168.0.1 eq 10477
+ permit tcp any host 192.168.0.1 eq 10478
+ permit tcp any host 192.168.0.1 eq 10479
+ permit tcp any host 192.168.0.1 eq 10480
+ permit tcp any host 192.168.0.1 eq 10481
+ permit tcp any host 192.168.0.1 eq 10482
+ permit tcp any host 192.168.0.1 eq 10483
+ permit tcp any host 192.168.0.1 eq 10484
+ permit tcp any host 192.168.0.1 eq 10485
+ permit tcp any host 192.168.0.1 eq 10486
+ permit tcp any host 192.168.0.1 eq 10487
+ permit tcp any host 192.168.0.1 eq 10488
+ permit tcp any host 192.168.0.1 eq 10489
+ permit tcp any host 192.168.0.1 eq 10490
+ permit tcp any host 192.168.0.1 eq 10491
+ permit tcp any host 192.168.0.1 eq 10492
+ permit tcp any host 192.168.0.1 eq 10493
+ permit tcp any host 192.168.0.1 eq 10494
+ permit tcp any host 192.168.0.1 eq 10495
+ permit tcp any host 192.168.0.1 eq 10496
+ permit tcp any host 192.168.0.1 eq 10497
+ permit tcp any host 192.168.0.1 eq 10498
+ permit tcp any host 192.168.0.1 eq 10499
+ permit tcp any host 192.168.0.1 eq 10500
+ permit tcp any host 192.168.0.1 eq 10501
+ permit tcp any host 192.168.0.1 eq 10502
+ permit tcp any host 192.168.0.1 eq 10503
+ permit tcp any host 192.168.0.1 eq 10504
+ permit tcp any host 192.168.0.1 eq 10505
+ permit tcp any host 192.168.0.1 eq 10506
+ permit tcp any host 192.168.0.1 eq 10507
+ permit tcp any host 192.168.0.1 eq 10508
+ permit tcp any host 192.168.0.1 eq 10509
+ permit tcp any host 192.168.0.1 eq 10510
+ permit tcp any host 192.168.0.1 eq 10511
+ permit tcp any host 192.168.0.1 eq 10512
+ permit tcp any host 192.168.0.1 eq 10513
+ permit tcp any host 192.168.0.1 eq 10514
+ permit tcp any host 192.168.0.1 eq 10515
+ permit tcp any host 192.168.0.1 eq 10516
+ permit tcp any host 192.168.0.1 eq 10517
+ permit tcp any host 192.168.0.1 eq 10518
+ permit tcp any host 192.168.0.1 eq 10519
+ permit tcp any host 192.168.0.1 eq 10520
+ permit tcp any host 192.168.0.1 eq 10521
+ permit tcp any host 192.168.0.1 eq 10522
+ permit tcp any host 192.168.0.1 eq 10523
+ permit tcp any host 192.168.0.1 eq 10524
+ permit tcp any host 192.168.0.1 eq 10525
+ permit tcp any host 192.168.0.1 eq 10526
+ permit tcp any host 192.168.0.1 eq 10527
+ permit tcp any host 192.168.0.1 eq 10528
+ permit tcp any host 192.168.0.1 eq 10529
+ permit tcp any host 192.168.0.1 eq 10530
+ permit tcp any host 192.168.0.1 eq 10531
+ permit tcp any host 192.168.0.1 eq 10532
+ permit tcp any host 192.168.0.1 eq 10533
+ permit tcp any host 192.168.0.1 eq 10534
+ permit tcp any host 192.168.0.1 eq 10535
+ permit tcp any host 192.168.0.1 eq 10536
+ permit tcp any host 192.168.0.1 eq 10537
+ permit tcp any host 192.168.0.1 eq 10538
+ permit tcp any host 192.168.0.1 eq 10539
+ permit tcp any host 192.168.0.1 eq 10540
+ permit tcp any host 192.168.0.1 eq 10541
+ permit tcp any host 192.168.0.1 eq 10542
+ permit tcp any host 192.168.0.1 eq 10543
+ permit tcp any host 192.168.0.1 eq 10544
+ permit tcp any host 192.168.0.1 eq 10545
+ permit tcp any host 192.168.0.1 eq 10546
+ permit tcp any host 192.168.0.1 eq 10547
+ permit tcp any host 192.168.0.1 eq 10548
+ permit tcp any host 192.168.0.1 eq 10549
+ permit tcp any host 192.168.0.1 eq 10550
+ permit tcp any host 192.168.0.1 eq 10551
+ permit tcp any host 192.168.0.1 eq 10552
+ permit tcp any host 192.168.0.1 eq 10553
+ permit tcp any host 192.168.0.1 eq 10554
+ permit tcp any host 192.168.0.1 eq 10555
+ permit tcp any host 192.168.0.1 eq 10556
+ permit tcp any host 192.168.0.1 eq 10557
+ permit tcp any host 192.168.0.1 eq 10558
+ permit tcp any host 192.168.0.1 eq 10559
+ permit tcp any host 192.168.0.1 eq 10560
+ permit tcp any host 192.168.0.1 eq 10561
+ permit tcp any host 192.168.0.1 eq 10562
+ permit tcp any host 192.168.0.1 eq 10563
+ permit tcp any host 192.168.0.1 eq 10564
+ permit tcp any host 192.168.0.1 eq 10565
+ permit tcp any host 192.168.0.1 eq 10566
+ permit tcp any host 192.168.0.1 eq 10567
+ permit tcp any host 192.168.0.1 eq 10568
+ permit tcp any host 192.168.0.1 eq 10569
+ permit tcp any host 192.168.0.1 eq 10570
+ permit tcp any host 192.168.0.1 eq 10571
+ permit tcp any host 192.168.0.1 eq 10572
+ permit tcp any host 192.168.0.1 eq 10573
+ permit tcp any host 192.168.0.1 eq 10574
+ permit tcp any host 192.168.0.1 eq 10575
+ permit tcp any host 192.168.0.1 eq 10576
+ permit tcp any host 192.168.0.1 eq 10577
+ permit tcp any host 192.168.0.1 eq 10578
+ permit tcp any host 192.168.0.1 eq 10579
+ permit tcp any host 192.168.0.1 eq 10580
+ permit tcp any host 192.168.0.1 eq 10581
+ permit tcp any host 192.168.0.1 eq 10582
+ permit tcp any host 192.168.0.1 eq 10583
+ permit tcp any host 192.168.0.1 eq 10584
+ permit tcp any host 192.168.0.1 eq 10585
+ permit tcp any host 192.168.0.1 eq 10586
+ permit tcp any host 192.168.0.1 eq 10587
+ permit tcp any host 192.168.0.1 eq 10588
+ permit tcp any host 192.168.0.1 eq 10589
+ permit tcp any host 192.168.0.1 eq 10590
+ permit tcp any host 192.168.0.1 eq 10591
+ permit tcp any host 192.168.0.1 eq 10592
+ permit tcp any host 192.168.0.1 eq 10593
+ permit tcp any host 192.168.0.1 eq 10594
+ permit tcp any host 192.168.0.1 eq 10595
+ permit tcp any host 192.168.0.1 eq 10596
+ permit tcp any host 192.168.0.1 eq 10597
+ permit tcp any host 192.168.0.1 eq 10598
+ permit tcp any host 192.168.0.1 eq 10599
+ permit tcp any host 192.168.0.1 eq 10600
+!
+ip access-list extended BIG-ADDR
+ permit tcp host 10.2.0.1 any eq 22
+ permit tcp host 10.2.0.2 any eq 22
+ permit tcp host 10.2.0.3 any eq 22
+ permit tcp host 10.2.0.4 any eq 22
+ permit tcp host 10.2.0.5 any eq 22
+ permit tcp host 10.2.0.6 any eq 22
+ permit tcp host 10.2.0.7 any eq 22
+ permit tcp host 10.2.0.8 any eq 22
+ permit tcp host 10.2.0.9 any eq 22
+ permit tcp host 10.2.0.10 any eq 22
+ permit tcp host 10.2.0.11 any eq 22
+ permit tcp host 10.2.0.12 any eq 22
+ permit tcp host 10.2.0.13 any eq 22
+ permit tcp host 10.2.0.14 any eq 22
+ permit tcp host 10.2.0.15 any eq 22
+ permit tcp host 10.2.0.16 any eq 22
+ permit tcp host 10.2.0.17 any eq 22
+ permit tcp host 10.2.0.18 any eq 22
+ permit tcp host 10.2.0.19 any eq 22
+ permit tcp host 10.2.0.20 any eq 22
+ permit tcp host 10.2.0.21 any eq 22
+ permit tcp host 10.2.0.22 any eq 22
+ permit tcp host 10.2.0.23 any eq 22
+ permit tcp host 10.2.0.24 any eq 22
+ permit tcp host 10.2.0.25 any eq 22
+ permit tcp host 10.2.0.26 any eq 22
+ permit tcp host 10.2.0.27 any eq 22
+ permit tcp host 10.2.0.28 any eq 22
+ permit tcp host 10.2.0.29 any eq 22
+ permit tcp host 10.2.0.30 any eq 22
+ permit tcp host 10.2.0.31 any eq 22
+ permit tcp host 10.2.0.32 any eq 22
+ permit tcp host 10.2.0.33 any eq 22
+ permit tcp host 10.2.0.34 any eq 22
+ permit tcp host 10.2.0.35 any eq 22
+ permit tcp host 10.2.0.36 any eq 22
+ permit tcp host 10.2.0.37 any eq 22
+ permit tcp host 10.2.0.38 any eq 22
+ permit tcp host 10.2.0.39 any eq 22
+ permit tcp host 10.2.0.40 any eq 22
+ permit tcp host 10.2.0.41 any eq 22
+ permit tcp host 10.2.0.42 any eq 22
+ permit tcp host 10.2.0.43 any eq 22
+ permit tcp host 10.2.0.44 any eq 22
+ permit tcp host 10.2.0.45 any eq 22
+ permit tcp host 10.2.0.46 any eq 22
+ permit tcp host 10.2.0.47 any eq 22
+ permit tcp host 10.2.0.48 any eq 22
+ permit tcp host 10.2.0.49 any eq 22
+ permit tcp host 10.2.0.50 any eq 22
+ permit tcp host 10.2.0.51 any eq 22
+ permit tcp host 10.2.0.52 any eq 22
+ permit tcp host 10.2.0.53 any eq 22
+ permit tcp host 10.2.0.54 any eq 22
+ permit tcp host 10.2.0.55 any eq 22
+ permit tcp host 10.2.0.56 any eq 22
+ permit tcp host 10.2.0.57 any eq 22
+ permit tcp host 10.2.0.58 any eq 22
+ permit tcp host 10.2.0.59 any eq 22
+ permit tcp host 10.2.0.60 any eq 22
+ permit tcp host 10.2.0.61 any eq 22
+ permit tcp host 10.2.0.62 any eq 22
+ permit tcp host 10.2.0.63 any eq 22
+ permit tcp host 10.2.0.64 any eq 22
+ permit tcp host 10.2.0.65 any eq 22
+ permit tcp host 10.2.0.66 any eq 22
+ permit tcp host 10.2.0.67 any eq 22
+ permit tcp host 10.2.0.68 any eq 22
+ permit tcp host 10.2.0.69 any eq 22
+ permit tcp host 10.2.0.70 any eq 22
+ permit tcp host 10.2.0.71 any eq 22
+ permit tcp host 10.2.0.72 any eq 22
+ permit tcp host 10.2.0.73 any eq 22
+ permit tcp host 10.2.0.74 any eq 22
+ permit tcp host 10.2.0.75 any eq 22
+ permit tcp host 10.2.0.76 any eq 22
+ permit tcp host 10.2.0.77 any eq 22
+ permit tcp host 10.2.0.78 any eq 22
+ permit tcp host 10.2.0.79 any eq 22
+ permit tcp host 10.2.0.80 any eq 22
+ permit tcp host 10.2.0.81 any eq 22
+ permit tcp host 10.2.0.82 any eq 22
+ permit tcp host 10.2.0.83 any eq 22
+ permit tcp host 10.2.0.84 any eq 22
+ permit tcp host 10.2.0.85 any eq 22
+ permit tcp host 10.2.0.86 any eq 22
+ permit tcp host 10.2.0.87 any eq 22
+ permit tcp host 10.2.0.88 any eq 22
+ permit tcp host 10.2.0.89 any eq 22
+ permit tcp host 10.2.0.90 any eq 22
+ permit tcp host 10.2.0.91 any eq 22
+ permit tcp host 10.2.0.92 any eq 22
+ permit tcp host 10.2.0.93 any eq 22
+ permit tcp host 10.2.0.94 any eq 22
+ permit tcp host 10.2.0.95 any eq 22
+ permit tcp host 10.2.0.96 any eq 22
+ permit tcp host 10.2.0.97 any eq 22
+ permit tcp host 10.2.0.98 any eq 22
+ permit tcp host 10.2.0.99 any eq 22
+ permit tcp host 10.2.0.100 any eq 22
+ permit tcp host 10.2.0.101 any eq 22
+ permit tcp host 10.2.0.102 any eq 22
+ permit tcp host 10.2.0.103 any eq 22
+ permit tcp host 10.2.0.104 any eq 22
+ permit tcp host 10.2.0.105 any eq 22
+ permit tcp host 10.2.0.106 any eq 22
+ permit tcp host 10.2.0.107 any eq 22
+ permit tcp host 10.2.0.108 any eq 22
+ permit tcp host 10.2.0.109 any eq 22
+ permit tcp host 10.2.0.110 any eq 22
+ permit tcp host 10.2.0.111 any eq 22
+ permit tcp host 10.2.0.112 any eq 22
+ permit tcp host 10.2.0.113 any eq 22
+ permit tcp host 10.2.0.114 any eq 22
+ permit tcp host 10.2.0.115 any eq 22
+ permit tcp host 10.2.0.116 any eq 22
+ permit tcp host 10.2.0.117 any eq 22
+ permit tcp host 10.2.0.118 any eq 22
+ permit tcp host 10.2.0.119 any eq 22
+ permit tcp host 10.2.0.120 any eq 22
+ permit tcp host 10.2.0.121 any eq 22
+ permit tcp host 10.2.0.122 any eq 22
+ permit tcp host 10.2.0.123 any eq 22
+ permit tcp host 10.2.0.124 any eq 22
+ permit tcp host 10.2.0.125 any eq 22
+ permit tcp host 10.2.0.126 any eq 22
+ permit tcp host 10.2.0.127 any eq 22
+ permit tcp host 10.2.0.128 any eq 22
+ permit tcp host 10.2.0.129 any eq 22
+ permit tcp host 10.2.0.130 any eq 22
+ permit tcp host 10.2.0.131 any eq 22
+ permit tcp host 10.2.0.132 any eq 22
+ permit tcp host 10.2.0.133 any eq 22
+ permit tcp host 10.2.0.134 any eq 22
+ permit tcp host 10.2.0.135 any eq 22
+ permit tcp host 10.2.0.136 any eq 22
+ permit tcp host 10.2.0.137 any eq 22
+ permit tcp host 10.2.0.138 any eq 22
+ permit tcp host 10.2.0.139 any eq 22
+ permit tcp host 10.2.0.140 any eq 22
+ permit tcp host 10.2.0.141 any eq 22
+ permit tcp host 10.2.0.142 any eq 22
+ permit tcp host 10.2.0.143 any eq 22
+ permit tcp host 10.2.0.144 any eq 22
+ permit tcp host 10.2.0.145 any eq 22
+ permit tcp host 10.2.0.146 any eq 22
+ permit tcp host 10.2.0.147 any eq 22
+ permit tcp host 10.2.0.148 any eq 22
+ permit tcp host 10.2.0.149 any eq 22
+ permit tcp host 10.2.0.150 any eq 22
+ permit tcp host 10.2.0.151 any eq 22
+ permit tcp host 10.2.0.152 any eq 22
+ permit tcp host 10.2.0.153 any eq 22
+ permit tcp host 10.2.0.154 any eq 22
+ permit tcp host 10.2.0.155 any eq 22
+ permit tcp host 10.2.0.156 any eq 22
+ permit tcp host 10.2.0.157 any eq 22
+ permit tcp host 10.2.0.158 any eq 22
+ permit tcp host 10.2.0.159 any eq 22
+ permit tcp host 10.2.0.160 any eq 22
+ permit tcp host 10.2.0.161 any eq 22
+ permit tcp host 10.2.0.162 any eq 22
+ permit tcp host 10.2.0.163 any eq 22
+ permit tcp host 10.2.0.164 any eq 22
+ permit tcp host 10.2.0.165 any eq 22
+ permit tcp host 10.2.0.166 any eq 22
+ permit tcp host 10.2.0.167 any eq 22
+ permit tcp host 10.2.0.168 any eq 22
+ permit tcp host 10.2.0.169 any eq 22
+ permit tcp host 10.2.0.170 any eq 22
+ permit tcp host 10.2.0.171 any eq 22
+ permit tcp host 10.2.0.172 any eq 22
+ permit tcp host 10.2.0.173 any eq 22
+ permit tcp host 10.2.0.174 any eq 22
+ permit tcp host 10.2.0.175 any eq 22
+ permit tcp host 10.2.0.176 any eq 22
+ permit tcp host 10.2.0.177 any eq 22
+ permit tcp host 10.2.0.178 any eq 22
+ permit tcp host 10.2.0.179 any eq 22
+ permit tcp host 10.2.0.180 any eq 22
+ permit tcp host 10.2.0.181 any eq 22
+ permit tcp host 10.2.0.182 any eq 22
+ permit tcp host 10.2.0.183 any eq 22
+ permit tcp host 10.2.0.184 any eq 22
+ permit tcp host 10.2.0.185 any eq 22
+ permit tcp host 10.2.0.186 any eq 22
+ permit tcp host 10.2.0.187 any eq 22
+ permit tcp host 10.2.0.188 any eq 22
+ permit tcp host 10.2.0.189 any eq 22
+ permit tcp host 10.2.0.190 any eq 22
+ permit tcp host 10.2.0.191 any eq 22
+ permit tcp host 10.2.0.192 any eq 22
+ permit tcp host 10.2.0.193 any eq 22
+ permit tcp host 10.2.0.194 any eq 22
+ permit tcp host 10.2.0.195 any eq 22
+ permit tcp host 10.2.0.196 any eq 22
+ permit tcp host 10.2.0.197 any eq 22
+ permit tcp host 10.2.0.198 any eq 22
+ permit tcp host 10.2.0.199 any eq 22
+ permit tcp host 10.2.0.200 any eq 22
+ permit tcp host 10.2.0.201 any eq 22
+ permit tcp host 10.2.0.202 any eq 22
+ permit tcp host 10.2.0.203 any eq 22
+ permit tcp host 10.2.0.204 any eq 22
+ permit tcp host 10.2.0.205 any eq 22
+ permit tcp host 10.2.0.206 any eq 22
+ permit tcp host 10.2.0.207 any eq 22
+ permit tcp host 10.2.0.208 any eq 22
+ permit tcp host 10.2.0.209 any eq 22
+ permit tcp host 10.2.0.210 any eq 22
+ permit tcp host 10.2.0.211 any eq 22
+ permit tcp host 10.2.0.212 any eq 22
+ permit tcp host 10.2.0.213 any eq 22
+ permit tcp host 10.2.0.214 any eq 22
+ permit tcp host 10.2.0.215 any eq 22
+ permit tcp host 10.2.0.216 any eq 22
+ permit tcp host 10.2.0.217 any eq 22
+ permit tcp host 10.2.0.218 any eq 22
+ permit tcp host 10.2.0.219 any eq 22
+ permit tcp host 10.2.0.220 any eq 22
+ permit tcp host 10.2.0.221 any eq 22
+ permit tcp host 10.2.0.222 any eq 22
+ permit tcp host 10.2.0.223 any eq 22
+ permit tcp host 10.2.0.224 any eq 22
+ permit tcp host 10.2.0.225 any eq 22
+ permit tcp host 10.2.0.226 any eq 22
+ permit tcp host 10.2.0.227 any eq 22
+ permit tcp host 10.2.0.228 any eq 22
+ permit tcp host 10.2.0.229 any eq 22
+ permit tcp host 10.2.0.230 any eq 22
+ permit tcp host 10.2.0.231 any eq 22
+ permit tcp host 10.2.0.232 any eq 22
+ permit tcp host 10.2.0.233 any eq 22
+ permit tcp host 10.2.0.234 any eq 22
+ permit tcp host 10.2.0.235 any eq 22
+ permit tcp host 10.2.0.236 any eq 22
+ permit tcp host 10.2.0.237 any eq 22
+ permit tcp host 10.2.0.238 any eq 22
+ permit tcp host 10.2.0.239 any eq 22
+ permit tcp host 10.2.0.240 any eq 22
+ permit tcp host 10.2.0.241 any eq 22
+ permit tcp host 10.2.0.242 any eq 22
+ permit tcp host 10.2.0.243 any eq 22
+ permit tcp host 10.2.0.244 any eq 22
+ permit tcp host 10.2.0.245 any eq 22
+ permit tcp host 10.2.0.246 any eq 22
+ permit tcp host 10.2.0.247 any eq 22
+ permit tcp host 10.2.0.248 any eq 22
+ permit tcp host 10.2.0.249 any eq 22
+ permit tcp host 10.2.1.0 any eq 22
+ permit tcp host 10.2.1.1 any eq 22
+ permit tcp host 10.2.1.2 any eq 22
+ permit tcp host 10.2.1.3 any eq 22
+ permit tcp host 10.2.1.4 any eq 22
+ permit tcp host 10.2.1.5 any eq 22
+ permit tcp host 10.2.1.6 any eq 22
+ permit tcp host 10.2.1.7 any eq 22
+ permit tcp host 10.2.1.8 any eq 22
+ permit tcp host 10.2.1.9 any eq 22
+ permit tcp host 10.2.1.10 any eq 22
+ permit tcp host 10.2.1.11 any eq 22
+ permit tcp host 10.2.1.12 any eq 22
+ permit tcp host 10.2.1.13 any eq 22
+ permit tcp host 10.2.1.14 any eq 22
+ permit tcp host 10.2.1.15 any eq 22
+ permit tcp host 10.2.1.16 any eq 22
+ permit tcp host 10.2.1.17 any eq 22
+ permit tcp host 10.2.1.18 any eq 22
+ permit tcp host 10.2.1.19 any eq 22
+ permit tcp host 10.2.1.20 any eq 22
+ permit tcp host 10.2.1.21 any eq 22
+ permit tcp host 10.2.1.22 any eq 22
+ permit tcp host 10.2.1.23 any eq 22
+ permit tcp host 10.2.1.24 any eq 22
+ permit tcp host 10.2.1.25 any eq 22
+ permit tcp host 10.2.1.26 any eq 22
+ permit tcp host 10.2.1.27 any eq 22
+ permit tcp host 10.2.1.28 any eq 22
+ permit tcp host 10.2.1.29 any eq 22
+ permit tcp host 10.2.1.30 any eq 22
+ permit tcp host 10.2.1.31 any eq 22
+ permit tcp host 10.2.1.32 any eq 22
+ permit tcp host 10.2.1.33 any eq 22
+ permit tcp host 10.2.1.34 any eq 22
+ permit tcp host 10.2.1.35 any eq 22
+ permit tcp host 10.2.1.36 any eq 22
+ permit tcp host 10.2.1.37 any eq 22
+ permit tcp host 10.2.1.38 any eq 22
+ permit tcp host 10.2.1.39 any eq 22
+ permit tcp host 10.2.1.40 any eq 22
+ permit tcp host 10.2.1.41 any eq 22
+ permit tcp host 10.2.1.42 any eq 22
+ permit tcp host 10.2.1.43 any eq 22
+ permit tcp host 10.2.1.44 any eq 22
+ permit tcp host 10.2.1.45 any eq 22
+ permit tcp host 10.2.1.46 any eq 22
+ permit tcp host 10.2.1.47 any eq 22
+ permit tcp host 10.2.1.48 any eq 22
+ permit tcp host 10.2.1.49 any eq 22
+ permit tcp host 10.2.1.50 any eq 22
+ permit tcp host 10.2.1.51 any eq 22
+ permit tcp host 10.2.1.52 any eq 22
+ permit tcp host 10.2.1.53 any eq 22
+ permit tcp host 10.2.1.54 any eq 22
+ permit tcp host 10.2.1.55 any eq 22
+ permit tcp host 10.2.1.56 any eq 22
+ permit tcp host 10.2.1.57 any eq 22
+ permit tcp host 10.2.1.58 any eq 22
+ permit tcp host 10.2.1.59 any eq 22
+ permit tcp host 10.2.1.60 any eq 22
+ permit tcp host 10.2.1.61 any eq 22
+ permit tcp host 10.2.1.62 any eq 22
+ permit tcp host 10.2.1.63 any eq 22
+ permit tcp host 10.2.1.64 any eq 22
+ permit tcp host 10.2.1.65 any eq 22
+ permit tcp host 10.2.1.66 any eq 22
+ permit tcp host 10.2.1.67 any eq 22
+ permit tcp host 10.2.1.68 any eq 22
+ permit tcp host 10.2.1.69 any eq 22
+ permit tcp host 10.2.1.70 any eq 22
+ permit tcp host 10.2.1.71 any eq 22
+ permit tcp host 10.2.1.72 any eq 22
+ permit tcp host 10.2.1.73 any eq 22
+ permit tcp host 10.2.1.74 any eq 22
+ permit tcp host 10.2.1.75 any eq 22
+ permit tcp host 10.2.1.76 any eq 22
+ permit tcp host 10.2.1.77 any eq 22
+ permit tcp host 10.2.1.78 any eq 22
+ permit tcp host 10.2.1.79 any eq 22
+ permit tcp host 10.2.1.80 any eq 22
+ permit tcp host 10.2.1.81 any eq 22
+ permit tcp host 10.2.1.82 any eq 22
+ permit tcp host 10.2.1.83 any eq 22
+ permit tcp host 10.2.1.84 any eq 22
+ permit tcp host 10.2.1.85 any eq 22
+ permit tcp host 10.2.1.86 any eq 22
+ permit tcp host 10.2.1.87 any eq 22
+ permit tcp host 10.2.1.88 any eq 22
+ permit tcp host 10.2.1.89 any eq 22
+ permit tcp host 10.2.1.90 any eq 22
+ permit tcp host 10.2.1.91 any eq 22
+ permit tcp host 10.2.1.92 any eq 22
+ permit tcp host 10.2.1.93 any eq 22
+ permit tcp host 10.2.1.94 any eq 22
+ permit tcp host 10.2.1.95 any eq 22
+ permit tcp host 10.2.1.96 any eq 22
+ permit tcp host 10.2.1.97 any eq 22
+ permit tcp host 10.2.1.98 any eq 22
+ permit tcp host 10.2.1.99 any eq 22
+ permit tcp host 10.2.1.100 any eq 22
+ permit tcp host 10.2.1.101 any eq 22
+ permit tcp host 10.2.1.102 any eq 22
+ permit tcp host 10.2.1.103 any eq 22
+ permit tcp host 10.2.1.104 any eq 22
+ permit tcp host 10.2.1.105 any eq 22
+ permit tcp host 10.2.1.106 any eq 22
+ permit tcp host 10.2.1.107 any eq 22
+ permit tcp host 10.2.1.108 any eq 22
+ permit tcp host 10.2.1.109 any eq 22
+ permit tcp host 10.2.1.110 any eq 22
+ permit tcp host 10.2.1.111 any eq 22
+ permit tcp host 10.2.1.112 any eq 22
+ permit tcp host 10.2.1.113 any eq 22
+ permit tcp host 10.2.1.114 any eq 22
+ permit tcp host 10.2.1.115 any eq 22
+ permit tcp host 10.2.1.116 any eq 22
+ permit tcp host 10.2.1.117 any eq 22
+ permit tcp host 10.2.1.118 any eq 22
+ permit tcp host 10.2.1.119 any eq 22
+ permit tcp host 10.2.1.120 any eq 22
+ permit tcp host 10.2.1.121 any eq 22
+ permit tcp host 10.2.1.122 any eq 22
+ permit tcp host 10.2.1.123 any eq 22
+ permit tcp host 10.2.1.124 any eq 22
+ permit tcp host 10.2.1.125 any eq 22
+ permit tcp host 10.2.1.126 any eq 22
+ permit tcp host 10.2.1.127 any eq 22
+ permit tcp host 10.2.1.128 any eq 22
+ permit tcp host 10.2.1.129 any eq 22
+ permit tcp host 10.2.1.130 any eq 22
+ permit tcp host 10.2.1.131 any eq 22
+ permit tcp host 10.2.1.132 any eq 22
+ permit tcp host 10.2.1.133 any eq 22
+ permit tcp host 10.2.1.134 any eq 22
+ permit tcp host 10.2.1.135 any eq 22
+ permit tcp host 10.2.1.136 any eq 22
+ permit tcp host 10.2.1.137 any eq 22
+ permit tcp host 10.2.1.138 any eq 22
+ permit tcp host 10.2.1.139 any eq 22
+ permit tcp host 10.2.1.140 any eq 22
+ permit tcp host 10.2.1.141 any eq 22
+ permit tcp host 10.2.1.142 any eq 22
+ permit tcp host 10.2.1.143 any eq 22
+ permit tcp host 10.2.1.144 any eq 22
+ permit tcp host 10.2.1.145 any eq 22
+ permit tcp host 10.2.1.146 any eq 22
+ permit tcp host 10.2.1.147 any eq 22
+ permit tcp host 10.2.1.148 any eq 22
+ permit tcp host 10.2.1.149 any eq 22
+ permit tcp host 10.2.1.150 any eq 22
+ permit tcp host 10.2.1.151 any eq 22
+ permit tcp host 10.2.1.152 any eq 22
+ permit tcp host 10.2.1.153 any eq 22
+ permit tcp host 10.2.1.154 any eq 22
+ permit tcp host 10.2.1.155 any eq 22
+ permit tcp host 10.2.1.156 any eq 22
+ permit tcp host 10.2.1.157 any eq 22
+ permit tcp host 10.2.1.158 any eq 22
+ permit tcp host 10.2.1.159 any eq 22
+ permit tcp host 10.2.1.160 any eq 22
+ permit tcp host 10.2.1.161 any eq 22
+ permit tcp host 10.2.1.162 any eq 22
+ permit tcp host 10.2.1.163 any eq 22
+ permit tcp host 10.2.1.164 any eq 22
+ permit tcp host 10.2.1.165 any eq 22
+ permit tcp host 10.2.1.166 any eq 22
+ permit tcp host 10.2.1.167 any eq 22
+ permit tcp host 10.2.1.168 any eq 22
+ permit tcp host 10.2.1.169 any eq 22
+ permit tcp host 10.2.1.170 any eq 22
+ permit tcp host 10.2.1.171 any eq 22
+ permit tcp host 10.2.1.172 any eq 22
+ permit tcp host 10.2.1.173 any eq 22
+ permit tcp host 10.2.1.174 any eq 22
+ permit tcp host 10.2.1.175 any eq 22
+ permit tcp host 10.2.1.176 any eq 22
+ permit tcp host 10.2.1.177 any eq 22
+ permit tcp host 10.2.1.178 any eq 22
+ permit tcp host 10.2.1.179 any eq 22
+ permit tcp host 10.2.1.180 any eq 22
+ permit tcp host 10.2.1.181 any eq 22
+ permit tcp host 10.2.1.182 any eq 22
+ permit tcp host 10.2.1.183 any eq 22
+ permit tcp host 10.2.1.184 any eq 22
+ permit tcp host 10.2.1.185 any eq 22
+ permit tcp host 10.2.1.186 any eq 22
+ permit tcp host 10.2.1.187 any eq 22
+ permit tcp host 10.2.1.188 any eq 22
+ permit tcp host 10.2.1.189 any eq 22
+ permit tcp host 10.2.1.190 any eq 22
+ permit tcp host 10.2.1.191 any eq 22
+ permit tcp host 10.2.1.192 any eq 22
+ permit tcp host 10.2.1.193 any eq 22
+ permit tcp host 10.2.1.194 any eq 22
+ permit tcp host 10.2.1.195 any eq 22
+ permit tcp host 10.2.1.196 any eq 22
+ permit tcp host 10.2.1.197 any eq 22
+ permit tcp host 10.2.1.198 any eq 22
+ permit tcp host 10.2.1.199 any eq 22
+ permit tcp host 10.2.1.200 any eq 22
+ permit tcp host 10.2.1.201 any eq 22
+ permit tcp host 10.2.1.202 any eq 22
+ permit tcp host 10.2.1.203 any eq 22
+ permit tcp host 10.2.1.204 any eq 22
+ permit tcp host 10.2.1.205 any eq 22
+ permit tcp host 10.2.1.206 any eq 22
+ permit tcp host 10.2.1.207 any eq 22
+ permit tcp host 10.2.1.208 any eq 22
+ permit tcp host 10.2.1.209 any eq 22
+ permit tcp host 10.2.1.210 any eq 22
+ permit tcp host 10.2.1.211 any eq 22
+ permit tcp host 10.2.1.212 any eq 22
+ permit tcp host 10.2.1.213 any eq 22
+ permit tcp host 10.2.1.214 any eq 22
+ permit tcp host 10.2.1.215 any eq 22
+ permit tcp host 10.2.1.216 any eq 22
+ permit tcp host 10.2.1.217 any eq 22
+ permit tcp host 10.2.1.218 any eq 22
+ permit tcp host 10.2.1.219 any eq 22
+ permit tcp host 10.2.1.220 any eq 22
+ permit tcp host 10.2.1.221 any eq 22
+ permit tcp host 10.2.1.222 any eq 22
+ permit tcp host 10.2.1.223 any eq 22
+ permit tcp host 10.2.1.224 any eq 22
+ permit tcp host 10.2.1.225 any eq 22
+ permit tcp host 10.2.1.226 any eq 22
+ permit tcp host 10.2.1.227 any eq 22
+ permit tcp host 10.2.1.228 any eq 22
+ permit tcp host 10.2.1.229 any eq 22
+ permit tcp host 10.2.1.230 any eq 22
+ permit tcp host 10.2.1.231 any eq 22
+ permit tcp host 10.2.1.232 any eq 22
+ permit tcp host 10.2.1.233 any eq 22
+ permit tcp host 10.2.1.234 any eq 22
+ permit tcp host 10.2.1.235 any eq 22
+ permit tcp host 10.2.1.236 any eq 22
+ permit tcp host 10.2.1.237 any eq 22
+ permit tcp host 10.2.1.238 any eq 22
+ permit tcp host 10.2.1.239 any eq 22
+ permit tcp host 10.2.1.240 any eq 22
+ permit tcp host 10.2.1.241 any eq 22
+ permit tcp host 10.2.1.242 any eq 22
+ permit tcp host 10.2.1.243 any eq 22
+ permit tcp host 10.2.1.244 any eq 22
+ permit tcp host 10.2.1.245 any eq 22
+ permit tcp host 10.2.1.246 any eq 22
+ permit tcp host 10.2.1.247 any eq 22
+ permit tcp host 10.2.1.248 any eq 22
+ permit tcp host 10.2.1.249 any eq 22
+ permit tcp host 10.2.2.0 any eq 22
+ permit tcp host 10.2.2.1 any eq 22
+ permit tcp host 10.2.2.2 any eq 22
+ permit tcp host 10.2.2.3 any eq 22
+ permit tcp host 10.2.2.4 any eq 22
+ permit tcp host 10.2.2.5 any eq 22
+ permit tcp host 10.2.2.6 any eq 22
+ permit tcp host 10.2.2.7 any eq 22
+ permit tcp host 10.2.2.8 any eq 22
+ permit tcp host 10.2.2.9 any eq 22
+ permit tcp host 10.2.2.10 any eq 22
+ permit tcp host 10.2.2.11 any eq 22
+ permit tcp host 10.2.2.12 any eq 22
+ permit tcp host 10.2.2.13 any eq 22
+ permit tcp host 10.2.2.14 any eq 22
+ permit tcp host 10.2.2.15 any eq 22
+ permit tcp host 10.2.2.16 any eq 22
+ permit tcp host 10.2.2.17 any eq 22
+ permit tcp host 10.2.2.18 any eq 22
+ permit tcp host 10.2.2.19 any eq 22
+ permit tcp host 10.2.2.20 any eq 22
+ permit tcp host 10.2.2.21 any eq 22
+ permit tcp host 10.2.2.22 any eq 22
+ permit tcp host 10.2.2.23 any eq 22
+ permit tcp host 10.2.2.24 any eq 22
+ permit tcp host 10.2.2.25 any eq 22
+ permit tcp host 10.2.2.26 any eq 22
+ permit tcp host 10.2.2.27 any eq 22
+ permit tcp host 10.2.2.28 any eq 22
+ permit tcp host 10.2.2.29 any eq 22
+ permit tcp host 10.2.2.30 any eq 22
+ permit tcp host 10.2.2.31 any eq 22
+ permit tcp host 10.2.2.32 any eq 22
+ permit tcp host 10.2.2.33 any eq 22
+ permit tcp host 10.2.2.34 any eq 22
+ permit tcp host 10.2.2.35 any eq 22
+ permit tcp host 10.2.2.36 any eq 22
+ permit tcp host 10.2.2.37 any eq 22
+ permit tcp host 10.2.2.38 any eq 22
+ permit tcp host 10.2.2.39 any eq 22
+ permit tcp host 10.2.2.40 any eq 22
+ permit tcp host 10.2.2.41 any eq 22
+ permit tcp host 10.2.2.42 any eq 22
+ permit tcp host 10.2.2.43 any eq 22
+ permit tcp host 10.2.2.44 any eq 22
+ permit tcp host 10.2.2.45 any eq 22
+ permit tcp host 10.2.2.46 any eq 22
+ permit tcp host 10.2.2.47 any eq 22
+ permit tcp host 10.2.2.48 any eq 22
+ permit tcp host 10.2.2.49 any eq 22
+ permit tcp host 10.2.2.50 any eq 22
+ permit tcp host 10.2.2.51 any eq 22
+ permit tcp host 10.2.2.52 any eq 22
+ permit tcp host 10.2.2.53 any eq 22
+ permit tcp host 10.2.2.54 any eq 22
+ permit tcp host 10.2.2.55 any eq 22
+ permit tcp host 10.2.2.56 any eq 22
+ permit tcp host 10.2.2.57 any eq 22
+ permit tcp host 10.2.2.58 any eq 22
+ permit tcp host 10.2.2.59 any eq 22
+ permit tcp host 10.2.2.60 any eq 22
+ permit tcp host 10.2.2.61 any eq 22
+ permit tcp host 10.2.2.62 any eq 22
+ permit tcp host 10.2.2.63 any eq 22
+ permit tcp host 10.2.2.64 any eq 22
+ permit tcp host 10.2.2.65 any eq 22
+ permit tcp host 10.2.2.66 any eq 22
+ permit tcp host 10.2.2.67 any eq 22
+ permit tcp host 10.2.2.68 any eq 22
+ permit tcp host 10.2.2.69 any eq 22
+ permit tcp host 10.2.2.70 any eq 22
+ permit tcp host 10.2.2.71 any eq 22
+ permit tcp host 10.2.2.72 any eq 22
+ permit tcp host 10.2.2.73 any eq 22
+ permit tcp host 10.2.2.74 any eq 22
+ permit tcp host 10.2.2.75 any eq 22
+ permit tcp host 10.2.2.76 any eq 22
+ permit tcp host 10.2.2.77 any eq 22
+ permit tcp host 10.2.2.78 any eq 22
+ permit tcp host 10.2.2.79 any eq 22
+ permit tcp host 10.2.2.80 any eq 22
+ permit tcp host 10.2.2.81 any eq 22
+ permit tcp host 10.2.2.82 any eq 22
+ permit tcp host 10.2.2.83 any eq 22
+ permit tcp host 10.2.2.84 any eq 22
+ permit tcp host 10.2.2.85 any eq 22
+ permit tcp host 10.2.2.86 any eq 22
+ permit tcp host 10.2.2.87 any eq 22
+ permit tcp host 10.2.2.88 any eq 22
+ permit tcp host 10.2.2.89 any eq 22
+ permit tcp host 10.2.2.90 any eq 22
+ permit tcp host 10.2.2.91 any eq 22
+ permit tcp host 10.2.2.92 any eq 22
+ permit tcp host 10.2.2.93 any eq 22
+ permit tcp host 10.2.2.94 any eq 22
+ permit tcp host 10.2.2.95 any eq 22
+ permit tcp host 10.2.2.96 any eq 22
+ permit tcp host 10.2.2.97 any eq 22
+ permit tcp host 10.2.2.98 any eq 22
+ permit tcp host 10.2.2.99 any eq 22
+ permit tcp host 10.2.2.100 any eq 22
+!
+ip access-list extended PAIR-1-REDUNDANT
+ permit tcp 10.10.1.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.1.5 any eq 22
+!
+ip access-list extended PAIR-2-INCONSISTENT
+ permit tcp 10.10.2.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.2.5 any eq 22
+!
+ip access-list extended PAIR-3-REDUNDANT
+ permit tcp 10.10.3.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.3.5 any eq 22
+!
+ip access-list extended PAIR-4-INCONSISTENT
+ permit tcp 10.10.4.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.4.5 any eq 22
+!
+ip access-list extended PAIR-5-REDUNDANT
+ permit tcp 10.10.5.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.5.5 any eq 22
+!
+ip access-list extended PAIR-6-INCONSISTENT
+ permit tcp 10.10.6.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.6.5 any eq 22
+!
+ip access-list extended PAIR-7-REDUNDANT
+ permit tcp 10.10.7.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.7.5 any eq 22
+!
+ip access-list extended PAIR-8-INCONSISTENT
+ permit tcp 10.10.8.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.8.5 any eq 22
+!
+ip access-list extended PAIR-9-REDUNDANT
+ permit tcp 10.10.9.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.9.5 any eq 22
+!
+ip access-list extended PAIR-10-INCONSISTENT
+ permit tcp 10.10.10.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.10.5 any eq 22
+!
+ip access-list extended PAIR-11-REDUNDANT
+ permit tcp 10.10.11.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.11.5 any eq 22
+!
+ip access-list extended PAIR-12-INCONSISTENT
+ permit tcp 10.10.12.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.12.5 any eq 22
+!
+ip access-list extended PAIR-13-REDUNDANT
+ permit tcp 10.10.13.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.13.5 any eq 22
+!
+ip access-list extended PAIR-14-INCONSISTENT
+ permit tcp 10.10.14.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.14.5 any eq 22
+!
+ip access-list extended PAIR-15-REDUNDANT
+ permit tcp 10.10.15.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.15.5 any eq 22
+!
+ip access-list extended PAIR-16-INCONSISTENT
+ permit tcp 10.10.16.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.16.5 any eq 22
+!
+ip access-list extended PAIR-17-REDUNDANT
+ permit tcp 10.10.17.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.17.5 any eq 22
+!
+ip access-list extended PAIR-18-INCONSISTENT
+ permit tcp 10.10.18.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.18.5 any eq 22
+!
+ip access-list extended PAIR-19-REDUNDANT
+ permit tcp 10.10.19.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.19.5 any eq 22
+!
+ip access-list extended PAIR-20-INCONSISTENT
+ permit tcp 10.10.20.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.20.5 any eq 22
+!
+ip access-list extended PAIR-21-REDUNDANT
+ permit tcp 10.10.21.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.21.5 any eq 22
+!
+ip access-list extended PAIR-22-INCONSISTENT
+ permit tcp 10.10.22.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.22.5 any eq 22
+!
+ip access-list extended PAIR-23-REDUNDANT
+ permit tcp 10.10.23.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.23.5 any eq 22
+!
+ip access-list extended PAIR-24-INCONSISTENT
+ permit tcp 10.10.24.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.24.5 any eq 22
+!
+ip access-list extended PAIR-25-REDUNDANT
+ permit tcp 10.10.25.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.25.5 any eq 22
+!
+ip access-list extended PAIR-26-INCONSISTENT
+ permit tcp 10.10.26.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.26.5 any eq 22
+!
+ip access-list extended PAIR-27-REDUNDANT
+ permit tcp 10.10.27.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.27.5 any eq 22
+!
+ip access-list extended PAIR-28-INCONSISTENT
+ permit tcp 10.10.28.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.28.5 any eq 22
+!
+ip access-list extended PAIR-29-REDUNDANT
+ permit tcp 10.10.29.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.29.5 any eq 22
+!
+ip access-list extended PAIR-30-INCONSISTENT
+ permit tcp 10.10.30.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.30.5 any eq 22
+!
+ip access-list extended PAIR-31-REDUNDANT
+ permit tcp 10.10.31.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.31.5 any eq 22
+!
+ip access-list extended PAIR-32-INCONSISTENT
+ permit tcp 10.10.32.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.32.5 any eq 22
+!
+ip access-list extended PAIR-33-REDUNDANT
+ permit tcp 10.10.33.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.33.5 any eq 22
+!
+ip access-list extended PAIR-34-INCONSISTENT
+ permit tcp 10.10.34.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.34.5 any eq 22
+!
+ip access-list extended PAIR-35-REDUNDANT
+ permit tcp 10.10.35.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.35.5 any eq 22
+!
+ip access-list extended PAIR-36-INCONSISTENT
+ permit tcp 10.10.36.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.36.5 any eq 22
+!
+ip access-list extended PAIR-37-REDUNDANT
+ permit tcp 10.10.37.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.37.5 any eq 22
+!
+ip access-list extended PAIR-38-INCONSISTENT
+ permit tcp 10.10.38.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.38.5 any eq 22
+!
+ip access-list extended PAIR-39-REDUNDANT
+ permit tcp 10.10.39.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.39.5 any eq 22
+!
+ip access-list extended PAIR-40-INCONSISTENT
+ permit tcp 10.10.40.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.40.5 any eq 22
+!
+ip access-list extended PAIR-41-REDUNDANT
+ permit tcp 10.10.41.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.41.5 any eq 22
+!
+ip access-list extended PAIR-42-INCONSISTENT
+ permit tcp 10.10.42.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.42.5 any eq 22
+!
+ip access-list extended PAIR-43-REDUNDANT
+ permit tcp 10.10.43.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.43.5 any eq 22
+!
+ip access-list extended PAIR-44-INCONSISTENT
+ permit tcp 10.10.44.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.44.5 any eq 22
+!
+ip access-list extended PAIR-45-REDUNDANT
+ permit tcp 10.10.45.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.45.5 any eq 22
+!
+ip access-list extended PAIR-46-INCONSISTENT
+ permit tcp 10.10.46.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.46.5 any eq 22
+!
+ip access-list extended PAIR-47-REDUNDANT
+ permit tcp 10.10.47.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.47.5 any eq 22
+!
+ip access-list extended PAIR-48-INCONSISTENT
+ permit tcp 10.10.48.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.48.5 any eq 22
+!
+ip access-list extended PAIR-49-REDUNDANT
+ permit tcp 10.10.49.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.49.5 any eq 22
+!
+ip access-list extended PAIR-50-INCONSISTENT
+ permit tcp 10.10.50.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.50.5 any eq 22
+!
+ip access-list extended PAIR-51-REDUNDANT
+ permit tcp 10.10.51.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.51.5 any eq 22
+!
+ip access-list extended PAIR-52-INCONSISTENT
+ permit tcp 10.10.52.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.52.5 any eq 22
+!
+ip access-list extended PAIR-53-REDUNDANT
+ permit tcp 10.10.53.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.53.5 any eq 22
+!
+ip access-list extended PAIR-54-INCONSISTENT
+ permit tcp 10.10.54.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.54.5 any eq 22
+!
+ip access-list extended PAIR-55-REDUNDANT
+ permit tcp 10.10.55.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.55.5 any eq 22
+!
+ip access-list extended PAIR-56-INCONSISTENT
+ permit tcp 10.10.56.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.56.5 any eq 22
+!
+ip access-list extended PAIR-57-REDUNDANT
+ permit tcp 10.10.57.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.57.5 any eq 22
+!
+ip access-list extended PAIR-58-INCONSISTENT
+ permit tcp 10.10.58.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.58.5 any eq 22
+!
+ip access-list extended PAIR-59-REDUNDANT
+ permit tcp 10.10.59.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.59.5 any eq 22
+!
+ip access-list extended PAIR-60-INCONSISTENT
+ permit tcp 10.10.60.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.60.5 any eq 22
+!
+ip access-list extended PAIR-61-REDUNDANT
+ permit tcp 10.10.61.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.61.5 any eq 22
+!
+ip access-list extended PAIR-62-INCONSISTENT
+ permit tcp 10.10.62.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.62.5 any eq 22
+!
+ip access-list extended PAIR-63-REDUNDANT
+ permit tcp 10.10.63.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.63.5 any eq 22
+!
+ip access-list extended PAIR-64-INCONSISTENT
+ permit tcp 10.10.64.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.64.5 any eq 22
+!
+ip access-list extended PAIR-65-REDUNDANT
+ permit tcp 10.10.65.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.65.5 any eq 22
+!
+ip access-list extended PAIR-66-INCONSISTENT
+ permit tcp 10.10.66.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.66.5 any eq 22
+!
+ip access-list extended PAIR-67-REDUNDANT
+ permit tcp 10.10.67.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.67.5 any eq 22
+!
+ip access-list extended PAIR-68-INCONSISTENT
+ permit tcp 10.10.68.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.68.5 any eq 22
+!
+ip access-list extended PAIR-69-REDUNDANT
+ permit tcp 10.10.69.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.69.5 any eq 22
+!
+ip access-list extended PAIR-70-INCONSISTENT
+ permit tcp 10.10.70.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.70.5 any eq 22
+!
+ip access-list extended PAIR-71-REDUNDANT
+ permit tcp 10.10.71.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.71.5 any eq 22
+!
+ip access-list extended PAIR-72-INCONSISTENT
+ permit tcp 10.10.72.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.72.5 any eq 22
+!
+ip access-list extended PAIR-73-REDUNDANT
+ permit tcp 10.10.73.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.73.5 any eq 22
+!
+ip access-list extended PAIR-74-INCONSISTENT
+ permit tcp 10.10.74.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.74.5 any eq 22
+!
+ip access-list extended PAIR-75-REDUNDANT
+ permit tcp 10.10.75.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.75.5 any eq 22
+!
+ip access-list extended PAIR-76-INCONSISTENT
+ permit tcp 10.10.76.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.76.5 any eq 22
+!
+ip access-list extended PAIR-77-REDUNDANT
+ permit tcp 10.10.77.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.77.5 any eq 22
+!
+ip access-list extended PAIR-78-INCONSISTENT
+ permit tcp 10.10.78.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.78.5 any eq 22
+!
+ip access-list extended PAIR-79-REDUNDANT
+ permit tcp 10.10.79.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.79.5 any eq 22
+!
+ip access-list extended PAIR-80-INCONSISTENT
+ permit tcp 10.10.80.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.80.5 any eq 22
+!
+ip access-list extended PAIR-81-REDUNDANT
+ permit tcp 10.10.81.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.81.5 any eq 22
+!
+ip access-list extended PAIR-82-INCONSISTENT
+ permit tcp 10.10.82.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.82.5 any eq 22
+!
+ip access-list extended PAIR-83-REDUNDANT
+ permit tcp 10.10.83.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.83.5 any eq 22
+!
+ip access-list extended PAIR-84-INCONSISTENT
+ permit tcp 10.10.84.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.84.5 any eq 22
+!
+ip access-list extended PAIR-85-REDUNDANT
+ permit tcp 10.10.85.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.85.5 any eq 22
+!
+ip access-list extended PAIR-86-INCONSISTENT
+ permit tcp 10.10.86.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.86.5 any eq 22
+!
+ip access-list extended PAIR-87-REDUNDANT
+ permit tcp 10.10.87.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.87.5 any eq 22
+!
+ip access-list extended PAIR-88-INCONSISTENT
+ permit tcp 10.10.88.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.88.5 any eq 22
+!
+ip access-list extended PAIR-89-REDUNDANT
+ permit tcp 10.10.89.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.89.5 any eq 22
+!
+ip access-list extended PAIR-90-INCONSISTENT
+ permit tcp 10.10.90.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.90.5 any eq 22
+!
+ip access-list extended PAIR-91-REDUNDANT
+ permit tcp 10.10.91.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.91.5 any eq 22
+!
+ip access-list extended PAIR-92-INCONSISTENT
+ permit tcp 10.10.92.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.92.5 any eq 22
+!
+ip access-list extended PAIR-93-REDUNDANT
+ permit tcp 10.10.93.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.93.5 any eq 22
+!
+ip access-list extended PAIR-94-INCONSISTENT
+ permit tcp 10.10.94.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.94.5 any eq 22
+!
+ip access-list extended PAIR-95-REDUNDANT
+ permit tcp 10.10.95.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.95.5 any eq 22
+!
+ip access-list extended PAIR-96-INCONSISTENT
+ permit tcp 10.10.96.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.96.5 any eq 22
+!
+ip access-list extended PAIR-97-REDUNDANT
+ permit tcp 10.10.97.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.97.5 any eq 22
+!
+ip access-list extended PAIR-98-INCONSISTENT
+ permit tcp 10.10.98.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.98.5 any eq 22
+!
+ip access-list extended PAIR-99-REDUNDANT
+ permit tcp 10.10.99.0 0.0.0.255 any eq 22
+ permit tcp host 10.10.99.5 any eq 22
+!
+ip access-list extended PAIR-100-INCONSISTENT
+ permit tcp 10.10.100.0 0.0.0.255 any eq 22
+ deny tcp host 10.10.100.5 any eq 22
+!
+ip access-list extended CLEAN-1
+ permit tcp host 10.20.1.1 any eq 22
+ permit tcp host 10.20.1.2 any eq 22
+ permit tcp host 10.20.1.3 any eq 22
+ permit tcp host 10.20.1.4 any eq 22
+ permit tcp host 10.20.1.5 any eq 22
+!
+ip access-list extended CLEAN-2
+ permit tcp host 10.20.2.1 any eq 22
+ permit tcp host 10.20.2.2 any eq 22
+ permit tcp host 10.20.2.3 any eq 22
+ permit tcp host 10.20.2.4 any eq 22
+ permit tcp host 10.20.2.5 any eq 22
+!
+ip access-list extended CLEAN-3
+ permit tcp host 10.20.3.1 any eq 22
+ permit tcp host 10.20.3.2 any eq 22
+ permit tcp host 10.20.3.3 any eq 22
+ permit tcp host 10.20.3.4 any eq 22
+ permit tcp host 10.20.3.5 any eq 22
+!
+ip access-list extended CLEAN-4
+ permit tcp host 10.20.4.1 any eq 22
+ permit tcp host 10.20.4.2 any eq 22
+ permit tcp host 10.20.4.3 any eq 22
+ permit tcp host 10.20.4.4 any eq 22
+ permit tcp host 10.20.4.5 any eq 22
+!
+ip access-list extended CLEAN-5
+ permit tcp host 10.20.5.1 any eq 22
+ permit tcp host 10.20.5.2 any eq 22
+ permit tcp host 10.20.5.3 any eq 22
+ permit tcp host 10.20.5.4 any eq 22
+ permit tcp host 10.20.5.5 any eq 22
+!
+ip access-list extended CLEAN-6
+ permit tcp host 10.20.6.1 any eq 22
+ permit tcp host 10.20.6.2 any eq 22
+ permit tcp host 10.20.6.3 any eq 22
+ permit tcp host 10.20.6.4 any eq 22
+ permit tcp host 10.20.6.5 any eq 22
+!
+ip access-list extended CLEAN-7
+ permit tcp host 10.20.7.1 any eq 22
+ permit tcp host 10.20.7.2 any eq 22
+ permit tcp host 10.20.7.3 any eq 22
+ permit tcp host 10.20.7.4 any eq 22
+ permit tcp host 10.20.7.5 any eq 22
+!
+ip access-list extended CLEAN-8
+ permit tcp host 10.20.8.1 any eq 22
+ permit tcp host 10.20.8.2 any eq 22
+ permit tcp host 10.20.8.3 any eq 22
+ permit tcp host 10.20.8.4 any eq 22
+ permit tcp host 10.20.8.5 any eq 22
+!
+ip access-list extended CLEAN-9
+ permit tcp host 10.20.9.1 any eq 22
+ permit tcp host 10.20.9.2 any eq 22
+ permit tcp host 10.20.9.3 any eq 22
+ permit tcp host 10.20.9.4 any eq 22
+ permit tcp host 10.20.9.5 any eq 22
+!
+ip access-list extended CLEAN-10
+ permit tcp host 10.20.10.1 any eq 22
+ permit tcp host 10.20.10.2 any eq 22
+ permit tcp host 10.20.10.3 any eq 22
+ permit tcp host 10.20.10.4 any eq 22
+ permit tcp host 10.20.10.5 any eq 22
+!
+ip access-list extended CLEAN-11
+ permit tcp host 10.20.11.1 any eq 22
+ permit tcp host 10.20.11.2 any eq 22
+ permit tcp host 10.20.11.3 any eq 22
+ permit tcp host 10.20.11.4 any eq 22
+ permit tcp host 10.20.11.5 any eq 22
+!
+ip access-list extended CLEAN-12
+ permit tcp host 10.20.12.1 any eq 22
+ permit tcp host 10.20.12.2 any eq 22
+ permit tcp host 10.20.12.3 any eq 22
+ permit tcp host 10.20.12.4 any eq 22
+ permit tcp host 10.20.12.5 any eq 22
+!
+ip access-list extended CLEAN-13
+ permit tcp host 10.20.13.1 any eq 22
+ permit tcp host 10.20.13.2 any eq 22
+ permit tcp host 10.20.13.3 any eq 22
+ permit tcp host 10.20.13.4 any eq 22
+ permit tcp host 10.20.13.5 any eq 22
+!
+ip access-list extended CLEAN-14
+ permit tcp host 10.20.14.1 any eq 22
+ permit tcp host 10.20.14.2 any eq 22
+ permit tcp host 10.20.14.3 any eq 22
+ permit tcp host 10.20.14.4 any eq 22
+ permit tcp host 10.20.14.5 any eq 22
+!
+ip access-list extended CLEAN-15
+ permit tcp host 10.20.15.1 any eq 22
+ permit tcp host 10.20.15.2 any eq 22
+ permit tcp host 10.20.15.3 any eq 22
+ permit tcp host 10.20.15.4 any eq 22
+ permit tcp host 10.20.15.5 any eq 22
+!
+ip access-list extended CLEAN-16
+ permit tcp host 10.20.16.1 any eq 22
+ permit tcp host 10.20.16.2 any eq 22
+ permit tcp host 10.20.16.3 any eq 22
+ permit tcp host 10.20.16.4 any eq 22
+ permit tcp host 10.20.16.5 any eq 22
+!
+ip access-list extended CLEAN-17
+ permit tcp host 10.20.17.1 any eq 22
+ permit tcp host 10.20.17.2 any eq 22
+ permit tcp host 10.20.17.3 any eq 22
+ permit tcp host 10.20.17.4 any eq 22
+ permit tcp host 10.20.17.5 any eq 22
+!
+ip access-list extended CLEAN-18
+ permit tcp host 10.20.18.1 any eq 22
+ permit tcp host 10.20.18.2 any eq 22
+ permit tcp host 10.20.18.3 any eq 22
+ permit tcp host 10.20.18.4 any eq 22
+ permit tcp host 10.20.18.5 any eq 22
+!
+ip access-list extended CLEAN-19
+ permit tcp host 10.20.19.1 any eq 22
+ permit tcp host 10.20.19.2 any eq 22
+ permit tcp host 10.20.19.3 any eq 22
+ permit tcp host 10.20.19.4 any eq 22
+ permit tcp host 10.20.19.5 any eq 22
+!
+ip access-list extended CLEAN-20
+ permit tcp host 10.20.20.1 any eq 22
+ permit tcp host 10.20.20.2 any eq 22
+ permit tcp host 10.20.20.3 any eq 22
+ permit tcp host 10.20.20.4 any eq 22
+ permit tcp host 10.20.20.5 any eq 22
+!
+ip access-list extended CLEAN-21
+ permit tcp host 10.20.21.1 any eq 22
+ permit tcp host 10.20.21.2 any eq 22
+ permit tcp host 10.20.21.3 any eq 22
+ permit tcp host 10.20.21.4 any eq 22
+ permit tcp host 10.20.21.5 any eq 22
+!
+ip access-list extended CLEAN-22
+ permit tcp host 10.20.22.1 any eq 22
+ permit tcp host 10.20.22.2 any eq 22
+ permit tcp host 10.20.22.3 any eq 22
+ permit tcp host 10.20.22.4 any eq 22
+ permit tcp host 10.20.22.5 any eq 22
+!
+ip access-list extended CLEAN-23
+ permit tcp host 10.20.23.1 any eq 22
+ permit tcp host 10.20.23.2 any eq 22
+ permit tcp host 10.20.23.3 any eq 22
+ permit tcp host 10.20.23.4 any eq 22
+ permit tcp host 10.20.23.5 any eq 22
+!
+ip access-list extended CLEAN-24
+ permit tcp host 10.20.24.1 any eq 22
+ permit tcp host 10.20.24.2 any eq 22
+ permit tcp host 10.20.24.3 any eq 22
+ permit tcp host 10.20.24.4 any eq 22
+ permit tcp host 10.20.24.5 any eq 22
+!
+ip access-list extended CLEAN-25
+ permit tcp host 10.20.25.1 any eq 22
+ permit tcp host 10.20.25.2 any eq 22
+ permit tcp host 10.20.25.3 any eq 22
+ permit tcp host 10.20.25.4 any eq 22
+ permit tcp host 10.20.25.5 any eq 22
+!
+ip access-list extended CLEAN-26
+ permit tcp host 10.20.26.1 any eq 22
+ permit tcp host 10.20.26.2 any eq 22
+ permit tcp host 10.20.26.3 any eq 22
+ permit tcp host 10.20.26.4 any eq 22
+ permit tcp host 10.20.26.5 any eq 22
+!
+ip access-list extended CLEAN-27
+ permit tcp host 10.20.27.1 any eq 22
+ permit tcp host 10.20.27.2 any eq 22
+ permit tcp host 10.20.27.3 any eq 22
+ permit tcp host 10.20.27.4 any eq 22
+ permit tcp host 10.20.27.5 any eq 22
+!
+ip access-list extended CLEAN-28
+ permit tcp host 10.20.28.1 any eq 22
+ permit tcp host 10.20.28.2 any eq 22
+ permit tcp host 10.20.28.3 any eq 22
+ permit tcp host 10.20.28.4 any eq 22
+ permit tcp host 10.20.28.5 any eq 22
+!
+ip access-list extended CLEAN-29
+ permit tcp host 10.20.29.1 any eq 22
+ permit tcp host 10.20.29.2 any eq 22
+ permit tcp host 10.20.29.3 any eq 22
+ permit tcp host 10.20.29.4 any eq 22
+ permit tcp host 10.20.29.5 any eq 22
+!
+ip access-list extended CLEAN-30
+ permit tcp host 10.20.30.1 any eq 22
+ permit tcp host 10.20.30.2 any eq 22
+ permit tcp host 10.20.30.3 any eq 22
+ permit tcp host 10.20.30.4 any eq 22
+ permit tcp host 10.20.30.5 any eq 22
+!
+ip access-list extended CLEAN-31
+ permit tcp host 10.20.31.1 any eq 22
+ permit tcp host 10.20.31.2 any eq 22
+ permit tcp host 10.20.31.3 any eq 22
+ permit tcp host 10.20.31.4 any eq 22
+ permit tcp host 10.20.31.5 any eq 22
+!
+ip access-list extended CLEAN-32
+ permit tcp host 10.20.32.1 any eq 22
+ permit tcp host 10.20.32.2 any eq 22
+ permit tcp host 10.20.32.3 any eq 22
+ permit tcp host 10.20.32.4 any eq 22
+ permit tcp host 10.20.32.5 any eq 22
+!
+ip access-list extended CLEAN-33
+ permit tcp host 10.20.33.1 any eq 22
+ permit tcp host 10.20.33.2 any eq 22
+ permit tcp host 10.20.33.3 any eq 22
+ permit tcp host 10.20.33.4 any eq 22
+ permit tcp host 10.20.33.5 any eq 22
+!
+ip access-list extended CLEAN-34
+ permit tcp host 10.20.34.1 any eq 22
+ permit tcp host 10.20.34.2 any eq 22
+ permit tcp host 10.20.34.3 any eq 22
+ permit tcp host 10.20.34.4 any eq 22
+ permit tcp host 10.20.34.5 any eq 22
+!
+ip access-list extended CLEAN-35
+ permit tcp host 10.20.35.1 any eq 22
+ permit tcp host 10.20.35.2 any eq 22
+ permit tcp host 10.20.35.3 any eq 22
+ permit tcp host 10.20.35.4 any eq 22
+ permit tcp host 10.20.35.5 any eq 22
+!
+ip access-list extended CLEAN-36
+ permit tcp host 10.20.36.1 any eq 22
+ permit tcp host 10.20.36.2 any eq 22
+ permit tcp host 10.20.36.3 any eq 22
+ permit tcp host 10.20.36.4 any eq 22
+ permit tcp host 10.20.36.5 any eq 22
+!
+ip access-list extended CLEAN-37
+ permit tcp host 10.20.37.1 any eq 22
+ permit tcp host 10.20.37.2 any eq 22
+ permit tcp host 10.20.37.3 any eq 22
+ permit tcp host 10.20.37.4 any eq 22
+ permit tcp host 10.20.37.5 any eq 22
+!
+ip access-list extended CLEAN-38
+ permit tcp host 10.20.38.1 any eq 22
+ permit tcp host 10.20.38.2 any eq 22
+ permit tcp host 10.20.38.3 any eq 22
+ permit tcp host 10.20.38.4 any eq 22
+ permit tcp host 10.20.38.5 any eq 22
+!
+ip access-list extended CLEAN-39
+ permit tcp host 10.20.39.1 any eq 22
+ permit tcp host 10.20.39.2 any eq 22
+ permit tcp host 10.20.39.3 any eq 22
+ permit tcp host 10.20.39.4 any eq 22
+ permit tcp host 10.20.39.5 any eq 22
+!
+ip access-list extended CLEAN-40
+ permit tcp host 10.20.40.1 any eq 22
+ permit tcp host 10.20.40.2 any eq 22
+ permit tcp host 10.20.40.3 any eq 22
+ permit tcp host 10.20.40.4 any eq 22
+ permit tcp host 10.20.40.5 any eq 22
+!
+ip access-list extended CLEAN-41
+ permit tcp host 10.20.41.1 any eq 22
+ permit tcp host 10.20.41.2 any eq 22
+ permit tcp host 10.20.41.3 any eq 22
+ permit tcp host 10.20.41.4 any eq 22
+ permit tcp host 10.20.41.5 any eq 22
+!
+ip access-list extended CLEAN-42
+ permit tcp host 10.20.42.1 any eq 22
+ permit tcp host 10.20.42.2 any eq 22
+ permit tcp host 10.20.42.3 any eq 22
+ permit tcp host 10.20.42.4 any eq 22
+ permit tcp host 10.20.42.5 any eq 22
+!
+ip access-list extended CLEAN-43
+ permit tcp host 10.20.43.1 any eq 22
+ permit tcp host 10.20.43.2 any eq 22
+ permit tcp host 10.20.43.3 any eq 22
+ permit tcp host 10.20.43.4 any eq 22
+ permit tcp host 10.20.43.5 any eq 22
+!
+ip access-list extended CLEAN-44
+ permit tcp host 10.20.44.1 any eq 22
+ permit tcp host 10.20.44.2 any eq 22
+ permit tcp host 10.20.44.3 any eq 22
+ permit tcp host 10.20.44.4 any eq 22
+ permit tcp host 10.20.44.5 any eq 22
+!
+ip access-list extended CLEAN-45
+ permit tcp host 10.20.45.1 any eq 22
+ permit tcp host 10.20.45.2 any eq 22
+ permit tcp host 10.20.45.3 any eq 22
+ permit tcp host 10.20.45.4 any eq 22
+ permit tcp host 10.20.45.5 any eq 22
+!
+ip access-list extended CLEAN-46
+ permit tcp host 10.20.46.1 any eq 22
+ permit tcp host 10.20.46.2 any eq 22
+ permit tcp host 10.20.46.3 any eq 22
+ permit tcp host 10.20.46.4 any eq 22
+ permit tcp host 10.20.46.5 any eq 22
+!
+ip access-list extended CLEAN-47
+ permit tcp host 10.20.47.1 any eq 22
+ permit tcp host 10.20.47.2 any eq 22
+ permit tcp host 10.20.47.3 any eq 22
+ permit tcp host 10.20.47.4 any eq 22
+ permit tcp host 10.20.47.5 any eq 22
+!
+ip access-list extended CLEAN-48
+ permit tcp host 10.20.48.1 any eq 22
+ permit tcp host 10.20.48.2 any eq 22
+ permit tcp host 10.20.48.3 any eq 22
+ permit tcp host 10.20.48.4 any eq 22
+ permit tcp host 10.20.48.5 any eq 22
+!
+ip access-list extended CLEAN-49
+ permit tcp host 10.20.49.1 any eq 22
+ permit tcp host 10.20.49.2 any eq 22
+ permit tcp host 10.20.49.3 any eq 22
+ permit tcp host 10.20.49.4 any eq 22
+ permit tcp host 10.20.49.5 any eq 22
+!
+ip access-list extended CLEAN-50
+ permit tcp host 10.20.50.1 any eq 22
+ permit tcp host 10.20.50.2 any eq 22
+ permit tcp host 10.20.50.3 any eq 22
+ permit tcp host 10.20.50.4 any eq 22
+ permit tcp host 10.20.50.5 any eq 22
+!
+end

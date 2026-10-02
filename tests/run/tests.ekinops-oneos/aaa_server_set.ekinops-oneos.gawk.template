@@ -24,9 +24,11 @@ BEGIN {
 
 BEGINFILE {
     pass = 1;
+    server_seen = 0;
 }
 
 /^tacacs-server .*$/ {
+    server_seen = 1;
     # check ip validity
     if (!(match($2, /^(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})){3}$/))) {
         print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server>  ip is not valid: " $2,FNR,"high","error");
@@ -63,7 +65,9 @@ BEGINFILE {
 }
 
 ENDFILE {
-    if (pass == 1) print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> found and properly set",0,"high","pass");
+    if (!server_seen) {
+        print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> is not set",0,"high","error");
+    } else if (pass == 1) print_err("aaa_server_set.ekinops-oneos.gawk","<tacacs server> found and properly set",0,"high","pass");
 }
 
 END {

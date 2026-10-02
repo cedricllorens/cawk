@@ -81,7 +81,7 @@ BEGINFILE {
 
 ENDFILE {
     if (pass == 1) {
-        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","no permissive rules detected",0,"info","warning");
+        print_err("global_ruleinfo_set.checkpoint-fwcli.gawk","no permissive rules detected",0,"info","pass");
     }
 }
 

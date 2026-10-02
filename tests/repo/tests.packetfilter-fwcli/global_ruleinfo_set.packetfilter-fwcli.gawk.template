@@ -22,12 +22,12 @@
 # local functions ----
 function processrule(rule) {
 
-    if ( rule ~ /^(pass|block) (in|out )?all$/ ) {
+    if ( rule ~ /^(pass|block) ((in|out) )?all$/ ) {
       print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","blacklist/whitelist rule detected : "rule,FNR,"low","warning");
       pass = 0;
     }
 
-    if ( rule ~ /^(pass|block) (in|out )?(inet|inet6) / ) {
+    if ( rule ~ /^(pass|block) ((in|out) )?(inet|inet6) / ) {
       print_err("global_ruleinfo_set.packetfilter-fwcli.gawk","permissive rule detected : "rule,FNR,"low","warning");
       pass = 0;
     }

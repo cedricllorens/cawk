@@ -1,0 +1,35 @@
+!
+! Version: 17.12.01a
+system-user admin
+ group system-admin
+ secret 9 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+!
+hostname conf.test
+!
+ip http server
+!
+ntp server 10.0.0.0
+!
+interface GigabitEthernet0/0/0
+ ip address 10.0.68.45 255.255.255.0
+ no ip proxy-arp
+!
+username backdoor secret 5 xxxx
+!
+aaa new-model
+!
+line con 0
+ password 7 xxxxxx
+line vty 0 3
+ exec-timeout 0 0
+ access-class 55 in
+ transport input ssh
+ transport output ssh
+line vty 4 8
+ exec-timeout 0 0
+ access-class 55 in
+ access-class 66 in
+ transport input ssh
+ transport output ssh
+!
+end

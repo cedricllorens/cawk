@@ -13,7 +13,7 @@
 # @purpose : check that login class has permissions configured
 # @description : each login class must have explicit permissions to enforce role-based access control and prevent overprivileged or undefined access
 # @actions : assign explicit permissions to each login class (e.g. permissions all, permissions view, permissions configure) to enforce least-privilege
-# @nist800-53_ref : AC-6 | Access Control | Least Privilege | Ensure least-privilege access is enforced through explicit permission assignment
+# @nist800-53_ref : AC-6 | Access Control | Ensure least privilege is enforced
 # @risk_level : high
 # @authors : cedric llorens
 # ------------------------------------------------------------

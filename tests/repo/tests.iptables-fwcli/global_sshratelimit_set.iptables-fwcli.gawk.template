@@ -31,6 +31,10 @@ BEGINFILE {
 # ssh rate limiting via recent/hashlimit/limit modules ----
 /^iptables .*--dport 22 .*-m (recent|hashlimit|limit)/ {
     ssh_ratelimit = 1;
+    if ( $0 ~ /-j ACCEPT/ ) {
+        ssh_accept = 1;
+        ssh_accept_line = $0;
+    }
     next;
 }
 
@@ -46,6 +50,8 @@ ENDFILE {
         print_err("global_sshratelimit_set.iptables-fwcli.gawk","ssh accepted with rate limiting",0,"medium","pass");
     } else if ( ssh_accept && !ssh_ratelimit ) {
         print_err("global_sshratelimit_set.iptables-fwcli.gawk","ssh accepted without rate limiting <<"ssh_accept_line">>",0,"medium","error");
+    } else {
+        print_err("global_sshratelimit_set.iptables-fwcli.gawk","no ssh accept rule",0,"medium","pass");
     }
 }
 

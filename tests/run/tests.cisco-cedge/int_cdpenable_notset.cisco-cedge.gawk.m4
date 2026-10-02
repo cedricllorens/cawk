@@ -40,16 +40,20 @@ dnl level 0 --
 	interface = $0;
 	interfaceno = FNR;
 	cdpenable = 0;
+	is_shutdown = 0;
 ',
 `/^!$/', `
-	if ( cdpenable == 1 ) {
+	if ( cdpenable == 1 && is_shutdown == 0 ) {
 		print_err("int_cdpenable_notset.cisco-cedge.gawk",interface" <cdp enable> is set",interfaceno,"high","error");
 		pass = 0;
 	}
-', 
+',
 
 dnl level 1 --
-`/^ cdp enable/',`cdpenable = 1;',
+`/^ (cdp enable|shutdown)/',`
+	if ($0 ~ /^ cdp enable/) cdpenable = 1;
+	if ($0 ~ /^ shutdown/) is_shutdown = 1;
+',
 `', `'
 
 )

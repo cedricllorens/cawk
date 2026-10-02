@@ -10,7 +10,7 @@
 # @test_name : global_tlsminversion_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check that <ssl-min-proto-version> is set to TLSv1.2 or higher
-# @description : TLS 1.0 and 1.1 contain known cryptographic vulnerabilities (CVE-2013-0169 BEAST, POODLE); SSLv3 is deprecated and allows downgrade attacks
+# @description : TLS 1.0 and 1.1 contain known cryptographic vulnerabilities (CVE-2013-0169 BEAST, POODLE), SSLv3 is deprecated and allows downgrade attacks
 # @actions : set ssl-min-proto-version to TLSv1-2 or TLSv1-3 to enforce modern cryptography (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SC-13 | System and Communications Protection | Ensure cryptographic protection using approved algorithms is configured
 # @risk_level : high
@@ -25,7 +25,6 @@ BEGIN {
 BEGINFILE {
     block_global = 0;
     ssl_version_found = 0;
-    ssl_version_safe = 0;
 }
 
 /^config system global/ {
@@ -38,7 +37,6 @@ BEGINFILE {
     if ( match($0, /ssl-min-proto-version\s+(\S+)/, arr) ) {
         version = arr[1];
         if ( version == "TLSv1-2" || version == "TLSv1-3" ) {
-            ssl_version_safe = 1;
             print_err("global_tlsminversion_set.fortinet-fortios.gawk","ssl-min-proto-version set to safe version <<"version">>",FNR,"high","pass");
         } else {
             print_err("global_tlsminversion_set.fortinet-fortios.gawk","unsafe ssl-min-proto-version <<"version">> detected (use TLSv1-2 or TLSv1-3)",FNR,"high","error");

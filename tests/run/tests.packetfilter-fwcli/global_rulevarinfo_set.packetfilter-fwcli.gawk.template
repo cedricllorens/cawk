@@ -43,7 +43,7 @@ BEGINFILE {
     NAME["$"$1] = ""
     gsub(/,/, "", INTERFACE["$"$1])
     j = 4
-    while ($j != "}\"") {
+    while (j <= NF && $j != "}\"") {
       INTERFACE["$"$1] = INTERFACE["$"$1]" "$j
       j++
     }
@@ -94,11 +94,6 @@ BEGINFILE {
 
 ENDFILE {
     for (id in NAME) {
-      passin = 0
-      passout = 0
-      blockin = 0
-      blockout = 0
-
       # PASSIN -------
 
       for (line in PASSIN) {

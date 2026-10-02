@@ -24,6 +24,9 @@ BEGIN {
 }
 
 BEGINFILE {
+	lastrule_reported = 0;
+	block_firewall = 0;
+	block_edit = 0;
 	src = 0;
 	dst = 0;
 	deny = 0;
@@ -73,6 +76,7 @@ BEGINFILE {
 /^end$/ && block_firewall == 1 {
 	block_firewall = 0;
 	if ( block_edit != -1 ) {
+		lastrule_reported = 1;
 		if ( src && dst && service && deny ) {
 			print_err("fw_lastrule_set.fortinet-fortios.gawk","firewall has last rule src=all dst=all service=all action=deny",FNR,"high","pass");	
 		} else {
@@ -82,6 +86,8 @@ BEGINFILE {
 }
 
 ENDFILE {
+	# no firewall policy at all means no deny-all last rule
+	if ( !lastrule_reported ) print_err("fw_lastrule_set.fortinet-fortios.gawk","firewall has not last rule src=all dst=all service=all action=deny",0,"high","error");
 }
 
 END {

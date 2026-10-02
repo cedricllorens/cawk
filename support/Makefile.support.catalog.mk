@@ -40,11 +40,11 @@ catalog_build: tests_target_common
 	touch $(DATABASE_PATH)/db_info.txt
 	$(GMAKE) catalog_build_repo
 	$(GMAKE) catalog_build_run audit=
-	@RUN_DIRS="$$(find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u || echo '')"; \
-	if [ -z "$$RUN_DIRS" ]; then \
+	@count=$$($(RUN_DIRS_FIND) | wc -l); \
+	if [ "$$count" -eq 0 ]; then \
 		$(ECHO) "cawk catalog_build: no run audits found, skipping catalog_build_run"; \
 	else \
-		for audit in $$RUN_DIRS; do \
+		$(RUN_DIRS_FIND) | while read -r audit; do \
 			$(GMAKE) catalog_build_run audit=$$audit; \
 		done; \
 	fi
@@ -92,7 +92,7 @@ nist_coverage_repo: nist_coverage_official
 	@$(ECHO) "NIST 800-53 Coverage by Supplier (repo):"
 	@$(ECHO) "========================================"
 	@for supplier in $(SUPPLIER_SCOPE); do \
-		covered=$$(grep "$$supplier" $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
+		covered=$$(awk -F';' -v s="$$supplier" '$$1=="repo" && $$2==s' $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
 		if [ $$covered -gt 0 ]; then \
 			$(ECHO) "$$supplier: $$covered controls"; \
 		fi \
@@ -104,7 +104,7 @@ ifeq ($(strip $(audit)),)
 	@$(ECHO) "NIST 800-53 Coverage by Supplier (run):"
 	@$(ECHO) "========================================"
 	@for supplier in $(SUPPLIER_SCOPE); do \
-		covered=$$(grep "$$supplier" $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
+		covered=$$(awk -F';' -v s="$$supplier" '$$1=="run" && $$2==s' $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
 		if [ $$covered -gt 0 ]; then \
 			$(ECHO) "$$supplier: $$covered controls"; \
 		fi \
@@ -114,7 +114,7 @@ else
 	@$(ECHO) "NIST 800-53 Coverage by Supplier (run_$(audit)):"
 	@$(ECHO) "================================================"
 	@for supplier in $(SUPPLIER_SCOPE); do \
-		covered=$$(grep "$$supplier" $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
+		covered=$$(awk -F';' -v s="$$supplier" -v a="$(audit)" '$$1==a && $$2==s' $(DATABASE_PATH)/db_info.txt | cut -d';' -f7 | grep -v "to be defined" | sort -u | wc -l); \
 		if [ $$covered -gt 0 ]; then \
 			$(ECHO) "$$supplier: $$covered controls"; \
 		fi \

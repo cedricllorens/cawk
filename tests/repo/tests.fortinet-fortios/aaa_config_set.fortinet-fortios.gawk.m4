@@ -7,7 +7,7 @@
 # for %SED_VAR% change like GAWK_PATH, etc. please refer to
 # file support/tests.sed for further information
 #
-# @test_name : aaa_config_set.fortinet.gawk
+# @test_name : aaa_config_set.fortinet-fortios.gawk
 # @supplier : fortinet-fortios
 # @purpose : check if <aaa config> is set
 # @description : partial aaa configuration setup could endanger device security (authentication, authorization, and accounting must be configured)
@@ -35,7 +35,7 @@ dnl MACRO BEGIN --------------------------
 m4_cawk_parse_block(
 
 `/^config user (tacacs|radius)/',`
-	print_err("aaa_config_set.fortinet.gawk",$0,FNR,"high","pass");
+	print_err("aaa_config_set.fortinet-fortios.gawk",$0,FNR,"high","pass");
 	pass = 0;
 ',
 `', `'
@@ -45,7 +45,7 @@ m4_cawk_parse_block(
 dnl MACRO END --------------------------
 
 ENDFILE {
-	if ( pass ) print_err("aaa_config_set.fortinet.gawk","<aaa config> is not set",0,"high","error");
+	if ( pass ) print_err("aaa_config_set.fortinet-fortios.gawk","<aaa config> is not set",0,"high","error");
 }
 
 END {

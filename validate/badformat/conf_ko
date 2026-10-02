@@ -1,0 +1,11 @@
+  orphan line before any column-0 line
+hostname r2
+!
+interface GigabitEthernet1
+  ip address 10.0.0.1 255.255.255.0
+
+    description deeper is allowed
+ shutdown
+  no ip redirects
+!
+end

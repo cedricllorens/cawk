@@ -23,13 +23,11 @@ BEGIN {
 }
 
 BEGINFILE {
-    lockout_enabled = 0;
     lockout_seen = 0;
 }
 
 /^set password-controls deny-on-fail enable on/ {
     lockout_seen = 1;
-    lockout_enabled = 1;
     print_err("global_adminlockout_set.checkpoint-fwcli.gawk","account lockout enabled <<"$0">>",FNR,"medium","pass");
     next;
 }

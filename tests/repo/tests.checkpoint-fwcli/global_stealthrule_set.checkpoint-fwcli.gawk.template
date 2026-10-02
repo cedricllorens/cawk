@@ -10,7 +10,7 @@
 # @test_name : global_stealthrule_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
 # @purpose : check <stealth rule> protecting the gateway itself is set
-# @description : without a stealth rule dropping connections destined to the firewall itself, the gateway can be scanned and directly attacked; the stealth rule must be placed as early as possible in the rulebase
+# @description : without a stealth rule dropping connections destined to the firewall itself, the gateway can be scanned and directly attacked, the stealth rule must be placed as early as possible in the rulebase
 # @actions : add an early drop rule with the gateway as destination to protect the firewall from direct access (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SC-7 | System and Communications Protection | Ensure boundary protection is configured
 # @risk_level : high

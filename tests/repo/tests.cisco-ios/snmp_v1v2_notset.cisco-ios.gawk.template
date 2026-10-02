@@ -28,8 +28,8 @@ BEGINFILE {
 
 /^snmp-server community / {
 	print_err("snmp_v1v2_notset.cisco-ios.gawk",$0,FNR,"high","error");
-        pass = 0;
-	nextfile;
+	pass = 0;
+	next;
 }
 
 ENDFILE {

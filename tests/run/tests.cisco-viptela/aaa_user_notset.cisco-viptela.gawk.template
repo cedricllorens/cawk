@@ -23,6 +23,7 @@ BEGIN {
 }
 
 BEGINFILE {
+	block_aaa = 0;
 	pass = 1;
 	block_system = 0;
 }
@@ -37,7 +38,7 @@ BEGINFILE {
 	next;
 }
 
-/^  user / && !/%SED_AUTHUSER_VIPTELA%/ && block_aaa == 1 {
+/^  user / && !/^  user %SED_AUTHUSER_VIPTELA%/ && block_aaa == 1 {
 	print_err("aaa_user_notset.cisco-viptela.gawk",rm_blank_before($1" "$2" *DELETE*"),FNR,"high","error");
 	pass = 0;
 	next;

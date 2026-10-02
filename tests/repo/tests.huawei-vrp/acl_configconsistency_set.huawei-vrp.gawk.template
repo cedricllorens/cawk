@@ -39,6 +39,16 @@
 @include %SED_INCLUDE_PATH_FWLIB%
 
 BEGIN {
+	# icmp-type keywords as "type/code"
+	split("echo 8 echo-reply 0 fragmentneed-DFset 3/4 host-redirect 5/1 host-tos-redirect 5/3 host-unreachable 3/1 information-reply 16/0 information-request 15/0 net-redirect 5/0 net-tos-redirect 5/2 net-unreachable 3/0 parameter-problem 12/0 port-unreachable 3/3 protocol-unreachable 3/2 reassembly-timeout 11/1 source-quench 4/0 source-route-failed 3/5 timestamp-reply 14/0 timestamp-request 13/0 ttl-exceeded 11/0", hw_kw, " ");
+	for ( kw_i = 1; kw_i in hw_kw; kw_i += 2 ) hw_icmp_names[hw_kw[kw_i]] = hw_kw[kw_i+1];
+}
+
+# icmp message after "icmp-type" at field pos (keyword or "type [code]"), empty for any message
+function huawei_icmp_type(pos) {
+	if ( $pos in hw_icmp_names ) return hw_icmp_names[$pos];
+	if ( $pos ~ /^[0-9]+$/ ) return ( $(pos+1) ~ /^[0-9]+$/ ) ? $pos"/"$(pos+1) : $pos;
+	return "";
 }
 
 BEGINFILE {
@@ -64,6 +74,27 @@ BEGINFILE {
 
 # --------
 
+# parse "<operator> <value> [<value>]" (eq|range|gt|lt) starting at field pos
+# sets hw_port/hw_port_range and returns the number of fields consumed
+function huawei_port(pos) {
+	hw_port_value = ($(pos+1) in table_port) ? table_port[$(pos+1)] : $(pos+1);
+	if ( $(pos) == "range" ) {
+		hw_port = int(hw_port_value);
+		hw_port_range = ($(pos+2) in table_port) ? table_port[$(pos+2)] : $(pos+2);
+		return 3;
+	} else if ( $(pos) == "gt" ) {
+		hw_port = hw_port_value + 1;
+		hw_port_range = 65535;
+	} else if ( $(pos) == "lt" ) {
+		hw_port = 0;
+		hw_port_range = hw_port_value - 1;
+	} else {
+		hw_port = hw_port_value;
+		hw_port_range = 0;
+	}
+	return 2;
+}
+
 /^[ ]rule[ ][0-9]+ (permit|deny) .*$/ && block_acl == 1 {
 	rule_desc = "rule_line_"FNR" <"$0">";
 
@@ -72,8 +103,8 @@ BEGINFILE {
 	local_current = 3;
 	local_current = local_current + 1;
 
-	# protocol ----
-	if ( $(local_current) ~ /[a-z0=9]+/ && $(local_current) != /(source|destination)/ ) {
+	# protocol ---- (optional: a basic acl rule goes straight to "source")
+	if ( $(local_current) != "" && $(local_current) !~ /^(source|destination|source-port|destination-port)$/ ) {
 		
 		if (  $(local_current) == "ip" ) {
 			local_protocol = "none";
@@ -100,7 +131,10 @@ BEGINFILE {
 		if ( $(local_current+1) == "any") {
 			local_src_net = "any";
 			local_current = local_current + 2;
-		} else if ( $(local_current+2) == "0" || $(local_current+2) !~/[0-9\.]+/ || $(local_current+2) == "" ) {
+		} else if ( $(local_current+2) !~ /^[0-9\.]+$/ ) {
+			local_src_net = "host";
+			local_current = local_current + 2;
+		} else if ( $(local_current+2) == "0" ) {
 			local_src_net = "host";
 			local_current = local_current + 3;
 		} else {
@@ -118,19 +152,9 @@ BEGINFILE {
 
 		valid_acl = 1;
 
-		if ( $(local_current+1) == "range" ) {
-
-			local_src_port = int($(local_current+2));
-			local_src_port_range = $(local_current+3);
-			local_current = local_current + 4;
-
-		} else {
-
-			local_src_port = $(local_current+1);
-			local_src_port_range = 0;
-			local_current = local_current + 2;
-
-		}
+		local_current = local_current + 1 + huawei_port(local_current+1);
+		local_src_port = hw_port;
+		local_src_port_range = hw_port_range;
 	
 	}
 
@@ -146,12 +170,15 @@ BEGINFILE {
 		if ( $(local_current+1) == "any") {
 			local_dst_net = "any";
 			local_current = local_current + 2;
-		} else if ( $(local_current+2) == "0" || $(local_current+2) !~/[0-9\.]+/ || $(local_current+2) == "" ) {
+		} else if ( $(local_current+2) !~ /^[0-9\.]+$/ ) {
 			local_dst_net = "host";
-			ocal_current = local_current + 3;
+			local_current = local_current + 2;
+		} else if ( $(local_current+2) == "0" ) {
+			local_dst_net = "host";
+			local_current = local_current + 3;
 		} else {
 			local_dst_net = cawk_netMaskInv($(local_current+2));
-			ocal_current = local_current + 3;
+			local_current = local_current + 3;
 		}
 	
 	}
@@ -164,23 +191,22 @@ BEGINFILE {
 
 		valid_acl = 1;
 
-		if ( $(local_current+1) == "range" ) {
-
-			local_dst_port = int($(local_current+2));
-			local_dst_port_range = $(local_current+3);
-			local_current = local_current + 4;
-
-		} else {
-
-			local_dst_port = $(local_current+1);
-			local_dst_port_range = 0;
-			local_current = local_current + 2;
-
-		}
+		local_current = local_current + 1 + huawei_port(local_current+1);
+		local_dst_port = hw_port;
+		local_dst_port_range = hw_port_range;
 	
 	}
 
-	if ( valid_acl ) cawk_add_hypercube_rules("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" "rule_desc,local_action,"none","none","all",local_src,local_src_net,local_src_port,local_src_port_range,local_dst,local_dst_net,local_dst_port,local_dst_port_range,local_protocol)
+	# icmp message ----
+	local_icmp = "";
+	for ( icmp_f = local_current; icmp_f <= NF; icmp_f++ ) {
+		if ( $icmp_f == "icmp-type" ) {
+			local_icmp = huawei_icmp_type(icmp_f + 1);
+			break;
+		}
+	}
+
+	if ( valid_acl ) cawk_add_hypercube_rules("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" "rule_desc,local_action,"none","none","all",local_src,local_src_net,local_src_port,local_src_port_range,local_dst,local_dst_net,local_dst_port,local_dst_port_range,local_protocol,local_icmp)
 	next;
 }
 
@@ -197,5 +223,9 @@ BEGINFILE {
 }
 
 ENDFILE { 
+	# the last acl is not assessed when the file ends without its terminator line
+	if ( acl != "" && cawk_hypercube_rules_assessment() ) {
+		print_err("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
 	if ( check == 0 ) print_err("acl_configconsistency_set.huawei-vrp.gawk","no <acl number [0-9]*> found",FNR,"info","pass");
 }

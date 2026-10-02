@@ -4,6 +4,152 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v4.0.0] - october 2026
+
+### Makefile
+
+- Add `gitcheck_orthogonality` (called by `gitcheck`, replaces the weak metadata check): per-tag metadata, `@risk_level` values, `%SED_*%` placeholders, Make/shell path variables, `SUPPLIER_SCOPE` vs repo directories, psirt twins
+- Add `gitcheck` section failing on `run_*` directories in `logs`/`reports`/`tests`/`exceptions`/`confs` absent from `list_audit`
+- Trace previously silent `sync_run`'s `sync_cawk_conf.gawk` call and final-report generation (`report.gawk` family) to `.err` logs
+- `check_repo`/`check_run` call `clean_logs_repo`/`clean_logs_run FORCE=yes` at the start of each run
+- Harden `exceptions_run`/`exceptions_repo` m4 compilation against silent EMFILE/ENFILE failures (atomic temp-file + exit-status checks)
+- Fix `check` self-test leaking non-numeric text (dates, hashes) into `checkdiff.new`, causing spurious daily `NOK`
+- Add end-of-run error summary (`cawk_check_errors_scan`) to `check_repo`/`check_run`
+- Add `exceptions_run_audit` target (all named audits in one call)
+- **Breaking change:** rename `PSIRT` option to `PSIRT_ONLY`; old name now rejected with `exit 1`
+- Show `(MAKE_PARALLEL=... PSIRT_ONLY=...)` in the `cawk compute ...` messages
+- Show the controlling option in temp-file/JSON report messages
+- Report deadbeef/badformat/crlf filter status and counts via new `cawk_filter_idx` macro
+- Add crlf detection (`crlf_cawk_conf.gawk.template`, `CRLF` option, forced `yes` by default)
+- Add badformat detection (`badformat_cawk_conf.gawk.template`, `BADFORMAT` option)
+- Add `database_view_sync`/`database_view_email`/`database_view_postaudit` targets
+- Add ASCII banner to `gmake help`
+- Fix broken symlinks in `sync_cawk_conf.gawk.template` for relative `dir=` paths (missing one `../`)
+- Make `check_deprecated_repo`/`check_deprecated_run` non-blocking; add success message
+- Add `FORCE=yes` guard to `clean_logs`/`clean_logs_repo`/`clean_logs_run`
+- Add obsolete-`.gawk` detection to `gmake clean`
+- Add deprecated-function source-quality gate (`check_deprecated_repo`/`run`, wired before `tests_repo`/`tests_run`)
+- Fix `sync_run` running `database_sync.script` unconditionally, even without `audit=`
+- Fix literal `\n` in `sync_teststoconfs_run`/`sync_exceptionstoconfs_run` echoes
+- Add `gmake check` coverage for `sync_run`, `database_email_*`, `database_postaudit_*`
+- Fix `exceptions_repo`/`exceptions_run` silently swallowing `m4` failures (ARG_MAX-unsafe `$(foreach)` replaced by a shell loop + `.err` check)
+- Add `RUN_DIRS_FIND` and switch 11 `for x in $(RUN_DIRS)` call sites to a shell-level loop (ARG_MAX safety at audit-count scale)
+- Batch `check_deprecated_*`/deadbeef scan/`clean`'s `touch` with `find -exec ... {} +`; drop 4 processes per compiled test in the `%.gawk` pattern rules; disable implicit rules (`MAKEFLAGS += -r`)
+- Fix `view_run audit=X`/`migrate` error branches masking failure via a standalone `exit 0`
+- Fix `restore_run` (no `audit=`) creating a stray `confs/run_` directory
+- Fix named-audit deadbeef skip condition missing PSIRT-only suppliers (`cawk_deadbeef_scan_guarded`)
+- Fix `check_run audit=X supplier=Y` running the deadbeef scan/exception filtering on a missing supplier directory
+- Fix `sync_run`'s `cd ... && script && cd ../..` leaving the shell in the wrong directory on failure (now a subshell)
+- Fix `nist_coverage_repo`/`run` counting controls across every context instead of the current one (unanchored field 1/2 matches)
+- Fix `.PHONY` typo `clean_roig_info` → `clean_orig_info`
+- Fix `gitcheck` unquoted `find` pattern and wrong `*.script` listing
+- Fix `view_repo_error`/`view_run_error` `supplier=` filter (empty-alternation regex matched everything)
+- Fix `check_repo`'s audit-misuse guard masking failure via `exit 0` → `exit 1`
+- Fix literal `\n` in `database_view`/`check_repo` echoes
+- Add `TODAY` computed once per invocation, replacing repeated `$(shell date ...)` calls
+- Simplify `postaudit_run_audit`/`sync_run_audit`/`view_*_error`/`database_view`: drop unnecessary `cat` subprocesses
+- Fix `check_run`'s audit-existence guard evaluated at parse time instead of runtime (chained `create_audit check_run` saw stale state)
+- Fix `create_audit`/`delete_audit` error branches masking failure via `exit 0` → `exit 1`
+- Fix `database_email_add`/`update` missing audit-existence guard (ghost `db_email.txt` entries)
+- Reorder `check_repo`/`check_run` prerequisites: `check_supplier` now runs first
+- Add `MAKE_FILES_PER_TARGET_MAX` (2000) safety ceiling against `ARG_MAX` in parallel mode
+- Capture stderr to `logs/*.err` (was `2>/dev/null || true`, or unconditional success for `restore_run`) across test execution, deadbeef/badformat/crlf scans, backup/restore/archive, email, sync/postaudit, catalog precompute, and PSIRT parallel generation; harmonize failure messages on `cawk error:`
+- Fix `ARG_MAX` risk in sequential test execution: replace Make-level `$(foreach)` expansion with a shell-level loop
+- Scope all `*.err` logs under `logs/repo`, `logs/run`, or `logs/run_<audit>` to mirror `reports/`; add `clean_logs_repo`/`clean_logs_run`/`clean_logs_run_audit` targets
+
+### Tests
+
+- Add interface name to the `error` line of `int_ipv6redirects_notset` (`cisco-ios`, `cisco-xe`, `cisco-xr`)
+- Add interface name to the `error` line of `int_allowall_notset` and `int_allowforbidproto_notset` (`cisco-viptela`)
+- Speed up `cawk_hypercube_rules_assessment` in `common_hypercube-lib.gawk.template` (flat cube arrays, hoisted rule fields, memoized ip/net conversion), ~6x faster on large `acl_configconsistency_set` filters with identical reports
+- Align all 420 `@nist800-53_ref` tags with `database/db_nist800-53.txt` (id, category and description now identical; 3 Junos 4-field refs and 8 divergent descriptions fixed)
+- Harmonize the NIST control per check across suppliers (`global_duplicaterule_notset`, `global_rulelog_set`, `global_http_notset`, `ntp_ip_set`, `snmp_v3user_set`, `*lldp*_notset`, `int_icmpunreachable_notset`, `global_defaultpolicy_set`); `tcl_script_notset` now maps to CM-7
+- Remove `;` from 23 `@description`/`@actions` tags (it is the `db_info.txt` field separator)
+- Fix message typos in `syslogd_enable_set.fortinet-fortios`, `line_aclin_set.cisco-xr` and `global_ipioclist_set` (checkpoint/iptables/packetfilter)
+- Fix `global_defaultpolicy_set.packetfilter-fwcli` reporting "policy option limit" for every option
+- Fix `protocols_lldpcdp_notset.juniper-junos` message prefixed by an unset variable and pass reported with line 1
+- Fix `%SED_OLD_CRYPTO%` missing an older algorithm at end of line (`md5`, `sha1`, `3des-cbc`) and `tlsv1.0`/`tlsv1.1` (11 `*oldercryptoalg_notset` tests)
+- Fix `%SED_AUTHUSER_CISCO%`/`_CEDGE`/`_HUAWEI`/`_JUNI`/`_VIPTELA%` accepting any name starting with `admin` (`administrator2`, `adminhack`); anchor the Viptela `aaa_user_notset` user match
+- Fix `global_passwordpolicy_set.checkpoint-fwcli` passing when only some of min-length/complexity/history are configured; report each missing option separately
+- Extend `check_test.gawk` to reject tests without `ENDFILE` or without any `print_err()` call, and read every `print_err()` (spaces, multi-line, several per line, non-literal test name)
+- Extend `check_test.gawk` to compare `@test_name`, `@supplier` and the filename supplier suffix with the file and its `tests.<supplier>` directory
+- Fix `check_test.gawk` flagging `debug` inside `print_err()` messages; remove its dead code (`count_func_args`, unused variable tracking) and `FIX n` history comments
+- Fix `snmp_v1v2rw_notset.juniper-junos` never matching Junos `authorization read-write`
+- Fix `snmp_v3host_set.cisco-viptela` counting a `host` outside the `trap` block (m4 `trap` block had no end hook)
+- Fix block state leaking between config files (reset in `BEGINFILE`) in 19 tests: fortinet-fortios `fw_*`, paloalto-panos `aaa_authprofile`/`login_banner`/`snmp_*`, juniper-junos `aaa_user`/`ntp_ip`/`snmp_v1v2rw`/`snmp_*viewdefref`/`acl_configconsistency`, cisco-viptela `aaa_authorder`/`aaa_user`/`snmp_v1v2rw`
+- Fix silent results: `fw_lastrule_set.fortinet-fortios` (error without policy), `protocols_bgpgroupauth_set`/`protocols_bgpneighborauth_set` (juniper-junos), `global_sshratelimit_set` (iptables-fwcli, packetfilter-fwcli) and `global_icmpratelimit_set.iptables-fwcli` (pass when nothing to check)
+- Fix `fw_allall_notset.fortinet-fortios` missing all/all/ALL accept policies (verdict now taken at `next`, since FortiOS writes `set action` before `set service`)
+- Fix `linevty_aclin_set`/`linevty_aclout_set` (cisco-ios, `linevty_aclin_set.cisco-sdnios`) accepting an access-class of the opposite direction
+- Fix `crypto_isakmpkeyenc_set` (cisco-ios/xe/xr/cedge) accepting cleartext `key 0` and digit-only keys (only `key 6` is encrypted)
+- Fix `ntp_ip_set` (cisco-ios/xe/cedge) missing `ntp server vrf <name> <ip>`
+- Fix `snmp_v1v2rw_notset` (cisco-ios/xe/xr/cedge/sdnios) matching `RW` inside community names
+- Fix `aaa_classdefref_set.juniper-junos` reporting Junos predefined classes (`super-user`, `operator`, `read-only`) as undefined
+- Fix `int_proxyarp_notset.juniper-junos` (`proxy-arp` at unit level) and `int_directedbroadcast_notset.juniper-junos` (`targeted-broadcast`) never matching Junos syntax
+- Fix `services_ssh_set.juniper-junos` broken `%SED_BK_JUNI%` placeholder
+- Fix `int_arpproxy`/`int_directbroadcast`/`int_ipredirects`/`int_lldp` (huawei-vrp) never closing interface blocks (`#` terminator)
+- Fix `lldp_system_notset.nokia-sros` reporting active LLDP as `pass`
+- Fix `aaa_server_set`/`login_logenable_set` (ekinops-oneos) reporting a missing configuration as `pass`
+- Fix `global_ntp_set` (ntp `enabled off` seen as active), `global_passwordpolicy_set` (spurious "complexity unknown") and `global_ruleinfo_set` (`warning` instead of `pass`) in checkpoint-fwcli
+- Fix `global_statefulrules_set.iptables-fwcli` rejecting `RELATED,ESTABLISHED` order and `global_sshratelimit_set.iptables-fwcli` silent on rate-limited ssh accept
+- Fix `global_ipioclist_set` (iptables-fwcli, packetfilter-fwcli) analysing only the last line of multi-line rules
+- Fix `global_basicrulecheck_set` (valid `on`/`inet6`/`proto`/`from`/`to`/`return-*` flagged), `global_ruleinfo_set` (`pass in all` missed) and `global_tabledefref_set` (pass emitted after error) in packetfilter-fwcli
+- Fix `system_networkstackipcompliant_set.6wind-linux` unbalanced block-exit regex
+- Fix `aaa_config_set.cisco-xe`/`cisco-xr` never reporting a missing `(tacacs|radius) server` (`pass_serv` typo for `pass_ser`)
+- Fix `linevty_sshinput_set.cisco-ios`/`linevty_sshoutput_set.cisco-ios` being metadata-only (no logic), ported from cisco-xe
+- Fix infinite loops in `routing_communitydefref_set.juniper-junos` (`default` in policy list), `global_defaultpolicy_set.packetfilter-fwcli` and `global_rulevarinfo_set.packetfilter-fwcli` (unterminated `{ ... }` macro)
+- Rename `aaa_config_set`/`aaa_user_notset`/`ntp_enablestatus_set` from `.fortinet` to `.fortinet-fortios` (supplier naming convention)
+- Fix `global_chaindefref_set.iptables-fwcli` missing `iptables -t <table> -N` chain definitions and `-g` (goto) references
+- Fix `fw_lastrule_set`/`fw_anyany_notset`/`fw_forbidproto_notset` (paloalto-panos) leaking block state from one config file to the next
+- Fix `global_snmpcustforbidcommunity_notset.6wind-linux` rejecting a destination that ends at `port 162`
+- Fix `ntp_ip_set.nokia-sros` NUL character in server regex and `routing_communitydefref_set.juniper-junos` unescaped `+` in community regex
+- Remove unused variables in `global_logging_set.cisco-viptela`, `global_trusthost_set`/`global_tlsminversion_set` (fortinet-fortios), `global_adminlockout_set.checkpoint-fwcli`, `global_snmpcustforbidcommunity_notset.6wind-linux`, `global_rulevarinfo_set.packetfilter-fwcli`, `acl_configconsistency_set.cisco-xr`
+- Fix `global_snmpcustforbidcommunity_notset.6wind-linux` message typo and add missing `@authors` to `routing_communitydefref_set`/`routing_ribgroupdefref_set` (juniper-junos)
+- Fix `acl_configconsistency_set` destination-port parsing (cisco-ios/xe/cedge/xr): decode `range`/`gt`/`lt`/`neq`, not just `eq`
+- Fix `acl_configconsistency_set` ICMP type/code false positives across 6 suppliers via new `cawk_icmp_overlap()`
+- Fix `acl_configconsistency_set.packetfilter-fwcli` ignoring pf.conf line continuations
+- Fix `acl_configconsistency_set.huawei-vrp` rule parsing (`ocal_current` typo, literal `eq` port, protocol regex swallowing `source`)
+- Fix `acl_configconsistency_set` (6 suppliers) silently skipping the last ACL of a file; fix cisco-xr ACL name field
+- Add `acl_configconsistency_set.juniper-junos` (10th supplier) with a 26-scenario fixture
+- Add `acl_configconsistency_set` to checkpoint-fwcli and iptables-fwcli (9th/8th suppliers) with fixtures (22/14 scenarios)
+- Add `conf_acl_consistency` non-regression fixtures for the 7 remaining `acl_configconsistency_set` suppliers
+- Fix `report_timeline.gawk.template` unclosed `date` pipe
+- Fix `test_generic_psirt.gawk.template` leaking a `grep` pipe on the not-found path
+- Add `lineaux_loginauth_set`/`linevty_loginauth_set` (cisco-ios/xe/cedge), `aaa_configlogin_set.cisco-xr`
+- Fix `linevty_loginauth_set`/`lineaux_loginauth_set`: skip `transport input none`
+- Add `int_ipv6redirects_notset` (cisco-ios/xe/xr)
+- Add `int_cdpenable_notset`/`int_directedbroadcast_notset`/`int_ipredirects_notset`/`int_ipunreachables_notset`/`int_proxyarp_notset` (cisco-xr)
+- Add `crypto_isakmpkeyenc_set` (cisco-ios/xe/xr/cedge): require type-6 encrypted ISAKMP pre-shared keys
+- Fix `snmp_v1v2_notset`/`snmp_v1v2rw_notset`/`snmp_v1v2forbidcommunity_notset`: report every matching community line, not just the first
+- Fix `int_ipv6redirects_notset`: skip Loopback/shutdown interfaces, report the offending address
+- Fix `int_*_notset` interface tests (cisco-ios/xe/cedge, huawei-vrp): skip `shutdown` interfaces
+- Fix juniper-junos `int_directedbroadcast_notset`/`int_proxyarp_notset`/`int_redirects_notset`/`int_unreachables_notset`: exclude `inactive:` interfaces at the begin hook
+- Add `conf_acl_consistency_big` (~2000 lines, known error count) to the 9 `acl_configconsistency_set` suppliers to measure test run time at scale
+
+### Database
+
+- Add `database/include/scripts_config.sh`, a POSIX-shell mirror of the Make path variables
+- Add `db_sync.txt` field 7 `regexinventoryexclude` (scope-file exclusion regex)
+- Rename `db_sync.txt` field 3 `device_regex` → `inventory_regex`; now filters scope-file lines, only when `scope_file` is set
+- Rename `database_sync_add`/`update` param `regex=` → `regexinventory=`
+
+### Supplier
+
+- Add supplier `cisco-sdnios`: register in `SUPPLIER_SCOPE`, sample confs, `linevty_aclin_set` test, exceptions file
+- Add 5 ported cisco-sdnios tests (`acl_defref_set`, SNMP v1v2 forbid/RW community, `aaa_user_notset`, `aaa_config_set`)
+- Add cisco-sdnios detection to `sync_cawk_conf.gawk` (`system-user`/`! Version` + `line vty` markers)
+- Fix missing `dst_prefix_cisco_sdnios` mapping: sync could detect cisco-sdnios but never routed configs to it
+
+### Docs
+
+- Add CLAUDE.md golden rule for `acl_configconsistency_set.<supplier>`: call `cawk_add_hypercube_rules()` directly, never through a per-supplier wrapper
+- Add CLAUDE.md section on Make ↔ shell path-variable consistency
+
+### CI/CD
+
+- Upgrade `actions/upload-artifact` v5→v7 for Node.js 24 compatibility
+
+---
+
 ## [v3.9.0] - august 2026
 
 ### Build

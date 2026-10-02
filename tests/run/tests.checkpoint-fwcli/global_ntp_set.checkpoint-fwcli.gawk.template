@@ -30,7 +30,7 @@ BEGINFILE {
 
 # ntp active ----
 /^set ntp enabled / {
-    ntp_state = 1;
+    ntp_state = ( $4 ~ /^(on|true|yes)$/ );
     next;
 }
 

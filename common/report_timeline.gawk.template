@@ -27,6 +27,7 @@ BEGIN {
 
 	# Extract current date
 	"date +%Y-%m-%d" | getline current_date
+	close("date +%Y-%m-%d")
 	split(current_date, date, "-")
 	year = date[1]
 	month = date[2]
