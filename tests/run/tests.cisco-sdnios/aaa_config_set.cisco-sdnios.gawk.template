@@ -23,17 +23,10 @@ BEGIN {
 }
 
 BEGINFILE {
-	pass = 1;
 	pass_ser = 1;
 	pass_auth = 1;
 	pass_autho = 1;
 	pass_acc = 1;
-}
-
-/^aaa new-model/ {
-	print_err("aaa_config_set.cisco-sdnios.gawk",$0,FNR,"high","pass");
-	pass = 0;
-	next;
 }
 
 /^(tacacs|radius)(-| )server / {
@@ -61,7 +54,6 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("aaa_config_set.cisco-sdnios.gawk","<aaa config> is not set",0,"high","error");
 	if ( pass_ser ) print_err("aaa_config_set.cisco-sdnios.gawk","<(tacacs|radius) server> is not set",0,"high","error");
 	if ( pass_auth ) print_err("aaa_config_set.cisco-sdnios.gawk","<aaa authentication> is not set",0,"high","error");
 	if ( pass_autho ) print_err("aaa_config_set.cisco-sdnios.gawk","<aaa authorization> is not set",0,"high","error");

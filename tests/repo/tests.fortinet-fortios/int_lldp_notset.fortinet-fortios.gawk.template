@@ -40,8 +40,8 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_FORTI%{2}[ ]*set lldp/ && block_edit == 1 {
-	print_err("int_lldp_notset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),0,"high","error");
+/^%SED_BK_FORTI%{2}[ ]*set lldp[^ ]* (enable|status)/ && block_edit == 1 {
+	print_err("int_lldp_notset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }

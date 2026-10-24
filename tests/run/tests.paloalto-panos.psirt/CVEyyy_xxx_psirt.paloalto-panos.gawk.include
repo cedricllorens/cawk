@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for Palo Alto PAN-OS devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "11\\..* .* .*"
 
     # Line Patterns (PAN-OS global configuration)
-    LINE[1] = "config system general"
+    LINE[1] = "configFAKE system general"
     LINE[2] = "hostname"
 
     # Block Patterns (PAN-OS security policy and network blocks)
-    BLOCK[1]["start"] = "^config security rule"
+    BLOCK[1]["start"] = "^configFAKE security rule"
     BLOCK[1]["end"] = "^end"
     BLOCK[1]["match"][1] = "^ edit"
     BLOCK[1]["match"][2] = "^  set action allow"

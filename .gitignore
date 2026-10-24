@@ -1,9 +1,11 @@
 # Claude Code workspace
-.claude/
+.claude/settings.local.json
+.claude/*.orig
 .vscode/
 
 # Generated files
 *.gawk
+*.gawk.include.gen
 *.o
 *.a
 
@@ -18,3 +20,6 @@ roles/
 
 # Ignore local scripts
 zzz.*
+
+# Raw configurations fetched by the optional collectors (secrets)
+confs/collect_*/

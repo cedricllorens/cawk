@@ -289,12 +289,6 @@ function trim(str) {
 		if ( risk == "low" ) psirt_low += 1;
 		if ( risk == "info" ) psirt_info += 1;
 		psirt += 1;
-		# NIST compliance count
-		if (tmp[2] in nist_map) {
-			nist_id = nist_map[tmp[2]];
-			nist_warning[nist_id]++;
-			nist_total_warning++;
-		}
 	}
 	if ( deadbeef_file ) deadbeef_psirt += 1;
 	if ( badformat_file ) badformat_psirt += 1;
@@ -499,7 +493,9 @@ if ( assessment_file ) {
 	print "";
 	if ( ( pass + error + warning + psirt) > 0) {
 		decimal = sprintf("%.1f", 100 * psirt / ( pass + error + warning + psirt))
-		print "number_of_psirt = " psirt " (" decimal "%)";
+		# only psirt at high risk is vulnerable, the other risks are "not affected / skipped" (same rule as the html report)
+		print "number_of_psirt = " psirt_high " (" sprintf("%.1f", 100 * psirt_high / ( pass + error + warning + psirt)) "%)";
+		print "number_of_psirt_clear = " psirt - psirt_high " (" sprintf("%.1f", 100 * (psirt - psirt_high) / ( pass + error + warning + psirt)) "%)";
 		print "number_of_nist_psirt = 0 (0.0%)";
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))
@@ -508,7 +504,8 @@ if ( assessment_file ) {
 			print "number_of_psirt_exception = " exception_psirt " (0.0%)";
 		}
 	} else {
-		print "number_of_psirt = " psirt " (0.0%)";
+		print "number_of_psirt = " psirt_high " (0.0%)";
+		print "number_of_psirt_clear = " psirt - psirt_high " (0.0%)";
 		print "number_of_nist_psirt = 0 (0.0%)";
 		if ( exception_pass + exception_error + exception_warning + exception_psirt > 0 ) {
 			decimal = sprintf("%.1f", 100 * exception_psirt / ( exception_pass + exception_error + exception_warning + exception_psirt))

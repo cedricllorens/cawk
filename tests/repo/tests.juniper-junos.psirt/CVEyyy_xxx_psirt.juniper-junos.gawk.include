@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for Juniper Junos devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "21\\..* .* .*"
 
     # Line Patterns (Junos hierarchical configuration)
-    LINE[1] = "system host-name"
+    LINE[1] = "systemFAKE host-name"
     LINE[2] = "interfaces"
 
     # Block Patterns (Junos interface and policy blocks)
-    BLOCK[1]["start"] = "^%SED_BK_JUNI%interfaces"
+    BLOCK[1]["start"] = "^%SED_BK_JUNI%interfacesFAKE"
     BLOCK[1]["end"] = "^}"
     BLOCK[1]["match"][1] = "^%SED_BK_JUNI%unit"
     BLOCK[1]["match"][2] = "^%SED_BK_JUNI%family"

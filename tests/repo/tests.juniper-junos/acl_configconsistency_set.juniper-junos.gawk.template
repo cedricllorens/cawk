@@ -1,0 +1,341 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# @test_name : acl_configconsistency_set.juniper-junos.gawk
+# @supplier : juniper-junos
+# @purpose : check that <firewall family inet filter> terms have inconsistent/redundant rules
+# @description : inconsistent or redundant filter terms reduce security effectiveness and complicate policy management ; a term using a match condition that is not modelled (except, prefix-list, tcp flags, ...) or without a final accept/discard/reject action is not assessed
+# @actions : review and clean up filter terms to remove redundancies and resolve inconsistencies (please refer to engineering/operations guidelines for further information)
+# @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
+# @risk_level : info
+# @authors : cedric llorens
+# ------------------------------------------------------------
+
+# rule format ----------------------------------
+# 1  rule_name          : string
+# 2  rule_description   : string
+# 3  action             : permit/deny
+# 4  ingress/outgress   : "none","in","out","all"
+# 5  interface          : "none",string
+# 6  family             : "all", inet, inet6
+# 7  src@               : ip
+# 8  src_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 9  port_src           : port_src			set 0 if empty
+# 10 port_src_range     : port_src_range	set 0 if empty
+# 11 dst@               : ip				set 0 if empty
+# 12 dst_net@           : cird/netmask		set "none","host","any",[0-9]+,[0-9]+.[0-9]+.[0-9]+.[0-9]+
+# 13 port_dst           : port_dst			set 0 if empty
+# 14 port_dst_range     : port_dst_range	set 0 if empty
+# 15 protocol           : protocol			set "none" if empty
+# 16 icmp_type          : "type" or "type/code"	optional, empty for any icmp message
+# rule format ----------------------------------
+
+@include %SED_INCLUDE_PATH%
+@include %SED_INCLUDE_PATH_FWLIB%
+
+# -----------------------------------------------------------
+# START
+# -----------------------------------------------------------
+
+BEGIN {
+	# port keywords rendered by junos instead of their number
+	split("afs 1483 bgp 179 biff 512 bootpc 68 bootps 67 cmd 514 cvspserver 2401 dhcp 67 domain 53 eklogin 2105 ekshell 2106 exec 512 finger 79 ftp 21 ftp-data 20 http 80 https 443 ident 113 imap 143 kerberos-sec 88 klogin 543 kpasswd 761 krb-prop 754 krbupdate 760 kshell 544 ldap 389 ldp 646 login 513 mobileip-agent 434 mobilip-mn 435 msdp 639 netbios-dgm 138 netbios-ns 137 netbios-ssn 139 nfsd 2049 nntp 119 ntalk 518 ntp 123 pop3 110 pptp 1723 printer 515 radacct 1813 radius 1812 rip 520 rkinit 2108 smtp 25 snmp 161 snmptrap 162 snpp 444 socks 1080 ssh 22 sunrpc 111 syslog 514 tacacs 49 tacacs-ds 65 talk 517 telnet 23 tftp 69 timed 525 who 513 xdmcp 177", junos_kw, " ");
+	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_port_names[junos_kw[kw_i]] = junos_kw[kw_i+1];
+	delete junos_kw;
+
+	# icmp-type keywords as icmp type numbers
+	split("echo-reply 0 unreachable 3 source-quench 4 redirect 5 echo-request 8 router-advertisement 9 router-solicit 10 time-exceeded 11 parameter-problem 12 timestamp 13 timestamp-reply 14 info-request 15 info-reply 16 mask-request 17 mask-reply 18", junos_kw, " ");
+	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_icmp_types[junos_kw[kw_i]] = junos_kw[kw_i+1];
+	delete junos_kw;
+
+	# icmp-code keywords as icmp code numbers
+	split("network-unreachable 0 host-unreachable 1 protocol-unreachable 2 port-unreachable 3 fragmentation-needed 4 source-route-failed 5 network-unknown 6 host-unknown 7 network-prohibited 9 host-prohibited 10 communication-prohibited-by-filtering 13 ttl-eq-zero-during-transit 0 ttl-eq-zero-during-reassembly 1 redirect-for-network 0 redirect-for-host 1 redirect-for-tos-and-net 2 redirect-for-tos-and-host 3", junos_kw, " ");
+	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_icmp_codes[junos_kw[kw_i]] = junos_kw[kw_i+1];
+}
+
+# values of a junos statement from field first, "[ a b ];" and "a;" alike
+function junos_list(first, out,    i, n, val) {
+	delete out;
+	n = 0;
+	for ( i = first; i <= NF; i++ ) {
+		val = $i;
+		gsub(/[\[\];]/, "", val);
+		if ( val != "" ) out[++n] = val;
+	}
+	return n;
+}
+
+# port number, name or "low-high" into junos_lo/junos_hi (junos_hi = 0 for a single port), 0 if unknown
+function junos_port(val) {
+	if ( val ~ /^[0-9]+-[0-9]+$/ ) {
+		junos_lo = int(val);
+		junos_hi = substr(val, index(val, "-") + 1) + 0;
+		return 1;
+	}
+	if ( val ~ /^[0-9]+$/ ) junos_lo = val + 0;
+	else if ( val in junos_port_names ) junos_lo = junos_port_names[val];
+	else if ( val in table_port ) junos_lo = table_port[val];
+	else return 0;
+	junos_hi = 0;
+	return 1;
+}
+
+# "a.b.c.d[/len]" into junos_ip/junos_net, 0 if not an ipv4 prefix
+function junos_addr(val,    part, len) {
+	if ( val !~ /^[0-9]+(\.[0-9]+){3}(\/[0-9]+)?$/ ) return 0;
+	split(val, part, "/");
+	len = ( part[2] == "" ) ? 32 : part[2] + 0;
+	if ( len == 0 ) {
+		junos_ip = "any";
+		junos_net = "any";
+	} else {
+		junos_ip = part[1];
+		junos_net = ( len == 32 ) ? "host" : len;
+	}
+	return 1;
+}
+
+function junos_term_reset() {
+	delete t_sip; delete t_snet; delete t_dip; delete t_dnet;
+	delete t_sp; delete t_spr; delete t_dp; delete t_dpr;
+	delete t_proto; delete t_ictype; delete t_iccode; delete t_icmp;
+	n_src = n_dst = n_sp = n_dp = n_proto = n_ictype = n_iccode = n_icmp = 0;
+	t_action = "";
+	t_unsupported = 0;
+	sect = "";
+	list_key = "";
+}
+
+BEGINFILE {
+	cawk_init_hypercube_rules();
+	check = 0;
+	in_fw = 0;
+	in_filter = 0;
+	in_term = 0;
+	skip = 0;
+	fam = "";
+	filter = "";
+	junos_term_reset();
+}
+
+# -----------------------------------------------------------
+# FIREWALL FAMILY INET FILTER
+# -----------------------------------------------------------
+
+{
+	# annotations and blank lines carry no statement
+	if ( $0 ~ /^[ ]*(\/\*|##)/ ) next;
+	ind = match($0, /[^ ]/) - 1;
+	if ( ind < 0 ) next;
+
+	# the whole block of a deactivated or out-of-scope statement is ignored
+	if ( skip ) {
+		if ( ind == skip_ind && $0 ~ /^[ ]*}$/ ) skip = 0;
+		next;
+	}
+	if ( $1 == "inactive:" ) {
+		if ( $NF == "{" ) {
+			skip = 1;
+			skip_ind = ind;
+		}
+		next;
+	}
+
+	# firewall stanza ----
+	if ( ind == 0 ) {
+		in_fw = ( $0 ~ /^firewall \{$/ );
+		next;
+	}
+	if ( !in_fw ) next;
+
+	# between the filters ----
+	if ( !in_filter ) {
+		if ( ind == 4 && $0 ~ /^[ ]+family [^ ]+ \{$/ ) {
+			fam = $2;
+		} else if ( ind == 4 && $0 ~ /^[ ]+}$/ ) {
+			fam = "";
+		} else if ( $0 ~ /^[ ]+filter [^ ]+ \{$/ ) {
+			if ( ind == 8 && fam == "inet" ) {
+				in_filter = 1;
+				check = 1;
+				filter = $2;
+				f_ind = ind;
+				cawk_init_hypercube_rules();
+			} else {
+				skip = 1;
+				skip_ind = ind;
+			}
+		}
+		next;
+	}
+
+	# filter end ----
+	if ( !in_term && ind == f_ind && $0 ~ /^[ ]*}$/ ) {
+		if ( cawk_hypercube_rules_assessment() ) {
+			print_err("acl_configconsistency_set.juniper-junos.gawk","filter "filter" has no redundant/inconsistent rules",FNR,"info","pass");
+		}
+		cawk_init_hypercube_rules();
+		in_filter = 0;
+		filter = "";
+		next;
+	}
+
+	# term start ----
+	if ( !in_term ) {
+		if ( ind == f_ind + 4 && $0 ~ /^[ ]+term [^ ]+ \{$/ ) {
+			in_term = 1;
+			t_ind = ind;
+			term = $2;
+			term_line = FNR;
+			junos_term_reset();
+		}
+		next;
+	}
+
+	# term end: one rule per combination of the multi-valued match conditions ----
+	if ( ind == t_ind && $0 ~ /^[ ]*}$/ ) {
+		in_term = 0;
+
+		# an icmp message selector is "type" or "type/code"
+		for ( ic_i = 1; ic_i <= n_ictype; ic_i++ ) {
+			if ( n_iccode == 0 ) {
+				t_icmp[++n_icmp] = t_ictype[ic_i];
+			} else {
+				for ( cd_i = 1; cd_i <= n_iccode; cd_i++ ) t_icmp[++n_icmp] = t_ictype[ic_i]"/"t_iccode[cd_i];
+			}
+		}
+		if ( n_iccode > 0 && n_ictype == 0 ) t_unsupported = 1;
+
+		if ( t_unsupported || t_action == "" ) next;
+
+		# a missing match condition matches everything ----
+		if ( n_src == 0 ) { t_sip[1] = "any"; t_snet[1] = "any"; n_src = 1; }
+		if ( n_dst == 0 ) { t_dip[1] = "any"; t_dnet[1] = "any"; n_dst = 1; }
+		if ( n_sp == 0 ) { t_sp[1] = 0; t_spr[1] = 0; n_sp = 1; }
+		if ( n_dp == 0 ) { t_dp[1] = 0; t_dpr[1] = 0; n_dp = 1; }
+		if ( n_proto == 0 ) { t_proto[1] = ( n_icmp > 0 ) ? "icmp" : "none"; n_proto = 1; }
+
+		rule_desc = "filter "filter" term "term" rule_line_"term_line;
+
+		for ( s_i = 1; s_i <= n_src; s_i++ ) {
+			for ( d_i = 1; d_i <= n_dst; d_i++ ) {
+				for ( p_i = 1; p_i <= n_proto; p_i++ ) {
+					for ( sp_i = 1; sp_i <= n_sp; sp_i++ ) {
+						for ( dp_i = 1; dp_i <= n_dp; dp_i++ ) {
+
+							# an icmp term restricted to some icmp messages yields one rule per message ----
+							if ( t_proto[p_i] == "icmp" && n_icmp > 0 ) {
+								for ( ic_i = 1; ic_i <= n_icmp; ic_i++ ) {
+									cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none","all",t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],t_icmp[ic_i])
+								}
+							} else {
+								cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none","all",t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],"")
+							}
+
+						}
+					}
+				}
+			}
+		}
+		next;
+	}
+
+	# term sections: from { ... } then { ... } or then <action>; ----
+	if ( sect == "" ) {
+		if ( $0 ~ /^[ ]+(from|then) \{$/ ) sect = $1;
+		else if ( $1 == "then" ) junos_then = $2;
+		else next;
+		if ( sect == "" ) {
+			if ( junos_then ~ /^accept;?$/ ) t_action = "permit";
+			else if ( junos_then ~ /^(discard|reject);?$/ ) t_action = "deny";
+		}
+		next;
+	}
+	if ( ind == t_ind + 4 && $0 ~ /^[ ]*}$/ ) {
+		sect = "";
+		next;
+	}
+
+	# then ----
+	if ( sect == "then" ) {
+		if ( $1 ~ /^accept;?$/ ) t_action = "permit";
+		else if ( $1 ~ /^(discard|reject);?$/ ) t_action = "deny";
+		next;
+	}
+
+	# from: address lists ----
+	if ( list_key != "" ) {
+		if ( ind == t_ind + 8 && $0 ~ /^[ ]*}$/ ) {
+			list_key = "";
+		} else if ( $2 ~ /^except/ || !junos_addr(substr($1, 1, length($1) - ( $1 ~ /;$/ ))) ) {
+			t_unsupported = 1;
+		} else if ( list_key == "source-address" ) {
+			t_sip[++n_src] = junos_ip;
+			t_snet[n_src] = junos_net;
+		} else if ( list_key == "destination-address" ) {
+			t_dip[++n_dst] = junos_ip;
+			t_dnet[n_dst] = junos_net;
+		}
+		next;
+	}
+
+	# from: match conditions ----
+	if ( $NF == "{" ) {
+		list_key = $1;
+		if ( $1 !~ /^(source|destination)-address$/ ) t_unsupported = 1;
+	} else if ( $1 == "protocol" ) {
+		n_proto = junos_list(2, t_proto);
+		for ( p_i = 1; p_i <= n_proto; p_i++ ) {
+			if ( t_proto[p_i] == 1 ) t_proto[p_i] = "icmp";
+			else if ( t_proto[p_i] == 6 ) t_proto[p_i] = "tcp";
+			else if ( t_proto[p_i] == 17 ) t_proto[p_i] = "udp";
+		}
+	} else if ( $1 ~ /^(source|destination)-port$/ ) {
+		n_val = junos_list(2, vals);
+		for ( v_i = 1; v_i <= n_val; v_i++ ) {
+			if ( !junos_port(vals[v_i]) ) {
+				t_unsupported = 1;
+			} else if ( $1 == "source-port" ) {
+				t_sp[++n_sp] = junos_lo;
+				t_spr[n_sp] = junos_hi;
+			} else {
+				t_dp[++n_dp] = junos_lo;
+				t_dpr[n_dp] = junos_hi;
+			}
+		}
+	} else if ( $1 == "icmp-type" ) {
+		n_val = junos_list(2, vals);
+		for ( v_i = 1; v_i <= n_val; v_i++ ) {
+			if ( vals[v_i] in junos_icmp_types ) t_ictype[++n_ictype] = junos_icmp_types[vals[v_i]];
+			else if ( vals[v_i] ~ /^[0-9]+$/ ) t_ictype[++n_ictype] = vals[v_i];
+			else t_unsupported = 1;
+		}
+	} else if ( $1 == "icmp-code" ) {
+		n_val = junos_list(2, vals);
+		for ( v_i = 1; v_i <= n_val; v_i++ ) {
+			if ( vals[v_i] in junos_icmp_codes ) t_iccode[++n_iccode] = junos_icmp_codes[vals[v_i]];
+			else if ( vals[v_i] ~ /^[0-9]+$/ ) t_iccode[++n_iccode] = vals[v_i];
+			else t_unsupported = 1;
+		}
+	} else {
+		t_unsupported = 1;
+	}
+}
+
+# -----------------------------------------------------------
+# END
+# -----------------------------------------------------------
+
+ENDFILE {
+	# the last filter is not assessed when the file ends before its closing brace
+	if ( in_filter && cawk_hypercube_rules_assessment() ) {
+		print_err("acl_configconsistency_set.juniper-junos.gawk","filter "filter" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+	if ( check == 0 ) print_err("acl_configconsistency_set.juniper-junos.gawk","no <firewall family inet filter> found",FNR,"info","pass");
+}

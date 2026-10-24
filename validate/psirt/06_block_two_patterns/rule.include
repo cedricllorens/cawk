@@ -1,0 +1,9 @@
+function load_psirt_config() {
+  DEVICE = "^c_"
+  OS[1] = "^15\\..* .* .*"
+  BLOCK[1]["start"] = "^interface "
+  BLOCK[1]["end"] = "^!"
+  BLOCK[1]["match"][1] = "^ ip http"
+  BLOCK[1]["match"][2] = "^ ip "
+  LOGIC = "BLOCK_LINE[1][1] == 1 && BLOCK_LINE[1][2] == 1"
+}

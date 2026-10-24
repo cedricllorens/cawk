@@ -1,0 +1,1 @@
+c_a;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=^15\..* .* .*} {BLOCK[1]["start"]=^interface  / 1 1 1};3;high;psirt

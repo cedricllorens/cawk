@@ -27,10 +27,27 @@ BEGINFILE {
 	violation_count = 0;
 	first_violation_line_number = 0;
 	first_violation_text = "";
+	block_exclude = 0;
 }
 
 # blank lines neither open nor close a block
 /^[ \t\r]*$/ { next }
+
+# exclude special blocks (banner text is free-form, its indentation is not a violation)
+/^(banner|header|login-banner|pre-login-message)[ \t]/ {
+	block_exclude = 1;
+	block_reference_indent = 0;
+	previous_line_at_column0 = 1;
+	next;
+}
+block_exclude {
+	if ($0 ~ /^(!|(end|next|exit)([ \t\r]|$))/) {
+		block_exclude = 0;
+		block_reference_indent = 0;
+		previous_line_at_column0 = 1;
+	}
+	next;
+}
 
 {
 	# a trailing '\r' must not break the indentation analysis of a CRLF conf
@@ -46,7 +63,7 @@ BEGINFILE {
 
 	if (previous_line_at_column0 == 1) {
 		block_reference_indent = current_indent;
-	} else if (block_reference_indent > 0 && current_indent < block_reference_indent) {
+	} else if (block_reference_indent > 0 && current_indent < block_reference_indent && $0 !~ /^[ \t]*(!|#|\/\*|\/\/|")/) {
 		violation_count++;
 		if (first_violation_line_number == 0) {
 			first_violation_line_number = FNR;

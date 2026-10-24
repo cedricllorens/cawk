@@ -31,4 +31,10 @@ dnl @reason: Brief business context
 dnl m4_cawk_exception(`device',`test_name',`pattern')
 dnl m4_cawk_exception_prefixsuffix(`device',`test_name',`pattern',`1',`1',`1',`1',`1',`1')
 
+dnl @exception_id: EXC-REPO-004
+dnl @approver: Test Approver
+dnl @date: 2026-10-23
+dnl @reason: Demo active exception, low risk (repo self-test of the exceptions kpi of the html report)
+m4_cawk_exception(`conf_0',`snmp_viewdefref_set',`all-view')
+
 dnl MACRO END ------------------------

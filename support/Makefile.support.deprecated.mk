@@ -21,7 +21,7 @@ DEPRECATED_FUNCTIONS = (awk_init_fw_rules)
 check_deprecated_repo:
 	@mkdir -p $(LOGS_PATH)/repo
 	@if find $(TESTS_PATH)/repo -type f \( -name "*.gawk.template" -o -name "*.gawk.m4" -o -name "*.gawk.include" \) -exec grep -lE "$(DEPRECATED_FUNCTIONS)" {} + 2>$(LOGS_PATH)/repo/deprecated.repo.err | grep -q .; then \
-		$(ECHO) "cawk error: obsolete test function detected and must be removed"; \
+		$(ECHO) "cawk error: obsolete test function detected and must be removed ----"; \
 	else \
 		$(ECHO) "cawk deprecated check done: no obsolete test function under $(TESTS_PATH)/repo ----"; \
 	fi
@@ -30,14 +30,14 @@ check_deprecated_run:
 ifeq ($(strip $(audit)),)
 	@mkdir -p $(LOGS_PATH)/run
 	@if find $(TESTS_PATH)/run -type f \( -name "*.gawk.template" -o -name "*.gawk.m4" -o -name "*.gawk.include" \) -exec grep -lE "$(DEPRECATED_FUNCTIONS)" {} + 2>$(LOGS_PATH)/run/deprecated.run.err | grep -q .; then \
-		$(ECHO) "cawk error: obsolete test function detected and must be removed"; \
+		$(ECHO) "cawk error: obsolete test function detected and must be removed ----"; \
 	else \
 		$(ECHO) "cawk deprecated check done: no obsolete test function under $(TESTS_PATH)/run ----"; \
 	fi
 else
 	@mkdir -p $(LOGS_PATH)/run_$(audit)
 	@if find $(TESTS_PATH)/run_$(audit) -type f \( -name "*.gawk.template" -o -name "*.gawk.m4" -o -name "*.gawk.include" \) -exec grep -lE "$(DEPRECATED_FUNCTIONS)" {} + 2>$(LOGS_PATH)/run_$(audit)/deprecated.$(audit).err | grep -q .; then \
-		$(ECHO) "cawk error: obsolete test function detected and must be removed"; \
+		$(ECHO) "cawk error: obsolete test function detected and must be removed ----"; \
 	else \
 		$(ECHO) "cawk deprecated check done: no obsolete test function under $(TESTS_PATH)/run_$(audit) ----"; \
 	fi

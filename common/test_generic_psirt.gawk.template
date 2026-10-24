@@ -30,7 +30,7 @@
 
 # --------------------------------------
 
-function eval_binary_logic(logic_expression) {
+function eval_binary_logic(logic_expression,   expr, i, j, pattern_ref, line_pattern_ref, cmd, result) {
     # Create a copy of the expression to work with
     expr = logic_expression
     
@@ -52,11 +52,162 @@ function eval_binary_logic(logic_expression) {
         }
     }
     
+    # the substituted expression is made of 0/1 only : evaluate each distinct one once
+    if (expr in logic_cache) return logic_cache[expr]
+
     # Now evaluate the expression directly using awk's evaluation
     cmd = "echo 'BEGIN { print (" expr ") }' | awk -f -"
     cmd | getline result
     close(cmd)
+    logic_cache[expr] = result
     return result
+}
+
+# --------------------------------------
+
+# quote a string for a single-quoted shell argument
+function shell_quote(str,   n, parts, out, i) {
+    n = split(str, parts, "'")
+    out = "'" parts[1]
+    for (i = 2; i <= n; i++) out = out "'\\''" parts[i]
+    return out "'"
+}
+
+# splits a version into its numeric and alphabetic components : "15.4(3)T1" -> 15 4 3 T 1, "21.4R3-S5" -> 21 4 R 3 S 5
+function version_split(v, comp,   n, rest) {
+    n = 0
+    rest = v
+    while (match(rest, /[0-9]+|[A-Za-z]+/)) {
+        comp[++n] = substr(rest, RSTART, RLENGTH)
+        rest = substr(rest, RSTART + RLENGTH)
+    }
+    return n
+}
+
+# compares two versions component by component : -1, 0 or 1
+# a missing component is 0 against a number and "" against letters, so 15.4(3) < 15.4(3)T < 15.4(3)T1
+# a digit sorts before a letter ; the train letters (T, M, SE) are compared alphabetically,
+# so across two trains bound the range with the same train letters
+function version_cmp(a, b,   ca, cb, na, nb, i, x, y, x_num, y_num) {
+    na = version_split(a, ca)
+    nb = version_split(b, cb)
+    for (i = 1; i <= na || i <= nb; i++) {
+        x = (i in ca) ? ca[i] : ""
+        y = (i in cb) ? cb[i] : ""
+        x_num = (x ~ /^[0-9]+$/)
+        y_num = (y ~ /^[0-9]+$/)
+        if (x == "" && y_num) x = 0
+        if (y == "" && x_num) y = 0
+        if (x ~ /^[0-9]+$/ && y ~ /^[0-9]+$/) {
+            if (x + 0 < y + 0) return -1
+            if (x + 0 > y + 0) return 1
+        } else {
+            if ("" x < "" y) return -1
+            if ("" x > "" y) return 1
+        }
+    }
+    return 0
+}
+
+# true when the version and the platform ("chassis cpu") satisfy the OS_CMP[n] rule
+function os_cmp_match(version, platform, n,   c) {
+    if (version !~ /[0-9]/) return 0
+    if (("platform" in OS_CMP[n]) && platform !~ OS_CMP[n]["platform"]) return 0
+    c = version_cmp(version, OS_CMP[n]["min"])
+    if (OS_CMP[n]["op"] == "eq") return (c == 0)
+    if (OS_CMP[n]["op"] == "lt") return (c < 0)
+    if (OS_CMP[n]["op"] == "le") return (c <= 0)
+    if (OS_CMP[n]["op"] == "gt") return (c > 0)
+    if (OS_CMP[n]["op"] == "ge") return (c >= 0)
+    return (c >= 0 && version_cmp(version, OS_CMP[n]["max"]) <= 0)
+}
+
+# returns an error message when the user section cannot be used, "" otherwise
+function check_psirt_config(   i, j, n, max, rest, ref, p, probe, cmd, result, regex_list, regex_count, last_ok) {
+    # indexes must be contiguous from 1 : the matched flags are stored by position
+    for (i in LINE) { n++; if (i + 0 > max) max = i + 0 }
+    if (n != max) return "LINE indexes must be contiguous from 1"
+    n = 0; max = 0
+    for (i in BLOCK) { n++; if (i + 0 > max) max = i + 0 }
+    if (n != max) return "BLOCK indexes must be contiguous from 1"
+    for (i in BLOCK) {
+        n = 0; max = 0
+        for (j in BLOCK[i]["match"]) { n++; if (j + 0 > max) max = j + 0 }
+        if (n != max) return "BLOCK[" i "][\"match\"] indexes must be contiguous from 1"
+    }
+
+    # OS_CMP : contiguous indexes, known operator, versions that can be compared
+    n = 0; max = 0
+    for (i in OS_CMP) { n++; if (i + 0 > max) max = i + 0 }
+    if (n != max) return "OS_CMP indexes must be contiguous from 1"
+    for (i in OS_CMP) {
+        if (OS_CMP[i]["op"] !~ /^(eq|lt|le|gt|ge|between)$/) return "OS_CMP[" i "] has an unknown operator"
+        if (OS_CMP[i]["min"] !~ /[0-9]/) return "OS_CMP[" i "] has no version"
+        if (OS_CMP[i]["op"] == "between") {
+            if (OS_CMP[i]["max"] !~ /[0-9]/) return "OS_CMP[" i "] has no maximum version"
+            if (version_cmp(OS_CMP[i]["min"], OS_CMP[i]["max"]) > 0) return "OS_CMP[" i "] minimum version is greater than the maximum"
+        }
+    }
+
+    # every reference of LOGIC must be declared
+    rest = LOGIC
+    while (match(rest, /BLOCK_LINE\[[0-9]+\]\[[0-9]+\]|BLOCK\[[0-9]+\]|LINE\[[0-9]+\]/)) {
+        ref = substr(rest, RSTART, RLENGTH)
+        rest = substr(rest, RSTART + RLENGTH)
+        split(ref, p, /[^0-9]+/)
+        if (ref ~ /^LINE/ && !(p[2] in LINE)) return "LOGIC uses undeclared " ref
+        if (ref ~ /^BLOCK\[/ && !(p[2] in BLOCK)) return "LOGIC uses undeclared " ref
+        if (ref ~ /^BLOCK_LINE/ && (!(p[2] in BLOCK) || !(p[3] in BLOCK[p[2]]["match"]))) return "LOGIC uses undeclared " ref
+    }
+
+    # what is left once references are replaced must be a valid expression
+    probe = LOGIC
+    gsub(/BLOCK_LINE\[[0-9]+\]\[[0-9]+\]|BLOCK\[[0-9]+\]|LINE\[[0-9]+\]/, "0", probe)
+    if (probe ~ /[A-Za-z_]/) return "LOGIC contains an unknown identifier"
+    cmd = "echo 'BEGIN { print (" probe ") }' | awk -f - 2>/dev/null"
+    cmd | getline result
+    close(cmd)
+    if (result == "") return "LOGIC is not a valid expression"
+
+    # an invalid regular expression is fatal for gawk and would stop the whole run :
+    # every pattern is tested once in a child process
+    regex_list = shell_quote(DEVICE)
+    for (i in OS) regex_list = regex_list " " shell_quote(OS[i])
+    for (i in OS_CMP) if ("platform" in OS_CMP[i]) regex_list = regex_list " " shell_quote(OS_CMP[i]["platform"])
+    for (i in LINE) regex_list = regex_list " " shell_quote(LINE[i])
+    for (i in BLOCK) {
+        regex_list = regex_list " " shell_quote(BLOCK[i]["start"]) " " shell_quote(BLOCK[i]["end"])
+        for (j in BLOCK[i]["match"]) regex_list = regex_list " " shell_quote(BLOCK[i]["match"][j])
+    }
+    regex_count = 0
+    cmd = "printf '%s\\n' " regex_list " | gawk '{ print NR; fflush(); \"\" ~ $0 }' 2>/dev/null"
+    while ((cmd | getline last_ok) > 0) regex_count++
+    if (close(cmd) != 0) return "invalid regular expression in the psirt configuration (pattern number " regex_count ")"
+    return ""
+}
+
+# loaded on first use : a test whose DEVICE matches no configuration never reads the inventory,
+# and only the configurations given on the command line are kept (memory independent of the inventory size)
+function load_inventory(   arg, wanted_name, wanted, wanted_left, inventory_line, inventory_name) {
+    inventory_loaded = 1
+    inventory_exists = 0
+    for (arg = 1; arg < ARGC; arg++) {
+        wanted_name = ARGV[arg]
+        sub(/^.*\//, "", wanted_name)
+        wanted[wanted_name] = 1
+    }
+    wanted_left = length(wanted)
+    while (wanted_left > 0 && (getline inventory_line < inventory_file) > 0) {
+        inventory_exists = 1
+        inventory_name = inventory_line
+        sub(/ .*/, "", inventory_name)
+        if ((inventory_name in wanted) && !(inventory_name in inventory)) {
+            inventory[inventory_name] = substr(inventory_line, length(inventory_name) + 2)
+            wanted_left--
+        }
+    }
+    close(inventory_file)
+    if (!inventory_exists && system("test -f " shell_quote(inventory_file)) == 0) inventory_exists = 1
 }
 
 # --------------------------------------
@@ -64,6 +215,9 @@ function eval_binary_logic(logic_expression) {
 BEGIN {
     # Load configuration
     load_psirt_config();
+    psirt_config_error = check_psirt_config();
+    for (i in OS_CMP) os_cmp_count++
+    inventory_file = "database/psirt_scopes/psirt_CAWK_PSIRT_OS_inventory_scope.txt"
 }
 
 BEGINFILE {
@@ -78,30 +232,32 @@ BEGINFILE {
 
     psirt_inventory_file_error = 0
 
+    if (psirt_config_error != "") {
+        print_err("CAWK_PSIRT_TESTNAME.gawk","invalid psirt configuration: " psirt_config_error, FNR, "high", "error");
+        psirt_inventory_file_error = 1
+        nextfile
+    }
+
     # Enforce that filename matches DEVICE (regex)
     if (!match(filename_only, DEVICE)) {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because filename " filename_only " does not match device pattern " DEVICE, FNR, "info", "psirt");
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because filename " filename_only " does not match device pattern " DEVICE, FNR, "medium", "psirt");
         psirt_inventory_file_error = 1
         nextfile
     }
 
-    inventory_file = "database/psirt_scopes/psirt_CAWK_PSIRT_OS_inventory_scope.txt"
-    if (system("test -f " inventory_file) != 0) {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because inventory file " inventory_file " does not exist", FNR, "info", "psirt");
+    if (!inventory_loaded) load_inventory()
+    if (!inventory_exists) {
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because inventory file " inventory_file " does not exist", FNR, "medium", "psirt");
         psirt_inventory_file_error = 1
         nextfile
     }
 
-    grep_cmd = "grep '^" filename_only " ' " inventory_file
-    if ((grep_cmd | getline os_device_line) > 0) {
-        if (match(os_device_line, "^" filename_only " (.*)", arr)) {
-            os_device = arr[1]
-        }
-        close(grep_cmd)
+    # exact match on the file name : no regex, no shell
+    if (filename_only in inventory) {
+        os_device = inventory[filename_only]
     } else {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because not found in " inventory_file, FNR, "info", "psirt");
+        print_err("CAWK_PSIRT_TESTNAME.gawk","skipped configuration because not found in " inventory_file, FNR, "medium", "psirt");
         psirt_inventory_file_error = 1
-        close(grep_cmd)
         nextfile
     }
 
@@ -155,10 +311,10 @@ BEGINFILE {
     }
 
     # Tracking variables
-    device_config_file = FILENAME
     current_block = 0
     in_block = 0
-    
+    psirt_first_match_line = 0
+
     # Initialize pattern match tracking arrays
     for (i = 1; i <= config_psirt_line_patterns_count; i++) {
         config_psirt_line_patterns_matched[i] = 0
@@ -166,8 +322,6 @@ BEGINFILE {
     
     # Initialize block tracking arrays
     for (i = 1; i <= config_psirt_block_patterns_count; i++) {
-        block_matched_lines[i] = 0
-        config_psirt_block_patterns_matched[i] = 0
         config_psirt_block_exists[i] = 0  # Track block existence
         
         # Use separate array for individual line tracking
@@ -181,11 +335,13 @@ BEGINFILE {
 
 {
     config_line = $0
+    block_started = 0
     
     # Check simple line patterns
     for (i = 1; i <= config_psirt_line_patterns_count; i++) {
         if (config_psirt_line_patterns[i] != "" && match(config_line, config_psirt_line_patterns[i])) {
             config_psirt_line_patterns_matched[i] = 1
+            if (!psirt_first_match_line) psirt_first_match_line = FNR
         }
     }
     
@@ -196,7 +352,8 @@ BEGINFILE {
             if (match(config_line, config_psirt_block_patterns[i]["start"])) {
                 in_block = 1
                 current_block = i
-                block_matched_lines[i] = 0
+                block_started = 1
+                if (!psirt_first_match_line) psirt_first_match_line = FNR
                 break
             }
         }
@@ -208,23 +365,16 @@ BEGINFILE {
         if (match(config_line, config_psirt_block_patterns[current_block]["end"])) {
             # Mark that the block exists (start + end found)
             config_psirt_block_exists[current_block] = 1
-            
-            # Evaluate if the block match all vulnerable lines (for legacy system)
-            if (block_matched_lines[current_block] == config_psirt_block_patterns[current_block]["lines_count"]) {
-                config_psirt_block_patterns_matched[current_block] = 1
-            }
-            
+
             # Reset block variables
             in_block = 0
             current_block = 0
-        } else {
-            # Check line patterns within the current block AND track individual lines
+        } else if (!block_started) {
+            # Check line patterns within the current block AND track individual lines (not on the start line itself)
             for (j = 1; j <= config_psirt_block_patterns[current_block]["lines_count"]; j++) {
                 if (match(config_line, config_psirt_block_patterns[current_block]["lines"][j])) {
-                    block_matched_lines[current_block]++
                     # Track individual line matches in separate array
                     config_psirt_block_patterns_lines_matched[current_block][j] = 1
-                    break # Avoid counting the same line multiple times
                 }
             }
         }
@@ -233,27 +383,29 @@ BEGINFILE {
 
 ENDFILE {
 
-    # Check logic binary
+    # Risk levels of the psirt status :
+    #   high   = vulnerable (configuration logic and OS pattern matched)
+    #   low    = OS pattern matched but configuration logic not matched (version in scope, not exposed)
+    #   info   = not vulnerable (OS pattern not matched)
+    #   medium = skipped, no information (device pattern, inventory file, inventory entry or os_device format)
+
+    # Check logic binary, the OS patterns are checked whatever the logic result
     final_vulnerability_detected = 0
+    os_pattern_matched = 0
+    matched_os_pattern = ""
+    os_format_ok = 0
     if (psirt_inventory_file_error == 0) {
         final_vulnerability_detected = eval_binary_logic(binary_logic)
-        os_pattern_matched = 0
-        matched_os_pattern = ""
-    }
-
-    # Check match against OS patterns
-    if (final_vulnerability_detected) {
 
         split(os_device, target_parts, " ")
-        if (length(target_parts) < 3) {
-            print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because Invalid os_device format detected: "os_device, FNR, "info", "psirt");
+        os_format_ok = (length(target_parts) >= 3)
+        if (!os_format_ok) {
+            print_err("CAWK_PSIRT_TESTNAME.gawk","skipped because Invalid os_device format detected: "os_device, FNR, "medium", "psirt");
         } else {
-            # Check OS pattern match
-            target_os = target_parts[1]
-            target_chassis = target_parts[2] 
-            target_cpu = target_parts[3]
-            target_full = target_os " " target_chassis " " target_cpu
-            
+            # the whole inventory value is matched (the chassis may contain spaces)
+            target_full = target_parts[1]
+            for (i = 2; i in target_parts; i++) target_full = target_full " " target_parts[i]
+
             for (i = 1; i <= os_psirt_patterns_count; i++) {
                 if (match(target_full, os_psirt_patterns[i])) {
                     os_pattern_matched = 1
@@ -261,10 +413,24 @@ ENDFILE {
                     break
                 }
             }
+
+            # version comparisons : the first field of the inventory value is the version, the rest is the platform
+            platform = substr(target_full, length(target_parts[1]) + 2)
+            for (i = 1; !os_pattern_matched && i <= os_cmp_count; i++) {
+                if (os_cmp_match(target_parts[1], platform, i)) {
+                    os_pattern_matched = 1
+                    matched_os_pattern = "version " OS_CMP[i]["op"] " " OS_CMP[i]["min"]
+                    if (OS_CMP[i]["op"] == "between") matched_os_pattern = matched_os_pattern " .. " OS_CMP[i]["max"]
+                    if ("platform" in OS_CMP[i]) matched_os_pattern = matched_os_pattern " platform " OS_CMP[i]["platform"]
+                }
+            }
         }
+    }
+
+    if (os_format_ok) {
 
         psirt_final_match = "";
-        if (os_pattern_matched) {
+        if (final_vulnerability_detected && os_pattern_matched) {
 
             psirt_final_match = "vulnerable to this psirt {FILE_PATTERN=" DEVICE "} {OS_PATTERN=" matched_os_pattern "}";
         
@@ -284,16 +450,15 @@ ENDFILE {
                 psirt_final_match = psirt_final_match"}"
             }
 
-            print_err("CAWK_PSIRT_TESTNAME.gawk",psirt_final_match,FNR,"high","psirt");
+            print_err("CAWK_PSIRT_TESTNAME.gawk",psirt_final_match,psirt_first_match_line,"high","psirt");
 
-        } else {
+        } else if (final_vulnerability_detected) {
             print_err("CAWK_PSIRT_TESTNAME.gawk","not vulnerable to this psirt (OS pattern not matched)",FNR,"info","psirt");
+        } else if (os_pattern_matched) {
+            print_err("CAWK_PSIRT_TESTNAME.gawk","OS pattern matched but not exposed (line and block not matched) {OS_PATTERN=" matched_os_pattern "}",FNR,"low","psirt");
+        } else {
+            print_err("CAWK_PSIRT_TESTNAME.gawk","not vulnerable to this psirt (line and block not matched)",FNR,"info","psirt");
         }
-    } 
-
-    # Final message if not vulnerable
-    if (final_vulnerability_detected == 0 && psirt_inventory_file_error == 0) {
-        print_err("CAWK_PSIRT_TESTNAME.gawk","not vulnerable to this psirt (line and block not matched)",FNR,"info","psirt");
     }
 }
 

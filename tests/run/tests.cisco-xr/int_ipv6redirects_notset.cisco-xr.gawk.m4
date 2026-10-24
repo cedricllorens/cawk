@@ -39,21 +39,21 @@ dnl level 0 --
 	interface = $0;
 	interfaceno = FNR;
 	has_ipv6 = 0;
-	ipv6redirects_disabled = 0;
+	ipv6redirects_enabled = 0;
 	ipv6_addr = "";
 	is_shutdown = 0;
 ',
 `/^!$/', `
-	if ( has_ipv6 == 1 && ipv6redirects_disabled == 0 && is_shutdown == 0 ) {
-		print_err("int_ipv6redirects_notset.cisco-xr.gawk",interface" "ipv6_addr" <no ipv6 redirects> is not set",interfaceno,"high","error");
+	if ( has_ipv6 == 1 && ipv6redirects_enabled == 1 && is_shutdown == 0 ) {
+		print_err("int_ipv6redirects_notset.cisco-xr.gawk",interface" "ipv6_addr" <ipv6 redirects> is set",interfaceno,"high","error");
 		pass = 0;
 	}
 ',
 
 dnl level 1 --
-`/^ (ipv6 address|no ipv6 redirects|shutdown)/',`
+`/^ (ipv6 address|ipv6 redirects|shutdown)/',`
 	if ($0 ~ /^ ipv6 address/) { has_ipv6 = 1; ipv6_addr = $3; }
-	if ($0 ~ /^ no ipv6 redirects/) ipv6redirects_disabled = 1;
+	if ($0 ~ /^ ipv6 redirects/) ipv6redirects_enabled = 1;
 	if ($0 ~ /^ shutdown/) is_shutdown = 1;
 ',
 `', `'
@@ -63,7 +63,7 @@ dnl level 1 --
 dnl MACRO END ---------------------------
 
 ENDFILE {
-	if ( pass ) print_err("int_ipv6redirects_notset.cisco-xr.gawk","interface <no ipv6 redirects> is properly set",0,"high","pass");
+	if ( pass ) print_err("int_ipv6redirects_notset.cisco-xr.gawk","interface is properly set without <ipv6 redirects>",0,"high","pass");
 }
 
 END {

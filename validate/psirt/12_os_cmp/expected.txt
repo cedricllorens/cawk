@@ -1,0 +1,11 @@
+c_a;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt
+c_b;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=version between 15.3(3) .. 15.4(3)T} {LINE[1]=hostname / 1};1;high;psirt
+c_c;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=version between 15.3(3) .. 15.4(3)T} {LINE[1]=hostname / 1};1;high;psirt
+c_d;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt
+c_e;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=version lt 12.4(24)T5} {LINE[1]=hostname / 1};1;high;psirt
+c_f;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt
+c_g;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt
+c_h;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=version ge 16.9 platform ^C9300.*} {LINE[1]=hostname / 1};1;high;psirt
+c_i;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt
+c_j;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=version between 15.3(3) .. 15.4(3)T} {LINE[1]=hostname / 1};1;high;psirt
+c_k;t.gawk;not vulnerable to this psirt (OS pattern not matched);1;info;psirt

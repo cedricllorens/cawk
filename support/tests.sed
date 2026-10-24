@@ -9,6 +9,7 @@
 s/%SED_GAWK_PATH%/!\/usr\/bin\/env -S gawk -f/g
 s/%SED_INCLUDE_PATH%/"common\/common.gawk"/g
 s/%SED_INCLUDE_PATH_FWLIB%/"common\/common_hypercube-lib.gawk"/g
+s/%SED_CENSOR_REGEX_PATH%/"database\/censor\/censor_regex"/g
 #
 # ----------------------------------------------
 # CISCO KEYWORDS

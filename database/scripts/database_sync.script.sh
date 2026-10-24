@@ -21,7 +21,7 @@
 # ---------------------------------------------------------------------
 if [ -z "$1" ]; then
 	echo "cawk error: audit=AUDIT_NAME is missing ----"
-	exit 0
+	exit 1
 fi
 
 CONFIG_FILE="database/include/scripts_config.sh"
@@ -29,7 +29,7 @@ if [ -f "$CONFIG_FILE" ]; then
     . "$CONFIG_FILE"
 else
     echo "cawk error: configuration file not found: $CONFIG_FILE"
-    exit 0
+    exit 1
 fi
 
 # ---------------------------------------------------------------------

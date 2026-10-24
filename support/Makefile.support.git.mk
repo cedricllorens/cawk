@@ -29,23 +29,29 @@
 git_branch_master_check:
 	@current=$$(git rev-parse --abbrev-ref HEAD); \
 	if [ "$$current" != "master" ]; then \
-		$(ECHO) "\033[31mERROR: Git branch is '$$current'; must be 'master'.\033[0m"; \
+		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must be 'master'.\033[0m"; \
 		exit 1; \
 	fi
+	@$(ECHO) "cawk git_branch_master_check done ----"
 
 git_branch_not_master_check:
 	@current=$$(git rev-parse --abbrev-ref HEAD); \
 	if [ "$$current" = "master" ]; then \
-		$(ECHO) "\033[31mERROR: Git branch is '$$current'; must NOT be 'master'.\033[0m"; \
+		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must NOT be 'master'.\033[0m"; \
 		exit 1; \
 	fi
+	@$(ECHO) "cawk git_branch_not_master_check done ----"
 
 # ------------------------------------------------------------
 
 gitnewbranch: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git checkout -b $(CAWK_RELEASE)-beta; \
-	fi	
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitnewbranch ----"; \
+		exit 1; \
+	fi
+	$(ECHO) "cawk gitnewbranch done ----"
 
 # ------------------------------------------------------------
 
@@ -82,7 +88,7 @@ gitcheck_orthogonality:
 	report "supplier of SUPPLIER_SCOPE without tests/confs/exceptions in repo" "$$(printf '%b' "$$missing")"; \
 	unknown=""; \
 	for d in $(TESTS_PATH)/repo/tests.* $(CONFS_PATH)/repo/confs.* $(EXCEPTION_PATH)/repo/exceptions.*.m4; do \
-		s=$${d##*/}; s=$${s#tests.}; s=$${s#confs.}; s=$${s#exceptions.}; s=$${s%.m4}; s=$${s%.psirt}; \
+		s=$${d##*/}; s=$${s#tests.}; s=$${s#confs.}; s=$${s#exceptions.}; s=$${s%.m4}; s=$${s%.psirt}; s=$${s%.censored}; \
 		case " $(SUPPLIER_SCOPE) " in *" $$s "*) ;; *) unknown="$$unknown$$d\n";; esac; \
 	done; \
 	report "repo supplier directories/files not in SUPPLIER_SCOPE" "$$(printf '%b' "$$unknown")"; \
@@ -92,6 +98,7 @@ gitcheck_orthogonality:
 	done; \
 	report "psirt test directories without standard tests directory" "$$(printf '%b' "$$nopsirt")"; \
 	exit $$rc
+	$(ECHO) "cawk gitcheck_orthogonality done ----"
 
 gitcheck: tests_target_common
 	$(GMAKE) clean clean_force FORCE=yes
@@ -264,6 +271,7 @@ gitcheck: tests_target_common
 	$(ECHO) ""
 	@$(ECHO) "\033[31m================================================== : start update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
 	@$(ECHO) "\033[31m================================================== : end update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
+	@$(ECHO) "cawk gitcheck done ----"
 
 
 # ------------------------------------------------------------
@@ -272,7 +280,11 @@ gitinstallcicd:
 	if [ "$(FORCE)" = "yes" ]; then \
 		mkdir -p .github/workflows; \
 		cp cicd/*.yml .github/workflows/ 2>/dev/null || true; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitinstallcicd ----"; \
+		exit 1; \
 	fi
+	$(ECHO) "cawk gitinstallcicd done ----"
 
 # ------------------------------------------------------------
 
@@ -286,8 +298,12 @@ gitcommit: gitinstallcicd
 		printf "$$msg" > .git_commit_msg; \
 		git commit -F .git_commit_msg; \
 		rm -f .git_commit_msg; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitcommit ----"; \
+		exit 1; \
 	fi
 	@echo "gitpush or gitpushbranchtarget next step"
+	@$(ECHO) "cawk gitcommit done ----"
 
 # ------------------------------------------------------------
 
@@ -296,33 +312,53 @@ gitcommit: gitinstallcicd
 gitpush: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git push origin master; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitpush ----"; \
+		exit 1; \
 	fi
+	$(ECHO) "cawk gitpush done ----"
 
 # BRANCH -----------------------------------------------------
 
 gitpushbranch: git_branch_not_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git push origin $(CAWK_RELEASE)-beta; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitpushbranch ----"; \
+		exit 1; \
 	fi
+	$(ECHO) "cawk gitpushbranch done ----"
 
 gitpr: git_branch_not_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		gh pr create --title "cawk $(CAWK_RELEASE)" --base master --head $$(git branch --show-current); \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitpr ----"; \
+		exit 1; \
 	fi
 	@echo "gitprmerge target next step"
+	@$(ECHO) "cawk gitpr done ----"
 
 gitprmerge: git_branch_not_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		gh pr merge --merge --delete-branch; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitprmerge ----"; \
+		exit 1; \
 	fi
 	@echo "gitmasterupdate target next step"
+	@$(ECHO) "cawk gitprmerge done ----"
 
 gitmasterupdate: git_branch_not_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git checkout master; \
 		git pull origin master; \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitmasterupdate ----"; \
+		exit 1; \
 	fi
 	@echo "gitpushtag target next step"
+	@$(ECHO) "cawk gitmasterupdate done ----"
 
 # ------------------------------------------------------------
 
@@ -330,5 +366,9 @@ gitpushtag: git_branch_master_check
 	@if [ "$(FORCE)" = "yes" ]; then \
 		git tag -a $(CAWK_RELEASE) -m "$(CAWK_RELEASE)"; \
 		git push origin $(CAWK_RELEASE); \
+	else \
+		$(ECHO) "cawk error: FORCE=yes must be set to run gitpushtag ----"; \
+		exit 1; \
 	fi
+	$(ECHO) "cawk gitpushtag done ----"
 

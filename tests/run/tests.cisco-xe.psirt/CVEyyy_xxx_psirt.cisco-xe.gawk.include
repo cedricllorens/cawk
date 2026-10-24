@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for cisco-xe devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "16\\..* .* .*"
     
     # Line Patterns
-    LINE[1] = "hostname"
+    LINE[1] = "hostnameFAKE"
     LINE[2] = "line vty"
     
     # Block Patterns
-    BLOCK[1]["start"] = "^interface "
+    BLOCK[1]["start"] = "^interfaceFAKE "
     BLOCK[1]["end"] = "^!"
     BLOCK[1]["match"][1] = "^ no shutdown"
     BLOCK[1]["match"][2] = "^ switchport mode access"

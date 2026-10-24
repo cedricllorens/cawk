@@ -84,7 +84,7 @@ BEGINFILE {
 	next;
 }
 
-/^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" {
+/^[ ]*match ip address [^ ]+/ && $4 != "prefix-list" && $4 != "prefix-lists" {
 	acl_ref[$4] = $0;
 	next;
 }

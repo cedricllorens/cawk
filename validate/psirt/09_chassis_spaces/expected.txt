@@ -1,0 +1,1 @@
+c_a;t.gawk;vulnerable to this psirt {FILE_PATTERN=^c_} {OS_PATTERN=^15\..* ISR 4331 x86$} {LINE[1]=hostname / 1};1;high;psirt

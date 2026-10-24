@@ -1,3 +1,5 @@
+<p align="left"><img src="docs/logo/logo-cawk.svg" width="200" alt="cawk"></p>
+
 # Contributing to cawk
 
 Thank you for your interest in contributing to cawk! We welcome bug reports, feature requests, and pull requests.
@@ -187,7 +189,7 @@ Before pushing, verify:
 
 ## Getting Help
 
-- Check [CLAUDE.md](CLAUDE.md) for detailed technical reference and development practices
+- Check [CLAUDE.md](CLAUDE.md) for the technical reference and [CAWK_CODE_RULES.md](docs/CAWK_CODE_RULES.md) for the development rules
 - Review recent commits and PRs for examples
 - Open an issue to ask questions
 

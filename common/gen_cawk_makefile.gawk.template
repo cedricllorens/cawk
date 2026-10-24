@@ -18,7 +18,8 @@ BEGIN {
 
     if (ARGC != 4) {
 	help();
-        exit 0;
+	print "cawk error gen_cawk_makefile: 3 arguments expected";
+        exit 1;
     }
 
     file_list = ARGV[1]
@@ -28,20 +29,21 @@ BEGIN {
     # check entries
 
     if (system("test -f " file_list) != 0) {
-        print file_list "is not a file";
 	help();
-	exit 0;
+        print "cawk error gen_cawk_makefile: " file_list " is not a file";
+	exit 1;
     }
 
     if (system("test -f " file_pgm) != 0) {
-        print file_pgm "is not a file";
 	help();
-	exit 0;
+        print "cawk error gen_cawk_makefile: " file_pgm " is not a file";
+	exit 1;
     }
 
     if ( files_per_target == 0 ) {
 	help();
-	exit 0;
+	print "cawk error gen_cawk_makefile: files_per_target must not be 0";
+	exit 1;
     }
 
     # store entries in tab
@@ -66,8 +68,9 @@ BEGIN {
     # -------------------
     # BUILD all temp vars
     # -------------------
-    for (t = 1; t <= targets; t++) {
-        printf("file_target%s := $(shell mktemp -p tmp)\n",t);
+    # one directory per generated makefile: concurrent makefiles (one per supplier) must never remove each other's files
+    if ( targets >= 1 ) {
+        printf("tmpdir := $(shell mktemp -d -p tmp)\n");
     }
     printf("\n");
 
@@ -78,16 +81,14 @@ BEGIN {
     printf("all: ");
     if ( targets >= 1 ) {
     	for (t = 1; t <= targets; t++) {
-       	 	printf("target%s ",t);
+    		for (k = 1; k <= total_pgm ; k++) {
+       	 		printf("target%s_%s ",t,k);
+		}
     	}
     	printf("\n");
-    	printf("\t@cat ");
-    	for (i = 1; i <= targets; i++) {
-		printf("$(file_target%s) ",i);
-    	}
-    	printf(" | sort | uniq");
+    	printf("\t@find $(tmpdir) -type f -exec cat {} + | sort | uniq");
    	printf("\n");
-    	printf("\t@rm -f tmp/tmp*");
+    	printf("\t@rm -rf $(tmpdir)");
     }
     printf("\n");
     printf("\n");
@@ -98,17 +99,17 @@ BEGIN {
 
     compteur = 1;
     for (i = 1; i <= targets; i++) {
-        printf("\ntarget%s:",i);
-    	printf("\n\t@touch $(file_target%s)",i);
     	for (k = 1; k <= total_pgm ; k++) {
+        	printf("\ntarget%s_%s:",i,k);
+    		printf("\n\t@touch $(tmpdir)/%s_%s",i,k);
         	printf("\n\t@%s ",pgms[k]);
     		for (j = compteur; j < compteur + files_per_target; j++) {
         		printf("%s ",files[j]);
 		}
-    		printf(">> $(file_target%s)",i);
+    		printf(">> $(tmpdir)/%s_%s",i,k);
+		printf("\n");
 	}
 	compteur = compteur + files_per_target;
-    	printf("\n");
     }
     printf("\n");
 
@@ -118,7 +119,9 @@ BEGIN {
 
     printf(".PHONY: all ");
     for (t = 1; t <= targets; t++) {
-        printf("target%s ",t);
+        for (k = 1; k <= total_pgm ; k++) {
+            printf("target%s_%s ",t,k);
+        }
     }
     printf("\n");
 }

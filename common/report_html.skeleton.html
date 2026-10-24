@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compliance report</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f4f6f8; --surface: #ffffff; --text: #1a2027; --muted: #58636f; --border: #d5dbe2;
+  --accent: #1d5fc4; --accent-bg: #e7effb;
+  --high: #b3261e; --medium: #c25100; --low: #9a6700; --info: #566573;
+  --error: #c0392b; --warning: #d98a00; --psirt: #7a4fd1; --pass: #2e8b57; --clear: #8a96a3;
+  --excellent: #1b7f4b; --good: #4a8a1f; --average: #b8741a; --critical: #b3261e;
+  --comp-sat: 62%; --comp-lig: 40%;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1318; --surface: #161c23; --text: #e5e9ee; --muted: #9aa5b1; --border: #2b343e;
+    --accent: #7db0ff; --accent-bg: #1a2a43;
+    --high: #ff8f85; --medium: #ffa05c; --low: #e3b341; --info: #9aa5b1;
+    --error: #e5604f; --warning: #e9a62a; --psirt: #a58bf0; --pass: #4cc38a; --clear: #6b7785;
+    --excellent: #4cc38a; --good: #8ccf4d; --average: #e9a62a; --critical: #ff8f85;
+    --comp-sat: 68%; --comp-lig: 58%;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+h2 { font-size: 1.15rem; margin: 0 0 12px; color: var(--warning); }
+.sub { color: var(--muted); margin: 0; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 16px; }
+.top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; }
+.brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.brand .logo { height: 120px; width: auto; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 0 16px rgba(29, 95, 196, .18); }
+button { font: inherit; color: inherit; }
+.btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.filters { display: grid; gap: 12px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+input[type=search], select { font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; min-width: 0; max-width: 100%; }
+/* orange headers mark the interactive filter zone */
+.filters legend { color: var(--warning); }
+.row label { color: var(--warning); }
+/* the select and search controls inherit the label color: keep their text readable */
+.row input[type=search], .row select { color: var(--text); }
+.scope { color: var(--muted); font-size: .9rem; }
+
+.kpis { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; margin-top: 16px; }
+.kpis .kpi { grid-column: span 4; }
+.kpis .kpi.q { grid-column: span 3; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.kpi .v { font-size: 1.7rem; font-weight: 700; line-height: 1.2; }
+.kpi .l { color: var(--warning); font-size: .85rem; }
+.kpi .n { color: var(--muted); font-size: .8rem; }
+.kpi.bad .v { color: var(--error); }
+.kpi.good .v { color: var(--pass); }
+.kpi.grad .v { color: var(--comp, inherit); }
+
+.grid2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+
+.bars { display: grid; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 90px 1fr 70px; gap: 10px; align-items: center; }
+.bar { display: flex; height: 18px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.bar > span { display: block; height: 100%; }
+.seg-error { background: var(--error); } .seg-warning { background: var(--warning); }
+.seg-psirt { background: var(--psirt); } .seg-pass { background: var(--pass); } .seg-clear { background: var(--clear); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: .85rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; }
+
+.tw { overflow-x: auto; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: .76rem; }
+.tbl th, .tbl td { padding: 4px 4px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl th { font-weight: 600; font-size: .72rem; }
+#nist-table th, #test-table th { white-space: nowrap; }
+#sup-table td.num, #nist-table td.num, #test-table td.num { font-size: .7rem; }
+.test-cell { display: block; max-width: 24em; }
+.nist-sm { display: block; max-width: 16em; font-size: .62rem; line-height: 1.2; }
+.tbl .badge { padding: 0 5px; font-size: .68rem; }
+.sub { font-size: 0.75em; font-weight: 500; }
+.th { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 600; }
+.th:hover { color: var(--accent); }
+.link { background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent); text-align: left; }
+.link:hover { text-decoration: underline; }
+.badge { display: inline-block; padding: 0 8px; border-radius: 4px; font-size: .78rem; font-weight: 600; color: #fff; }
+.badge.high { background: var(--high); } .badge.medium { background: var(--medium); }
+.badge.low { background: var(--low); } .badge.info { background: var(--info); }
+.sc { display: flex; align-items: center; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
+.sc .bar { width: 36px; height: 6px; }
+.sc .bar > span { background: var(--band); }
+.muted { color: var(--muted); }
+.purpose { color: var(--muted); font-size: .7rem; display: block; }
+.empty { color: var(--muted); padding: 12px 0; }
+.notes { color: var(--muted); font-size: .85rem; }
+.notes li { margin-bottom: 4px; }
+
+@media (max-width: 600px) { .bar-row { grid-template-columns: 70px 1fr 56px; } }
+@media print {
+  body { background: #fff; color: #000; }
+  .no-print { display: none !important; }
+  .card, .kpi { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:16px">This report needs JavaScript enabled to display its tables.</p></noscript>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      /*CAWK_LOGO_IMG*/
+      <div>
+        <h1 id="title">Network configuration compliance report</h1>
+        <p class="sub" id="subtitle"></p>
+      </div>
+    </div>
+    <div class="no-print">
+      <button class="btn" id="btn-csv" type="button">Export CSV</button>
+      <button class="btn" id="btn-print" type="button">Print / PDF</button>
+    </div>
+  </header>
+
+  <section class="card no-print" aria-label="Filters">
+    <div class="filters">
+      <fieldset><legend>Audit type</legend><div class="chips" id="f-preset"></div></fieldset>
+      <fieldset><legend>Risk</legend><div class="chips" id="f-risk"></div></fieldset>
+      <fieldset><legend>Status</legend><div class="chips" id="f-status"></div></fieldset>
+      <fieldset><legend>Supplier (none selected = all)</legend><div class="chips" id="f-supplier"></div></fieldset>
+      <div class="row">
+        <label>NIST SP 800-53 control<br><select id="f-nist"></select></label>
+        <label>Search a test<br><input type="search" id="f-q" placeholder="test name, purpose, NIST id"></label>
+        <button class="btn" id="btn-reset" type="button">Reset filters</button>
+      </div>
+      <p class="scope" id="scope" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="Key indicators"></section>
+
+  <section class="card" aria-labelledby="h-risk">
+    <h2 id="h-risk">Summary by risk</h2>
+    <div class="grid2">
+      <div class="bars" id="risk-bars"></div>
+      <div class="tw" id="risk-table"></div>
+    </div>
+    <div class="legend">
+      <span><i class="seg-pass"></i>Pass</span><span><i class="seg-error"></i>Error</span><span><i class="seg-warning"></i>Warning</span>
+      <span><i class="seg-psirt"></i>PSIRT <span class="sub">vulnerable</span></span>
+      <span><i class="seg-clear"></i>PSIRT <span class="sub">not affected</span></span>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-sup">
+    <h2 id="h-sup">Summary by supplier</h2>
+    <div class="tw" id="sup-table"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-nist">
+    <h2 id="h-nist">Summary by NIST SP 800-53 control</h2>
+    <div class="tw" id="nist-table"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-tests">
+    <h2 id="h-tests">Results by test</h2>
+    <div class="tw" id="test-table"></div>
+    <p><button class="btn no-print" id="btn-more" type="button" hidden></button></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-notes">
+    <h2 id="h-notes">Reading notes</h2>
+    <ul class="notes">
+      <li><b>Compliance</b> = 100 - 100 x weighted errors / weighted checks (pass + error), weights high 3, medium 2, low 1, info excluded. Excellent &ge; 90, good &ge; 60, average &ge; 40, critical below.</li>
+      <li><b>Errors / device</b> = error lines of risk high, medium and low divided by the number of devices in scope.</li>
+      <li><b>Devices affected</b> = devices with at least one error, warning or vulnerable PSIRT on the test, whatever the filters.</li>
+      <li><b>PSIRT</b>: only the vulnerable results are counted as PSIRT; a device that is not affected or whose configuration was not found is shown as &laquo;not affected&raquo;.</li>
+      <li>This report only holds counters: no configuration line, line number or device name is embedded.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const DATA = /*CAWK_DATA*/null;
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  if (!DATA) { $('subtitle').textContent = 'No data embedded: generate this page with report_html.gawk.'; return; }
+
+  var RISKS = ['high', 'medium', 'low', 'info'];
+  var WEIGHT = { high: 3, medium: 2, low: 1 };
+  var STATUS_LABEL = { error: 'Error', warning: 'Warning', psirt: 'PSIRT vulnerable', pass: 'Pass', clear: 'PSIRT not affected' };
+  var TEST_PAGE = 50;
+
+  function small(s) { return esc(s).replace(/ (vulnerable|not affected)$/, ' <span class="sub">$1</span>'); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function num(n) { return Number(n).toLocaleString('en-US'); }
+
+  var tests = DATA.tests.map(function (a) {
+    return { name: a[0], supplier: a[1], purpose: a[2], nist: a[3], control: a[4], family: a[5], devs: a[6],
+             hay: (a[0] + ' ' + a[2] + ' ' + a[3] + ' ' + a[4]).toLowerCase() };
+  });
+  var supplierDevs = {};
+  DATA.suppliers.forEach(function (a) { supplierDevs[a[0]] = a[1]; });
+  var recs = DATA.recs.map(function (a) {
+    var t = tests[a[0]], status = a[2];
+    // only psirt at high risk is a finding: info, low and medium are "not vulnerable", "not exposed" or "skipped"
+    if (status === 'psirt' && a[1] !== 'high') status = 'clear';
+    return { t: a[0], test: t, risk: a[1], status: status, lines: a[3] };
+  });
+
+  // exceptions: [test, risk, status, lines], filtered like the results
+  var excs = DATA.excs.map(function (a) {
+    return { t: a[0], test: tests[a[0]], risk: a[1], status: a[2], lines: a[3], exc: true };
+  });
+
+  // the five status chips always render, even with no matching line, so the filter layout never changes between reports
+  var statuses = ['pass', 'error', 'warning', 'psirt', 'clear'];
+  recs.forEach(function (r) { if (statuses.indexOf(r.status) < 0) statuses.push(r.status); });
+  var suppliers = Object.keys(supplierDevs).sort();
+
+  // unfiltered aggregates: the kpi boxes annotate what the filters exclude
+  var ALL = newAgg();
+  recs.forEach(function (r) { add(ALL, r); });
+
+  var PRESETS = {
+    all: { label: 'All', fn: null },
+    security: { label: 'Security (high / medium / low)', fn: function (r) { return r.risk !== 'info' && (r.status === 'error' || r.status === 'pass'); } },
+    audit: { label: 'Audit (info and warnings)', fn: function (r) { return (r.risk === 'info' && (r.status === 'error' || r.status === 'pass')) || r.status === 'warning'; } },
+    psirt: { label: 'PSIRT (vulnerabilities)', fn: function (r) { return r.status === 'psirt' || r.status === 'clear'; } }
+  };
+
+  var S = null;
+  // every risk and status is checked by default, info and PSIRT not affected included: the report opens on the same totals as the text summary
+  function freshState() {
+    return { preset: 'all', risk: new Set(RISKS), status: new Set(statuses), supplier: new Set(), nist: '', q: '', testLimit: TEST_PAGE };
+  }
+  S = freshState();
+  var SORT = { sup: { k: 'errors', dir: -1 }, nist: { k: 'errors', dir: -1 }, test: { k: 'errors', dir: -1 } };
+
+  // ---- aggregation -------------------------------------------------------------------------
+  function newAgg() { return { lines: 0, error: 0, warning: 0, psirt: 0, pass: 0, clear: 0, exc: 0, e: { high: 0, medium: 0, low: 0, info: 0 }, p: { high: 0, medium: 0, low: 0 } }; }
+  function add(a, r) {
+    a.lines += r.lines;
+    a[r.status] = (a[r.status] || 0) + r.lines;
+    if (WEIGHT[r.risk]) {
+      if (r.status === 'error') a.e[r.risk] += r.lines;
+      if (r.status === 'pass') a.p[r.risk] += r.lines;
+    }
+    // info errors are displayed in the Errors kpi but excluded from the weighted compliance
+    if (r.status === 'error' && r.risk === 'info') a.e.info += r.lines;
+  }
+  function score(a) {
+    var bad = 0, all = 0;
+    Object.keys(WEIGHT).forEach(function (k) { bad += WEIGHT[k] * a.e[k]; all += WEIGHT[k] * (a.e[k] + a.p[k]); });
+    return all ? 100 - 100 * bad / all : null;
+  }
+  function band(s) {
+    if (s === null) return { label: 'n/a', color: 'var(--muted)' };
+    if (s >= 90) return { label: 'Excellent', color: 'var(--excellent)' };
+    if (s >= 60) return { label: 'Good', color: 'var(--good)' };
+    if (s >= 40) return { label: 'Average', color: 'var(--average)' };
+    return { label: 'Critical', color: 'var(--critical)' };
+  }
+  // the compliance value runs on a red-to-green hue ramp (0-100%), the saturation and lightness variables keep it readable in both themes
+  function complianceColor(s) {
+    if (s === null) return 'var(--muted)';
+    return 'hsl(' + Math.round(1.2 * Math.max(0, Math.min(100, s))) + ', var(--comp-sat), var(--comp-lig))';
+  }
+  // errors per device runs on a green-to-red hue ramp, red from the 15 critical threshold of the text report scale
+  function errorsPerDeviceColor(e) {
+    if (e === null) return 'var(--muted)';
+    return 'hsl(' + Math.round(120 * (1 - Math.max(0, Math.min(e, 15)) / 15)) + ', var(--comp-sat), var(--comp-lig))';
+  }
+  function groupBy(list, keyFn, init) {
+    var m = new Map();
+    list.forEach(function (r) {
+      var k = keyFn(r), a = m.get(k);
+      if (!a) { a = newAgg(); a.key = k; if (init) init(a, r); m.set(k, a); }
+      if (r.exc) a.exc += r.lines; else add(a, r);
+    });
+    return Array.from(m.values());
+  }
+
+  function visible(r) {
+    if (!S.risk.has(r.risk) || !S.status.has(r.status)) return false;
+    if (S.supplier.size && !S.supplier.has(r.test.supplier)) return false;
+    if (S.nist && (S.nist === '__none__' ? r.test.nist !== '' : r.test.nist !== S.nist)) return false;
+    var p = PRESETS[S.preset].fn;
+    if (p && !p(r)) return false;
+    if (S.q && r.test.hay.indexOf(S.q) < 0) return false;
+    return true;
+  }
+
+  // ---- rendering helpers -------------------------------------------------------------------
+  function scoreCell(s) {
+    var b = band(s);
+    if (s === null) return '<span class="muted">n/a</span>';
+    return '<span class="sc" style="--band:' + b.color + '"><span class="bar"><span style="width:' + s.toFixed(1) + '%"></span></span><span>' + s.toFixed(1) + '% <span class="muted">' + b.label + '</span></span></span>';
+  }
+  function table(id, cols, data) {
+    var st = SORT[id], col = cols.filter(function (c) { return c.k === st.k; })[0] || cols[0];
+    data = data.slice().sort(function (x, y) {
+      var a = col.v(x), b = col.v(y);
+      if (a === b) return 0;
+      if (typeof a === 'string') return st.dir * a.localeCompare(b);
+      return st.dir * (a - b);
+    });
+    var h = '<table class="tbl"><thead><tr>' + cols.map(function (c) {
+      var arrow = c.k === st.k ? (st.dir > 0 ? ' ▲' : ' ▼') : '';
+      return '<th scope="col" class="' + (c.num ? 'num' : '') + '"><button type="button" class="th" data-tbl="' + id + '" data-k="' + c.k + '">' + small(c.label) + arrow + '</button></th>';
+    }).join('') + '</tr></thead><tbody>';
+    data.forEach(function (d) {
+      h += '<tr>' + cols.map(function (c) { return '<td class="' + (c.num ? 'num' : '') + '">' + c.h(d) + '</td>'; }).join('') + '</tr>';
+    });
+    return { html: h + '</tbody></table>', rows: data };
+  }
+  function cnt(n) { return n ? num(n) : '<span class="muted">0</span>'; }
+  function riskBadge(r) { return '<span class="badge ' + esc(r) + '">' + esc(r) + '</span>'; }
+  // errors detail per risk: the live count, or the total count flagged excluded when the risk chip is off
+  function riskDetail(part, all) {
+    return RISKS.map(function (k) {
+      return S.risk.has(k) ? num(part[k]) + ' ' + k : num(all[k]) + ' ' + k + ' excluded';
+    }).join(' · ');
+  }
+  // note the hidden lines when a filter excludes some, so a 0 is never mistaken for a fact
+  function excludedNote(hidden) {
+    return hidden ? num(hidden) + ' excluded by filters' : '';
+  }
+
+  // ---- sections ----------------------------------------------------------------------------
+  function renderKpis(rows) {
+    var t = newAgg();
+    rows.forEach(function (r) { add(t, r); });
+    var devs = S.supplier.size ? Array.from(S.supplier).reduce(function (n, s) { return n + (supplierDevs[s] || 0); }, 0) : DATA.meta.devices;
+    var s = score(t), b = band(s);
+    var errs = t.e.high + t.e.medium + t.e.low;
+    // exceptions come from assessment.all.exception.csv (summary.txt number_of_*_exception), filtered like the results
+    var exc = { n: 0, r: { high: 0, medium: 0, low: 0, info: 0 }, all: { high: 0, medium: 0, low: 0, info: 0 } };
+    excs.forEach(function (r) {
+      exc.all[r.risk] = (exc.all[r.risk] || 0) + r.lines;
+      if (visible(r)) { exc.n += r.lines; exc.r[r.risk] = (exc.r[r.risk] || 0) + r.lines; }
+    });
+    var cards = [
+      ['Deadbeef config', num(DATA.meta.deadbeef || 0), 'older than the threshold', DATA.meta.deadbeef ? 'bad' : 'good'],
+      ['CRLF config', num(DATA.meta.crlf || 0), 'windows line endings', DATA.meta.crlf ? 'bad' : 'good'],
+      ['Badformat config', num(DATA.meta.badformat || 0), 'first-level indentation violations', DATA.meta.badformat ? 'bad' : 'good'],
+      ['Devices', num(devs), 'in scope', 'good'],
+      ['Checks', num(t.lines), 'result lines' + (ALL.lines - t.lines ? ' · ' + excludedNote(ALL.lines - t.lines) : ''), 'good'],
+      ['Compliance', s === null ? 'n/a' : s.toFixed(1) + '%', b.label + ' (weighted pass / error)', 'grad', complianceColor(s)],
+      ['Pass', num(t.pass), excludedNote(ALL.pass - t.pass), 'good'],
+      ['Errors', num(t.error), riskDetail(t.e, ALL.e), 'bad'],
+      ['Errors / device', devs ? (errs / devs).toFixed(1) : 'n/a', 'high + medium + low', 'grad', errorsPerDeviceColor(devs ? errs / devs : null)],
+      ['Exceptions', num(exc.n), riskDetail(exc.r, exc.all), 'good q'],
+      ['Warnings', num(t.warning), excludedNote(ALL.warning - t.warning), 'bad q'],
+      ['PSIRT vulnerable', num(t.psirt), 'high', 'bad q'],
+      ['PSIRT not affected', num(t.clear), S.status.has('clear') ? 'medium / low / info' : excludedNote(ALL.clear), 'good q']
+    ];
+    $('kpis').innerHTML = cards.map(function (c) {
+      return '<div class="kpi ' + c[3] + '"' + (c[4] ? ' style="--comp:' + c[4] + '"' : '') + '><div class="l">' + small(c[0]) + '</div><div class="v">' + esc(c[1]) + '</div><div class="n">' + esc(c[2]) + '&nbsp;</div></div>';
+    }).join('');
+  }
+
+  function renderRisk(rows, erows) {
+    var by = {};
+    groupBy(rows.concat(erows), function (r) { return r.risk; }).forEach(function (a) { by[a.key] = a; });
+    var max = 1;
+    RISKS.forEach(function (k) { if (by[k] && by[k].lines > max) max = by[k].lines; });
+    $('risk-bars').innerHTML = RISKS.map(function (k) {
+      var a = by[k] || newAgg();
+      var segs = ['pass', 'error', 'warning', 'psirt', 'clear'].map(function (s) {
+        return a[s] ? '<span class="seg-' + s + '" style="width:' + (100 * a[s] / a.lines).toFixed(2) + '%" title="' + esc(STATUS_LABEL[s]) + ': ' + num(a[s]) + '"></span>' : '';
+      }).join('');
+      return '<div class="bar-row"><span>' + riskBadge(k) + '</span><div class="bar" style="width:' + (a.lines ? Math.max(2, 100 * a.lines / max) : 0).toFixed(1) + '%">' + segs + '</div><span class="muted">' + num(a.lines) + '</span></div>';
+    }).join('');
+    var h = '<table class="tbl"><thead><tr><th scope="col">Risk</th><th scope="col" class="num">Pass</th><th scope="col" class="num">Errors</th><th scope="col" class="num">Exceptions</th><th scope="col" class="num">Warnings</th><th scope="col" class="num">PSIRT <span class="sub">vulnerable</span></th><th scope="col" class="num">PSIRT <span class="sub">not affected</span></th></tr></thead><tbody>';
+    RISKS.forEach(function (k) {
+      var a = by[k] || newAgg();
+      h += '<tr><td>' + riskBadge(k) + '</td><td class="num">' + cnt(a.pass) + '</td><td class="num">' + cnt(a.error) + '</td><td class="num">' + cnt(a.exc) + '</td><td class="num">' + cnt(a.warning) + '</td><td class="num">' + cnt(a.psirt) + '</td><td class="num">' + cnt(a.clear) + '</td></tr>';
+    });
+    $('risk-table').innerHTML = h + '</tbody></table>';
+  }
+
+  function aggCols(first) {
+    return first.concat([
+      { k: 'checks', label: 'Checks', num: true, v: function (d) { return d.lines; }, h: function (d) { return num(d.lines); } },
+      { k: 'pass', label: 'Pass', num: true, v: function (d) { return d.pass; }, h: function (d) { return cnt(d.pass); } },
+      { k: 'errors', label: 'Errors', num: true, v: function (d) { return d.error; }, h: function (d) { return cnt(d.error); } },
+      { k: 'exceptions', label: 'Exceptions', num: true, v: function (d) { return d.exc; }, h: function (d) { return cnt(d.exc); } },
+      { k: 'warnings', label: 'Warnings', num: true, v: function (d) { return d.warning; }, h: function (d) { return cnt(d.warning); } },
+      { k: 'psirt', label: 'PSIRT vulnerable', num: true, v: function (d) { return d.psirt; }, h: function (d) { return cnt(d.psirt); } },
+      { k: 'score', label: 'Compliance', num: true, v: function (d) { var s = score(d); return s === null ? -1 : s; }, h: function (d) { return scoreCell(score(d)); } }
+    ]);
+  }
+
+  function renderSuppliers(rows) {
+    var data = groupBy(rows, function (r) { return r.test.supplier || '(unknown)'; });
+    var cols = aggCols([
+      { k: 'name', label: 'Supplier', v: function (d) { return d.key; }, h: function (d) { return '<button type="button" class="link" data-supplier="' + esc(d.key) + '">' + esc(d.key) + '</button>'; } },
+      { k: 'devs', label: 'Devices', num: true, v: function (d) { return supplierDevs[d.key] || 0; }, h: function (d) { return num(supplierDevs[d.key] || 0); } }
+    ]);
+    $('sup-table').innerHTML = data.length ? table('sup', cols, data).html : '<p class="empty">No result for the current filters.</p>';
+  }
+
+  function renderNist(rows) {
+    var data = groupBy(rows, function (r) { return r.test.nist || ''; }, function (a, r) { a.control = r.test.control; a.family = r.test.family; a.tests = new Set(); });
+    rows.forEach(function (r) { data.forEach(function (a) { if (a.key === (r.test.nist || '')) a.tests.add(r.t); }); });
+    var cols = aggCols([
+      { k: 'id', label: 'Control', v: function (d) { return d.key || '~'; }, h: function (d) { return d.key ? '<button type="button" class="link" data-nist="' + esc(d.key) + '">' + esc(d.key) + '</button>' : '<button type="button" class="link" data-nist="__none__">No mapping</button>'; } },
+      { k: 'control', label: 'Description', v: function (d) { return d.control || ''; }, h: function (d) { return '<span class="nist-sm">' + esc(d.control || '') + '</span>'; } },
+      { k: 'family', label: 'Family', v: function (d) { return d.family || ''; }, h: function (d) { return '<span class="nist-sm">' + esc(d.family || '') + '</span>'; } },
+      { k: 'tests', label: 'Tests', num: true, v: function (d) { return d.tests.size; }, h: function (d) { return num(d.tests.size); } }
+    ]);
+    $('nist-table').innerHTML = data.length ? table('nist', cols, data).html : '<p class="empty">No result for the current filters.</p>';
+  }
+
+  var lastTestRows = [];
+  function renderTests(rows) {
+    var data = groupBy(rows, function (r) { return r.t; }, function (a, r) { a.test = r.test; a.risks = new Set(); });
+    rows.forEach(function (r) { data.forEach(function (a) { if (a.key === r.t) a.risks.add(r.risk); }); });
+    var cols = [
+      { k: 'name', label: 'Test', v: function (d) { return d.test.name; }, h: function (d) { return '<span class="test-cell">' + esc(d.test.name.replace(/\.gawk$/, '')) + (d.test.purpose ? '<span class="purpose">' + esc(d.test.purpose) + '</span>' : '') + '</span>'; } },
+      { k: 'supplier', label: 'Supplier', v: function (d) { return d.test.supplier; }, h: function (d) { return esc(d.test.supplier); } },
+      { k: 'risk', label: 'Risk', v: function (d) { return RISKS.indexOf(Array.from(d.risks)[0]); }, h: function (d) { return Array.from(d.risks).sort(function (a, b) { return RISKS.indexOf(a) - RISKS.indexOf(b); }).map(riskBadge).join(' '); } },
+      { k: 'nist', label: 'NIST', v: function (d) { return d.test.nist || '~'; }, h: function (d) { return esc(d.test.nist || ''); } },
+      { k: 'devs', label: 'Devices affected', num: true, v: function (d) { return d.test.devs; }, h: function (d) { return cnt(d.test.devs); } },
+      { k: 'pass', label: 'Pass', num: true, v: function (d) { return d.pass; }, h: function (d) { return cnt(d.pass); } },
+      { k: 'errors', label: 'Errors', num: true, v: function (d) { return d.error; }, h: function (d) { return cnt(d.error); } },
+      { k: 'exceptions', label: 'Exceptions', num: true, v: function (d) { return d.exc; }, h: function (d) { return cnt(d.exc); } },
+      { k: 'warnings', label: 'Warnings', num: true, v: function (d) { return d.warning; }, h: function (d) { return cnt(d.warning); } },
+      { k: 'psirt', label: 'PSIRT vulnerable', num: true, v: function (d) { return d.psirt; }, h: function (d) { return cnt(d.psirt); } }
+    ];
+    if (!data.length) { $('test-table').innerHTML = '<p class="empty">No result for the current filters.</p>'; $('btn-more').hidden = true; lastTestRows = []; return; }
+    var full = table('test', cols, data);
+    lastTestRows = full.rows;
+    if (full.rows.length > S.testLimit) {
+      // the table helper renders everything: cut the body rows after sorting
+      var parts = full.html.split('</tr>');
+      full.html = parts.slice(0, S.testLimit + 1).join('</tr>') + '</tr></tbody></table>';
+      $('btn-more').hidden = false;
+      $('btn-more').textContent = 'Show all ' + num(full.rows.length) + ' tests';
+    } else {
+      $('btn-more').hidden = true;
+    }
+    $('test-table').innerHTML = full.html;
+  }
+
+  function chips(id, items, isOn, onClick) {
+    $(id).innerHTML = items.map(function (it) {
+      return '<button type="button" class="chip" aria-pressed="' + (isOn(it.k) ? 'true' : 'false') + '" data-k="' + esc(it.k) + '">' + small(it.label) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call($(id).querySelectorAll('.chip'), function (b) { b.addEventListener('click', function () { onClick(b.getAttribute('data-k')); }); });
+  }
+  function toggle(set, k) { if (set.has(k)) set.delete(k); else set.add(k); }
+
+  function renderFilters() {
+    chips('f-preset', Object.keys(PRESETS).map(function (k) { return { k: k, label: PRESETS[k].label }; }), function (k) { return S.preset === k; }, function (k) { S.preset = k; render(); });
+    chips('f-risk', RISKS.map(function (k) { return { k: k, label: k }; }), function (k) { return S.risk.has(k); }, function (k) { toggle(S.risk, k); render(); });
+    chips('f-status', statuses.map(function (k) { return { k: k, label: STATUS_LABEL[k] || k }; }), function (k) { return S.status.has(k); }, function (k) { toggle(S.status, k); render(); });
+    chips('f-supplier', suppliers.map(function (k) { return { k: k, label: k }; }), function (k) { return S.supplier.has(k); }, function (k) { toggle(S.supplier, k); render(); });
+  }
+
+  function buildNistSelect() {
+    var seen = {};
+    tests.forEach(function (t) { if (t.nist && !seen[t.nist]) seen[t.nist] = t.control; });
+    var h = '<option value="">All controls</option>' + Object.keys(seen).sort().map(function (k) {
+      return '<option value="' + esc(k) + '">' + esc(k + (seen[k] ? ' — ' + seen[k] : '')) + '</option>';
+    }).join('') + '<option value="__none__">No NIST mapping</option>';
+    $('f-nist').innerHTML = h;
+  }
+
+  function render() {
+    renderFilters();
+    $('f-nist').value = S.nist;
+    var rows = recs.filter(visible);
+    var nTests = new Set(rows.map(function (r) { return r.t; })).size;
+    $('scope').textContent = num(rows.length) + ' of ' + num(recs.length) + ' result groups, ' + num(nTests) + ' of ' + num(tests.length) + ' tests in scope.';
+    renderKpis(rows);
+    var erows = excs.filter(visible);
+    renderRisk(rows, erows);
+    renderSuppliers(rows.concat(erows));
+    renderNist(rows.concat(erows));
+    renderTests(rows.concat(erows));
+  }
+
+  // ---- events ------------------------------------------------------------------------------
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.classList.contains('th')) {
+      var st = SORT[t.getAttribute('data-tbl')], k = t.getAttribute('data-k');
+      if (st.k === k) st.dir = -st.dir; else { st.k = k; st.dir = (k === 'name' || k === 'id' || k === 'control' || k === 'family' || k === 'supplier') ? 1 : -1; }
+      render();
+    } else if (t.hasAttribute && t.hasAttribute('data-supplier')) {
+      S.supplier = new Set([t.getAttribute('data-supplier')]); render();
+    } else if (t.hasAttribute && t.hasAttribute('data-nist')) {
+      S.nist = t.getAttribute('data-nist'); render();
+    }
+  });
+  $('f-nist').addEventListener('change', function () { S.nist = this.value; render(); });
+  var qTimer = null;
+  $('f-q').addEventListener('input', function () {
+    var v = this.value.trim().toLowerCase();
+    clearTimeout(qTimer);
+    qTimer = setTimeout(function () { S.q = v; S.testLimit = TEST_PAGE; render(); }, 150);
+  });
+  $('btn-reset').addEventListener('click', function () { S = freshState(); $('f-q').value = ''; render(); });
+  $('btn-more').addEventListener('click', function () { S.testLimit = Infinity; render(); });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+  window.addEventListener('beforeprint', function () { S.testLimit = Infinity; render(); });
+  window.addEventListener('afterprint', function () { S.testLimit = TEST_PAGE; render(); });
+
+  $('btn-csv').addEventListener('click', function () {
+    function cell(v) {
+      v = String(v);
+      if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+      return '"' + v.replace(/"/g, '""') + '"';
+    }
+    var head = ['test', 'supplier', 'risk', 'nist', 'nist_description', 'devices_affected', 'errors', 'exceptions', 'warnings', 'psirt', 'pass'];
+    var out = [head.map(cell).join(',')];
+    lastTestRows.forEach(function (d) {
+      out.push([d.test.name, d.test.supplier, Array.from(d.risks).join('|'), d.test.nist, d.test.control, d.test.devs, d.error, d.exc, d.warning, d.psirt, d.pass].map(cell).join(','));
+    });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([out.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'cawk_' + DATA.meta.context.replace(/[^A-Za-z0-9_.-]/g, '_') + '_tests.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  document.title = 'Compliance report - ' + DATA.meta.context;
+  $('title').textContent = 'Network configuration compliance report';
+  $('subtitle').textContent = 'Audit: ' + DATA.meta.context + ' · generated ' + DATA.meta.generated + ' · cawk ' + DATA.meta.release;
+  buildNistSelect();
+  render();
+})();
+</script>
+</body>
+</html>

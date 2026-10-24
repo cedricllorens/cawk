@@ -9,7 +9,7 @@
 # VERSION & CORE SETTINGS
 # ===============================================================================
 
-CAWK_RELEASE = v4.0.0
+CAWK_RELEASE = v5.0.0
 RM ?= rm
 GMAKE ?= gmake
 
@@ -25,6 +25,7 @@ DATABASE_CIS_INFO = $(DATABASE_PATH)/db_info.txt
 LOGS_PATH = logs
 DATABASE_SH_PATH = $(DATABASE_PATH)/scripts
 DATABASE_SH = $(wildcard $(DATABASE_SH_PATH)/*.script.sh)
+COLLECTORS_PATH = $(DATABASE_PATH)/collectors
 REPORT_PATH = reports
 
 TESTS_COMMON_PATH = common
@@ -53,15 +54,16 @@ TODAY := $(shell date +%Y-%m-%d)
 
 # Deferred (=) on purpose: this find must run only when a target actually reads
 # RUN_DIRS (check_run_audit), not at parse time of every (recursive) make invocation.
-RUN_DIRS = $(shell find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u || echo "")
+RUN_DIRS = $(shell find -L tests -maxdepth 1 -name 'run_*' -type d 2>/dev/null | sed 's|^tests/run_||' | sort -u)
 
 # Shell-level equivalent of RUN_DIRS, for use as `$(RUN_DIRS_FIND) | while read -r audit; do ...; done`
 # inside recipes instead of `for dir in $(RUN_DIRS)`: the number of run_<audit> directories is
 # unbounded (grows with every create_audit over the tool's lifetime, unlike SUPPLIER_SCOPE), so
 # inserting the whole list literally into a `for x in LIST` line risks MAX_ARG_STRLEN at scale
-# (see CLAUDE.md Makefile Gotchas). This is plain recipe text (not $(shell ...)), re-run fresh
+# (see docs/CAWK_CODE_RULES.md Makefile Gotchas). This is plain recipe text (not $(shell ...)), re-run fresh
 # by the shell on every use.
-RUN_DIRS_FIND = find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u
+EXC_DIRS_FIND = find -L exceptions -maxdepth 1 -name 'run_*' -type d 2>/dev/null | sed 's|^exceptions/run_||' | sort -u
+RUN_DIRS_FIND = find -L tests -maxdepth 1 -name 'run_*' -type d 2>/dev/null | sed 's|^tests/run_||' | sort -u
 
 # ===============================================================================
 # Mark temporary files for automatic cleanup
@@ -91,7 +93,7 @@ RUN_DIRS_FIND = find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' 
 	fi
 	chmod 750 $@
 
-%.gawk: %.gawk.include
+%.gawk: %.gawk.include common/test_generic_psirt.gawk.template support/tests.sed
 	sed -e 's|CAWK_PSIRT_NAME|$(basename $@).gawk.include|g' -e 's|CAWK_PSIRT_TESTNAME|$(notdir $(basename $@))|g' -e 's|CAWK_PSIRT_OS|os|g' common/test_generic_psirt.gawk.template > $@.swap || true
 	sed -f support/tests.sed $@.swap > $@ || true
 	@if [ ! -s $@ ]; then \
@@ -106,8 +108,32 @@ RUN_DIRS_FIND = find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' 
 	rm -f $@.swap
 	chmod 750 $@
 
+# psirt test written with the macros of m4/cawk_psirt.m4 : the generated include (*.gawk.include.gen, not versioned) is read by the engine at run time
+%.gawk: %.gawk.include.m4 common/test_generic_psirt.gawk.template support/tests.sed m4/cawk_psirt.m4
+	m4 -I m4 $< > $(basename $@).gawk.include.m4out && sed -f support/tests.sed $(basename $@).gawk.include.m4out > $(basename $@).gawk.include.gen || rm -f $(basename $@).gawk.include.gen
+	@rm -f $(basename $@).gawk.include.m4out
+	@if [ ! -s $(basename $@).gawk.include.gen ]; then \
+		$(ECHO) "cawk error: failed to compile $< (empty file in $(basename $@).gawk.include.gen)"; \
+		rm -f $(basename $@).gawk.include.gen; \
+		false; \
+	fi
+	sed -e 's|CAWK_PSIRT_NAME|$(basename $@).gawk.include.gen|g' -e 's|CAWK_PSIRT_TESTNAME|$(notdir $(basename $@))|g' -e 's|CAWK_PSIRT_OS|os|g' common/test_generic_psirt.gawk.template > $@.swap || true
+	sed -f support/tests.sed $@.swap > $@ || true
+	@if [ ! -s $@ ]; then \
+		$(ECHO) "cawk error: failed to compile $< (empty file in $@)"; \
+		rm -f $@ $@.swap; \
+		false; \
+	elif ! { IFS= read -r l < $@; case "$$l" in "#!"*) true;; *) false;; esac; }; then \
+		$(ECHO) "cawk error: failed to compile $< (missing shebang in $@)"; \
+		rm -f $@ $@.swap; \
+		false; \
+	fi
+	rm -f $@.swap
+	chmod 750 $@
+
 %.gawk: %.gawk.m4
-	m4 -I m4 $< | sed -f support/tests.sed > $@ || true
+	m4 -I m4 $< > $@.m4out && sed -f support/tests.sed $@.m4out > $@ || rm -f $@
+	@rm -f $@.m4out
 	@if [ ! -s $@ ]; then \
 		$(ECHO) "cawk error: failed to compile $< (empty file in $@)"; \
 		rm -f $@; \
@@ -122,11 +148,11 @@ RUN_DIRS_FIND = find -L tests -name '*run_*' -type d 2>/dev/null | awk -F'run_' 
 	chmod 750 $@
 
 %.script: %.script.sh
-	cp $< $@ || true
+	cp $< $@
 	chmod 750 $@
 
 %: %.m4
-	m4 -I m4 $< | sed '/^$$/d' > $@ || true
+	m4 -I m4 $< > $@.tmp && sed '/^$$/d' $@.tmp > $@ && rm -f $@.tmp || { $(ECHO) "cawk error: m4 failed for $< ----"; rm -f $@ $@.tmp; false; }
 
 checkdiff/scripts/%: checkdiff/scripts/%.sh
 	cp $< $@ || true
@@ -153,9 +179,11 @@ SUPPLIER_TEMPLATE_RUN_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(sup
 
 # PSIRT tests compilation targets (template, m4, and include sources)
 SUPPLIER_M4_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_M4:.gawk.m4=.gawk))
+SUPPLIER_INCLUDEM4_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_INCLUDEM4:.gawk.include.m4=.gawk))
 SUPPLIER_TEMPLATE_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_TEMPLATE:.gawk.template=.gawk))
 SUPPLIER_INCLUDE_REPO_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_REPO_PSIRT_INCLUDE:.gawk.include=.gawk))
 SUPPLIER_M4_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_M4:.gawk.m4=.gawk))
+SUPPLIER_INCLUDEM4_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_INCLUDEM4:.gawk.include.m4=.gawk))
 SUPPLIER_TEMPLATE_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_TEMPLATE:.gawk.template=.gawk))
 SUPPLIER_INCLUDE_RUN_PSIRT_FILES = $(foreach supplier,$(SUPPLIER_SCOPE),$(TESTS_$(supplier)_RUN_PSIRT_INCLUDE:.gawk.include=.gawk))
 
@@ -195,10 +223,12 @@ TESTS_$(1)_RUN_M4 = $$(wildcard $$(TESTS_$(1)_RUN_PATH)/*.m4)
 # psirt tests files (template and m4)
 TESTS_$(1)_REPO_PSIRT_TEMPLATE = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.template)
 TESTS_$(1)_REPO_PSIRT_INCLUDE = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.include)
-TESTS_$(1)_REPO_PSIRT_M4 = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.m4)
+TESTS_$(1)_REPO_PSIRT_M4 = $$(filter-out %.include.m4,$$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.m4))
+TESTS_$(1)_REPO_PSIRT_INCLUDEM4 = $$(wildcard $$(TESTS_$(1)_REPO_PSIRT_PATH)/*.gawk.include.m4)
 TESTS_$(1)_RUN_PSIRT_TEMPLATE = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.template)
 TESTS_$(1)_RUN_PSIRT_INCLUDE = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.include)
-TESTS_$(1)_RUN_PSIRT_M4 = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.m4)
+TESTS_$(1)_RUN_PSIRT_M4 = $$(filter-out %.include.m4,$$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.m4))
+TESTS_$(1)_RUN_PSIRT_INCLUDEM4 = $$(wildcard $$(TESTS_$(1)_RUN_PSIRT_PATH)/*.gawk.include.m4)
 
 endef
 
@@ -248,6 +278,15 @@ FIND_CONF_SELECT = ! -type d
 # Generate JSON reports alongside text reports (yes/no)
 JSON ?= no
 
+# Generate the standalone high-level html report (assessment.all.summary.html) alongside the text reports (yes/no)
+HTML ?= yes
+
+# Logo embedded in the header of the html report (base64 data uri, missing file = no logo)
+LOGO_HTML ?= docs/logo/logo-cawk.svg
+
+# Generate the timeline reports (assessment.all.*.timeline.csv), the csv they are built from are kept (yes/no)
+TIMELINE ?= yes
+
 # Regenerate test metadata database at build time (yes/no)
 CATALOG_BUILD ?= no
 
@@ -261,6 +300,17 @@ BADFORMAT ?= no
 # Exclude crlf configurations (windows format, results unreliable) from the final reports (yes/no, forced to yes by default)
 CRLF ?= yes
 
+# Censor the final csv reports (yes/no): assessment.*.csv become assessment.*.censored.csv (the error_line column only, CENSOR_LEVEL), the originals are removed,
+# the timeline, json and html reports are built from the censored csv. no: the csv reports are left as they are
+SECRETSCAN ?= no
+ifeq ($(strip $(SECRETSCAN)),yes)
+CSV_EXT = .censored.csv
+JSON_EXT = .censored.json
+else
+CSV_EXT = .csv
+JSON_EXT = .json
+endif
+
 # Auto-archive reports older than N days during cleanup
 ARCHIVE_OLDER_DAYS ?= 120
 
@@ -269,6 +319,23 @@ ARCHIVE_OLDER_DAYS ?= 120
 #   yes = run ONLY PSIRT tests (standard tests are skipped)
 # Note: PSIRT tests are always compiled; this flag only selects which tests run at assessment time.
 PSIRT_ONLY ?= no
+
+# STANDARD_ONLY assessment mode (yes/no), mirror of PSIRT_ONLY
+#   no  = run standard tests + PSIRT tests (default)
+#   yes = run ONLY standard tests (PSIRT tests are skipped)
+# Cannot be combined with PSIRT_ONLY=yes (rejected by check_supplier).
+STANDARD_ONLY ?= no
+
+# COLLECT (yes/no): sync_run audit=AUDIT_NAME runs collect_run (optional config collectors) first
+#   no  = sync only what the sync database already references (default)
+#   yes = collect then sync; a collection failure does not stop the sync (previously collected confs are used)
+COLLECT ?= no
+
+# CENSOR_LEVEL distribution level of the censoring (internal/external)
+#   internal = apply only the censor macros of level internal (default, the level of a macro without level)
+#   external = apply the censor macros of level internal and external
+# Note: only the censor_* targets use it; checked by check_supplier.
+CENSOR_LEVEL ?= internal
 
 # Remove intermediate assessment files after reporting (yes/no)
 TMP_ASSESSMENT_FILES ?= yes
@@ -392,7 +459,7 @@ define cawk_test_execution
 		,\
 		touch $(3) ;\
 	) \
-	find $(4) -name '*.gawk' -type f 2>/dev/null | while read -r cawktest; do find $(2) $(FIND_CONF_SELECT) -exec "$$cawktest" {} + >> $(3) 2>>$(LOGS_PATH)/$(6)/test_exec.$(5).err; done ;\
+	$(if $(filter yes,$(STANDARD_ONLY)),:,find $(4) -name '*.gawk' -type f 2>/dev/null | while read -r cawktest; do find $(2) $(FIND_CONF_SELECT) -exec "$$cawktest" {} + >> $(3) 2>>$(LOGS_PATH)/$(6)/test_exec.$(5).err; done) ;\
 	if [ -s $(LOGS_PATH)/$(6)/test_exec.$(5).err ]; then $(ECHO) "cawk error: test execution failed for $(5) (see $(LOGS_PATH)/$(6)/test_exec.$(5).err) ----"; fi
 endef
 
@@ -408,7 +475,7 @@ define cawk_test_gen_parallel
 	$(if $(filter no,$(PSIRT_ONLY)),\
 		find $(TESTS_$(1)_$(2)_PATH) -type f -name '*.gawk' > $(TESTS_TMP)/conf_list_tests.$(4).$(1) 2>/dev/null || true ;\
 		$(TESTS_COMMON_PATH)/gen_cawk_makefile.gawk $(TESTS_TMP)/conf_list_files.$(4).$(1) $(MAKE_FILES_PER_TARGET) $(TESTS_TMP)/conf_list_tests.$(4).$(1) > $(TESTS_TMP)/Makefile.$(4).$(1) 2>$(LOGS_PATH)/$(3)/gen_makefile.$(1).err || $(ECHO) "cawk error: parallel makefile generation failed for $(1) (see $(LOGS_PATH)/$(3)/gen_makefile.$(1).err) ----" ;\
-		$(GMAKE) -f $(TESTS_TMP)/Makefile.$(4).$(1) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/$(3)/assessment.$(1).csv.swap 2>$(LOGS_PATH)/$(3)/parallel_gmake.$(1).err || $(ECHO) "cawk error: parallel test execution failed for $(1) (see $(LOGS_PATH)/$(3)/parallel_gmake.$(1).err) ----" ;\
+		$(GMAKE) --no-print-directory -f $(TESTS_TMP)/Makefile.$(4).$(1) -j $(MAKE_J) --load-average=$(MAKE_LOAD_AVG) all >> $(REPORT_PATH)/$(3)/assessment.$(1).csv.swap 2>$(LOGS_PATH)/$(3)/parallel_gmake.$(1).err || $(ECHO) "cawk error: parallel test execution failed for $(1) (see $(LOGS_PATH)/$(3)/parallel_gmake.$(1).err) ----" ;\
 		,\
 		touch $(REPORT_PATH)/$(3)/assessment.$(1).csv.swap ;\
 	)
@@ -491,14 +558,44 @@ define cawk_filter_idx
 	if [ -s $(3)/assessment.all.$(1).idx ]; then \
 		filter_count=$$(wc -l < $(3)/assessment.all.$(1).idx); \
 		if [ "$(strip $($(2)))" = "yes" ]; then \
-			$(ECHO) "cawk error: $(1) filter $$filter_state, $$filter_count $(1) configuration(s) detected and excluded from the assessment (see $(3)/assessment.all.$(1).csv) ----"; \
+			$(ECHO) "cawk warning: $(1) filter $$filter_state, $$filter_count $(1) configuration(s) detected and excluded from the assessment (see $(3)/assessment.all.$(1).csv) ----"; \
 			cat $(3)/assessment.all.$(1).idx >> $(3)/assessment.all.filter.idx.swap; \
 		else \
-			$(ECHO) "cawk error: $(1) filter $$filter_state, $$filter_count $(1) configuration(s) detected and kept in the assessment (see $(3)/assessment.all.$(1).csv) ----"; \
+			$(ECHO) "cawk warning: $(1) filter $$filter_state, $$filter_count $(1) configuration(s) detected and kept in the assessment (see $(3)/assessment.all.$(1).csv) ----"; \
 		fi; \
 	else \
 		$(ECHO) "cawk $(1) filter $$filter_state, no $(1) configuration detected ----"; \
 	fi;
+endef
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_html_gen — Generate the standalone html report from assessment.all.csv (single recipe line)
+# -------------------------------------------------------------------------------------------
+# $(1) = report_dir, $(2) = audit key (repo|run|$(audit)), $(3) = file receiving the stderr of report_html.gawk
+# -------------------------------------------------------------------------------------------
+define cawk_html_gen
+	base64 -w0 $(LOGO_HTML) > $(TESTS_TMP)/logo_html.b64 2>/dev/null || : ; $(TESTS_COMMON_PATH)/report_html.gawk -v HTML_SKELETON=$(TESTS_COMMON_PATH)/report_html.skeleton.html -v CONTEXT=$(2) -v AUDIT=$(2) -v CAWK_RELEASE=$(CAWK_RELEASE) -v LOGO_HTML=$(LOGO_HTML) -v LOGO_B64=$(TESTS_TMP)/logo_html.b64 $(DATABASE_CIS_INFO) $(1)/assessment.all$(CSV_EXT) > $(1)/assessment.all.summary.html 2>>$(3)
+endef
+
+# -------------------------------------------------------------------------------------------
+# MACRO: cawk_secretscan_csv — SECRETSCAN=yes: censor the csv reports of a report dir, then remove the originals
+# -------------------------------------------------------------------------------------------
+# The originals are only removed when every file was censored. find batches the files itself (ARG_MAX).
+# TMP_ASSESSMENT_FILES=yes: the per-supplier assessment.<supplier>.*.csv are deleted right after, so only assessment.all*.csv is censored.
+CAWK_SECRETSCAN_GLOB = $(if $(filter yes,$(strip $(TMP_ASSESSMENT_FILES))),assessment.all*.csv,assessment.*.csv)
+# $(1) = report_dir, $(2) = log_dir (report_all.err)
+# -------------------------------------------------------------------------------------------
+define cawk_secretscan_csv
+if [ "$(strip $(SECRETSCAN))" = "yes" ]; then \
+		if CENSOR_MODE=censor CENSOR_CSV=yes CENSOR_LEVEL="$(strip $(CENSOR_LEVEL))" find $(1) -maxdepth 1 -type f -name '$(CAWK_SECRETSCAN_GLOB)' ! -name '*.censored.csv' -exec $(TESTS_COMMON_PATH)/censor.gawk {} + 2>>$(2)/report_all.err; then \
+			find $(1) -maxdepth 1 -type f -name '$(CAWK_SECRETSCAN_GLOB)' ! -name '*.censored.csv' -delete; \
+			$(ECHO) "cawk secretscan filter activated (SECRETSCAN=yes), $$(find $(1) -maxdepth 1 -type f -name 'assessment.*.censored.csv' | wc -l) csv report(s) censored (CENSOR_LEVEL=$(strip $(CENSOR_LEVEL))), originals removed ----"; \
+		else \
+			$(ECHO) "cawk error: secretscan censoring failed, the original csv reports are kept (see $(2)/report_all.err) ----"; \
+		fi; \
+	else \
+		$(ECHO) "cawk secretscan filter not activated (SECRETSCAN=no), csv reports are not censored ----"; \
+	fi
 endef
 
 # -------------------------------------------------------------------------------------------
@@ -527,19 +624,22 @@ define cawk_report_scope_all
 	$(ECHO) "------------------------------" >> $(1)/assessment.all.summary.txt
 	cat $(TESTS_TMP)/catalog_exceptions.$(2).txt >> $(1)/assessment.all.summary.txt
 	$(EGREP) "(high|medium|low);error" $(1)/assessment.all.csv > $(1)/assessment.all.security.csv || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.security.csv > $(1)/assessment.all.security.timeline.csv 2>>$(3)/report_all.err || true
 	$(EGREP) ";psirt" $(1)/assessment.all.csv > $(1)/assessment.all.psirt.csv || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.psirt.csv > $(1)/assessment.all.psirt.timeline.csv 2>>$(3)/report_all.err || true
 	$(EGREP) "(info;error|;warning)" $(1)/assessment.all.csv > $(1)/assessment.all.audit.csv || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.audit.csv > $(1)/assessment.all.audit.timeline.csv 2>>$(3)/report_all.err || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.csv > $(1)/assessment.all.timeline.csv 2>>$(3)/report_all.err || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.exception.csv > $(1)/assessment.all.exception.timeline.csv 2>>$(3)/report_all.err || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.deadbeef.csv > $(1)/assessment.all.deadbeef.timeline.csv 2>>$(3)/report_all.err || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.badformat.csv > $(1)/assessment.all.badformat.timeline.csv 2>>$(3)/report_all.err || true
-	$(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.crlf.csv > $(1)/assessment.all.crlf.timeline.csv 2>>$(3)/report_all.err || true
+	$(call cawk_secretscan_csv,$(1),$(3))
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(ECHO) "cawk timeline reporting performed (TIMELINE=yes) ----"; else $(ECHO) "cawk timeline reporting skipped (TIMELINE=no) ----"; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.security$(CSV_EXT) > $(1)/assessment.all.security.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.psirt$(CSV_EXT) > $(1)/assessment.all.psirt.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.audit$(CSV_EXT) > $(1)/assessment.all.audit.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all$(CSV_EXT) > $(1)/assessment.all.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.exception$(CSV_EXT) > $(1)/assessment.all.exception.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.deadbeef$(CSV_EXT) > $(1)/assessment.all.deadbeef.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.badformat$(CSV_EXT) > $(1)/assessment.all.badformat.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
+	if [ "$(strip $(TIMELINE))" = "yes" ]; then $(TESTS_COMMON_PATH)/report_timeline.gawk $(1)/assessment.all.idx.swap $(1)/assessment.all.crlf$(CSV_EXT) > $(1)/assessment.all.crlf.timeline$(CSV_EXT) 2>>$(3)/report_all.err || true; fi
 	sort -u $(1)/assessment.all.idx.swap > $(1)/assessment.all.idx
 	if [ "$(strip $(TMP_ASSESSMENT_FILES))" = "yes" ]; then $(ECHO) "cawk removing temporary assessment files (TMP_ASSESSMENT_FILES=yes) ----"; for s in $(SUPPLIER_SCOPE); do $(RM) -f $(1)/assessment.$$s.* || true; done; $(RM) -f $(1)/assessment.all.*.swap || true; else $(ECHO) "cawk keeping assessment files (TMP_ASSESSMENT_FILES=no) ----"; fi
-	if [ "$(strip $(JSON))" = "yes" ]; then $(ECHO) "cawk json reporting performed (JSON=yes) ----"; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.csv > $(1)/assessment.all.json 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.security.csv > $(1)/assessment.all.security.json 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.audit.csv > $(1)/assessment.all.audit.json 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.psirt.csv > $(1)/assessment.all.psirt.json 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.exception.csv > $(1)/assessment.all.exception.json 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_sumjson.gawk $(1)/assessment.all.summary.txt > $(1)/assessment.all.summary.json 2>>$(3)/report_all.err || true; else $(ECHO) "cawk json reporting skipped (JSON=no) ----"; fi
+	if [ "$(strip $(JSON))" = "yes" ]; then $(ECHO) "cawk json reporting performed (JSON=yes) ----"; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all$(CSV_EXT) > $(1)/assessment.all$(JSON_EXT) 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.security$(CSV_EXT) > $(1)/assessment.all.security$(JSON_EXT) 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.audit$(CSV_EXT) > $(1)/assessment.all.audit$(JSON_EXT) 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.psirt$(CSV_EXT) > $(1)/assessment.all.psirt$(JSON_EXT) 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_json.gawk $(1)/assessment.all.exception$(CSV_EXT) > $(1)/assessment.all.exception$(JSON_EXT) 2>>$(3)/report_all.err || true; $(TESTS_COMMON_PATH)/report_sumjson.gawk $(1)/assessment.all.summary.txt > $(1)/assessment.all.summary.json 2>>$(3)/report_all.err || true; else $(ECHO) "cawk json reporting skipped (JSON=no) ----"; fi
+	if [ "$(strip $(HTML))" = "yes" ]; then $(ECHO) "cawk html reporting performed (HTML=yes) ----"; $(call cawk_html_gen,$(1),$(2),$(3)/report_all.err) || true; else $(ECHO) "cawk html reporting skipped (HTML=no) ----"; fi
 	@if [ -s $(3)/report_all.err ]; then $(ECHO) "cawk error: final report generation failed (see $(3)/report_all.err) ----"; fi
 endef
 

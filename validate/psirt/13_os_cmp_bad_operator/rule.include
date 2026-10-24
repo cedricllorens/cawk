@@ -1,0 +1,7 @@
+function load_psirt_config() {
+  DEVICE = "^c_"
+  OS_CMP[1]["op"] = "near"
+  OS_CMP[1]["min"] = "15.2"
+  LINE[1] = "hostname"
+  LOGIC = "LINE[1] == 1"
+}

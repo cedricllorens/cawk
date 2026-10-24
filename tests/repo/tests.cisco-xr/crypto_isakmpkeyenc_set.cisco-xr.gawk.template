@@ -28,7 +28,7 @@ BEGINFILE {
 
 /^crypto isakmp key / {
 	if ( $0 !~ /^crypto isakmp key 6 .*$/ ) {
-		print_err("crypto_isakmpkeyenc_set.cisco-xr.gawk",$0,FNR,"high","error");
+		print_err("crypto_isakmpkeyenc_set.cisco-xr.gawk",$1" "$2" "$3"...",FNR,"high","error");
 		pass = 0;
 	}
 }

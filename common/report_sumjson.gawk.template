@@ -20,6 +20,8 @@ BEGIN {
     in_tests_section = 0 # flag pour la section tests purposes
     testCount = 0       # compteur de tests
     current_test = ""   # nom du test courant
+    in_exc_section = 0  # flag pour la section exceptions purposes
+    excCount = 0        # compteur d'exceptions
 }
 
 # remove leading and trailing spaces
@@ -79,8 +81,22 @@ function addKV(section, key, value) {
             next
         }
 
-        # exit tests section if entering another section
+        # detect exceptions purposes section
+        if (header ~ /exceptions purposes/) {
+            in_exc_section = 1
+            in_tests_section = 0
+            current_section = "exceptions purposes"
+            if (!(current_section in sectSeen)) {
+                sectCount++
+                sectOrder[sectCount] = current_section
+                sectSeen[current_section] = 1
+            }
+            next
+        }
+
+        # exit tests and exceptions sections if entering another section
         in_tests_section = 0
+        in_exc_section = 0
 
         if (header ~ /^Summary[ \t]+/) {
             split(header, arr, /[ \t]+/)
@@ -98,6 +114,36 @@ function addKV(section, key, value) {
                 sectOrder[sectCount] = current_section
                 sectSeen[current_section] = 1
             }
+        }
+        next
+    }
+
+    # handle exceptions purposes section specially:
+    # "=== audit:A supplier:S list of exceptions ===", "[ID] purpose", "  dnl m4_cawk_exception(...)"
+    if (in_exc_section) {
+        if ($0 ~ /^=== audit:/) {
+            exc_audit_cur = $0
+            sub(/^=== audit:/, "", exc_audit_cur)
+            sub(/ supplier:.*$/, "", exc_audit_cur)
+            exc_supplier_cur = $0
+            sub(/^.* supplier:/, "", exc_supplier_cur)
+            sub(/ list of exceptions ===.*$/, "", exc_supplier_cur)
+        } else if ($0 ~ /^\[[^]]+\]/) {
+            excCount++
+            exc_id[excCount] = $0
+            sub(/^\[/, "", exc_id[excCount])
+            sub(/\].*$/, "", exc_id[excCount])
+            exc_purpose[excCount] = $0
+            sub(/^\[[^]]+\][ \t]*/, "", exc_purpose[excCount])
+            exc_audit[excCount] = exc_audit_cur
+            exc_supplier[excCount] = exc_supplier_cur
+            exc_rules[excCount] = ""
+            exc_nrules[excCount] = 0
+        } else if ($0 ~ /^[ \t]+dnl[ \t]/ && excCount > 0) {
+            rule_line = $0
+            sub(/^[ \t]+dnl[ \t]+/, "", rule_line)
+            exc_nrules[excCount]++
+            exc_rules[excCount] = exc_rules[excCount] (exc_nrules[excCount] > 1 ? delim : "") trim(rule_line)
         }
         next
     }
@@ -181,6 +227,26 @@ END {
                 }
                 printf "\n    }"
                 first_test = 0
+            }
+            printf "\n  ]"
+        } else if (sec == "exceptions purposes") {
+            printf "  " json_escape(sec) ": ["
+            for (e = 1; e <= excCount; e++) {
+                if (e > 1)
+                    printf ","
+                printf "\n    {\n"
+                printf "      \"audit\": %s,\n", json_escape(exc_audit[e])
+                printf "      \"supplier\": %s,\n", json_escape(exc_supplier[e])
+                printf "      \"id\": %s,\n", json_escape(exc_id[e])
+                printf "      \"purpose\": %s,\n", json_escape(exc_purpose[e])
+                printf "      \"rules\": ["
+                split(exc_rules[e], arr, delim)
+                for (j = 1; j <= exc_nrules[e]; j++) {
+                    if (j > 1)
+                        printf ", "
+                    printf json_escape(arr[j])
+                }
+                printf "]\n    }"
             }
             printf "\n  ]"
         } else {

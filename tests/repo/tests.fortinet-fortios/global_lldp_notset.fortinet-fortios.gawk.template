@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/^%SED_BK_FORTI%set lldp/ && block_global == 1 {
+/^%SED_BK_FORTI%set lldp[^ ]* (enable|status)/ && block_global == 1 {
 	print_err("global_lldp_notset.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;	
 	next;
@@ -44,7 +44,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("global_lldp_notset.fortinet-fortios.gawk","no mgnt interface is set",0,"high","pass");
+	if ( pass ) print_err("global_lldp_notset.fortinet-fortios.gawk","no <lldp> is set globally",0,"high","pass");
 }
 
 END {

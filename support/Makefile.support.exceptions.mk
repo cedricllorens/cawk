@@ -40,8 +40,8 @@ endif
 	$(ECHO) "cawk exceptions_run done ----"
 
 exceptions_run_audit:
-	$(RUN_DIRS_FIND) | while read -r audit; do \
-		$(GMAKE) exceptions_run audit=$$audit; \
+	$(EXC_DIRS_FIND) | while read -r audit; do \
+		$(GMAKE) exceptions_run audit=$$audit || exit 1; \
 	done
 	$(ECHO) "cawk exceptions_run_audit done ----"
 
@@ -75,12 +75,12 @@ exceptions_build: tests_target_common
 	touch $(DATABASE_PATH)/db_exception.txt
 	$(GMAKE) exceptions_build_repo
 	$(GMAKE) exceptions_build_run audit=
-	@count=$$(find -L exceptions -name '*run_*' -type d 2>/dev/null | wc -l); \
+	@count=$$($(EXC_DIRS_FIND) | wc -l); \
 	if [ "$$count" -eq 0 ]; then \
 		$(ECHO) "cawk exceptions_build: no run audits found, skipping exceptions_build_run"; \
 	else \
-		find -L exceptions -name '*run_*' -type d 2>/dev/null | awk -F'run_' '{print $$NF}' | sort -u | while read -r audit; do \
-			$(GMAKE) exceptions_build_run audit=$$audit; \
+		$(EXC_DIRS_FIND) | while read -r audit; do \
+			$(GMAKE) exceptions_build_run audit=$$audit || exit 1; \
 		done; \
 	fi
 	$(ECHO) "cawk exceptions_build done ----"
@@ -94,6 +94,7 @@ exceptions_run_copy:
 	$(ECHO) "cawk exceptions_run_copy to $$RUN_TARGET start ----"; \
 	mkdir -p $$RUN_TARGET || true; \
 	for file in $(EXCEPTION_PATH)/repo/*.m4; do \
+		[ -f "$$file" ] || continue; \
 		if [ ! -f "$$RUN_TARGET/$$(basename $$file)" ]; then \
 			cp -v $$file $$RUN_TARGET/ 2>/dev/null || true; \
 		else \
@@ -103,8 +104,8 @@ exceptions_run_copy:
 	$(ECHO) "cawk exceptions_run_copy to $$RUN_TARGET done ----"
 
 exceptions_run_audit_copy:
-	$(RUN_DIRS_FIND) | while read -r dir; do \
-		$(GMAKE) exceptions_run_copy audit=$$dir; \
+	find -L $(REPORT_PATH) -maxdepth 1 -name 'run_*' -type d 2>/dev/null | sed 's|^$(REPORT_PATH)/run_||' | sort -u | while read -r dir; do \
+		$(GMAKE) exceptions_run_copy audit=$$dir || exit 1; \
 	done
 	$(ECHO) "cawk exceptions_run_audit_copy done ----"
 

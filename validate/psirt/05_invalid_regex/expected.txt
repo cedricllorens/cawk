@@ -1,0 +1,2 @@
+c_a;t.gawk;invalid psirt configuration: invalid regular expression in the psirt configuration (pattern number 3);0;high;error
+c_b;t.gawk;invalid psirt configuration: invalid regular expression in the psirt configuration (pattern number 3);0;high;error

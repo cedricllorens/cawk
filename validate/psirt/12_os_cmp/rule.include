@@ -1,0 +1,13 @@
+function load_psirt_config() {
+  DEVICE = "^c_"
+  OS_CMP[1]["op"] = "between"
+  OS_CMP[1]["min"] = "15.3(3)"
+  OS_CMP[1]["max"] = "15.4(3)T"
+  OS_CMP[2]["op"] = "lt"
+  OS_CMP[2]["min"] = "12.4(24)T5"
+  OS_CMP[3]["op"] = "ge"
+  OS_CMP[3]["min"] = "16.9"
+  OS_CMP[3]["platform"] = "^C9300.*"
+  LINE[1] = "hostname"
+  LOGIC = "LINE[1] == 1"
+}

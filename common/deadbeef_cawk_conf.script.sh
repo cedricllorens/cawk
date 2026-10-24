@@ -39,7 +39,7 @@ for file in "$@"; do
   # Calculate the difference in days
   if [ $(( (current_date - file_mod_date) / 86400 )) -ge $THRESHOLD_DAYS ]; then
     file_date=$(date -d @"$file_mod_date" "+%m/%Y")
-    echo "$file;cawk_deadbeef_internal_test;configuration older than $THRESHOLD_DAYS days ($file_date) days;;info;warning"
+    echo "$file;cawk_deadbeef_internal_test;configuration older than $THRESHOLD_DAYS days ($file_date);;info;warning"
   fi
 done
 

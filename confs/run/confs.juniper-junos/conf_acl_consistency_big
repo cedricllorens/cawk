@@ -1,0 +1,1592 @@
+system {
+    host-name cawk-acl-consistency-big;
+}
+firewall {
+    family inet {
+        filter CAWK-B1-ADDR-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        10.1.1.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.1.0.0/16;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        10.2.2.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.2.2.2/32;
+                    }
+                }
+                then {
+                    count host-hits;
+                    accept;
+                }
+            }
+        }
+        filter CAWK-B1-ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.3.3.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.4.4.0/24;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B1-PORT-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-B1-PORT-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3001;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-PROTO-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol udp;
+                    destination-port 3000;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-RANGE-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3050;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-RANGE-EXP-PASS {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3200;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-NAME-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 22;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B1-LIST-EXP-2-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ 53 123 ];
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol udp;
+                    destination-port 53;
+                }
+                then discard;
+            }
+            term t3 {
+                from {
+                    protocol tcp;
+                    destination-port 123;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 8;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-reply;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B1-ICMP-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type unreachable;
+                    icmp-code port-unreachable;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 3;
+                    icmp-code 3;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B1-ANYTERM-EXP-1-INCONSISTENT {
+            term allow-web {
+                from {
+                    protocol tcp;
+                    destination-port [ http https ];
+                }
+                then accept;
+            }
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+        }
+        filter CAWK-B1-NOTMODELLED-EXP-PASS {
+            term except-term {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                        10.9.1.0/24 except;
+                    }
+                }
+                then accept;
+            }
+            term flags-term {
+                from {
+                    source-address {
+                        10.9.1.0/24;
+                    }
+                    protocol tcp;
+                    tcp-established;
+                }
+                then discard;
+            }
+            term prefix-list-term {
+                from {
+                    source-prefix-list MGMT;
+                }
+                then discard;
+            }
+            term count-only {
+                then {
+                    count seen;
+                    next term;
+                }
+            }
+        }
+        inactive: filter CAWK-B1-INACTIVE-FILTER {
+            term t1 {
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+        filter CAWK-B1-INACTIVE-TERM-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then accept;
+            }
+            inactive: term t2 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-ADDR-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        10.1.1.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.1.0.0/16;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        10.2.2.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.2.2.2/32;
+                    }
+                }
+                then {
+                    count host-hits;
+                    accept;
+                }
+            }
+        }
+        filter CAWK-B2-ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.3.3.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.4.4.0/24;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B2-PORT-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-B2-PORT-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3001;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-PROTO-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol udp;
+                    destination-port 3000;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-RANGE-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3050;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-RANGE-EXP-PASS {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3200;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-NAME-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 22;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B2-LIST-EXP-2-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ 53 123 ];
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol udp;
+                    destination-port 53;
+                }
+                then discard;
+            }
+            term t3 {
+                from {
+                    protocol tcp;
+                    destination-port 123;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 8;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-reply;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B2-ICMP-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type unreachable;
+                    icmp-code port-unreachable;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 3;
+                    icmp-code 3;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B2-ANYTERM-EXP-1-INCONSISTENT {
+            term allow-web {
+                from {
+                    protocol tcp;
+                    destination-port [ http https ];
+                }
+                then accept;
+            }
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+        }
+        filter CAWK-B2-NOTMODELLED-EXP-PASS {
+            term except-term {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                        10.9.1.0/24 except;
+                    }
+                }
+                then accept;
+            }
+            term flags-term {
+                from {
+                    source-address {
+                        10.9.1.0/24;
+                    }
+                    protocol tcp;
+                    tcp-established;
+                }
+                then discard;
+            }
+            term prefix-list-term {
+                from {
+                    source-prefix-list MGMT;
+                }
+                then discard;
+            }
+            term count-only {
+                then {
+                    count seen;
+                    next term;
+                }
+            }
+        }
+        inactive: filter CAWK-B2-INACTIVE-FILTER {
+            term t1 {
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+        filter CAWK-B2-INACTIVE-TERM-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then accept;
+            }
+            inactive: term t2 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-ADDR-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        10.1.1.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.1.0.0/16;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        10.2.2.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.2.2.2/32;
+                    }
+                }
+                then {
+                    count host-hits;
+                    accept;
+                }
+            }
+        }
+        filter CAWK-B3-ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.3.3.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.4.4.0/24;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B3-PORT-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-B3-PORT-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3001;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-PROTO-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol udp;
+                    destination-port 3000;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-RANGE-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3050;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-RANGE-EXP-PASS {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3200;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-NAME-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 22;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B3-LIST-EXP-2-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ 53 123 ];
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol udp;
+                    destination-port 53;
+                }
+                then discard;
+            }
+            term t3 {
+                from {
+                    protocol tcp;
+                    destination-port 123;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 8;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-reply;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B3-ICMP-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type unreachable;
+                    icmp-code port-unreachable;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 3;
+                    icmp-code 3;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B3-ANYTERM-EXP-1-INCONSISTENT {
+            term allow-web {
+                from {
+                    protocol tcp;
+                    destination-port [ http https ];
+                }
+                then accept;
+            }
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+        }
+        filter CAWK-B3-NOTMODELLED-EXP-PASS {
+            term except-term {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                        10.9.1.0/24 except;
+                    }
+                }
+                then accept;
+            }
+            term flags-term {
+                from {
+                    source-address {
+                        10.9.1.0/24;
+                    }
+                    protocol tcp;
+                    tcp-established;
+                }
+                then discard;
+            }
+            term prefix-list-term {
+                from {
+                    source-prefix-list MGMT;
+                }
+                then discard;
+            }
+            term count-only {
+                then {
+                    count seen;
+                    next term;
+                }
+            }
+        }
+        inactive: filter CAWK-B3-INACTIVE-FILTER {
+            term t1 {
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+        filter CAWK-B3-INACTIVE-TERM-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then accept;
+            }
+            inactive: term t2 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-ADDR-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        10.1.1.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.1.0.0/16;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        10.2.2.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.2.2.2/32;
+                    }
+                }
+                then {
+                    count host-hits;
+                    accept;
+                }
+            }
+        }
+        filter CAWK-B4-ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.3.3.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.4.4.0/24;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B4-PORT-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-B4-PORT-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3001;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-PROTO-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol udp;
+                    destination-port 3000;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-RANGE-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3050;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-RANGE-EXP-PASS {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3200;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-NAME-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 22;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B4-LIST-EXP-2-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ 53 123 ];
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol udp;
+                    destination-port 53;
+                }
+                then discard;
+            }
+            term t3 {
+                from {
+                    protocol tcp;
+                    destination-port 123;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 8;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-reply;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B4-ICMP-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type unreachable;
+                    icmp-code port-unreachable;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 3;
+                    icmp-code 3;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B4-ANYTERM-EXP-1-INCONSISTENT {
+            term allow-web {
+                from {
+                    protocol tcp;
+                    destination-port [ http https ];
+                }
+                then accept;
+            }
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+        }
+        filter CAWK-B4-NOTMODELLED-EXP-PASS {
+            term except-term {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                        10.9.1.0/24 except;
+                    }
+                }
+                then accept;
+            }
+            term flags-term {
+                from {
+                    source-address {
+                        10.9.1.0/24;
+                    }
+                    protocol tcp;
+                    tcp-established;
+                }
+                then discard;
+            }
+            term prefix-list-term {
+                from {
+                    source-prefix-list MGMT;
+                }
+                then discard;
+            }
+            term count-only {
+                then {
+                    count seen;
+                    next term;
+                }
+            }
+        }
+        inactive: filter CAWK-B4-INACTIVE-FILTER {
+            term t1 {
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+        filter CAWK-B4-INACTIVE-TERM-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then accept;
+            }
+            inactive: term t2 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-ADDR-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        10.1.1.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.1.0.0/16;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        10.2.2.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.2.2.2/32;
+                    }
+                }
+                then {
+                    count host-hits;
+                    accept;
+                }
+            }
+        }
+        filter CAWK-B5-ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.3.3.0/24;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        10.4.4.0/24;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B5-PORT-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-B5-PORT-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.1/32;
+                    }
+                    protocol tcp;
+                    destination-port 3001;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-PROTO-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol tcp;
+                    destination-port 3000;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    destination-address {
+                        192.0.2.2/32;
+                    }
+                    protocol udp;
+                    destination-port 3000;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-RANGE-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3050;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-RANGE-EXP-PASS {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port 3000-3100;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 3200;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-NAME-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol tcp;
+                    destination-port 22;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B5-LIST-EXP-2-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol [ tcp udp ];
+                    destination-port [ 53 123 ];
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol udp;
+                    destination-port 53;
+                }
+                then discard;
+            }
+            term t3 {
+                from {
+                    protocol tcp;
+                    destination-port 123;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 8;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type echo-reply;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-B5-ICMP-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    protocol icmp;
+                    icmp-type unreachable;
+                    icmp-code port-unreachable;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    protocol icmp;
+                    icmp-type 3;
+                    icmp-code 3;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-B5-ANYTERM-EXP-1-INCONSISTENT {
+            term allow-web {
+                from {
+                    protocol tcp;
+                    destination-port [ http https ];
+                }
+                then accept;
+            }
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+        }
+        filter CAWK-B5-NOTMODELLED-EXP-PASS {
+            term except-term {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                        10.9.1.0/24 except;
+                    }
+                }
+                then accept;
+            }
+            term flags-term {
+                from {
+                    source-address {
+                        10.9.1.0/24;
+                    }
+                    protocol tcp;
+                    tcp-established;
+                }
+                then discard;
+            }
+            term prefix-list-term {
+                from {
+                    source-prefix-list MGMT;
+                }
+                then discard;
+            }
+            term count-only {
+                then {
+                    count seen;
+                    next term;
+                }
+            }
+        }
+        inactive: filter CAWK-B5-INACTIVE-FILTER {
+            term t1 {
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+        filter CAWK-B5-INACTIVE-TERM-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then accept;
+            }
+            inactive: term t2 {
+                from {
+                    source-address {
+                        10.8.8.0/24;
+                    }
+                }
+                then discard;
+            }
+        }
+    }
+}

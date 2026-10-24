@@ -1,8 +1,228 @@
+<p align="left"><img src="docs/logo/logo-cawk.svg" width="200" alt="cawk"></p>
+
 # cawk Changelog
 
 > **cawk is subject to an MIT open-source license**
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
+
+## [v5.0.0] - october 2026
+
+> **v5.0.0 is a major release: it introduces three new concepts, the config collector (`scp`/`rsync`), the standalone HTML report (`HTML=yes`) and the configuration censor (`censor_*`).**
+
+### Tests
+
+- Fix `acl_configconsistency_set` of every supplier: report inconsistent/redundant rules as `info;warning` instead of `info;error`, in `cawk_add_hypercube_rules()`
+- Fix `CVEyyy_xxx_psirt`/`CVEyyy_xxxm4_psirt` of every supplier: append `FAKE` to the first line and block start patterns so the templates never match a real configuration
+- Fix `int_ipv6redirects_notset.cisco-ios`/`cisco-xe`/`cisco-xr`: flag the explicit `ipv6 redirects` command instead of the absence of `no ipv6 redirects`
+- Fix `routing_defref_set.cisco-ios`/`cisco-xe`/`cisco-xr`/`cisco-cedge`: accept the plural `prefix-lists` form in the `match ip address prefix-list` pattern, the generic `prefix(-list)` pattern and the `$i == "prefix-list"` field check
+- Fix `routing_defref_set.cisco-ios`/`cisco-xe`/`cisco-xr`/`cisco-cedge`/`cisco-sdnios`: loop over all `$5`-`$NF` prefix-list names in `match ip address prefix-list(s)` instead of only `$5`
+- Fix `acl_defref_set.cisco-ios`/`cisco-xe`/`cisco-cedge`/`cisco-sdnios`: exclude the plural `prefix-lists` form from the `match ip address` ACL reference check, matching `prefix-list`
+- Add `routing_defref_set.cisco-sdnios`, ported from `cisco-ios`
+- Add `int_ipv6redirects_notset.cisco-cedge`, ported from `cisco-ios`
+- Fix `ntp_ip_set.cisco-xr`: accept the one-line `ntp server [vrf VRF] IP` form besides the `ntp` block form
+- Fix `int_lldp_notset.fortinet-fortios`: only `set lldp* (enable|status)` is an error, `set lldp* disable` is no longer a false positive
+- Fix `global_lldp_notset.fortinet-fortios`: only `set lldp* (enable|status)` is an error, `set lldp disable` is no longer a false positive
+- Fix `int_directbroadcast_notset.huawei-vrp`: anchor `direct-broadcast` with `^ ` in the interface block patterns
+- Fix `ssh_setup_set.fortinet-fortios`: `set admin-ssh-v1 enable` is an error, any other enabled `admin-ssh-*` is a pass
+- Fix `ntp_accessgroup_set.cisco-xr`: accept the one-line `ntp access-group ...` form besides the `ntp` block form, fix the error message (`<ntp access-group>`)
+- Change `test_generic_psirt.gawk.template` risk levels, all kept in the `psirt` status: `high` vulnerable, `low` OS matched but not exposed, `info` not vulnerable, `medium` skipped (no information); the 15 psirt `.include` declare `@risk_level : high | medium | low | info`
+- Fix `global_vardefref_set.packetfilter-fwcli`: report the first reference line of an undefined variable (`line_nb` was a space-separated list such as `35 36`)
+- Add `acl_configconsistency_set.juniper-junos` (10th supplier, `repo` only): `firewall family inet filter` terms, terms with `except`, prefix-list, tcp flags or no final action are not assessed
+- Fix `test_generic_psirt.gawk.template`: a vulnerable (`high`/`psirt`) result reports the first matched line (`line_nb` was the last line of the configuration)
+- Add `CVEyyy_xxx_psirt.cisco-ios` psirt template, copied from `CVEyyy_xxx_psirt.cisco-cedge` and adapted to `cisco-ios`
+- Add `conf_acl_consistency` (11 errors, 7 pass) and `conf_acl_consistency_big` (~1600 lines, 55 errors, 35 pass) demo confs for `juniper-junos`
+- Add `validate/collect/run.sh` and 100 non-regression cases of the collectors and of their link with the sync (`gmake check_collect`, no network)
+- Remove dead code (`device_config_file`, `block_matched_lines`, `config_psirt_block_patterns_matched`) from `test_generic_psirt.gawk.template`
+- Fix `test_generic_psirt.gawk.template` silently disabling a psirt test on a gapped `LINE`/`BLOCK` index, an undeclared or invalid `LOGIC` or an invalid regex (now one `error` line per configuration)
+- Fix `test_generic_psirt.gawk.template` inventory lookup (regex and shell on the file name): exact match, lazy load keeping only the configurations of the run, no `grep`/`test -f` per file
+- Fix `test_generic_psirt.gawk.template` block parsing (start line counted as an inner line, `break` on the first matching pattern), inventory entries with fewer than 3 fields (double message) and chassis containing spaces
+- Cache the `LOGIC` evaluation of `test_generic_psirt.gawk.template` per distinct expression (one `awk` process instead of one per configuration)
+- Add `validate/psirt/run.sh` and 11 non-regression cases of the psirt engine
+- Add `OS_CMP` version comparisons (`eq`, `lt`, `le`, `gt`, `ge`, `between`, optional `platform` regex) to `test_generic_psirt.gawk.template`, with `version_cmp()` and `check_psirt_config()` validation
+- Add `validate/psirt/12_os_cmp`, `13_os_cmp_bad_operator` and `14_os_cmp_bad_range` non-regression cases of `OS_CMP`
+- Add `CVEyyy_xxxm4_psirt.<supplier>.gawk.include.m4` demo for the 15 psirt suppliers, same results as `CVEyyy_xxx_psirt` (cisco, juniper, fortios, panos, sros, 6wind, ekinops, iptables use `psirt_os_between`)
+- Add `m4/cawk_psirt.m4`: `psirt_begin`/`psirt_end`, `psirt_device`, `psirt_os`, `psirt_os_(eq,lt,le,gt,ge,between)`, `psirt_line`, `psirt_block`, `psirt_block_line`, `psirt_logic` with automatic indexes and named lines/blocks
+- Add `validate/censor/run.sh` and 79 cases (`cases.tsv`) checking every section of `censor_regex.m4` at `CENSOR_LEVEL=internal` and `external`
+- Extend `validate/censor/run.sh` with the `CENSOR_OUT_FILE`, standard output, multi-file `CENSOR_OUT_DIR` and `CENSOR_MODE=check` modes of `censor.gawk`
+- Fix the 5 `int_*_notset.fortinet-fortios` tests reporting line `0` instead of the matching line
+- Fix `crypto_isakmpkeyenc_set` (`cisco-ios`/`cisco-xe`/`cisco-xr`/`cisco-cedge`) reporting the isakmp key in clear: only `crypto isakmp key` is printed
+- Fix `protocols_bgpgroupauth_set`/`protocols_bgpneighborauth_set.juniper-junos` reporting the authentication-key in clear: only the keyword followed by `...` is printed
+- Fix `aaa_config_set.cisco-sdnios` checking `aaa new-model`, absent from this OS
+- Fix `linevty_aclin_set.cisco-sdnios` requiring the `in` keyword after `access-class`
+- Fix the `pass` message of `global_lldp_notset`/`global_sourcerouting_notset.fortinet-fortios` wrongly mentioning a mgnt interface
+- Fix `global_lldp_notset.paloalto-panos` prefixing errors with an unset `interface`
+- Add `CENSOR_CSV=yes` to `common/censor.gawk` (censors the error_line column of a csv report into `X.censored.csv`)
+
+### Makefile
+
+- Fix `email_send` zip failure branch (`exit 1` outside the `||` group, `mutt` never invoked)
+- Fix `%.gawk.m4` and `%.gawk.include.m4` compilation rules: a failing `m4` removes the target (no more `|| true`)
+- Fix `tests_check_nok` exit code: fails when a `cawk test error` is found
+- Fix `archive_repo`/`archive_run` exit 1 when `tar` fails, `delete_audit` exit 1 when the audit does not exist
+- Fix messages: `tests_run_copy <supplier>` space, `email_send done`, `database_email_add done`, `cawk error:` prefix in `check` and `git_branch_*_check`
+- Fix `check`: remove the `delete_audit` calls on audits that do not exist
+- Fix `check_supplier`: reject PSIRT_ONLY, STANDARD_ONLY, MAKE_PARALLEL, JSON, HTML, TIMELINE, CATALOG_BUILD, DEADBEEF, BADFORMAT, CRLF, TMP_ASSESSMENT_FILES not yes/no and MAKE_J, MAKE_LOAD_AVG, DEADBEEF_THRESHOLD_DAYS not a number
+- Fix `%: %.m4` rule: a failing m4 stops the build and removes the target instead of leaving an empty file
+- Fix `%.script: %.script.sh` rule: a failing cp is no longer masked
+- Fix `catalog_exceptions_run`: read `exceptions/run` instead of `exceptions/run_run`
+- Fix `create_audit audit= supplier=`: leave the databases untouched; `create_audit` skips the entries already present
+- Fix `database_sync_add`/`database_email_add`/`database_postaudit_add`: refuse a duplicate and exit 1 on error
+- Fix `email_send`: `dst=none` sends nothing, errors exit 1; `email_send_audit` follows `db_email.txt`
+- Fix `check`: exit 1 when the checkdiff verdict is NOK
+- Fix `view_repo`/`view_run`: apply `supplier=`
+- Fix `RUN_DIRS`/`RUN_DIRS_FIND`/`list_audit`: audit names containing `run_` are kept whole
+- Fix `*_run_audit` loops: a failing audit makes the target fail
+- Fix `clean_logs_run_audit`: check FORCE=yes once
+- Fix `sync_run`/`sync_psirt`/`postaudit_run`/`database_*.script`: a failing script exits 1, `sync_psirt` needs `audit=`
+- Fix `sync_*_run`/`backup_run`/`restore_run(_audit)`/`postaudit_run`: errors exit 1
+- Fix `backup_run_audit`: bounded `find` instead of `run_*` globs
+- Fix `exceptions_run_audit`/`exceptions_build`: audits found in `exceptions/`; `exceptions_run_audit_copy` uses `reports/run_*`; `exceptions_run_copy` skips an unexpanded glob
+- Fix `database_target_sh`: single definition in `Makefile.support.database.mk`
+- Fix `censor_check`: unreadable file reported as such, not as a secret
+- Fix `sync_cawk_conf.gawk` usage: 6 arguments
+
+- Add `archive_run_audit` to `support/Makefile.support.archive.mk` (archives the reports of every `AUDIT_NAME`)
+- Fix the end messages naming the wrong target (`sync_run`, `backup_run`, `tests_run_copy`) and the double space in the `audit=... do not exist ----` error (6 support files)
+- Fix informational messages printed as `cawk error:` (deadbeef/badformat/crlf filter detection, `db_sync.txt` entry with sync path `none`), now `cawk warning:`
+- Fix `check_deprecated_*` message missing the `----` suffix, `migrate` missing its `done` message, double space in `cawk version:`
+- Fix `view_repo` printing a raw `cat: No such file` when the repo reports are missing, now a `cawk warning:` message
+- Add `check_repo DEADBEEF=yes` and `check_repo BADFORMAT=yes` cases to `check`/`check_parallel`
+- Add `email_send` attachments `assessment.all.summary.html` + zip when `HTML=yes`, `assessment.all.summary.txt` + zip otherwise
+- Fix `email_send` export zip: only the `*.timeline.csv` when `TIMELINE=yes`, the plain csv (`security`, `audit`, `psirt`, ...) when `TIMELINE=no` (it held no csv)
+- Fix `archive_repo`/`archive_run` archive size: only the `*.timeline.csv` when `TIMELINE=yes`, `assessment.all.summary.html` instead of the txt files when `HTML=yes` (txt fallback), as `email_send`
+- Fix `gmake[1]: Entering directory` lines written into `assessment.all.csv` by `MAKE_PARALLEL=yes` under `gmake -C` (`--no-print-directory` on the `gen_cawk_makefile` sub-makes)
+- Fix `create_audit`/`delete_audit` rebuilding the whole catalog (O(number of audits)) with the new `catalog_build_audit audit=AUDIT_NAME` (only the lines of that audit)
+- Fix `SECRETSCAN=yes` censoring the per-supplier `assessment.<supplier>.*.csv` removed right after (only `assessment.all*.csv` when `TMP_ASSESSMENT_FILES=yes`)
+- Fix `censor_line` generated as `if (line ~ /regex/) line = word` instead of a `.*`-wrapped `gensub` (about 87x faster), `.*` warning added to `censor_regex.m4`
+- Add the `%.gawk: %.gawk.include.m4` rule (`m4` then `sed` into the untracked `*.gawk.include.gen` read by the engine), `SUPPLIER_INCLUDEM4_(REPO,RUN)_PSIRT_FILES` in `tests_target_(repo,run)`, `*.include.m4` excluded from `TESTS_*_PSIRT_M4`
+- Add the removal of `*.gawk.include.gen` to `gmake clean` and to `.gitignore`
+- Fix `check_supplier` accepting any `audit=` name: only letters, digits, `_` and `-` are allowed, enforced before `create_audit`, `delete_audit` and every `database_(sync,postaudit,email,collect)_(add,update,del)`
+- Fix psirt tests not rebuilt when `test_generic_psirt.gawk.template` or `support/tests.sed` change (added as prerequisites of the `%.gawk: %.gawk.include` rule in `Makefile.support.mk`)
+- Fix `sync_run` and the `check` sync fixture failing in the docker container (`confs` is a symlink to the volume, `../..` resolved physically): absolute `$(CURDIR)` paths in `Makefile.support.sync.mk` and `Makefile.support.check.mk`
+- Add `TIMELINE=yes|no` option (default `yes`): `yes` writes the `assessment.all.*.timeline.csv` reports and keeps the csv they are built from; `no` skips the timeline reports
+- Add `HTML=yes|no` option (default `no`) writing `assessment.all.summary.html` with the other reports of `check_repo`/`check_run`, through the `cawk_html_gen` macro
+- Add `common/report_html.gawk.template` and `common/report_html.skeleton.html`: standalone high-level html report (counters only, summaries by risk, supplier and NIST control, filters, results by test, CSV export, print)
+- Change the Status block chip order of the html report to Pass, Error, Warning, PSIRT, PSIRT not affected in `common/report_html.skeleton.html`
+- Change the columns of the Summary by supplier, Summary by NIST SP 800-53 control and Results by test tables of the html report to Pass, Errors, Warnings, PSIRT vulnerable in `common/report_html.skeleton.html`
+- Change the `vulnerable` and `not affected` words of the PSIRT labels of the html report (table headers, kpi boxes, status chips, risk summary, legend) to a smaller font in `common/report_html.skeleton.html`
+- Add the Exceptions kpi box (`assessment.all.exception.csv`, as `number_of_*_exception` of the summary) as first box of the last kpi row of the html report, split by risk and following the risk, status, supplier, NIST, preset and search filters, in `common/report_html.gawk.template` and `common/report_html.skeleton.html`
+- Add the Exceptions column after Errors to the Summary by risk, Summary by supplier, Summary by NIST SP 800-53 control and Results by test tables and to the CSV export of the html report in `common/report_html.skeleton.html`
+- Change the tables of the html report from Summary by risk to Results by test to a smaller font, tighter padding, wrapping headers and a narrower compliance bar to fit the page width in `common/report_html.skeleton.html`
+- Change the Description and Family cells of the Summary by NIST SP 800-53 control table of the html report to a smaller font and keep its column headers on one line in `common/report_html.skeleton.html`
+- Change the Description and Family columns of the Summary by NIST SP 800-53 control table of the html report to a capped width (16em) so the Pass, Errors and other columns widen in `common/report_html.skeleton.html`
+- Change the Test column of the Results by test table of the html report to a capped width (24em) and keep its column headers on one line, so the other columns widen in `common/report_html.skeleton.html`
+- Change the numeric cells of the Summary by supplier, Summary by NIST SP 800-53 control and Results by test tables of the html report to a slightly smaller font in `common/report_html.skeleton.html`
+- Add `rh_test()` and `rh_load_exceptions()` to `common/report_html.gawk.template`: the exceptions are embedded as `excs` (test, risk, status, lines) next to `recs`
+- Add active demo exceptions `EXC-REPO-001` to `EXC-REPO-004` (high, medium, info, low) in `exceptions/repo/exceptions.cisco-ios.m4` and `exceptions/repo/exceptions.cisco-xr.m4`
+- Change the kpi boxes of the html report to 3 rows of 3 (Devices / Checks / Compliance, Pass / Errors / Errors per device, Warnings / PSIRT vulnerable / PSIRT not affected), PSIRT not affected becoming its own box, in `common/report_html.skeleton.html`
+- Add the `deadbeef`, `badformat` and `crlf` configuration counters of the scan reports to the html report data in `common/report_html.gawk.template`
+- Add the Deadbeef config, CRLF config and Badformat config kpi boxes and the info count of the Errors kpi box to the html report in `common/report_html.skeleton.html`
+- Add the `high` and `medium / low / info` risk levels under the values of the `PSIRT vulnerable` and `PSIRT not affected / skipped` kpi boxes and color the Errors, Errors per device and PSIRT vulnerable kpi values in red in `common/report_html.skeleton.html`
+- Annotate the kpi boxes of the html report with the lines excluded by the filters (`N excluded by filters`, `N <risk> excluded`), so a 0 is never mistaken for a fact, in `common/report_html.skeleton.html`
+- Uncheck the `info` risk and the `PSIRT not affected / skipped` status by default (initial state and Reset) in the html report in `common/report_html.skeleton.html`
+- Always render the five status chips of the html report, even with no matching line, so `PSIRT vulnerable` (checked) and `PSIRT not affected / skipped` (unchecked) are always both present in `common/report_html.skeleton.html`
+- Color the filter legends and labels (audit type, risk, status, supplier, NIST control, search) of the html report in orange in `common/report_html.skeleton.html`
+- Color the kpi box titles and the section titles (Summary by risk to Reading notes) of the html report in orange in `common/report_html.skeleton.html`
+- Add `LOGO_HTML` (default `docs/logo/logo-cawk.svg`) embedding the cawk logo in the header of the html report as a base64 data uri through `cawk_html_gen`
+- Add the brand header of the html report (logo, `Network configuration compliance report` title, audit subtitle) in `common/report_html.skeleton.html`
+- Color the kpi values of the html report in green (Devices, Checks, Pass, PSIRT not affected) and in red (Warnings), with the Deadbeef, CRLF and Badformat boxes green at 0 and red otherwise and the Compliance box on a red-to-green hue ramp (0-100%) and the Errors per device box on a green-to-red hue ramp (0 to the 15 critical threshold) in `common/report_html.skeleton.html`
+- Detail every field of the `database_view`/`database_view_(sync,collect,email,postaudit)` header with its possible values and an example (scp and rsync collectors from a central unix/linux system)
+- Add `support/Makefile.support.collect.mk` with `collect_run`, `collect_run_audit`, `database_collect_(add,update,del,sync)` and `check_collect`
+- Add `COLLECT=yes|no` option (default `no`) making `sync_run` run `collect_run` first, and clean `confs/collect_<audit>`, `db_collect.txt` and the collect scope in `delete_audit`
+- Add the default `db_collect.txt` entry (`collector=none args=none`) to `create_audit` (kept if present), replaced by `database_collect_add`/`update` and ignored by `collect_run`
+- Add `confs/collect_*/` to `.gitignore`
+- Add `database_view_collect`, show `db_collect.txt` (before `db_sync.txt`) in `database_view` and print the succinct field format of each database before its separator in `database_view`/`database_view_*`
+- Fix `gen_cawk_makefile(.psirt).gawk` so concurrent generated makefiles no longer remove each other's temporary files (one `mktemp -d` directory per makefile instead of `rm -f tmp/tmp*`) and split the work per (configuration chunk, test) for real parallelism
+- Speed up `check_repo`/`check_run` in parallel mode (`MAKE_PARALLEL=yes`) by running the suppliers concurrently: `check_repo` 13-15 s to 5.9 s, identical reports
+- Speed up `check_repo`/`check_run` in sequential mode (`MAKE_PARALLEL=no`) by running the test execution of the suppliers concurrently (`cawk_chk_exec_run` + `wait` in `cawk_check_body`): `check_repo` 15 s to 5.4 s, identical reports
+- Replace the 12 duplicated bodies of `check_repo`/`check_run` (repo|run|audit x suppliers x sequential|parallel) by one `cawk_check_body` canned recipe in `support/Makefile.support.check.scope.mk` and removing the duplicated recipes, the `Makefile` shrinking from 867 to 266 lines
+- Add `CENSOR_LEVEL=internal|external` option (default `internal`) to the `censor_*` targets, checked by `check_supplier` and passed to `censor.gawk`
+- Add `STANDARD_ONLY=yes` option (mirror of `PSIRT_ONLY`) running only the standard tests, rejected with `PSIRT_ONLY=yes` by `check_supplier`
+- Add `support/Makefile.support.censor.mk` with `censor_repo`, `censor_run` (`audit=` optional) and `censor_run_audit`, with no Makefile variable, writing `confs/<context>/confs.<supplier>.censored`
+- Add the final `cawk <target> done ----` message to every target of `support/Makefile.support.git.mk`
+- Fix the `FORCE=yes` guard: `cawk error:` message and non-zero exit for `clean_orig`/`clean_force` and the `git*` targets (`gitnewbranch`, `gitinstallcicd`, `gitcommit`, `gitpush`, `gitpushbranch`, `gitpr`, `gitprmerge`, `gitmasterupdate`, `gitpushtag`)
+- Add `clean_censor_repo`, `clean_censor_run` (`audit=` optional) and `clean_censor_run_audit` to `support/Makefile.support.clean.mk` (`supplier=` optional)
+- Add `clean_censor_repo`, `clean_censor_run` and `clean_censor_run_audit` to `clean_force`
+- Make `censor_*` depend on `database/censor/censor_regex`, built from `censor_regex.m4` by the `%: %.m4` rule
+- Make `censor_*` fail on `supplier=` with no `confs.<supplier>` directory (without `supplier=` the missing ones are skipped)
+- Exclude the `confs.<supplier>.censored` directories from the `catalog_*`/`catalog_exceptions_*` supplier lists and from `gitcheck`
+- Add `censor_file in= out=` (one file censored into one file), `censor_stdout in=` (censored to the standard output) and `censor_check in=` (exit 1 while a text the regexes would censor is still there) to `support/Makefile.support.censor.mk`
+- Add `censor_logs_repo`/`censor_logs_run` (`audit=` optional)/`censor_logs_run_audit` and `censor_report_repo`/`censor_report_run` (`audit=` optional)/`censor_report_run_audit` to `support/Makefile.support.censor.mk`, writing `logs/<context>.censored` and `reports/<context>.censored`
+- Add `clean_censor_logs_*` and `clean_censor_report_*` to `support/Makefile.support.clean.mk` and to `clean_force`
+- Make `delete_audit` remove the `logs/run_<audit>.censored` and `reports/run_<audit>.censored` directories
+- Add `SECRETSCAN=yes`: censors the final `assessment.*.csv` into `assessment.*.censored.csv` (error_line column only), removes the originals and builds the timeline/json/html reports from them; `view_*` and the email export follow
+- Add the `SECRETSCAN` value check to `check_supplier` and its status line to the `check_repo`/`check_run` output
+- Add a `check_repo SECRETSCAN=yes` pass to `check` (and `check_parallel`) that verifies no uncensored csv report is left
+
+### Database
+
+- Add the `local` collector (`database/collectors/local.collector.sh`, `source_path=LOCAL_DIR`): copies with `cp -p` the files of a directory of the cawk machine into `confs/collect_<audit>`
+- Extend `censor_regex.m4`: MONITORING (`rocommunity`/`rwcommunity`, `createUser`, trap `community`), SECRET (`authpwd`/`privpwd`/`auth-pass`/`priv-pass`, `psk`, `wpa-psk`, `wpa-passphrase`, `set-key`, `bind-password`/`bind-pw`, HSRP/GLBP `authentication`) and URL credentials `scheme://user:pass@`
+
+- Fix `psirt_os_inventory_scope.txt`: `conf_psirt_cisco-ios_vuln`/`_fixed` declare `15.1`/`17.1` (were `1.0`/`2.0`): `vuln` matches the cisco-ios `OS[1]` pattern, `fixed` matches none
+- Fix `catalog_build_db.gawk.template` lowercasing the test name in `db_info.txt`: the 17 psirt tests (`CVE…`) keep their case, identical in the csv, json, txt and html reports and found by the html/report catalog lookups
+- Add to `censor_regex.m4` the `password-hash`/`expert-password-hash`/`grub2-password-hash`/`phash` keywords and two generic hash-format rules (`$1$ $5$ $6$ $8$ $9$ $y$ $2a$`, `grub.pbkdf2.sha512`), and restrict the `community` rule to indented lines (BGP communities kept)
+- Add 8 cases (5 censor, 3 keep) to `validate/censor/cases.tsv`
+- Add `database/db_collect.txt` (audit collector args) and `database/collectors/` (`scp` and `rsync` collectors fetching the confs from one central unix/linux system with `host=`/`user=`/`remote_path=`/`key=`/`options=`, `collector_common.sh`; the copy is automatic), external optional scripts filling `confs/collect_<audit>`
+- Add `COLLECTORS_PATH` to `support/Makefile.support.mk` and `database/include/scripts_config.sh`
+- Add a fourth optional argument (the replacement word, `CENSORED` by default) to the `cawk_censor.m4` macros, `censor_regex` lines become `<level><tab><word><tab><regex>`
+- Generate `censor_regex` as gawk code (regex constants, `censor_apply()`) included by `censor.gawk` instead of loading dynamic regexes, `censor_repo` 12 s to 1.9 s on the demo confs
+- Remove `CENSOR_REGEX_FILE` from `censor.gawk`, add `%SED_CENSOR_REGEX_PATH%` to `tests.sed`
+- Add `database/censor/censor_regex.m4` (censor macros calls) built into `censor_regex` (one regex per line)
+- Merge the syntaxes of every supplier into one regex per section of `censor_regex.m4` (ADMIN, AUTHENTICATION, CRYPTO, SECRET, MONITORING), starting from the existing regexes, `service password-encryption` still censored
+- Add the sections CERTIFICATE (`internal`), IDENTITY and TOPOLOGY (`external`) to `censor_regex.m4`
+
+### Build
+
+- Fix `common/report_html.skeleton.html` to check the info risk and the PSIRT not affected / skipped status by default
+- Fix `common/report_html.skeleton.html` summary by risk: pass first, PSIRT split in PSIRT vulnerable and PSIRT not affected, drop the skipped wording
+- Fix `number_of_psirt` in `common/report.gawk.template` to count only high risk (vulnerable) PSIRT results, as the html report does
+- Add `number_of_psirt_clear` in `common/report.gawk.template` for the PSIRT results not affected or skipped
+- Fix `number_of_nist_warning` in `common/report.gawk.template` to stop counting PSIRT results
+- Add `banner` block exclusion to `badformat_cawk_conf.gawk.template`
+- Fix `badformat_cawk_conf.gawk.template`: ignore indented `!` comment lines
+- Fix `gen_cawk_makefile.gawk` and `sync_cawk_conf.gawk` usage errors: `cawk error` message then `exit 1` (was `exit 0`)
+- Fix `psirt_block_line()` of `m4/cawk_psirt.m4`: undeclared block stops `m4` (`m4exit(1)`)
+- Fix `sync_cawk_conf.gawk`: quote the `cat`, `find`, `mkdir` and `ln -s` arguments with `shell_quote()`, close the `cat` pipe with `close(cmd)`
+- Fix `deadbeef_cawk_conf.script.sh`: remove the duplicated `days` in the old configuration message
+- Fix `rm_semicolon()` comment in `common.gawk.template`: semicolons are removed, not replaced
+- Fix `report_html.gawk.template` and `report_html.skeleton.html`: only `psirt` at `high` risk is a vulnerability, `info`/`low`/`medium` are "not affected / skipped"
+- Fix `common/report_sumjson.gawk.template`: the `exceptions purposes` section is now an array of `{audit, supplier, id, purpose, rules}` objects (was the template comment lines parsed as key/value pairs)
+- Fix `find` on `confs`, `tests`, `reports`, `database` in `Makefile.support.backup.mk`, `Makefile.support.check.mk`, `Makefile.support.clean.mk`, `Makefile.support.tests.mk`: `-H`, the persistent volume of the container links these directories (`backup_run_audit` archived no file)
+- Fix `docker/Dockerfile`: add the packages `sed`, `rsync`, `openssh-client`, `zip`, `mutt`, add `COPY roles` and `COPY Makefile.cawk.version`
+- Fix `docker/Dockerfile`: add `COPY validate`, drop the 17 redundant per-file `COPY support/Makefile.support.*.mk` lines
+- Add `common/censor.gawk.template`: applies the regexes of `censor_regex` (group 1 kept, the rest of the match censored), with no password/monitoring block
+- Add `CENSOR_OUT_FILE` (the mode censor writes one file into one file) and `CENSOR_MODE=check` (nothing written, exit 1 when a line would still be censored) to `common/censor.gawk.template`
+- Add `m4/cawk_censor.m4` with the `censor_after`, `censor_match`, `censor_line` and `censor_ignore` macros, and the optional 2nd argument `lowercaseuppercase` (case-insensitive regex)
+
+### Docs
+
+- Rename `memory/CAWK_CODE_RULES.md` to `docs/CAWK_CODE_RULES.md`, references updated in `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `docs/CAWK_OPTIONS.md`, `support/Makefile.support.mk`
+- Rename `logo/` to `docs/logo/`, references updated in the `LICENSE`, `README.md`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `AUTHORS.md`, `ChangeLog.md` headers, `docs/CAWK_OPTIONS.md`, `support/Makefile.support.mk` (`LOGO_HTML`)
+- Add `COPY docs` to `docker/Dockerfile` (the logo of the html report and the docs imported by `CLAUDE.md` were missing from the image)
+- Add `docs/CAWK_SED_PLACEHOLDERS.md`, `docs/CAWK_OPTIONS.md`, `docs/CAWK_DATABASE_FORMAT.md`, split from `CLAUDE.md` which now imports `memory/CAWK_CODE_RULES.md`
+- Add `docs/audits/` for the Makefile and package audit reports
+- Add `AGENTS.md` at the repository root pointing to `CLAUDE.md` (technical reference) and `memory/CAWK_CODE_RULES.md` (development rules)
+- Fix help: add FORCE=yes, the git*, roles_*, nist_coverage_*, catalog_build_*, exceptions_build_*, exceptions_run_audit, check_*, clean_tmp, tests_target_*, database_target_sh targets; remove the duplicated exceptions_build and the wrong `view_` prefix, `view_run_error` directory and `cakw` typo
+- Fix README: backup file names, database script and scope paths, `.all.deadbeef.csv`, timeline reports list, postaudit `update`, catalog_build and exceptions_build_repo descriptions, DEADBEEF typo, email database quotes, run_audit step numbering
+- Add README: MAKE_FILES_PER_TARGET_PSIRT, MAKE_FILES_PER_TARGET_MAX, CATALOG_BUILD, TMP_ASSESSMENT_FILES, ARCHIVE_OLDER_DAYS, HTML default, mutt and zip prerequisites
+- Add CLAUDE.md: FORCE=yes requirement
+- Document the psirt risk levels in `README.md` (cawk psirt tests, assessment format) and `CLAUDE.md` (PSIRT & Include Tests)
+- Add the `cawk workflow` chapter to `README.md` (collect, sync, align, audit, read, share, keep) with a drawing per step
+- Add the final HTML report (`HTML=yes`, `assessment.all.summary.html`) to the README workflow: big picture, new step 8 and daily run
+- Document the optional collectors (`database/collectors`, `db_collect.txt`, `COLLECT`, `COLLECTORS_PATH`, `confs/collect_<audit>`) in `README.md` and `CLAUDE.md`
+- Document the `censor_*`/`clean_censor_*` targets and the `censor_regex.m4` macros in `CLAUDE.md`, `README.md` and the `gmake` help
+- Add an optional third argument `internal` (default) or `external` to every censor macro of `m4/cawk_censor.m4`, generated as `<level><tab><regex>` and filtered by `common/censor.gawk.template` (`external` applies internal and external regexes, `internal` only the internal ones)
+- Describe cawk as a network configuration compliance checker and censor in the `gmake` help logo, `README.md`, `CLAUDE.md` and `SECURITY.md`
+- State in `CLAUDE.md`, `README.md`, the `gmake` help and `Makefile.support.censor.mk` that `database/censor/censor_regex.m4` is the only file to edit for the censor module, and document `censor_line` and the `lowercaseuppercase` argument in `CLAUDE.md`
+- Document the new censor usages (`censor_file`, `censor_stdout`, `censor_check`, `censor_logs_*`, `censor_report_*`) in `CLAUDE.md`, `README.md` and the `gmake` help
+
+### CI/CD
+
+- Bump `softprops/action-gh-release` to `v3` (Node 24) and pin the `release.yml` runner to `ubuntu-24.04` in `.github/workflows/` and `cicd/`
+
+---
 
 ## [v4.0.0] - october 2026
 

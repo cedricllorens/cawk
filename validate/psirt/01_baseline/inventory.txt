@@ -1,0 +1,2 @@
+c_vuln 15.2 x y
+c_fixed 16.1 x y

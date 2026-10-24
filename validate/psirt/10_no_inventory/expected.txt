@@ -1,0 +1,1 @@
+c_a;t.gawk;skipped because inventory file database/psirt_scopes/psirt_os_inventory_scope.txt does not exist;0;info;psirt

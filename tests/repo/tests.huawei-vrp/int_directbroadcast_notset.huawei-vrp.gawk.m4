@@ -48,8 +48,8 @@ m4_cawk_parse_block(
 	}
 ',
 
-`/(direct-broadcast|^ shutdown)/',`
-	if ($0 ~ / direct-broadcast/) directbroadcast = 1;
+`/^ (direct-broadcast|shutdown)/',`
+	if ($0 ~ /^ direct-broadcast/) directbroadcast = 1;
 	if ($0 ~ /^ shutdown/) is_shutdown = 1;
 ',
 `', `'

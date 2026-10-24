@@ -39,7 +39,8 @@ m4_cawk_parse_block(
 `/^end$/', `',
 
 `/%SED_BK_FORTI%set admin-ssh-.* enable/', `
-	print_err("ssh_setup_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
+	if ($0 ~ /admin-ssh-v1/) print_err("ssh_setup_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","error");
+	else print_err("ssh_setup_set.fortinet-fortios.gawk",rm_blank_before($0),FNR,"high","pass");
 	pass = 0;
 ',
 `', `'

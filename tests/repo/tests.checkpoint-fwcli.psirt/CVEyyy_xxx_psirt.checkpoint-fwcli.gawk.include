@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for check point fwcli devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "R81\\..* .* .*"
 
     # Line Patterns (Check Point fwcli configuration)
-    LINE[1] = "set hostname"
+    LINE[1] = "setFAKE hostname"
     LINE[2] = "set static-route"
 
     # Block Patterns (Check Point NAT and interface blocks)
-    BLOCK[1]["start"] = "^add static-nat"
+    BLOCK[1]["start"] = "^addFAKE static-nat"
     BLOCK[1]["end"] = "^$"
     BLOCK[1]["match"][1] = "^ real-address"
     BLOCK[1]["match"][2] = "^ fake-address"

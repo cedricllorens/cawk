@@ -11,7 +11,7 @@
 # to a cawk audit=AUDIT_NAME assessment. a soft link is built rather 
 # than to copy the configuration
 #
-# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_inventory" "file_list" "regex_os" "regex_path_exclude"
+# usage: gawk -f sync_cawk_conf.gawk "/dir1/,/dir2/" "regex_inventory" "file_list" "regex_os" "regex_path_exclude" "regex_inventory_exclude"
 # note : various directories are separated by comma
 # ---------------------------------------------------------------------
 
@@ -26,6 +26,13 @@
 #           - Decision priority: cedge > xe > ios
 # Note:     Assumes uniqueness of signatures between different vendors
 # ---------------------------------------------------------------------
+
+function shell_quote(str,   n, parts, out, i) {
+	n = split(str, parts, "'")
+	out = "'" parts[1]
+	for (i = 2; i <= n; i++) out = out "'\\''" parts[i]
+	return out "'"
+}
 
 function check_config_type(filename) {
     viptela = 0;
@@ -170,7 +177,7 @@ BEGIN {
 
     if (ARGC < 3) {
         print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_inventory\" \"file_list\" \"regex_os\" \"regex_path_exclude\" \"regex_inventory_exclude\"";
-        exit 0;
+        exit 1;
     }
 
     # match rlist of directories ----
@@ -225,7 +232,7 @@ BEGIN {
         if (file_list !~ /\/none$/) {
             print "cawk os list of inventory devices detected : " file_list
             allow_all = 0
-            cmd = "cat " file_list
+            cmd = "cat " shell_quote(file_list)
             while ((cmd | getline line) > 0) {
 
     		# apply regex_inventory on the line
@@ -245,7 +252,7 @@ BEGIN {
                 print "cawk loading allowed device name : " filename " in file " file_list 
                 allowed_files[filename] = 1
             }
-            close(file_list)
+            close(cmd)
         } else {
             file_list = "none"
             print "cawk os list of devices not detected : " file_list
@@ -281,7 +288,7 @@ BEGIN {
             print "cawk error empty directory"
             continue
         }
-        cmd = "find " src_prefix[i] " -type f"
+        cmd = "find " shell_quote(src_prefix[i]) " -type f"
 
         while ((cmd | getline file) > 0) {
 
@@ -334,13 +341,13 @@ BEGIN {
                 # build soft links to (not skipped) configurations
 
                 if ( dst != "") {
-                    system("mkdir -p \"" dst "\"")
+                    system("mkdir -p " shell_quote(dst))
                     # the link is created one directory level below cwd (inside dst/), so a relative
                     # file path (resolved against cwd by find) needs one extra ../ to still resolve;
                     # an absolute path is unaffected
                     link_target = file
                     if (file !~ /^\//) link_target = "../" file
-                    system("ln -s \"" link_target "\" \"" dst "\"")
+                    system("ln -s " shell_quote(link_target) " " shell_quote(dst))
                     print "cawk soft link built == os:" type " conf:" file " regex_inventory:" regex_inventory " regex_os:" regex_os " regex_path_exclude:" regex_path_exclude " regex_inventory_exclude:" regex_inventory_exclude
                 } else {
                     print "cawk soft link not built (skipped os not supported) ==  os:" type " conf:" file

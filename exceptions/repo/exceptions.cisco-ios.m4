@@ -42,4 +42,22 @@ dnl @date: 2026-08-23
 dnl @reason: Validate configurable exception field prefixes and suffixes
 dnl m4_cawk_exception_prefixsuffix(`device-01',`test_name',`error message',`0',`1',`1',`0',`0',`1')
 
+dnl @exception_id: EXC-REPO-001
+dnl @approver: Test Approver
+dnl @date: 2026-10-23
+dnl @reason: Demo active exception, high risk (repo self-test of the exceptions kpi of the html report)
+m4_cawk_exception(`conf_0',`aaa_config_set',`aaa accounting')
+
+dnl @exception_id: EXC-REPO-002
+dnl @approver: Test Approver
+dnl @date: 2026-10-23
+dnl @reason: Demo active exception, medium risk (repo self-test of the exceptions kpi of the html report)
+m4_cawk_exception(`conf_0',`global_logging_set',`logging host')
+
+dnl @exception_id: EXC-REPO-003
+dnl @approver: Test Approver
+dnl @date: 2026-10-23
+dnl @reason: Demo active exception, info risk (repo self-test of the exceptions kpi of the html report)
+m4_cawk_exception(`conf_0',`acl_defref_set',`access-list 97 ')
+
 dnl MACRO END ------------------------

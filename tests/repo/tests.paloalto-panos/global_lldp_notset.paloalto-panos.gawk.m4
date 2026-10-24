@@ -39,7 +39,7 @@ m4_cawk_parse_block(
 `/^\}$/',`',  
 
 `/^%SED_BK_PALO%{1}[ ]*lldp (enable )?yes/',`
-	print_err("global_lldp_notset.paloalto-panos.gawk",rm_blank_before(interface)" "rm_blank_before($0),FNR,"high","error");
+	print_err("global_lldp_notset.paloalto-panos.gawk",rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 ',
 `',`'

@@ -99,7 +99,7 @@ function parse_test_file(audit, file,    line, supplier, test_name, purpose, des
         }
         else if (tolower(line) ~ /^#[ \t]+@test_name[ \t]*:/) {
             gsub(/^#[ \t]+@test_name[ \t]*:[ \t]*/, "", line)
-            test_name = tolower(line)
+            test_name = line
         }
         else if (tolower(line) ~ /^#[ \t]+@purpose[ \t]*:/) {
             gsub(/^#[ \t]+@purpose[ \t]*:[ \t]*/, "", line)

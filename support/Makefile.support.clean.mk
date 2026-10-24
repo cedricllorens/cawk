@@ -9,7 +9,10 @@
   clean clean_archive_older clean_archive_repo clean_archive_run  \
   clean_archive_run_audit clean_backup clean_force clean_orig clean_orig_info \
   clean_report_repo clean_report_run clean_report_run_audit clean_tmp clean_logs \
-  clean_logs_repo clean_logs_run clean_logs_run_audit
+  clean_logs_repo clean_logs_run clean_logs_run_audit \
+  clean_censor_repo clean_censor_run clean_censor_run_audit \
+  clean_censor_logs_repo clean_censor_logs_run clean_censor_logs_run_audit \
+  clean_censor_report_repo clean_censor_report_run clean_censor_report_run_audit
 
 
 clean: clean_tmp
@@ -19,10 +22,13 @@ clean: clean_tmp
 	find $(EXCEPTION_PATH) -type f -name "exceptions.*" ! -name "*.m4" ! -name "*.sed" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/repo -type f -name "*.gawk" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/repo -type f -name "*.swap" -delete 2>/dev/null || true
+	find $(TESTS_PATH)/repo -type f -name "*.gawk.include.gen" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/run -type f -name "*.gawk" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/run -type f -name "*.swap" -delete 2>/dev/null || true
+	find $(TESTS_PATH)/run -type f -name "*.gawk.include.gen" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/run_* -type f -name "*.gawk" -delete 2>/dev/null || true
 	find $(TESTS_PATH)/run_* -type f -name "*.swap" -delete 2>/dev/null || true
+	find $(TESTS_PATH)/run_* -type f -name "*.gawk.include.gen" -delete 2>/dev/null || true
 	$(RM) -f *.tar *.tar.gz || true
 	$(RM) -f checkdiff/scripts/analyze_diff checkdiff/scripts/check_debug checkdiff/scripts/check_parallel_debug checkdiff/scripts/diff_reports checkdiff/scripts/run_check 2>/dev/null || true
 	$(RM) -f checkdiff/scripts/*.log checkdiff/scripts/*.txt 2>/dev/null || true
@@ -46,7 +52,7 @@ clean_orig:
 		$(ECHO) "cawk clean all .orig backup files done ----"; \
 	else \
 		$(ECHO) "cawk error: FORCE=yes must be set to run clean_orig ----"; \
-		exit 0; \
+		exit 1; \
 	fi
 
 clean_orig_info:
@@ -81,12 +87,82 @@ endif
 
 clean_report_run_audit:
 	@$(RUN_DIRS_FIND) | while read -r dir; do \
-		$(GMAKE) clean_report_run audit=$$dir; \
+		$(GMAKE) clean_report_run audit=$$dir || exit 1; \
 	done
 
 clean_archive_run_audit:
 	@$(RUN_DIRS_FIND) | while read -r dir; do \
-		$(GMAKE) clean_archive_run audit=$$dir; \
+		$(GMAKE) clean_archive_run audit=$$dir || exit 1; \
+	done
+
+# $(1) = confs directory of the assessment (confs/repo, confs/run or confs/run_<audit>)
+# removes the confs.<supplier>.censored directories only (never a confs.<supplier>), the one of supplier= if given, all of them otherwise
+define cawk_censor_clean
+	@if [ -n "$(strip $(supplier))" ]; then \
+		$(RM) -r "$(1)/confs.$(strip $(supplier)).censored"; \
+	else \
+		find "$(1)" -maxdepth 1 -type d -name "confs.*.censored" -exec $(RM) -r {} + 2>/dev/null || true; \
+	fi
+endef
+
+clean_censor_repo: check_supplier
+	$(call cawk_censor_clean,$(CONFS_PATH)/repo)
+	$(ECHO) "cawk clean $(CONFS_PATH)/repo censored done ----"
+
+clean_censor_run: check_supplier
+ifeq ($(strip $(audit)),)
+	$(call cawk_censor_clean,$(CONFS_PATH)/run)
+	$(ECHO) "cawk clean $(CONFS_PATH)/run censored done ----"
+else
+	$(call cawk_censor_clean,$(CONFS_PATH)/run_$(audit))
+	$(ECHO) "cawk clean $(CONFS_PATH)/run_$(audit) censored done ----"
+endif
+
+clean_censor_run_audit: check_supplier
+	@$(RUN_DIRS_FIND) | while read -r dir; do \
+		$(GMAKE) clean_censor_run audit=$$dir || exit 1; \
+	done
+
+# $(1) = logs/reports directory of the assessment (logs/repo, reports/run, ...)
+# removes the $(1).censored directory only (never $(1) itself)
+define cawk_censor_clean_dir
+	$(RM) -f -r "$(1).censored"
+endef
+
+clean_censor_logs_repo: check_supplier
+	$(call cawk_censor_clean_dir,$(LOGS_PATH)/repo)
+	$(ECHO) "cawk clean $(LOGS_PATH)/repo.censored done ----"
+
+clean_censor_logs_run: check_supplier
+ifeq ($(strip $(audit)),)
+	$(call cawk_censor_clean_dir,$(LOGS_PATH)/run)
+	$(ECHO) "cawk clean $(LOGS_PATH)/run.censored done ----"
+else
+	$(call cawk_censor_clean_dir,$(LOGS_PATH)/run_$(audit))
+	$(ECHO) "cawk clean $(LOGS_PATH)/run_$(audit).censored done ----"
+endif
+
+clean_censor_logs_run_audit: check_supplier
+	@$(RUN_DIRS_FIND) | while read -r dir; do \
+		$(GMAKE) clean_censor_logs_run audit=$$dir || exit 1; \
+	done
+
+clean_censor_report_repo: check_supplier
+	$(call cawk_censor_clean_dir,$(REPORT_PATH)/repo)
+	$(ECHO) "cawk clean $(REPORT_PATH)/repo.censored done ----"
+
+clean_censor_report_run: check_supplier
+ifeq ($(strip $(audit)),)
+	$(call cawk_censor_clean_dir,$(REPORT_PATH)/run)
+	$(ECHO) "cawk clean $(REPORT_PATH)/run.censored done ----"
+else
+	$(call cawk_censor_clean_dir,$(REPORT_PATH)/run_$(audit))
+	$(ECHO) "cawk clean $(REPORT_PATH)/run_$(audit).censored done ----"
+endif
+
+clean_censor_report_run_audit: check_supplier
+	@$(RUN_DIRS_FIND) | while read -r dir; do \
+		$(GMAKE) clean_censor_report_run audit=$$dir || exit 1; \
 	done
 
 clean_tmp:
@@ -134,20 +210,24 @@ else
 endif
 
 clean_logs_run_audit:
+	@if [ "$(FORCE)" != "yes" ]; then \
+		$(ECHO) "cawk error: FORCE=yes must be set to run clean_logs_run_audit ----"; \
+		exit 1; \
+	fi
 	@$(RUN_DIRS_FIND) | while read -r dir; do \
-		$(GMAKE) clean_logs_run audit=$$dir; \
+		$(GMAKE) clean_logs_run audit=$$dir || exit 1; \
 	done
 
 clean_force:
 	@if [ "$(FORCE)" != "yes" ]; then \
-		$(ECHO) "Error: FORCE=yes must be set to run clean_force."; \
+		$(ECHO) "cawk error: FORCE=yes must be set to run clean_force ----"; \
 		exit 1; \
 	fi
 	@$(ECHO) "FORCE='$(FORCE)'. Proceeding with clean_force..."
-	$(GMAKE) clean clean_report_repo clean_backup clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit
+	$(GMAKE) clean clean_report_repo clean_backup clean_report_run clean_report_run_audit clean_archive_repo clean_archive_run clean_archive_run_audit clean_censor_repo clean_censor_run clean_censor_run_audit clean_censor_logs_repo clean_censor_logs_run clean_censor_logs_run_audit clean_censor_report_repo clean_censor_report_run clean_censor_report_run_audit
 	@$(ECHO) "cawk clean_force done ----"
 
 clean_archive_older:
-	find reports -type f -name '*.tar.gz' -mtime +$(ARCHIVE_OLDER_DAYS) -exec $(RM) -f {} \; 2>/dev/null || true
+	find -H reports -type f -name '*.tar.gz' -mtime +$(ARCHIVE_OLDER_DAYS) -exec $(RM) -f {} \; 2>/dev/null || true
 
 

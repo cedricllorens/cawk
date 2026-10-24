@@ -1,0 +1,80 @@
+# rule_level<TAB>expect<TAB>secret<TAB>line : censor = the secret must disappear (internal rules at both levels, external rules at CENSOR_LEVEL=external only), keep = the line stays intact at both levels
+internal	censor	10	 access-class 10 in
+internal	censor	10.0.0.0	    set trusthost1 10.0.0.0 255.0.0.0
+internal	censor	$9$Zh5uO1xXk	enable secret 9 $9$Zh5uO1xXk
+internal	censor	$9$Abc12345	username admin privilege 15 secret 9 $9$Abc12345
+internal	censor	%^%#zz9Q	local-user admin password cipher %^%#zz9Q
+internal	censor	06070C2A4B	tacacs-server host 10.1.1.1 key 7 06070C2A4B
+internal	censor	00001111222bbbbbdddeeeeffff	tacacs-server 10.100.10.101 keyword-00001111222bbbbbdddeeeeffff loopback
+internal	censor	radiuskey1	radius-server host 10.1.1.2 key radiuskey1
+internal	censor	MySecretKey	crypto isakmp key MySecretKey address 1.2.3.4
+internal	censor	AAAAB3NzaC1yc2E	        ssh-rsa "ssh-rsa AAAAB3NzaC1yc2E";
+internal	censor	0822455D0A16	 password 7 0822455D0A16
+internal	censor	095E4F071D	ntp authentication-key 1 md5 encrypted 095E4F071D
+internal	censor	094F471A1A0A	ip ospf message-digest-key 1 md5 7 094F471A1A0A
+internal	censor	01100F175804	 key-string 7 01100F175804
+internal	censor	password-encryption	service password-encryption
+internal	censor	$8$vOiLX-Vb2oaUw	    authentication-key "$8$vOiLX-Vb2oaUw";
+internal	censor	$6$salt$hashhash	    encrypted-password "$6$salt$hashhash";
+internal	censor	$9$XyZ123	        pre-shared-key ascii-text "$9$XyZ123";
+internal	censor	$8$abcPriv	    privacy-key "$8$abcPriv";
+internal	censor	encpsk99	        set psksecret ENC encpsk99
+internal	censor	encauth77	        set authpassword ENC encauth77
+internal	censor	myPrivPassword	        set priv-pwd "myPrivPassword"
+internal	censor	e14672e71d3e96e7a1e19472527ee969	    authentication hash md5 e14672e71d3e96e7a1e19472527ee969
+internal	censor	myPrivPass	    privacy-password myPrivPass
+internal	censor	your_secret_key	    secret-key "your_secret_key";
+internal	censor	hunter2xx	    priv-password hunter2xx
+internal	censor	hunter3yy	    auth-password hunter3yy
+internal	censor	public	snmp-server community public RO
+internal	censor	cawk1	snmp-agent community write cawk1
+internal	censor	public	    community public {
+internal	censor	public	            community "public" hash2 r version both
+internal	censor	backdoor1	snmp set-read-community backdoor1 access-list-snmp
+internal	censor	cawk_2	    community cawk_2
+internal	censor	trapval1	set snmp_trap_community="trapval1"
+internal	censor	pubcheck	set snmp_community="pubcheck"
+internal	censor	trapcom	set snmp trap-community trapcom
+internal	censor	PRIVATE KEY	-----BEGIN RSA PRIVATE KEY-----
+internal	censor	3082010a	  3082010a 02820101 00c4b3a5 d2f1e6c7
+external	censor	core-router-01	hostname core-router-01
+external	censor	edge1	    host-name edge1;
+external	censor	SW-HUAWEI	sysname SW-HUAWEI
+external	censor	ACME	 description Customer ACME uplink
+external	censor	paris	    location paris
+external	censor	10.1.1.1	 ip address 10.1.1.1 255.255.255.0
+external	censor	255.255.255.0	 ip address 10.1.1.1 255.255.255.0
+external	censor	2001:db8::1	 ipv6 address 2001:db8::1/64
+external	censor	fe80::1ff:fe23:4567:890a	 ipv6 address fe80::1ff:fe23:4567:890a link-local
+external	censor	00:1a:2b:3c:4d:5e	mac-address 00:1a:2b:3c:4d:5e
+external	censor	001a.2b3c.4d5e	mac address-table static 001a.2b3c.4d5e vlan 1
+internal	keep	-	ip access-list extended MGMT
+internal	keep	-	interface GigabitEthernet0/1
+internal	keep	-	ntp trusted-key 1
+internal	keep	-	    set password-policy min-length 12
+internal	keep	-	    permit-root-login no;
+internal	keep	-	  hash md5
+internal	keep	-	aaa new-model
+internal	keep	-	    auth-order tacacs local
+internal	keep	-	    security-level privacy;
+internal	keep	-	    set keylife 28800
+internal	keep	-	line vty 0 4
+internal	keep	-	logging buffered 4096
+internal	keep	-	    plain-text-password;
+internal	keep	-	ntp server pool.ntp.org
+internal	keep	-	spanning-tree mode rapid-pvst
+internal	censor	$6$abc$defghijk	set user admin password-hash $6$abc$defghijk
+internal	censor	$6$abc$defghijk	set expert-password-hash $6$abc$defghijk
+internal	censor	grub.pbkdf2.sha512.10000.B8A1.017C	set grub2-password-hash grub.pbkdf2.sha512.10000.B8A1.017C
+internal	censor	$1$x$yzabc	set mgt-config users admin phash $1$x$yzabc
+internal	censor	$5$salt$hashvalue	description backup $5$salt$hashvalue
+internal	keep	-	set mgt-config users admin permissions role-based superuser
+internal	keep	-	 set community 65000:100
+internal	keep	-	 match community 10
+internal	censor	public	rocommunity public
+internal	censor	private	rwcommunity private 10.0.0.0/24
+internal	censor	secret	path ftp://admin:secret@10.1.1.1/cfg
+internal	censor	abc	 wpa psk set-key abc
+internal	censor	cisco	 standby 1 authentication cisco
+internal	keep	-	 standby 1 authentication
+internal	censor	xyz	 authpwd xyz

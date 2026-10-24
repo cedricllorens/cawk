@@ -6,7 +6,7 @@
 # ------------------------------------------------------------
 
 .PHONY: \
-  catalog_build catalog_build_repo catalog_build_run catalog_exceptions_repo  \
+  catalog_build catalog_build_audit catalog_build_repo catalog_build_run catalog_exceptions_repo  \
   catalog_exceptions_run catalog_nist_mappings catalog_repo catalog_run  \
   nist_coverage_official nist_coverage_repo nist_coverage_run
 
@@ -45,18 +45,27 @@ catalog_build: tests_target_common
 		$(ECHO) "cawk catalog_build: no run audits found, skipping catalog_build_run"; \
 	else \
 		$(RUN_DIRS_FIND) | while read -r audit; do \
-			$(GMAKE) catalog_build_run audit=$$audit; \
+			$(GMAKE) catalog_build_run audit=$$audit || exit 1; \
 		done; \
 	fi
 	$(GMAKE) catalog_nist_mappings
 	$(ECHO) "cawk catalog_build done ----"
+
+# Refresh only the lines of audit=AUDIT_NAME in db_info.txt (create_audit/delete_audit), the other contexts are untouched
+catalog_build_audit: tests_target_common
+	if [ -z "$(audit)" ]; then $(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; exit 1; fi
+	touch $(DATABASE_PATH)/db_info.txt
+	awk -F';' -v a="$(audit)" '$$1 != a' $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_info.txt.swap && mv $(DATABASE_PATH)/db_info.txt.swap $(DATABASE_PATH)/db_info.txt
+	if [ -d tests/run_$(audit) ]; then $(GMAKE) catalog_build_run audit=$(audit); fi
+	$(GMAKE) catalog_nist_mappings
+	$(ECHO) "cawk catalog_build_audit $(audit) done ----"
 
 catalog_nist_mappings:
 	$(TESTS_COMMON_PATH)/catalog_nist_mappings.gawk $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_nist_mappings.json
 	$(ECHO) "cawk catalog_nist_mappings done - generated $(DATABASE_PATH)/db_nist_mappings.json"
 
 catalog_repo: tests_target_common
-	@for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		$(ECHO) ""; \
 		common/catalog_info.gawk repo $$supplier; \
 	done
@@ -64,12 +73,12 @@ catalog_repo: tests_target_common
 
 catalog_run: tests_target_common
 ifeq ($(strip $(audit)),)
-	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_info.gawk run $$supplier; \
 	done
 	$(ECHO) "cawk catalog_run done ----"
 else
-	@for supplier in $(shell find confs/run_$(audit) -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@for supplier in $(shell find confs/run_$(audit) -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_info.gawk $(audit) $$supplier; \
 	done
 	$(ECHO) "cawk catalog_run $(audit) done ----"
@@ -122,7 +131,7 @@ else
 endif
 
 catalog_exceptions_repo: tests_target_common
-	@first=1; for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@first=1; for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		if [ $$first -eq 0 ]; then $(ECHO) ""; fi; \
 		common/catalog_exceptions_info.gawk repo $$supplier; \
 		first=0; \
@@ -131,12 +140,12 @@ catalog_exceptions_repo: tests_target_common
 
 catalog_exceptions_run: tests_target_common
 ifeq ($(strip $(audit)),)
-	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_exceptions_info.gawk run $$supplier; \
 	done
 	$(ECHO) "cawk catalog_exceptions_run done ----"
 else
-	@for supplier in $(shell find confs/run_$(audit) -maxdepth 1 -type d -name "confs.*" | sed 's|.*/confs\.||' | sort | xargs); do \
+	@for supplier in $(shell find confs/run_$(audit) -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_exceptions_info.gawk $(audit) $$supplier; \
 	done
 	$(ECHO) "cawk catalog_exceptions_run $(audit) done ----"

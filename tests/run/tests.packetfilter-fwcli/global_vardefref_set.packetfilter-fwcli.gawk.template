@@ -69,7 +69,8 @@ ENDFILE {
     pass = 1;
     for (id in REF) { 
         if (!(id in DEF)) {
-            print_err("global_vardefref_set.packetfilter-fwcli.gawk","var ref not def <<"id">>",LINENB[id],"high","error");
+            split(LINENB[id], first_ref, " ");
+            print_err("global_vardefref_set.packetfilter-fwcli.gawk","var ref not def <<"id">>",first_ref[1],"high","error");
             pass = 0;
         }
     }

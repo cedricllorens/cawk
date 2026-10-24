@@ -1,0 +1,6 @@
+function load_psirt_config() {
+  DEVICE = "^c_"
+  OS[1] = "^15\\..* .* .*"
+  LINE[1] = "hostname ("
+  LOGIC = "LINE[1] == 1"
+}

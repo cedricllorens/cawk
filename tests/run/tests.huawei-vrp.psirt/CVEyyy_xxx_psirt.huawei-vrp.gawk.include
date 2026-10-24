@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for Huawei VRP devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "V[0-9]+\\.[0-9]+\\..* .* .*"
 
     # Line Patterns (Huawei VRP configuration)
-    LINE[1] = "sysName"
+    LINE[1] = "sysNameFAKE"
     LINE[2] = "interface"
 
     # Block Patterns (Huawei VRP VLAN and interface blocks)
-    BLOCK[1]["start"] = "^vlan "
+    BLOCK[1]["start"] = "^vlanFAKE "
     BLOCK[1]["end"] = "^$"
     BLOCK[1]["match"][1] = "^ name"
     BLOCK[1]["match"][2] = "^ description"

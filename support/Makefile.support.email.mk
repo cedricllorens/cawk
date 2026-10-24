@@ -5,6 +5,9 @@
 # cawk is Copyright (C) 2024-2026 by Cedric Llorens
 # ------------------------------------------------------------
 
+# TIMELINE=yes: the export zip holds the timeline csv only, TIMELINE=no: the plain csv
+EMAIL_CSV_TIMELINE = $(if $(filter yes,$(strip $(TIMELINE))),.timeline,)
+
 .PHONY: \
   email_send email_send_audit
 
@@ -13,52 +16,57 @@ ifeq ($(strip $(audit)),)
 	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_$(audit)/.),)
-	$(ECHO) "cawk error audit=$(audit) do not exist  ----"
+	$(ECHO) "cawk error audit=$(audit) do not exist ----"
 else
 	if $(EGREP) -q "^$(audit) " $(DATABASE_PATH)/db_email.txt; then \
 		email_info=$$($(EGREP) "^$(audit) " $(DATABASE_PATH)/db_email.txt); \
 		dst=$$($(ECHO) $$email_info | awk '{print $$2}'); \
 		cc=$$($(ECHO) $$email_info | awk '{print $$3}'); \
+		if [ "$$dst" = "none" ]; then \
+			$(ECHO) "cawk warning: dst is none for audit $(audit), email not sent ----"; \
+			exit 0; \
+		fi; \
 		if [ -z "$$dst" ]; then \
 			$(ECHO) "cawk error dst not found for audit $(audit) ----"; \
-			exit 0; \
+			exit 1; \
 		fi; \
 		if [ -z "$$(find $(REPORT_PATH)/run_$(audit) -name '*.csv' -type f)" ]; then \
 			$(ECHO) "cawk error no csv files found in $(REPORT_PATH)/run_$(audit) ----"; \
-			exit 0; \
+			exit 1; \
 		fi; \
-		zip -j -9 -q $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip $$(find $(REPORT_PATH)/run_$(audit) -type f \( -name '*all.summary.txt' -o -name '*all.idx' -o -name '*all.security.timeline.csv' -o -name '*all.audit.timeline.csv' -o -name '*all.psirt.timeline.csv' -o -name '*all.exception.timeline.csv' -o -name '*all.deadbeef.timeline.csv' -o -name '*all.badformat.timeline.csv' -o -name '*all.crlf.timeline.csv' \)) 2>$(LOGS_PATH)/run_$(audit)/email.$(audit).err || $(ECHO) "cawk error: export zip creation failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; \
+		zip -j -9 -q $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip $$(find $(REPORT_PATH)/run_$(audit) -type f \( -name '*all.summary.txt' -o -name '*all.idx' -o -name '*all.security$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.audit$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.psirt$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.exception$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.deadbeef$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.badformat$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' -o -name '*all.crlf$(EMAIL_CSV_TIMELINE)$(CSV_EXT)' \)) 2>$(LOGS_PATH)/run_$(audit)/email.$(audit).err || { $(ECHO) "cawk error: export zip creation failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; exit 1; }; \
+		summary_att=$(REPORT_PATH)/run_$(audit)/assessment.all.summary.txt; if [ "$(strip $(HTML))" = "yes" ] && [ -f $(REPORT_PATH)/run_$(audit)/assessment.all.summary.html ]; then summary_att=$(REPORT_PATH)/run_$(audit)/assessment.all.summary.html; fi; \
 		$(ECHO) "cawk sending audit $(audit) to $$dst ----"; \
 		if [ "$$cc" != "none" ]; then \
 			if [ -n "$$(find $(REPORT_PATH)/run_$(audit) -name '*all.summary.txt' -type f)" ]; then \
-				if cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk $(audit) assessment" -a $(REPORT_PATH)/run_$(audit)/*all.summary.txt -a $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip -c $$cc -- $$dst 2>>$(LOGS_PATH)/run_$(audit)/email.$(audit).err; then \
+				if cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk $(audit) assessment" -a $$summary_att -a $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip -c $$cc -- $$dst 2>>$(LOGS_PATH)/run_$(audit)/email.$(audit).err; then \
 					$(ECHO) "cawk email sent successfully ----"; \
 				else \
-					$(ECHO) "cawk error: email send failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; \
+					$(ECHO) "cawk error: email send failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; exit 1; \
 				fi; \
 			else \
-				$(ECHO) "cawk error no summary found in $(REPORT_PATH)/run_$(audit), email not sent ----"; \
+				$(ECHO) "cawk error no summary found in $(REPORT_PATH)/run_$(audit), email not sent ----"; exit 1; \
 			fi; \
 		else \
 			if [ -n "$$(find $(REPORT_PATH)/run_$(audit) -name '*all.summary.txt' -type f)" ]; then \
-				if cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk $(audit) assessment" -a $(REPORT_PATH)/run_$(audit)/*all.summary.txt -a $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip -- $$dst 2>>$(LOGS_PATH)/run_$(audit)/email.$(audit).err; then \
+				if cat $(COMMON_PATH)/common_message.txt | mutt -s "cawk $(audit) assessment" -a $$summary_att -a $(REPORT_PATH)/run_$(audit)/assessment.run_$(audit).export.zip -- $$dst 2>>$(LOGS_PATH)/run_$(audit)/email.$(audit).err; then \
 					$(ECHO) "cawk email sent successfully ----"; \
 				else \
-					$(ECHO) "cawk error: email send failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; \
+					$(ECHO) "cawk error: email send failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/email.$(audit).err) ----"; exit 1; \
 				fi; \
 			else \
-				$(ECHO) "cawk error no summary found in $(REPORT_PATH)/run_$(audit), email not sent ----"; \
+				$(ECHO) "cawk error no summary found in $(REPORT_PATH)/run_$(audit), email not sent ----"; exit 1; \
 			fi; \
 		fi; \
 	else \
-		$(ECHO) "cawk error no email info found for audit $(audit) ----"; \
+		$(ECHO) "cawk error no email info found for audit $(audit) ----"; exit 1; \
 	fi
 endif
 endif
-	$(ECHO) "cawk send_audit_email done ----"
+	$(ECHO) "cawk email_send done ----"
 
 email_send_audit:
-	$(RUN_DIRS_FIND) | while read -r audit; do \
-		$(GMAKE) email_send audit=$$audit; \
-	done
+	while read -r audit rest; do \
+		$(GMAKE) email_send audit=$$audit || exit 1; \
+	done < $(DATABASE_PATH)/db_email.txt
 	$(ECHO) "cawk email_send_audit done ----"

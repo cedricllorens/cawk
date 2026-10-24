@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400" role="img" aria-label="CAWK - Network Config Checker and Censor">
+  <title>CAWK - Network Config Checker and Censor</title>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="80%">
+      <stop offset="0" stop-color="#101a45"/>
+      <stop offset="0.6" stop-color="#070b22"/>
+      <stop offset="1" stop-color="#02030a"/>
+    </radialGradient>
+    <linearGradient id="neon" gradientUnits="userSpaceOnUse" x1="200" y1="110" x2="750" y2="230">
+      <stop offset="0" stop-color="#a6e6ff"/>
+      <stop offset="0.55" stop-color="#3a7bff"/>
+      <stop offset="1" stop-color="#9a3cff"/>
+    </linearGradient>
+    <linearGradient id="rule" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="118" y2="0">
+      <stop offset="0" stop-color="#3a7bff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#6bb8ff"/>
+    </linearGradient>
+    <linearGradient id="ruleR" gradientUnits="userSpaceOnUse" x1="782" y1="0" x2="860" y2="0">
+      <stop offset="0" stop-color="#d43bd0"/>
+      <stop offset="1" stop-color="#d43bd0" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="hex" width="42" height="48.5" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
+      <path d="M21 0L42 12.1V36.4L21 48.5L0 36.4V12.1Z" fill="none" stroke="#2b4fb8" stroke-width="1"/>
+    </pattern>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowS" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowL" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- formes des lettres (partagées par les trois couches) -->
+    <g id="letters" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M245 118A55 55 0 1 0 245 182"/>
+      <path d="M290 205L340 95L390 205"/>
+      <path d="M430 95L455 205L495 125L535 205L560 95"/>
+      <path d="M604 95V205"/>
+      <path d="M692 95L608 152"/>
+      <path d="M642 129L696 205"/>
+    </g>
+  </defs>
+
+  <!-- fond -->
+  <rect width="900" height="400" rx="30" fill="url(#bg)"/>
+  <rect width="900" height="400" rx="30" fill="url(#hex)" opacity=".10"/>
+  <rect x="1.5" y="1.5" width="897" height="397" rx="29" fill="none" stroke="#2b4fb8" stroke-width="1.5" opacity=".6"/>
+
+  <!-- coins techniques -->
+  <g fill="none" stroke="#4aa8ff" stroke-width="2.5" stroke-linecap="round" opacity=".85" filter="url(#glowS)">
+    <path d="M26 70V40a14 14 0 0 1 14-14h30"/>
+    <path d="M874 70V40a14 14 0 0 0-14-14h-30"/>
+    <path d="M26 330v30a14 14 0 0 0 14 14h30"/>
+    <path d="M874 330v30a14 14 0 0 1-14 14h-30"/>
+  </g>
+
+  <!-- circuits : traces qui partent des lettres -->
+  <g fill="none" stroke="#4aa8ff" stroke-width="2" opacity=".75" filter="url(#glowS)">
+    <path d="M300 115H250V70H130V45"/>
+    <path d="M390 115V70H470V50"/>
+    <path d="M470 50H560V30H700"/>
+    <path d="M610 100V60H660V85H770"/>
+    <path d="M120 175H70V230"/>
+    <path d="M250 225V250H120V290"/>
+    <path d="M770 200H800V260H840"/>
+    <path d="M500 230V262"/>
+  </g>
+  <g fill="#c8ecff" filter="url(#glowS)">
+    <circle cx="130" cy="45" r="4.5"/><circle cx="470" cy="50" r="4.5"/><circle cx="700" cy="30" r="4.5"/>
+    <circle cx="770" cy="85" r="4.5"/><circle cx="70" cy="230" r="4.5"/><circle cx="120" cy="290" r="4.5"/>
+    <circle cx="840" cy="260" r="4.5"/><circle cx="500" cy="262" r="4.5"/>
+  </g>
+  <g fill="none" stroke="#ff4fd8" stroke-width="2" opacity=".8" filter="url(#glowS)">
+    <path d="M110 120H60V90"/>
+    <path d="M790 150H840V120"/>
+  </g>
+  <g fill="#ff9bea" filter="url(#glowS)">
+    <circle cx="60" cy="90" r="4"/><circle cx="840" cy="120" r="4"/>
+  </g>
+
+  <!-- lettres CAWK : tube sombre + néon + coeur lumineux -->
+  <g transform="translate(50,20)">
+    <use href="#letters" stroke="#0a1650" stroke-width="34" opacity=".85"/>
+    <use href="#letters" stroke="url(#neon)" stroke-width="24" filter="url(#glow)"/>
+    <use href="#letters" stroke="#eaf8ff" stroke-width="4" opacity=".85"/>
+
+    <!-- noeuds réseau sur les sommets -->
+    <g fill="#04060e" stroke="#eaf8ff" stroke-width="2.5" filter="url(#glowS)">
+      <circle cx="340" cy="95" r="7"/>
+      <circle cx="455" cy="205" r="6"/><circle cx="495" cy="125" r="6"/><circle cx="535" cy="205" r="6"/>
+      <circle cx="608" cy="152" r="7"/>
+    </g>
+
+    <!-- yeux dans le A -->
+    <g filter="url(#glowL)">
+      <circle cx="328" cy="162" r="8.5" fill="#d6f1ff"/>
+      <circle cx="352" cy="162" r="8.5" fill="#d6f1ff"/>
+    </g>
+    <circle cx="328" cy="162" r="3.2" fill="#1b3cff"/>
+    <circle cx="352" cy="162" r="3.2" fill="#1b3cff"/>
+  </g>
+
+  <!-- clavier néon -->
+  <g filter="url(#glowS)" fill="#2a0f45" stroke="#ff4fd8" stroke-width="2">
+    <rect x="194" y="264" width="44" height="14" rx="4"/>
+    <rect x="246" y="264" width="44" height="14" rx="4"/>
+    <rect x="298" y="264" width="44" height="14" rx="4"/>
+    <rect x="350" y="264" width="44" height="14" rx="4"/>
+    <rect x="402" y="264" width="44" height="14" rx="4"/>
+    <rect x="454" y="264" width="44" height="14" rx="4"/>
+    <rect x="506" y="264" width="44" height="14" rx="4"/>
+    <rect x="558" y="264" width="44" height="14" rx="4"/>
+    <rect x="610" y="264" width="44" height="14" rx="4"/>
+    <rect x="662" y="264" width="44" height="14" rx="4"/>
+  </g>
+
+  <!-- séparateur -->
+  <g stroke-width="2" stroke-linecap="round">
+    <path d="M40 322H118" stroke="url(#rule)"/>
+    <path d="M782 322H860" stroke="url(#ruleR)"/>
+  </g>
+
+  <!-- badge « validé » -->
+  <g filter="url(#glowS)">
+    <circle cx="138" cy="322" r="11" fill="#06122e" stroke="#5cff7a" stroke-width="2"/>
+    <path d="M132.5 322.5l4 4 7.5-8.5" fill="none" stroke="#5cff7a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <circle cx="762" cy="322" r="4" fill="#ff9bea" filter="url(#glowS)"/>
+
+  <!-- sous-titre -->
+  <text x="450" y="329" text-anchor="middle"
+        fill="#bfe6ff" filter="url(#glowS)"
+        font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace"
+        font-size="21" font-weight="700" textLength="560" lengthAdjust="spacing">NETWORK CONFIG CHECKER AND CENSOR</text>
+
+  <!-- ligne de statut -->
+  <g font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#6e86c8" letter-spacing="3" text-anchor="middle">
+    <text x="450" y="362">multi-vendor · audit · open source</text>
+  </g>
+</svg>

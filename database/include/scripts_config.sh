@@ -44,6 +44,9 @@ DATABASE_CIS_INFO="${DATABASE_PATH}/db_info.txt"
 # Database scripts path (contains *.script.sh files for database operations)
 DATABASE_SH_PATH="${DATABASE_PATH}/scripts"
 
+# Optional configuration collectors path (contains *.collector.sh files, run by gmake collect_run)
+COLLECTORS_PATH="${DATABASE_PATH}/collectors"
+
 # Database scripts glob pattern
 # Usage: for script in ${DATABASE_SH_PATTERN}; do ... done
 DATABASE_SH_PATTERN="${DATABASE_SH_PATH}/*.script.sh"

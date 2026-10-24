@@ -12,14 +12,16 @@
 sync_run: clean_tmp tests_target_common database_target_sh
 ifeq ($(strip $(audit)),)
 	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
-	$(ECHO) "cawk sync_run done ----"
+	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
+	$(if $(filter yes,$(strip $(COLLECT))),$(GMAKE) collect_run audit=$(audit) || $(ECHO) "cawk error: collect_run failed for $(audit) - the sync continues with the previously collected configurations ----")
 	if [ ! -f $(DATABASE_SH_PATH)/database_sync.script ]; then \
-		$(ECHO) "cawk error: $(DATABASE_SH_PATH)/database_sync.script does not exist, execution skipped ----"; \
+		$(ECHO) "cawk error: $(DATABASE_SH_PATH)/database_sync.script does not exist ----"; \
+		exit 1; \
 	else \
 		$(ECHO) "cawk $(DATABASE_SH_PATH)/database_sync.script execution ----"; \
-		$(DATABASE_SH_PATH)/database_sync.script $(audit) 2>$(LOGS_PATH)/run_$(audit)/sync.$(audit).err || $(ECHO) "cawk error: database_sync.script failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync.$(audit).err) ----"; \
+		$(DATABASE_SH_PATH)/database_sync.script $(audit) 2>$(LOGS_PATH)/run_$(audit)/sync.$(audit).err || { $(ECHO) "cawk error: database_sync.script failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync.$(audit).err) ----"; exit 1; }; \
 	fi
 	$(ECHO) "cawk cleaning local configurations before sync : $(CONFS_PATH)/run_$(audit) "
 	$(RM) -f -r $(CONFS_PATH)/run_$(audit) || true
@@ -34,40 +36,46 @@ else
 			regexos=$$($(ECHO) "$$line" | gawk '{if ( $$5 == "") { print "none"; } else { print $$5; }}'); \
 			regexpathexclude=$$($(ECHO) "$$line" | gawk '{if ( $$6 == "") { print "none"; } else { print $$6; }}'); \
 			regexinventoryexclude=$$($(ECHO) "$$line" | gawk '{if ( $$7 == "") { print "none"; } else { print $$7; }}'); \
-			( cd $(CONFS_PATH)/run_$(audit) && ../../$(COMMON_PATH)/sync_cawk_conf.gawk "$$paths" "$$regexinventory" "../../$$scope" "$$regexos" "$$regexpathexclude" "$$regexinventoryexclude" ) 2>>$(LOGS_PATH)/run_$(audit)/sync_cawk_conf.$(audit).err ; \
+			( cd $(CONFS_PATH)/run_$(audit) && $(CURDIR)/$(COMMON_PATH)/sync_cawk_conf.gawk "$$paths" "$$regexinventory" "$(CURDIR)/$$scope" "$$regexos" "$$regexpathexclude" "$$regexinventoryexclude" ) 2>>$(LOGS_PATH)/run_$(audit)/sync_cawk_conf.$(audit).err ; \
 		else \
-			$(ECHO) "cawk error: $(DATABASE_PATH)/db_sync.txt audit $$($(ECHO) "$$line" | gawk '{print $$1}') path does not exist, execution skipped ----"; \
+			$(ECHO) "cawk warning: $(DATABASE_PATH)/db_sync.txt audit $$($(ECHO) "$$line" | gawk '{print $$1}') has no sync path (none), execution skipped ----"; \
 		fi \
 	done
 	@if [ -s $(LOGS_PATH)/run_$(audit)/sync_cawk_conf.$(audit).err ]; then \
 		$(ECHO) "cawk error: sync_cawk_conf.gawk failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync_cawk_conf.$(audit).err) ----"; \
+		exit 1; \
 	fi
-	$(ECHO) "cawk sync_run_audit $(audit) done ----"
+	$(ECHO) "cawk sync_run $(audit) done ----"
 endif
 
 sync_run_audit:
 	while read line; do \
 		audit=$$($(ECHO) "$$line" | gawk '{print $$1}'); \
-		$(GMAKE) sync_run audit=$$audit; \
+		$(GMAKE) sync_run audit=$$audit || exit 1; \
 	done < $(DATABASE_PATH)/db_sync.txt
 	$(GMAKE) list_audit
 	$(ECHO) "cawk you may launch <$(GMAKE) sync_teststoconfs_run_audit> to sync tests supplier scope to tests supplier scope ----"
 	$(ECHO) "cawk sync_run_audit all audit done ----"
 
 sync_psirt:
+ifeq ($(strip $(audit)),)
+	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	exit 1
+else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
 	if [ ! -f $(DATABASE_SH_PATH)/database_sync_psirt.script ]; then \
-		$(ECHO) "cawk error: $(DATABASE_SH_PATH)/database_sync_psirt.script does not exist, execution skipped ----"; \
+		$(ECHO) "cawk error: $(DATABASE_SH_PATH)/database_sync_psirt.script does not exist ----"; exit 1; \
 	else \
 		$(ECHO) "cawk $(DATABASE_SH_PATH)/database_sync_psirt.script execution ----"; \
-		$(DATABASE_SH_PATH)/database_sync_psirt.script $(audit) 2>$(LOGS_PATH)/run_$(audit)/sync_psirt.$(audit).err || $(ECHO) "cawk error: database_sync_psirt.script failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync_psirt.$(audit).err) ----"; \
+		$(DATABASE_SH_PATH)/database_sync_psirt.script $(audit) 2>$(LOGS_PATH)/run_$(audit)/sync_psirt.$(audit).err || { $(ECHO) "cawk error: database_sync_psirt.script failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync_psirt.$(audit).err) ----"; exit 1; }; \
 	fi
 	$(ECHO) "cawk sync_psirt done ----"
+endif
 
 sync_teststoconfs_run:
 ifeq ($(strip $(audit)),)
 	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
-	$(ECHO) "cawk sync_teststoconfs_run done ----"
+	exit 1
 else
 	$(ECHO) ""
 	$(ECHO) "cawk sync_teststoconfs_run: processing audit $(audit) ----"
@@ -109,14 +117,14 @@ endif
 
 sync_teststoconfs_run_audit:
 	@$(RUN_DIRS_FIND) | while read -r audit; do \
-		$(GMAKE) sync_teststoconfs_run audit=$$audit; \
+		$(GMAKE) sync_teststoconfs_run audit=$$audit || exit 1; \
 	done; \
 	$(ECHO) "cawk sync_teststoconfs_run_audit done ----"
 
 sync_exceptionstoconfs_run:
 ifeq ($(strip $(audit)),)
 	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
-	$(ECHO) "cawk sync_exceptionstoconfs_run done ----"
+	exit 1
 else
 	$(ECHO) ""
 	$(ECHO) "cawk sync_exceptionstoconfs_run: processing audit $(audit) ----"
@@ -158,6 +166,6 @@ endif
 
 sync_exceptionstoconfs_run_audit:
 	@$(RUN_DIRS_FIND) | while read -r audit; do \
-		$(GMAKE) sync_exceptionstoconfs_run audit=$$audit; \
+		$(GMAKE) sync_exceptionstoconfs_run audit=$$audit || exit 1; \
 	done; \
 	$(ECHO) "cawk sync_exceptionstoconfs_run_audit done ----"

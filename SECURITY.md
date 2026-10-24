@@ -1,3 +1,5 @@
+<p align="left"><img src="docs/logo/logo-cawk.svg" width="200" alt="cawk"></p>
+
 # Security Policy
 
 ## Reporting a Vulnerability
@@ -39,10 +41,11 @@ We provide security updates for the current and previous minor versions. Older v
 
 ### What cawk Does
 
-cawk is a configuration auditing tool that:
+cawk is a network configuration compliance checker and network configuration censor that:
 - Parses network device configurations from files
 - Applies security tests against those configurations
 - Generates reports of findings
+- Censors sensitive values (passwords, secrets, communities) of the configurations on demand
 
 ### Security-Sensitive Areas
 

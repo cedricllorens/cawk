@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for 6wind-linux devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "5\\..* .* .*"
 
     # Line Patterns (6wind-linux system configuration)
-    LINE[1] = "hostname"
+    LINE[1] = "hostnameFAKE"
     LINE[2] = "permit all"
 
     # Block Patterns (6wind-linux interface and service blocks)
-    BLOCK[1]["start"] = "^interface "
+    BLOCK[1]["start"] = "^interfaceFAKE "
     BLOCK[1]["end"] = "^$"
     BLOCK[1]["match"][1] = "^ address"
     BLOCK[1]["match"][2] = "^ no shutdown"

@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/ server [0-9\.]+/ && block_ntp == 1 {
+/^ntp server( vrf [^ ]+)? [0-9\.]+/ || ( block_ntp == 1 && /^ server( vrf [^ ]+)? [0-9\.]+/ ) {
 	print_err("ntp_ip_set.cisco-xr.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;

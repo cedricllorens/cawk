@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300" role="img" aria-label="CAWK">
+  <title>CAWK</title>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="80%">
+      <stop offset="0" stop-color="#0d1538"/>
+      <stop offset="1" stop-color="#03040a"/>
+    </radialGradient>
+    <linearGradient id="neon" gradientUnits="userSpaceOnUse" x1="150" y1="90" x2="700" y2="210">
+      <stop offset="0" stop-color="#9fe0ff"/>
+      <stop offset="0.6" stop-color="#3a7bff"/>
+      <stop offset="1" stop-color="#8a3cff"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow2" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="300" rx="28" fill="url(#bg)"/>
+
+  <!-- traces de circuit -->
+  <g fill="none" stroke="#4aa8ff" stroke-width="2" opacity=".7" filter="url(#glow)">
+    <path d="M60 40H220V70"/>
+    <path d="M420 30V60H520V40H700"/>
+    <path d="M40 250H180V225"/>
+    <path d="M330 262V240H470"/>
+    <path d="M772 252H712V272"/>
+  </g>
+  <g fill="#bfe6ff" filter="url(#glow)">
+    <circle cx="60" cy="40" r="4"/><circle cx="220" cy="70" r="4"/>
+    <circle cx="420" cy="30" r="4"/><circle cx="700" cy="40" r="4"/>
+    <circle cx="40" cy="250" r="4"/><circle cx="180" cy="225" r="4"/>
+    <circle cx="470" cy="240" r="4"/><circle cx="772" cy="252" r="4"/><circle cx="712" cy="272" r="4"/>
+  </g>
+
+  <!-- lettres CAWK -->
+  <g fill="none" stroke="url(#neon)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <!-- C -->
+    <path d="M245 118A55 55 0 1 0 245 182"/>
+    <!-- A -->
+    <path d="M290 205L340 95L390 205"/>
+    <!-- W -->
+    <path d="M430 95L455 205L495 125L535 205L560 95"/>
+    <!-- K -->
+    <path d="M604 95V205"/>
+    <path d="M692 95L608 152"/>
+    <path d="M642 129L696 205"/>
+  </g>
+
+  <!-- yeux dans le A -->
+  <g filter="url(#glow2)">
+    <circle cx="328" cy="162" r="8" fill="#d6f1ff"/>
+    <circle cx="352" cy="162" r="8" fill="#d6f1ff"/>
+  </g>
+
+  <!-- ligne de touches magenta -->
+  <g filter="url(#glow)" fill="#2a0f45" stroke="#ff4fd8" stroke-width="2">
+    <rect x="150" y="238" width="44" height="14" rx="4"/>
+    <rect x="202" y="238" width="44" height="14" rx="4"/>
+    <rect x="254" y="238" width="44" height="14" rx="4"/>
+    <rect x="306" y="238" width="44" height="14" rx="4"/>
+    <rect x="358" y="238" width="44" height="14" rx="4"/>
+    <rect x="410" y="238" width="44" height="14" rx="4"/>
+    <rect x="462" y="238" width="44" height="14" rx="4"/>
+    <rect x="514" y="238" width="44" height="14" rx="4"/>
+    <rect x="566" y="238" width="44" height="14" rx="4"/>
+    <rect x="618" y="238" width="44" height="14" rx="4"/>
+  </g>
+</svg>

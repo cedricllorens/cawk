@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/ access-group / && block_ntp == 1 {
+/^ntp access-group / || ( block_ntp == 1 && /^ access-group / ) {
 	print_err("ntp_accessgroup_set.cisco-xr.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;
@@ -45,7 +45,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("ntp_accessgroup_set.cisco-xr.gawk","<ntp server> is not set",0,"high","error");
+	if ( pass ) print_err("ntp_accessgroup_set.cisco-xr.gawk","<ntp access-group> is not set",0,"high","error");
 }
 
 END {

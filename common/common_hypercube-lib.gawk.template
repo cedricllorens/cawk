@@ -472,7 +472,7 @@ function cawk_hypercube_rules_assessment(    r, t, rs0, rs1, rd0, rd1, ra, rio, 
 			"src("c_src_orig[t]") src_port("c_ps[t]"/"c_psr[t]") "\
 			"dst("c_dst_orig[t]") dst_port("c_pd[t]"/"c_pdr[t]") "\
 			"protocol("c_proto[t] cawk_icmp_label(c_icmp[t])\
-			") == "rule_analysis,FNR,"info","error");
+			") == "rule_analysis,FNR,"info","warning");
 		}
 	}
 

@@ -6,10 +6,14 @@ repo;cisco-cedge;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;cisco-ios;exc-2024-001;john doe;2024-03-15;approved firewall policy exception for production environment
 repo;cisco-ios;exc-2024-002;jane smith;2024-03-20;legacy device compatibility with old ssh version
 repo;cisco-ios;exc-2026-001;test approver;2026-08-23;validate configurable exception field prefixes and suffixes
+repo;cisco-ios;exc-repo-001;test approver;2026-10-23;demo active exception, high risk (repo self-test of the exceptions kpi of the html report)
+repo;cisco-ios;exc-repo-002;test approver;2026-10-23;demo active exception, medium risk (repo self-test of the exceptions kpi of the html report)
+repo;cisco-ios;exc-repo-003;test approver;2026-10-23;demo active exception, info risk (repo self-test of the exceptions kpi of the html report)
 repo;cisco-sdnios;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;cisco-viptela;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;cisco-xe;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;cisco-xr;exc-xxx;name;yyyy-mm-dd;brief business context
+repo;cisco-xr;exc-repo-004;test approver;2026-10-23;demo active exception, low risk (repo self-test of the exceptions kpi of the html report)
 repo;ekinops-oneos;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;fortinet-fortios;exc-xxx;name;yyyy-mm-dd;brief business context
 repo;huawei-vrp;exc-xxx;name;yyyy-mm-dd;brief business context
@@ -25,10 +29,14 @@ run;cisco-cedge;exc-xxx;name;yyyy-mm-dd;brief business context
 run;cisco-ios;exc-2024-001;john doe;2024-03-15;approved firewall policy exception for production environment
 run;cisco-ios;exc-2024-002;jane smith;2024-03-20;legacy device compatibility with old ssh version
 run;cisco-ios;exc-2026-001;test approver;2026-08-23;validate configurable exception field prefixes and suffixes
+run;cisco-ios;exc-repo-001;test approver;2026-10-23;demo active exception, high risk (repo self-test of the exceptions kpi of the html report)
+run;cisco-ios;exc-repo-002;test approver;2026-10-23;demo active exception, medium risk (repo self-test of the exceptions kpi of the html report)
+run;cisco-ios;exc-repo-003;test approver;2026-10-23;demo active exception, info risk (repo self-test of the exceptions kpi of the html report)
 run;cisco-sdnios;exc-xxx;name;yyyy-mm-dd;brief business context
 run;cisco-viptela;exc-xxx;name;yyyy-mm-dd;brief business context
 run;cisco-xe;exc-xxx;name;yyyy-mm-dd;brief business context
 run;cisco-xr;exc-xxx;name;yyyy-mm-dd;brief business context
+run;cisco-xr;exc-repo-004;test approver;2026-10-23;demo active exception, low risk (repo self-test of the exceptions kpi of the html report)
 run;ekinops-oneos;exc-xxx;name;yyyy-mm-dd;brief business context
 run;fortinet-fortios;exc-xxx;name;yyyy-mm-dd;brief business context
 run;huawei-vrp;exc-xxx;name;yyyy-mm-dd;brief business context

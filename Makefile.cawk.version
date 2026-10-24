@@ -47,11 +47,13 @@ help all:
 
 install:
 ifeq ($(CAWK_VERSION),)
-	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
 	@echo "Usage: gmake install CAWK_VERSION=3.6.0"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@exit 1
 else
 	@echo "Installing cawk-$(CAWK_VERSION)..."
 	tar zxvf cawk-$(CAWK_VERSION).tar.gz
@@ -67,11 +69,13 @@ endif
 
 reinstall:
 ifeq ($(CAWK_VERSION),)
-	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
 	@echo "Usage: gmake reinstall CAWK_VERSION=3.6.0"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@exit 1
 else
 	@echo "Reinstalling cawk-$(CAWK_VERSION) (backing up audits)..."
 	rm -r -f cawk-$(CAWK_VERSION).old
@@ -91,15 +95,22 @@ endif
 
 update:
 ifeq ($(CAWK_VERSION),)
-	@echo "ERROR: CAWK_VERSION=$(CAWK_VERSION) must be specified"
 	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@exit 1
 else
 ifeq ($(CAWK_NEXT_VERSION),)
-	@echo "ERROR: CAWK_NEXT_VERSION=$(CAWK_NEXT_VERSION) must be specified"
 	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
+	@echo "cawk error: CAWK_NEXT_VERSION=$(CAWK_NEXT_VERSION) must be specified"
+	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "ERROR: cawk-$(CAWK_VERSION).tar.gz not found"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found"
+	@exit 1
+else
+ifeq ($(wildcard cawk-$(CAWK_NEXT_VERSION).tar.gz),)
+	@echo "cawk error: cawk-$(CAWK_NEXT_VERSION).tar.gz not found"
+	@exit 1
 else
 	@echo "Upgrading from cawk-$(CAWK_VERSION) to cawk-$(CAWK_NEXT_VERSION)..."
 	rm -r -f cawk-$(CAWK_VERSION).old
@@ -110,6 +121,7 @@ else
 	ln -s cawk-$(CAWK_NEXT_VERSION) cawk
 	cd cawk-$(CAWK_NEXT_VERSION) && rm -r -f .git && gmake migrate file=../run_audit_$(CURRENT_DATE).tar.gz && cd ..
 	@echo "✓ Upgraded from $(CAWK_VERSION) to $(CAWK_NEXT_VERSION) with restored audits"
+endif
 endif
 endif
 endif

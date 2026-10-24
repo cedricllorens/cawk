@@ -44,7 +44,7 @@ BEGINFILE {
 }
 
 ENDFILE {
-	if ( pass ) print_err("global_sourcerouting_notset.fortinet-fortios.gawk","no mgnt interface is set",0,"high","pass");
+	if ( pass ) print_err("global_sourcerouting_notset.fortinet-fortios.gawk","no <source-routing enable> is set",0,"high","pass");
 }
 
 END {

@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for Ekinops OneOS devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "3\\..* .* .*"
 
     # Line Patterns (Ekinops OneOS configuration)
-    LINE[1] = "system hostname"
+    LINE[1] = "systemFAKE hostname"
     LINE[2] = "port name"
 
     # Block Patterns (Ekinops OneOS service and interface blocks)
-    BLOCK[1]["start"] = "^service "
+    BLOCK[1]["start"] = "^serviceFAKE "
     BLOCK[1]["end"] = "^$"
     BLOCK[1]["match"][1] = "^ bandwidth"
     BLOCK[1]["match"][2] = "^ priority"

@@ -4,7 +4,7 @@
 # ------------------------------------------------------------
 # alpine-based image for building a cawk application container
 # authors: cedric llorens, florian heitz
-# cawk docker version: 1.0
+# cawk docker version: 5.0
 # ------------------------------------------------------------
 
 # Alpine Linux base image
@@ -46,15 +46,21 @@ RUN apk update && apk upgrade && \
     vim \
     make \
     grep \
+    sed \
+    rsync \
+    openssh-client \
+    zip \
+    mutt \
     coreutils \
-    shadow
+    shadow && \
+    ln -sf "$(command -v make)" /usr/local/bin/gmake
 
 # ----
 # Configure timezone && application directory
 # ----
 RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     echo "Europe/Paris" > /etc/timezone && \
-    mkdir -p /app/cawk /app/cawk/checkdiff /app/cawk/common /app/cawk/m4 /app/cawk/system /app/cawk/support /app/cawk/tmp
+    mkdir -p /app/cawk /app/cawk/checkdiff /app/cawk/common /app/cawk/m4 /app/cawk/system /app/cawk/roles /app/cawk/support /app/cawk/tmp
 
 # ----
 # Copy non-persistent data locally
@@ -67,30 +73,16 @@ COPY SECURITY.md /app/cawk
 COPY CLAUDE.md /app/cawk
 COPY checkdiff /app/cawk/checkdiff
 COPY common /app/cawk/common
+COPY docs /app/cawk/docs
 COPY m4 /app/cawk/m4
 COPY system /app/cawk/system
+COPY roles /app/cawk/roles
 COPY support /app/cawk/support
+COPY validate /app/cawk/validate
 COPY README.md /app/cawk
 COPY Makefile /app/cawk
 COPY Makefile.docker /app/cawk
-COPY support/Makefile.support.mk /app/cawk
-COPY support/Makefile.support.archive.mk /app/cawk
-COPY support/Makefile.support.audit.mk /app/cawk
-COPY support/Makefile.support.backup.mk /app/cawk
-COPY support/Makefile.support.catalog.mk /app/cawk
-COPY support/Makefile.support.check.mk /app/cawk
-COPY support/Makefile.support.clean.mk /app/cawk
-COPY support/Makefile.support.database.mk /app/cawk
-COPY support/Makefile.support.email.mk /app/cawk
-COPY support/Makefile.support.exceptions.mk /app/cawk
-COPY support/Makefile.support.git.mk /app/cawk
-COPY support/Makefile.support.help.mk /app/cawk
-COPY support/Makefile.support.postaudit.mk /app/cawk
-COPY support/Makefile.support.role.mk /app/cawk
-COPY support/Makefile.support.supplier.mk /app/cawk
-COPY support/Makefile.support.sync.mk /app/cawk
-COPY support/Makefile.support.tests.mk /app/cawk
-COPY support/Makefile.support.view.mk /app/cawk
+COPY Makefile.cawk.version /app/cawk
 COPY LICENSE /app/cawk
 COPY docker/Dockerfile /app/cawk
 COPY docker/dockerfile_cawk_run.sh /app/cawk

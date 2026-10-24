@@ -57,7 +57,7 @@ function rm_blank_before(str) {
 
 # purpose : ----
 # purpose : function rm_semicolon(str)
-# purpose : remove semicolons and replace with space (prevents CSV parsing issues)
+# purpose : remove semicolons (prevents CSV parsing issues)
 # ----
 function rm_semicolon(str) {
 

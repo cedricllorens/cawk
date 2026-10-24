@@ -1,0 +1,4 @@
+*.orig
+tmp/
+.git
+zzz.gitcommit.sh

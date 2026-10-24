@@ -33,8 +33,8 @@ function detailed_report(audit, supplier) {
 
 function catalog_exceptions_by_source(audit, supplier,    exc_dir, cmd, file) {
     exc_dir = ""
-    if (audit == "repo") {
-        exc_dir = "exceptions/repo"
+    if (audit == "repo" || audit == "run") {
+        exc_dir = "exceptions/" audit
     } else {
         exc_dir = "exceptions/run_" audit
     }

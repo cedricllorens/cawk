@@ -1,1 +1,3 @@
 conf_0 15.2 .* .*
+conf_psirt_cisco-ios_vuln 15.1 generic generic
+conf_psirt_cisco-ios_fixed 17.1 generic generic

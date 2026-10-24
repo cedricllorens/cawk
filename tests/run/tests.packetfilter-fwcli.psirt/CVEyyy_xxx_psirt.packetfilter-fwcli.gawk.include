@@ -30,7 +30,7 @@
 # @description : generic pattern-based vulnerability detection tool for PacketFilter firewall devices - configure CVE-specific OS patterns, line patterns, block patterns, and logic in the USER section
 # @actions : configure CVE-specific patterns in the USER section (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
-# @risk_level : high
+# @risk_level : high | medium | low | info
 # @authors : cedric llorens
 # ====================================================================================
 
@@ -50,11 +50,11 @@ function load_psirt_config() {
     OS[2] = "7\\.[0-9] .* .*"
 
     # Line Patterns (PacketFilter rules)
-    LINE[1] = "^pass"
+    LINE[1] = "^passFAKE"
     LINE[2] = "^block"
 
     # Block Patterns (PacketFilter macro and table blocks)
-    BLOCK[1]["start"] = "^table"
+    BLOCK[1]["start"] = "^tableFAKE"
     BLOCK[1]["end"] = "$"
     BLOCK[1]["match"][1] = "^ {"
     BLOCK[1]["match"][2] = "^ }"

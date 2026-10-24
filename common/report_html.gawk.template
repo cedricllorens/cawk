@@ -1,0 +1,229 @@
+#%SED_GAWK_PATH%
+
+# ------------------------------------------------------------
+# cawk is subject to a MIT open-source licence
+# please refer to the MIT licence file for further information
+#
+# for %SED_VAR% change like SED_GAWK_PATH, etc. please refer to
+# file support/tests.sed for further information
+#
+# this script generates a standalone high-level html report (one file, no
+# external dependency) from the assessment results:
+#  - $1 : db_info.txt (test catalog: supplier, purpose, nist, risk)
+#  - $2 : assessment.all.csv (conf_name;test_name;error_line;line_nb;risk_level;status_code)
+#  - the scan reports assessment.all.deadbeef.csv, assessment.all.badformat.csv and
+#    assessment.all.crlf.csv are counted from the directory of $2 (missing file = 0)
+#  - HTML_SKELETON : path of report_html.skeleton.html (page, style and script)
+#  - CONTEXT       : label shown in the report (repo, run, audit name)
+#  - AUDIT         : audit key of db_info.txt used to pick a test entry
+#  - CAWK_RELEASE  : cawk release shown in the report
+#  - LOGO_HTML     : path of the logo file (sets the data uri mime type)
+#  - LOGO_B64      : path of its base64 text file, both optional: no logo when missing
+#
+# only counters are embedded: the error lines, the line numbers and the
+# configuration names of the assessment never reach the report.
+# ------------------------------------------------------------
+
+@include %SED_INCLUDE_PATH%
+
+BEGIN {
+	FS = ";";
+	failed = 0;
+	test_nb = 0;
+	rec_nb = 0;
+	if ( HTML_SKELETON == "" ) {
+		print "report_html.gawk: HTML_SKELETON is not set" > "/dev/stderr";
+		failed = 1;
+		exit 1;
+	}
+	if ( (getline probe < HTML_SKELETON) < 0 ) {
+		print "report_html.gawk: cannot read " HTML_SKELETON > "/dev/stderr";
+		failed = 1;
+		exit 1;
+	}
+	close(HTML_SKELETON);
+}
+
+# escape a string as the content of a json string, safe inside a <script> element
+function rh_json(str,    result, i, c) {
+	result = "";
+	for ( i = 1; i <= length(str); i++ ) {
+		c = substr(str, i, 1);
+		if ( c == "\\" ) result = result "\\\\";
+		else if ( c == "\"" ) result = result "\\\"";
+		else if ( c == "<" ) result = result "\\u003c";
+		else if ( c < " " ) result = result " ";
+		else result = result c;
+	}
+	return result;
+}
+
+function rh_trim(str) {
+	gsub(/^[ \t]+|[ \t]+$/, "", str);
+	return str;
+}
+
+# count the flagged configurations of a scan report (one line per configuration), 0 when the file is missing
+function rh_count_lines(path,    n, line) {
+	n = 0;
+	while ( (getline line < path) > 0 ) n++;
+	close(path);
+	return n;
+}
+
+# register a test (name, supplier) and return its index
+function rh_test(test,    t_supplier, t_parts, t_name) {
+	if ( !(test in test_idx) ) {
+		test_idx[test] = test_nb;
+		t_supplier = (test in cat_known) ? cat_supplier[test] : "";
+		if ( t_supplier == "" ) {
+			# <check>_<status>.<supplier>.gawk
+			t_parts = split(test, t_name, ".");
+			if ( t_parts >= 3 ) t_supplier = t_name[t_parts - 1];
+		}
+		test_supplier[test_nb] = t_supplier;
+		test_list[test_nb] = test;
+		test_nb++;
+	}
+	return test_idx[test];
+}
+
+# group the exception report (same format as assessment.all.csv) by test, risk and status, 0 line when the file is missing
+function rh_load_exceptions(path,    line, f, n, t, key) {
+	exc_nb = 0;
+	while ( (getline line < path) > 0 ) {
+		n = split(line, f, ";");
+		if ( n < 6 ) continue;
+		t = rh_test(f[2]);
+		key = t SUBSEP f[n - 1] SUBSEP f[n];
+		if ( !(key in exc_lines) ) exc_key[exc_nb++] = key;
+		exc_lines[key]++;
+	}
+	close(path);
+}
+
+# db_info.txt: audit;supplier;test_name;purpose;description;actions;nist800-53_ref;risk_level;authors
+ARGIND == 1 && FNR > 1 && NF >= 9 {
+	name = $3;
+	if ( (name in cat_known) && $1 != AUDIT ) next;
+	cat_known[name] = 1;
+	cat_supplier[name] = $2;
+	cat_purpose[name] = rh_trim($4);
+	cat_nist[name] = "";
+	cat_control[name] = "";
+	cat_family[name] = "";
+	nist_ref = rh_trim($7);
+	# same rule as report.gawk: a reference must start with a letter and be defined
+	if ( nist_ref ~ /^[a-z]/ && nist_ref !~ /to be defined/ ) {
+		split(nist_ref, nist_part, "|");
+		cat_nist[name] = toupper(rh_trim(nist_part[1]));
+		cat_control[name] = rh_trim(nist_part[3]);
+		cat_family[name] = rh_trim(nist_part[2]);
+	}
+	next;
+}
+
+# the error_line may contain ";" but is not used: conf, test, risk and status are the only fields read
+ARGIND == 2 && NF >= 6 {
+	conf = $1;
+	test = $2;
+	status = $NF;
+	risk = $(NF - 1);
+
+	t = rh_test(test);
+
+	key = t SUBSEP risk SUBSEP status;
+	if ( !(key in rec_lines) ) {
+		rec_key[rec_nb++] = key;
+		rec_lines[key] = 0;
+		rec_devs[key] = 0;
+	}
+	rec_lines[key]++;
+	if ( !((key, conf) in rec_seen) ) {
+		rec_seen[key, conf] = 1;
+		rec_devs[key]++;
+	}
+
+	# devices with a finding on this test: error, warning or a vulnerable psirt (only psirt at high risk is vulnerable; info, low and medium are "not vulnerable", "not exposed" or "skipped")
+	if ( status == "error" || status == "warning" || (status == "psirt" && risk == "high") ) {
+		if ( !((t, conf) in find_seen) ) {
+			find_seen[t, conf] = 1;
+			find_devs[t]++;
+		}
+	}
+
+	if ( !(conf in conf_seen) ) {
+		conf_seen[conf] = 1;
+		conf_total++;
+	}
+	if ( !((test_supplier[t], conf) in supplier_conf_seen) ) {
+		supplier_conf_seen[test_supplier[t], conf] = 1;
+		supplier_devs[test_supplier[t]]++;
+	}
+}
+
+END {
+	if ( failed ) exit 1;
+
+	scan_dir = ARGV[2];
+	if ( sub(/\/[^\/]*$/, "", scan_dir) == 0 ) scan_dir = ".";
+	deadbeef_conf_nb = rh_count_lines(scan_dir "/assessment.all.deadbeef.csv");
+	badformat_conf_nb = rh_count_lines(scan_dir "/assessment.all.badformat.csv");
+	crlf_conf_nb = rh_count_lines(scan_dir "/assessment.all.crlf.csv");
+	# SECRETSCAN=yes: the exception report is the censored one, as assessment.all.csv
+	exc_ext = (ARGV[2] ~ /\.censored\.csv$/) ? ".censored.csv" : ".csv";
+	rh_load_exceptions(scan_dir "/assessment.all.exception" exc_ext);
+
+	data = "{\"meta\":{\"context\":\"" rh_json(CONTEXT) "\",\"generated\":\"" strftime("%Y-%m-%d %H:%M") \
+		"\",\"release\":\"" rh_json(CAWK_RELEASE) "\",\"devices\":" (conf_total + 0) \
+		",\"deadbeef\":" deadbeef_conf_nb ",\"badformat\":" badformat_conf_nb ",\"crlf\":" crlf_conf_nb "},\n\"suppliers\":[";
+	first = 1;
+	for ( s in supplier_devs ) {
+		data = data (first ? "\n" : ",\n") "[\"" rh_json(s) "\"," supplier_devs[s] "]";
+		first = 0;
+	}
+	data = data "],\n\"tests\":[";
+	for ( i = 0; i < test_nb; i++ ) {
+		name = test_list[i];
+		data = data (i ? ",\n" : "\n") "[\"" rh_json(name) "\",\"" rh_json(test_supplier[i]) "\",\"" rh_json(cat_purpose[name]) "\",\"" \
+			rh_json(cat_nist[name]) "\",\"" rh_json(cat_control[name]) "\",\"" rh_json(cat_family[name]) "\"," (find_devs[i] + 0) "]";
+	}
+	data = data "],\n\"recs\":[";
+	for ( i = 0; i < rec_nb; i++ ) {
+		key = rec_key[i];
+		split(key, k, SUBSEP);
+		data = data (i ? ",\n" : "\n") "[" k[1] ",\"" rh_json(k[2]) "\",\"" rh_json(k[3]) "\"," rec_lines[key] "," rec_devs[key] "]";
+	}
+	data = data "],\n\"excs\":[";
+	for ( i = 0; i < exc_nb; i++ ) {
+		key = exc_key[i];
+		split(key, k, SUBSEP);
+		data = data (i ? ",\n" : "\n") "[" k[1] ",\"" rh_json(k[2]) "\",\"" rh_json(k[3]) "\"," exc_lines[key] "]";
+	}
+	data = data "]}";
+
+	# the logo is embedded as a data uri to keep the report standalone (no logo when the base64 file is missing)
+	logo_b64 = "";
+	if ( LOGO_B64 != "" ) {
+		while ( (getline b64_line < LOGO_B64) > 0 ) logo_b64 = logo_b64 b64_line;
+		close(LOGO_B64);
+	}
+	logo_img = "";
+	if ( logo_b64 != "" ) {
+		mime = "image/jpeg";
+		if ( LOGO_HTML ~ /\.png$/ ) mime = "image/png";
+		else if ( LOGO_HTML ~ /\.svg$/ ) mime = "image/svg+xml";
+		logo_img = "<img class=\"logo\" src=\"data:" mime ";base64," logo_b64 "\" alt=\"cawk logo\">";
+	}
+	# the placeholder is replaced with index/substr: the json holds "&" and "\" that sub() would interpret
+	marker = "/*CAWK_DATA*/null";
+	logo_marker = "/*CAWK_LOGO_IMG*/";
+	while ( (getline skeleton_line < HTML_SKELETON) > 0 ) {
+		pos = index(skeleton_line, marker);
+		if ( pos > 0 ) skeleton_line = substr(skeleton_line, 1, pos - 1) data substr(skeleton_line, pos + length(marker));
+		lpos = index(skeleton_line, logo_marker);
+		if ( lpos > 0 ) skeleton_line = substr(skeleton_line, 1, lpos - 1) logo_img substr(skeleton_line, lpos + length(logo_marker));
+		print skeleton_line;
+	}
+	close(HTML_SKELETON);
+}

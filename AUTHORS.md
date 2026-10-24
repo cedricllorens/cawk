@@ -1,3 +1,5 @@
+<p align="left"><img src="docs/logo/logo-cawk.svg" width="200" alt="cawk"></p>
+
 # cawk contributors
 
 > **cawk is subject to an MIT open-source license**  

@@ -11,7 +11,7 @@
 
 check:
 	$(GMAKE) clean clean_force FORCE=yes
-	find confs -type f -exec touch {} \;
+	find -H confs -type f -exec touch {} \;
 	$(RM) -f checkdiff/checkdiff.new
 
 	$(GMAKE) catalog_build
@@ -24,17 +24,14 @@ check:
 
 	$(GMAKE) check_repo JSON=no
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	$(GMAKE) check_repo SECRETSCAN=yes JSON=yes HTML=yes
+	test -s reports/repo/assessment.all.censored.csv && test -z "$$(find reports/repo -maxdepth 1 -name 'assessment.*.csv' ! -name '*.censored.csv')" || { $(ECHO) "cawk error: SECRETSCAN=yes left an uncensored csv report or no censored csv report in reports/repo ----"; exit 1; }
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 	$(GMAKE) check_repo JSON=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-
-	$(GMAKE) check_run
+	$(GMAKE) check_repo DEADBEEF=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	$(GMAKE) check_run supplier=cisco-ios
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-
-	$(GMAKE) check_run JSON=no
-	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
-	$(GMAKE) check_run JSON=yes
+	$(GMAKE) check_repo BADFORMAT=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	$(GMAKE) check_run
@@ -47,11 +44,20 @@ check:
 	$(GMAKE) check_run JSON=yes
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
-	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
+	$(GMAKE) check_run
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	$(GMAKE) check_run supplier=cisco-ios
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
+	$(GMAKE) check_run JSON=no
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+	$(GMAKE) check_run JSON=yes
+	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
+
 	$(GMAKE) create_audit audit=client1_skffqsfqhsf10948494
 
 	$(GMAKE) database_sync_update audit=client1_skffqsfqhsf10948494 \
-		dir=../../validate/test-sync/source/,../../validate/test-sync/source/_backup/ \
+		dir=$(CURDIR)/validate/test-sync/source/,$(CURDIR)/validate/test-sync/source/_backup/ \
 		regexinventory=.*\\.cfg$$ \
 		scope=validate/test-sync/scope.txt \
 		regexos=cisco-ios\|cisco-sdnios\|fortinet-fortios\|juniper-junos \
@@ -101,7 +107,6 @@ check:
 	$(EGREP) "^client1_skffqsfqhsf10948494$$" database/db_postaudit.txt && $(ECHO) "cawk error: db_postaudit.txt still holds a test entry ----" || $(ECHO) "cawk db_postaudit.txt cleanly reset ----"
 	wc -c < database/db_postaudit.txt >> checkdiff/checkdiff.new
 
-	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) create_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) check_run audit=client2_mqsdhqndqqos198440
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
@@ -139,7 +144,6 @@ check:
 	
 	$(GMAKE) clean
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
-	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) restore_run_audit file=backup/run_audit_$(TODAY).tar.gz
 	
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
@@ -149,7 +153,6 @@ check:
 
 	$(GMAKE) clean
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
-	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(TODAY).tar.gz
 
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
@@ -159,7 +162,6 @@ check:
 
 	$(GMAKE) clean
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
-	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 
 	$(GMAKE) create_audit audit=client1_skffqsfqhsf10948494
 	$(RM) -r -f confs/run*client1_skffqsfqhsf10948494/*cisco-ios* tests/run*client1_skffqsfqhsf10948494/*cisco-ios* || true
@@ -168,6 +170,7 @@ check:
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=no supplier=cisco-ios
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=yes supplier=cisco-ios
 	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
+	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
 	$(GMAKE) clean clean_force FORCE=yes
 	$(GMAKE) clean_logs FORCE=yes
 
@@ -186,6 +189,7 @@ check:
 	$(ECHO) "CHECK MUST BE OK -------------------------------------"
 	$(ECHO) "------------------------------------------------------"
 	$(ECHO) "------------------------------------------------------"
+	diff checkdiff/checkdiff.new checkdiff/checkdiff.old >/dev/null && diff checkdiff/cawk-crypto-image.new checkdiff/cawk-crypto-image.old >/dev/null || { $(ECHO) "cawk error: check NOK ----"; exit 1; }
 	$(ECHO) "cawk check done ----"
 
 check_parallel:

@@ -24,7 +24,7 @@ if [ -f "$CONFIG_FILE" ]; then
     . "$CONFIG_FILE"
 else
     echo "cawk error: configuration file not found: $CONFIG_FILE"
-    exit 0
+    exit 1
 fi
 
 # ---------------------------------------------------------------------

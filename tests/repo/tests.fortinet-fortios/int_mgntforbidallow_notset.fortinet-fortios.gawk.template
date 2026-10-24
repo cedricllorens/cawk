@@ -41,7 +41,7 @@ BEGINFILE {
 }
 
 /^%SED_BK_FORTI%{2}[ ]*set allowaccess / && /%SED_MGNT_BADPROTO%/ && block_edit == 1 {
-	print_err("int_mgntforbidallow_notset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),0,"high","error");
+	print_err("int_mgntforbidallow_notset.fortinet-fortios.gawk",block_edit_str" "rm_blank_before($0),FNR,"high","error");
 	pass = 0;
 	next;
 }

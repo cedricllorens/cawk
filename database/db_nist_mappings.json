@@ -21,7 +21,10 @@
     "global_sshcompliant_set": {
       "default": "ac-17(1) | access control | ensure monitoring and control of remote access is automated"
     },
-    "cveyyy_xxx_psirt": {
+    "CVEyyy_xxxm4_psirt": {
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
+    "CVEyyy_xxx_psirt": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "system_authcompliant_set": {
@@ -141,6 +144,9 @@
     "int_ipunreachables_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
+    "int_ipv6redirects_notset": {
+      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
+    },
     "int_proxyarp_notset": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
@@ -197,9 +203,6 @@
     },
     "global_timestamps_set": {
       "default": "au-12 | audit and accountability | ensure audit record generation is enabled"
-    },
-    "int_ipv6redirects_notset": {
-      "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
     },
     "lineaux_aclin_set": {
       "default": "si-2 | system and information integrity | ensure flaw remediation and patching is configured"
