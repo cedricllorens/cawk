@@ -14,3 +14,6 @@ Makefile text eol=lf
 Makefile* text eol=lf
 *.mk text eol=lf
 *.sh text eol=lf
+
+# Keep the CRLF fixture as is: the eol=lf rule would strip its \r in the GitHub archive
+validate/crlf/* -text

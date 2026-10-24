@@ -12,6 +12,7 @@
 check:
 	$(GMAKE) clean clean_force FORCE=yes
 	find -H confs -type f -exec touch {} \;
+	find -H validate/test-sync/source -type f -exec touch {} \;
 	$(RM) -f checkdiff/checkdiff.new
 
 	$(GMAKE) catalog_build

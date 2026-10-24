@@ -6,6 +6,13 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v5.0.1] - october 2026 
+
+- Fix `.gitattributes` to keep the CRLF line endings of `validate/crlf/conf_crlf` (`-text`)
+- Fix `check` to touch `validate/test-sync/source` files, avoiding spurious `configuration older than 30 days` hits in the synced audit
+
+---
+
 ## [v5.0.0] - october 2026 
 
 > **v5.0.0 is a major release: it introduces three new concepts, the config collector (`scp`/`rsync`), the standalone HTML report (`HTML=yes`) and the configuration censor (`censor_*`).**

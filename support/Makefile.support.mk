@@ -9,7 +9,7 @@
 # VERSION & CORE SETTINGS
 # ===============================================================================
 
-CAWK_RELEASE = v5.0.0
+CAWK_RELEASE = v5.0.1
 RM ?= rm
 GMAKE ?= gmake
 
