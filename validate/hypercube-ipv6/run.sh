@@ -16,7 +16,10 @@
 
 cd "$(dirname "$0")/../.." || exit 1
 
-[ -x common/common_hypercube-lib.gawk ] || gmake tests_target_common > /dev/null 2>&1
+if [ ! -x common/common_hypercube-lib.gawk ]; then
+	gmake tests_target_common || { echo "cawk error: build of common/common_hypercube-lib.gawk failed ----"; exit 1; }
+	[ -x common/common_hypercube-lib.gawk ] || { echo "cawk error: common/common_hypercube-lib.gawk missing after build ----"; exit 1; }
+fi
 
 tmp=$(mktemp -d) || exit 1
 trap 'rm -rf "$tmp"' EXIT

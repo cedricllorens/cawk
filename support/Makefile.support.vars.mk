@@ -21,7 +21,7 @@
 # ===============================================================================
 
 # Current cawk release, printed by `gmake version`, the help logo and the html report
-CAWK_RELEASE = v5.1.0
+CAWK_RELEASE = v5.1.1
 
 # Command used to remove files and to run gmake itself (sub-makes, help messages)
 RM ?= rm

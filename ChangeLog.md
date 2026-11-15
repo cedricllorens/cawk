@@ -6,6 +6,10 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v5.1.1] - November 202
+
+- Issue with CICD <gmake check>
+
 ## [v5.1.0] - November 2026
 
 > **v5.1.0 adds IPv6 to the ACL consistency assessment (rules cube and the ten suppliers), rule order and shadowing analysis with report reduction in the hypercube engine, a Makefile overhaul (central `Makefile.support.vars.mk`, `gmake help` sections, `help vars`, `topic=`, typo suggestions, `status` target, bash completion, `check_validate`/`check_database` phases, final recap), per-date data_set files driving the new "Evolution of the audit" HTML section with `check_database` format validation, and mandatory metadata tags on the tests.**
@@ -26,6 +30,7 @@
 - Add 8 order cases (21 to 28) to `validate/hypercube-ipv6`
 - Add report reduction (one line per dead rule with `(+K other rules)`, one line per pair of rules with `(xN cubes)`) to `cawk_hypercube_rules_assessment()` in `common/common_hypercube-lib.gawk`
 - Add 2 report reduction cases (29, 30) to `validate/hypercube-ipv6`
+- Fix silent build failure of `common/common_hypercube-lib.gawk` in `validate/hypercube-ipv6/run.sh` (explicit `cawk error:` and exit 1)
 - Add English comments on the cube functions in `common/common_hypercube-lib.gawk`
 - Rename the `-EXP-N-INCONSISTENT` scenarios turned into exceptions to `-EXCEPTION-EXP-PASS` in the `conf_acl_consistency`, `conf_acl_consistency_ipv6` and juniper `conf_acl_consistency_big` demo configurations of the ten suppliers
 - Add one `-SHADOWED-EXP-1-INCONSISTENT` scenario (general rule above a specific one) to the `conf_acl_consistency` demo configuration of the ten suppliers
