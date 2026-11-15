@@ -8,15 +8,12 @@
 
 ## [v5.1.2] - November 2026
 
-- Issue with CICD <gmake check>
+- Fix issue with CICD <gmake check>
+- Fix `.gitignore` excluding the `validate/hypercube-ipv6/*/rules.gawk` case files (missing from the repository, `check_validate` failed in CI)
 
 ## [v5.1.1] - November 2026
 
-- Issue with CICD <gmake check>
-
-### Build
-
-- Fix `.gitignore` excluding the `validate/hypercube-ipv6/*/rules.gawk` case files (missing from the repository, `check_validate` failed in CI)
+- Fix issue with CICD <gmake check>
 
 ## [v5.1.0] - November 2026
 
