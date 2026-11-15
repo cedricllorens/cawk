@@ -5,6 +5,7 @@
 
 # Generated files
 *.gawk
+!validate/hypercube-ipv6/*/rules.gawk
 *.gawk.include.gen
 *.o
 *.a

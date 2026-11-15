@@ -6,9 +6,17 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
-## [v5.1.1] - November 202
+## [v5.1.2] - November 2026
 
 - Issue with CICD <gmake check>
+
+## [v5.1.1] - November 2026
+
+- Issue with CICD <gmake check>
+
+### Build
+
+- Fix `.gitignore` excluding the `validate/hypercube-ipv6/*/rules.gawk` case files (missing from the repository, `check_validate` failed in CI)
 
 ## [v5.1.0] - November 2026
 
