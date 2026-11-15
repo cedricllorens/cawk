@@ -1,6 +1,6 @@
 #
 acl number 2001
- description CAWK-BASIC-EXP-1-INCONSISTENT
+ description CAWK-BASIC-EXCEPTION-EXP-PASS
  rule 5 permit source 10.1.1.0 0.0.0.255
  rule 10 deny source 10.1.0.0 0.0.255.255
 #
@@ -130,9 +130,14 @@ acl number 3024
  rule 10 deny tcp source any destination any destination-port eq 3101
 #
 acl number 3019
- description CAWK-MULTI-EXP-2-INCONSISTENT
+ description CAWK-MULTI-EXCEPTION-EXP-PASS
  rule 5 permit tcp source 192.0.2.10 0 destination any destination-port eq 3000
  rule 10 permit tcp source 192.0.2.11 0 destination any destination-port eq 3000
  rule 15 deny tcp source 192.0.2.0 0.0.0.255 destination any destination-port eq 3000
+#
+acl number 3099
+ description CAWK-SHADOWED-EXP-1-INCONSISTENT
+ rule 5 deny ip source any
+ rule 10 permit tcp source 10.90.0.0 0.0.255.255 destination-port eq 22
 #
 return

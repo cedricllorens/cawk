@@ -58,3 +58,6 @@ block in on em19 proto tcp from any to any port 1023 label "s18-exp-pass"
 
 pass in on em20 proto tcp from any to any port 1000:2000 label "s19-exp-pass"
 block in on em20 proto tcp from any to any port 2001 label "s19-exp-pass"
+
+block in on em90 from any to any label "s90-exp-1-inconsistent"
+pass in on em90 proto tcp from 10.90.0.0/16 to any port 22 label "s90-exp-1-inconsistent"

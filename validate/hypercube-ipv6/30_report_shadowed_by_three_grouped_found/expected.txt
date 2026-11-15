@@ -1,0 +1,4 @@
+t; == r1 == action(pass) inoutgress(in) int(em0) family(all) src(10.0.0.0/8) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == r2 == action(pass) inoutgress(in) int(em0) family(all) src(10.0.0.0/9) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == redundant rules;0;info;warning
+t; == r1 == action(pass) inoutgress(in) int(em0) family(all) src(10.0.0.0/8) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == r3 == action(pass) inoutgress(in) int(em0) family(all) src(10.1.0.0/16) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == redundant rules (+1 other rules);0;info;warning
+t; == r1 == action(pass) inoutgress(in) int(em0) family(all) src(10.0.0.0/8) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == r4 == action(block) inoutgress(in) int(em0) family(all) src(10.1.1.1/host) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == inconsistent rules (+2 other rules);0;info;warning
+cube verdict : found

@@ -3,7 +3,7 @@ system {
 }
 firewall {
     family inet {
-        filter CAWK-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -247,7 +247,24 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-SHADOWED-EXP-1-INCONSISTENT {
+            term default-deny {
+                then {
+                    discard;
+                }
+            }
+            term allow-ssh {
+                from {
+                    source-address {
+                        10.90.0.0/16;
+                    }
+                    protocol tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+        }
+        filter CAWK-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;
@@ -322,7 +339,7 @@ firewall {
         }
     }
     family inet6 {
-        filter CAWK-INET6-NOT-ASSESSED {
+        filter CAWK-INET6-EXP-1-INCONSISTENT {
             term t1 {
                 from {
                     source-address {

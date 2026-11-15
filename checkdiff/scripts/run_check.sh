@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # -----------------------------------------------------------------------
 # cawk is subject to a MIT open-source licence
@@ -9,20 +9,20 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MODE="${1:-debug}"
 
 case "$MODE" in
     debug)
         echo "cawk running check in debug mode ----"
-        "$SCRIPT_DIR/check_debug"
+        "$SCRIPT_DIR/check_debug.sh"
         echo ""
         echo "cawk analyzing results ----"
-        "$SCRIPT_DIR/analyze_diff"
+        "$SCRIPT_DIR/analyze_diff.sh"
         ;;
     analyze)
         echo "cawk analyzing existing results ----"
-        "$SCRIPT_DIR/analyze_diff"
+        "$SCRIPT_DIR/analyze_diff.sh"
         ;;
     log)
         if [ -f "$SCRIPT_DIR/check_debug.log" ]; then

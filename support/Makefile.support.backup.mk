@@ -11,13 +11,13 @@
 
 backup_run: clean
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	$(RM) -f backup/run_audit_$(audit)_$(TODAY).tar.gz backup/run_audit_$(audit)_$(TODAY).tar
 	find confs/run_$(audit) -type l -exec rm {} \; 2>/dev/null || true
 	mkdir -p $(LOGS_PATH)/run_$(audit)
-	find confs/run_$(audit) logs/run_$(audit) tests/run_$(audit) exceptions/run_$(audit) reports/run_$(audit) -type f -print0 | tar cvf backup/run_audit_$(audit)_$(TODAY).tar --null -T - >/dev/null 2>$(LOGS_PATH)/run_$(audit)/backup.$(audit).err || { $(ECHO) "cawk error: backup for $(audit) failed (see $(LOGS_PATH)/run_$(audit)/backup.$(audit).err) ----"; exit 1; }
+	find confs/run_$(audit) logs/run_$(audit) tests/run_$(audit) exceptions/run_$(audit) reports/run_$(audit) $(wildcard $(DATA_SET_PATH)/run_$(audit)) -type f -print0 | tar cvf backup/run_audit_$(audit)_$(TODAY).tar --null -T - >/dev/null 2>$(LOGS_PATH)/run_$(audit)/backup.$(audit).err || { $(ECHO) "cawk error: backup for $(audit) failed (see $(LOGS_PATH)/run_$(audit)/backup.$(audit).err) ----"; exit 1; }
 	gzip backup/run_audit_$(audit)_$(TODAY).tar
 	$(ECHO) "cawk backup_run $(audit) done in backup/run_audit_$(audit)_$(TODAY).tar.gz ----"
 endif
@@ -32,11 +32,11 @@ backup_run_audit: clean
 
 restore_run: clean
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME and file=BACKUP_PATH_FILE must be set ----"
+	$(ECHO) "cawk error: audit= and file= must be set (usage: $(GMAKE) restore_run audit=<name> file=backup/<file>.tar.gz, list the backups with: ls backup) ----"
 	exit 1
 else
 ifeq ($(strip $(file)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME and file=BACKUP_PATH_FILE must be set ----"
+	$(ECHO) "cawk error: audit= and file= must be set (usage: $(GMAKE) restore_run audit=<name> file=backup/<file>.tar.gz, list the backups with: ls backup) ----"
 	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
@@ -50,13 +50,13 @@ else
 		$(ECHO) "cawk error: file $(file) does not exist ----"; exit 1; \
 	fi
 	mkdir -p confs/run_$(audit) 2>/dev/null || true
-	$(ECHO) "cawk creates audit confs directory (empty case): confs/run_$(audit)"
+	$(ECHO) "cawk creating the audit confs directory (empty case): confs/run_$(audit)"
 endif
 endif
 
 restore_run_audit: clean
 ifeq ($(strip $(file)),)
-	$(ECHO) "cawk error file=BACKUP_PATH_FILE must be set ----"
+	$(ECHO) "cawk error: file= must be set (usage: $(GMAKE) <target> file=backup/<file>.tar.gz, list the backups with: ls backup) ----"
 	exit 1
 else
 	if [ -f $(file) ]; then \
@@ -71,12 +71,12 @@ else
 endif
 	@for dir in $$(find -L tests -name '*run_*' -type d | grep -o 'run_[^/]*'); do \
 		mkdir -p confs/$$dir 2>/dev/null || true; \
-		$(ECHO) "cawk creates audit directory (empty case): confs/$$dir"; \
+		$(ECHO) "cawk creating the audit directory (empty case): confs/$$dir"; \
 	done
 
 migrate:
 ifeq ($(strip $(file)),)
-	$(ECHO) "cawk error file=BACKUP_PATH_FILE must be set ----"
+	$(ECHO) "cawk error: file= must be set (usage: $(GMAKE) <target> file=backup/<file>.tar.gz, list the backups with: ls backup) ----"
 	exit 1
 endif
 	cp $(file) backup/

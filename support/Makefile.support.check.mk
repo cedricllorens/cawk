@@ -6,17 +6,44 @@
 # ------------------------------------------------------------
 
 .PHONY: \
-  check check_analyze check_checkdiff check_debug  \
-  check_debug_log check_parallel check_parallel_debug check_update
+  check check_analyze check_checkdiff check_database check_debug  \
+  check_debug_log check_parallel check_parallel_debug check_update check_validate check_archive_guard
 
-check:
-	$(GMAKE) clean clean_force FORCE=yes
+# check_database : format check of every cawk flat-file database (.txt), one explicit error per bad line
+check_database: $(NIST_REFERENCE)
+	sh $(TESTS_COMMON_PATH)/check_database.script.sh "$(SUPPLIER_SCOPE)"
+
+# check_validate : every non-regression suite of validate/ must pass (run.sh exit code)
+check_validate:
+	$(ECHO) "cawk check_validate started ----"
+	@bad=0; for run in validate/*/run.sh; do \
+		[ -f "$$run" ] || continue; \
+		sh "$$run" > /dev/null 2>&1 || { $(ECHO) "cawk error: $$run failed ----"; bad=1; }; \
+	done; [ $$bad -eq 0 ] || exit 1
+	$(ECHO) "cawk check_validate done ----"
+
+# check_archive_guard : check removes every archive at its start and end, refuse to run when reports/*/archives hold some (no bypass)
+check_archive_guard:
+	@found=$$(find -H $(REPORT_PATH) -path '*/archives/*' -type f ! -name '.*' 2>/dev/null | head -n 1); \
+	if [ -n "$$found" ]; then \
+		$(ECHO) "cawk error: check removes every archive and $$found exists, save the archives then run $(GMAKE) clean_archive_older ALL_ARCHIVE=yes FORCE=yes (check only validates the cawk package and must not be used in production) ----"; \
+		exit 1; \
+	fi
+
+check: check_archive_guard
+	$(GMAKE) clean clean_force FORCE=yes ALL_ARCHIVE=yes
+	[ "$(CHECK_TRACK)" = "yes" ] || $(GMAKE) clean_track FORCE=yes
 	find -H confs -type f -exec touch {} \;
 	find -H validate/test-sync/source -type f -exec touch {} \;
 	$(RM) -f checkdiff/checkdiff.new
 
 	$(GMAKE) catalog_build
 	$(GMAKE) exceptions_build
+	$(GMAKE) check_validate
+	$(ECHO) "check_validate" >> checkdiff/checkdiff.new
+
+	$(GMAKE) check_database
+	cat database/db_*.txt | wc -l >> checkdiff/checkdiff.new
 
 	$(GMAKE) check_repo
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
@@ -144,7 +171,7 @@ check:
 	find backup/ -name '*.tar.gz' | wc -l >> checkdiff/checkdiff.new
 	
 	$(GMAKE) clean
-	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
+	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494 FORCE=yes
 	$(GMAKE) restore_run_audit file=backup/run_audit_$(TODAY).tar.gz
 	
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
@@ -153,7 +180,7 @@ check:
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	$(GMAKE) clean
-	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
+	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494 FORCE=yes
 	$(GMAKE) restore_run_audit file=backup/run_audit_client1_skffqsfqhsf10948494_$(TODAY).tar.gz
 
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494
@@ -162,7 +189,7 @@ check:
 	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new
 
 	$(GMAKE) clean
-	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
+	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494 FORCE=yes
 
 	$(GMAKE) create_audit audit=client1_skffqsfqhsf10948494
 	$(RM) -r -f confs/run*client1_skffqsfqhsf10948494/*cisco-ios* tests/run*client1_skffqsfqhsf10948494/*cisco-ios* || true
@@ -170,9 +197,9 @@ check:
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=yes
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=no supplier=cisco-ios
 	$(GMAKE) check_run audit=client1_skffqsfqhsf10948494 JSON=yes supplier=cisco-ios
-	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494
-	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440
-	$(GMAKE) clean clean_force FORCE=yes
+	$(GMAKE) delete_audit audit=client1_skffqsfqhsf10948494 FORCE=yes
+	$(GMAKE) delete_audit audit=client2_mqsdhqndqqos198440 FORCE=yes
+	$(GMAKE) clean clean_force FORCE=yes ALL_ARCHIVE=yes
 	$(GMAKE) clean_logs FORCE=yes
 
 	$(RM) -f checkdiff/cawk-crypto-image.new
@@ -190,7 +217,7 @@ check:
 	$(ECHO) "CHECK MUST BE OK -------------------------------------"
 	$(ECHO) "------------------------------------------------------"
 	$(ECHO) "------------------------------------------------------"
-	diff checkdiff/checkdiff.new checkdiff/checkdiff.old >/dev/null && diff checkdiff/cawk-crypto-image.new checkdiff/cawk-crypto-image.old >/dev/null || { $(ECHO) "cawk error: check NOK ----"; exit 1; }
+	diff checkdiff/checkdiff.new checkdiff/checkdiff.old >/dev/null && diff checkdiff/cawk-crypto-image.new checkdiff/cawk-crypto-image.old >/dev/null || { $(ECHO) "cawk error: check NOK ----"; [ "$(CHECK_TRACK)" = "yes" ] || { $(ECHO) "cawk to find the phase, the command and the changed lines, run: $(GMAKE) check_track ----"; $(ECHO) "cawk to read the explanation again without running the check: $(GMAKE) check_track_explain ----"; }; exit 1; }
 	$(ECHO) "cawk check done ----"
 
 check_parallel:

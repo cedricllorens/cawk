@@ -43,7 +43,7 @@ ipv4 access-list CAWK-NEQ-EXP-PASS
  10 permit tcp any any neq ssh
  20 deny tcp any any eq ssh
 !
-ipv4 access-list CAWK-SRCPORT-EXP-1-INCONSISTENT
+ipv4 access-list CAWK-SRCPORT-EXCEPTION-EXP-PASS
  10 permit udp any eq ntp any eq ntp
  20 deny udp any eq ntp any
 !
@@ -95,9 +95,13 @@ ipv4 access-list CAWK-RANGE-EDGE-EXP-PASS
  10 permit tcp any any range ssh telnet
  20 deny tcp any any eq 24
 !
-ipv4 access-list CAWK-MULTI-EXP-2-INCONSISTENT
+ipv4 access-list CAWK-MULTI-EXCEPTION-EXP-PASS
  10 permit tcp host 192.0.2.10 any eq ssh
  20 permit tcp host 192.0.2.11 any eq ssh
  30 deny tcp any any eq ssh
+!
+ipv4 access-list CAWK-SHADOWED-EXP-1-INCONSISTENT
+ 10 deny ipv4 any any
+ 20 permit tcp 10.90.0.0 0.0.255.255 any eq ssh
 !
 end

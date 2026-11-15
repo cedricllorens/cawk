@@ -1,0 +1,38 @@
+cawk_host6 = "2001:db8:7::7"
+table <cawk_mgmt6> { 2001:db8:5::1, 2001:db8:5::2 }
+
+pass in on em1 inet6 proto tcp from any to 2001:db8::1 port 22 label "v6s01-exp-1-inconsistent"
+block in on em1 inet6 proto tcp from any to 2001:db8::1 port 22 label "v6s01-exp-1-inconsistent"
+
+pass in on em2 inet6 proto tcp from any to 2001:db8::1 port 22 label "v6s02-exp-pass"
+block in on em2 inet6 proto tcp from any to 2001:db8::1 port 80 label "v6s02-exp-pass"
+
+pass in on em3 inet6 proto tcp from 2001:db8:1::/48 to any port 22 label "v6s03-exp-1-redundant"
+pass in on em3 inet6 proto tcp from 2001:db8:1:2::5 to any port 22 label "v6s03-exp-1-redundant"
+
+pass in on em4 inet6 proto tcp from 2001:db8:1::/48 to any port 22 label "v6s04-exp-pass"
+block in on em4 inet6 proto tcp from 2001:db8:2::/48 to any port 22 label "v6s04-exp-pass"
+
+pass in on em5 inet6 proto tcp from <cawk_mgmt6> to any port 22 label "v6s05-exp-1-inconsistent"
+block in on em5 inet6 proto tcp from 2001:db8:5::2 to any port 22 label "v6s05-exp-1-inconsistent"
+
+pass in on em6 inet6 proto tcp from $cawk_host6 to any port 443 label "v6s06-exp-1-inconsistent"
+block in on em6 inet6 proto tcp from 2001:db8:7::/64 to any port 443 label "v6s06-exp-1-inconsistent"
+
+pass in on em7 inet6 proto icmp6 from any to any icmp6-type echoreq label "v6s07-exp-pass"
+block in on em7 inet6 proto icmp6 from any to any icmp6-type neighbrsol label "v6s07-exp-pass"
+
+pass in on em8 inet6 proto icmp6 from any to any icmp6-type echoreq label "v6s08-exp-1-inconsistent"
+block in on em8 inet6 proto icmp6 from any to any icmp6-type 128 label "v6s08-exp-1-inconsistent"
+
+pass in on em9 inet proto tcp from 10.9.0.0/16 to any port 22 label "v6s09-exp-pass"
+block in on em9 inet6 proto tcp from 2001:db8:9::/48 to any port 22 label "v6s09-exp-pass"
+
+pass in on em10 inet proto tcp from any to any port 22 label "v6s10-exp-pass"
+block in on em10 inet6 proto tcp from any to any port 22 label "v6s10-exp-pass"
+
+pass in on em11 inet6 proto tcp from 2001:db8:11::/64 to any port 22 label "v6s11-exp-pass"
+block in on em11 inet6 proto tcp from 2001:db8:11:0:1::/80 to any port 80 label "v6s11-exp-pass"
+
+pass in on em12 inet6 proto tcp from 2001:db8:12::1 to any port 22 label "v6s12-exp-pass"
+block in on em12 inet6 proto tcp from 2001:db8:12::2 to any port 22 label "v6s12-exp-pass"

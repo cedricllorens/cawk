@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # -----------------------------------------------------------------------
 # cawk is subject to a MIT open-source licence

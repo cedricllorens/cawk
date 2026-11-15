@@ -1,0 +1,119 @@
+nist_id;category;description;applicable_suppliers
+AC-1;Access Control;Ensure access control policy and procedures are documented;all
+AC-2;Access Control;Ensure account management is implemented;all
+AC-2(1);Access Control;Ensure automated account management is configured;all
+AC-2(2);Access Control;Ensure temporary and emergency accounts are auto-removed;all
+AC-2(3);Access Control;Ensure inactive accounts are disabled;all
+AC-2(4);Access Control;Ensure automated audit actions for account management are configured;all
+AC-3;Access Control;Ensure access enforcement is configured;all
+AC-3(3);Access Control;Ensure mandatory access control is enforced;all
+AC-4;Access Control;Ensure information flow enforcement is configured;firewall
+AC-4(4);Access Control;Ensure flow control of encrypted information is configured;firewall
+AC-5;Access Control;Ensure separation of duties is implemented;all
+AC-6;Access Control;Ensure least privilege is enforced;all
+AC-6(1);Access Control;Ensure authorized access to security functions is restricted;all
+AC-6(2);Access Control;Ensure non-privileged access for non-security functions is enforced;all
+AC-6(5);Access Control;Ensure privileged accounts are restricted to specific personnel;all
+AC-6(9);Access Control;Ensure logging of privileged function execution is enabled;all
+AC-6(10);Access Control;Ensure non-privileged users cannot execute privileged functions;all
+AC-7;Access Control;Ensure unsuccessful login attempts are limited;all
+AC-8;Access Control;Ensure system use notification banner is configured;all
+AC-10;Access Control;Ensure concurrent session control is configured;all
+AC-11;Access Control;Ensure device lock after inactivity timeout is configured;all
+AC-11(1);Access Control;Ensure pattern-hiding display for device lock is configured;all
+AC-12;Access Control;Ensure session termination is configured;all
+AC-17;Access Control;Ensure remote access is controlled and monitored;all
+AC-17(1);Access Control;Ensure monitoring and control of remote access is automated;all
+AC-17(2);Access Control;Ensure remote access is encrypted;all
+AC-17(3);Access Control;Ensure remote access connections are routed through managed access control points;all
+AC-17(4);Access Control;Ensure privileged commands via remote access are restricted and audited;all
+AC-18;Access Control;Ensure wireless access is restricted;all
+AC-19;Access Control;Ensure access control for mobile devices is configured;all
+AC-20;Access Control;Ensure use of external systems is controlled;all
+AU-1;Audit and Accountability;Ensure audit and accountability policy and procedures are documented;all
+AU-2;Audit and Accountability;Ensure auditable events are defined;all
+AU-3;Audit and Accountability;Ensure audit record content includes required fields;all
+AU-3(1);Audit and Accountability;Ensure additional audit information is recorded;all
+AU-4;Audit and Accountability;Ensure audit log storage capacity is configured;all
+AU-5;Audit and Accountability;Ensure response to audit logging process failures is configured;all
+AU-6;Audit and Accountability;Ensure audit record review analysis and reporting is configured;all
+AU-6(1);Audit and Accountability;Ensure automated audit review and analysis is configured;all
+AU-7;Audit and Accountability;Ensure audit record reduction and report generation is configured;all
+AU-8;Audit and Accountability;Ensure time stamps for audit records use authoritative time source;all
+AU-8(1);Audit and Accountability;Ensure time synchronization with authoritative source is configured;all
+AU-9;Audit and Accountability;Ensure protection of audit information is configured;all
+AU-9(4);Audit and Accountability;Ensure audit logs are accessible only to authorized individuals;all
+AU-12;Audit and Accountability;Ensure audit record generation is enabled;all
+AU-12(1);Audit and Accountability;Ensure system-wide audit trail is compiled from individual records;all
+CM-1;Configuration Management;Ensure configuration management policy and procedures are documented;all
+CM-2;Configuration Management;Ensure baseline configuration is established and maintained;all
+CM-2(2);Configuration Management;Ensure automation support for configuration accuracy and currency is configured;all
+CM-3;Configuration Management;Ensure configuration change control is implemented;all
+CM-3(2);Configuration Management;Ensure configuration changes are tested and validated before implementation;all
+CM-5;Configuration Management;Ensure access restrictions for change are configured;all
+CM-6;Configuration Management;Ensure configuration settings are established and enforced;all
+CM-6(1);Configuration Management;Ensure automated management and verification of configuration settings is configured;all
+CM-7;Configuration Management;Ensure least functionality principle is applied;all
+CM-7(1);Configuration Management;Ensure periodic review of unnecessary functions ports protocols and services;all
+CM-7(2);Configuration Management;Ensure whitelisting of authorized software and firmware is configured;all
+CM-8;Configuration Management;Ensure system component inventory is maintained;all
+CM-11;Configuration Management;Ensure user-installed software is controlled;all
+IA-1;Identification and Authentication;Ensure identification and authentication policy and procedures are documented;all
+IA-2;Identification and Authentication;Ensure unique identification and authentication of organizational users is configured;all
+IA-2(1);Identification and Authentication;Ensure multi-factor authentication for privileged accounts is configured;all
+IA-2(2);Identification and Authentication;Ensure multi-factor authentication for non-privileged accounts is configured;all
+IA-2(8);Identification and Authentication;Ensure replay-resistant authentication is configured;all
+IA-3;Identification and Authentication;Ensure device identification and authentication is configured;all
+IA-3(1);Identification and Authentication;Ensure cryptographic bidirectional authentication is configured;all
+IA-4;Identification and Authentication;Ensure identifier management is configured;all
+IA-5;Identification and Authentication;Ensure authenticator management is configured;all
+IA-5(1);Identification and Authentication;Ensure password-based authentication complexity is enforced;all
+IA-5(2);Identification and Authentication;Ensure public key-based authentication is configured;all
+IA-5(7);Identification and Authentication;Ensure unencrypted static authenticators are not embedded;all
+IA-6;Identification and Authentication;Ensure authentication feedback is obscured;all
+IA-7;Identification and Authentication;Ensure cryptographic module authentication is configured;all
+IA-8;Identification and Authentication;Ensure identification and authentication of non-organizational users is configured;all
+SC-1;System and Communications Protection;Ensure system and communications protection policy and procedures are documented;all
+SC-2;System and Communications Protection;Ensure separation of system and user functionality is configured;all
+SC-4;System and Communications Protection;Ensure information in shared system resources is protected;all
+SC-5;System and Communications Protection;Ensure denial-of-service protection is configured;all
+SC-5(2);System and Communications Protection;Ensure dos protection capacity and bandwidth is managed;all
+SC-7;System and Communications Protection;Ensure boundary protection is configured;firewall
+SC-7(3);System and Communications Protection;Ensure access points to external networks are limited;firewall
+SC-7(4);System and Communications Protection;Ensure external telecommunications services are protected;all
+SC-7(5);System and Communications Protection;Ensure deny by default allow by exception policy is configured;firewall
+SC-7(7);System and Communications Protection;Ensure split tunneling prevention for remote devices is configured;firewall
+SC-7(8);System and Communications Protection;Ensure traffic routing to authenticated proxy servers is configured;firewall
+SC-7(9);System and Communications Protection;Ensure restriction of threatening outgoing traffic is configured;firewall
+SC-7(11);System and Communications Protection;Ensure restriction of incoming communications traffic is configured;firewall
+SC-7(18);System and Communications Protection;Ensure fail-secure on boundary protection device failure is configured;firewall
+SC-7(21);System and Communications Protection;Ensure isolation of system components is configured;all
+SC-8;System and Communications Protection;Ensure transmission confidentiality and integrity is configured;all
+SC-8(1);System and Communications Protection;Ensure cryptographic protection for transmission is configured;all
+SC-10;System and Communications Protection;Ensure network disconnect after session timeout is configured;all
+SC-12;System and Communications Protection;Ensure cryptographic key establishment and management is configured;all
+SC-13;System and Communications Protection;Ensure cryptographic protection using approved algorithms is configured;all
+SC-15;System and Communications Protection;Ensure collaborative computing devices are restricted;all
+SC-17;System and Communications Protection;Ensure pki certificates are issued by approved authority;all
+SC-20;System and Communications Protection;Ensure secure name and address resolution service is configured;all
+SC-21;System and Communications Protection;Ensure secure name and address resolution service for recursive queries is configured;all
+SC-22;System and Communications Protection;Ensure architecture and provisioning for name resolution is configured;all
+SC-23;System and Communications Protection;Ensure session authenticity is configured;all
+SC-24;System and Communications Protection;Ensure fail-safe in known state on failure is configured;all
+SC-28;System and Communications Protection;Ensure protection of information at rest is configured;all
+SC-28(1);System and Communications Protection;Ensure cryptographic protection for information at rest is configured;all
+SC-32;System and Communications Protection;Ensure system partitioning and network segmentation is configured;switch
+SC-39;System and Communications Protection;Ensure process isolation is configured;all
+SC-41;System and Communications Protection;Ensure port and io device access restriction is configured;all
+SI-1;System and Information Integrity;Ensure system and information integrity policy and procedures are documented;all
+SI-2;System and Information Integrity;Ensure flaw remediation and patching is configured;all
+SI-3;System and Information Integrity;Ensure malicious code protection is configured;all
+SI-4;System and Information Integrity;Ensure system monitoring is configured;all
+SI-4(2);System and Information Integrity;Ensure automated real-time analysis tools for monitoring are configured;all
+SI-4(4);System and Information Integrity;Ensure inbound and outbound communications traffic is monitored;firewall
+SI-4(5);System and Information Integrity;Ensure system alerts on compromise indicators are configured;all
+SI-5;System and Information Integrity;Ensure security alerts advisories and directives are received and acted upon;all
+SI-7;System and Information Integrity;Ensure software firmware and information integrity verification is configured;all
+SI-10;System and Information Integrity;Ensure information input validation is configured;firewall
+SI-11;System and Information Integrity;Ensure error handling reveals minimal information;all
+SI-16;System and Information Integrity;Ensure memory protection is configured;all

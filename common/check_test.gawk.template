@@ -76,30 +76,31 @@ BEGINFILE {
     n = split(filename, name_parts, ".")
     file_supplier = (n >= 3) ? name_parts[n - 1] : ""
 
+    # a psirt test is compiled into the generic template and holds no metadata tags of its own
+    is_psirt = (dirname ~ /\.psirt$/) || (filename ~ /_psirt\./)
+
     error_count = 0
     in_beginfile_block = 0
     has_endfile = 0
     code = ""
     code_lines = 0
-    tag_test_name = ""
-    tag_supplier = ""
 
+    delete tags
     delete kept_fnr
     delete arrays_in_beginfile
     delete arrays_deleted_in_beginfile
 }
 
 # metadata tags live in comments: read them before comments are skipped
-/^#[[:space:]]*@test_name[[:space:]]*:/ {
-    tag_test_name = $0
-    sub(/^#[[:space:]]*@test_name[[:space:]]*:[[:space:]]*/, "", tag_test_name)
-    sub(/[[:space:]]+$/, "", tag_test_name)
-}
-
-/^#[[:space:]]*@supplier[[:space:]]*:/ {
-    tag_supplier = $0
-    sub(/^#[[:space:]]*@supplier[[:space:]]*:[[:space:]]*/, "", tag_supplier)
-    sub(/[[:space:]]+$/, "", tag_supplier)
+# tags[name] keeps the value of every "# @name : value" line (last one wins)
+/^#[[:space:]]*@[a-z0-9_-]+[[:space:]]*:/ {
+    tag = $0
+    sub(/^#[[:space:]]*@/, "", tag)
+    match(tag, /^[a-z0-9_-]+/)
+    tag_name = substr(tag, 1, RLENGTH)
+    sub(/^[a-z0-9_-]+[[:space:]]*:[[:space:]]*/, "", tag)
+    sub(/[[:space:]]+$/, "", tag)
+    tags[tag_name] = tag
 }
 
 {
@@ -182,11 +183,11 @@ ENDFILE {
     }
 
     # names must agree with the file: metadata tags and directory
-    if (tag_test_name != "" && tag_test_name != filename) {
-        fail("@test_name=" tag_test_name " does not match file=" filename " (in " FILENAME ")")
+    if ("test_name" in tags && tags["test_name"] != filename) {
+        fail("@test_name=" tags["test_name"] " does not match file=" filename " (in " FILENAME ")")
     }
-    if (tag_supplier != "" && tag_supplier != file_supplier) {
-        fail("@supplier=" tag_supplier " does not match file supplier=" file_supplier " (in " FILENAME ")")
+    if ("supplier" in tags && tags["supplier"] != file_supplier) {
+        fail("@supplier=" tags["supplier"] " does not match file supplier=" file_supplier " (in " FILENAME ")")
     }
     if (dirname ~ /^tests\./) {
         dir_supplier = dirname
@@ -194,6 +195,27 @@ ENDFILE {
         sub(/\.psirt$/, "", dir_supplier)
         if (file_supplier != dir_supplier) {
             fail("file supplier=" file_supplier " does not match directory=" dirname " (in " FILENAME ")")
+        }
+    }
+
+    # every metadata tag must be present and filled, and its value valid (psirt excluded:
+    # a psirt test is compiled into the generic template and loses its own tags)
+    if (!is_psirt) {
+        split("test_name supplier purpose description risk_level actions nist800-53_ref authors", required_tags, " ")
+        for (tag_i = 1; tag_i <= 8; tag_i++) {
+            if (!(required_tags[tag_i] in tags) || tags[required_tags[tag_i]] == "") {
+                fail("missing or empty @" required_tags[tag_i] " tag (in " FILENAME ")")
+            }
+        }
+
+        # @risk_level: a pipe-separated list of high, medium, low, info
+        if ("risk_level" in tags) {
+            risk_n = split(tags["risk_level"], risk_parts, /[[:space:]]*\|[[:space:]]*/)
+            for (tag_i = 1; tag_i <= risk_n; tag_i++) {
+                if (risk_parts[tag_i] !~ /^(high|medium|low|info)$/) {
+                    fail("invalid @risk_level value=\"" risk_parts[tag_i] "\" (must be a pipe-separated list of: high, medium, low, info) (in " FILENAME ")")
+                }
+            }
         }
     }
 

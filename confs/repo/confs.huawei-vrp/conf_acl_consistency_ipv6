@@ -1,0 +1,53 @@
+#
+sysname cawk-acl-consistency-ipv6
+#
+acl ipv6 number 3001
+ description CAWK-V6PORT-EXP-1-INCONSISTENT
+ rule 5 permit tcp destination 2001:DB8::1 128 destination-port eq 22
+ rule 10 deny tcp destination 2001:DB8::1/128 destination-port eq 22
+#
+acl ipv6 number 3002
+ description CAWK-V6PORT-EXP-PASS
+ rule 5 permit tcp destination 2001:DB8::1 128 destination-port eq 22
+ rule 10 deny tcp destination 2001:DB8::1 128 destination-port eq 80
+#
+acl ipv6 number 3003
+ description CAWK-V6ADDR-EXP-1-REDUNDANT
+ rule 5 permit ipv6 source 2001:DB8:1:: 48
+ rule 10 permit tcp source 2001:DB8:1:2::5 128 destination-port eq 22
+#
+acl ipv6 number 3004
+ description CAWK-V6ADDR-EXCEPTION-EXP-PASS
+ rule 5 permit tcp source 2001:DB8:2:1::/64 destination-port eq 443
+ rule 10 deny ipv6 source 2001:DB8:2::/48
+#
+acl ipv6 number 3005
+ description CAWK-V6ADDR-EXP-PASS
+ rule 5 permit ipv6 source 2001:DB8:3:: 48
+ rule 10 deny ipv6 source 2001:DB8:4:: 48
+#
+acl ipv6 number 3006
+ description CAWK-V6HOST-EXP-PASS
+ rule 5 permit tcp source 2001:DB8:12::1 128 destination-port eq 22
+ rule 10 deny tcp source 2001:DB8:12::2 128 destination-port eq 22
+#
+acl ipv6 number 3007
+ description CAWK-V6ICMP-EXP-1-INCONSISTENT
+ rule 5 permit icmpv6 source any icmp6-type echo-request
+ rule 10 deny icmpv6 source any icmp6-type 128
+#
+acl ipv6 number 3008
+ description CAWK-V6ICMP-EXP-PASS
+ rule 5 permit icmpv6 source any icmp6-type echo-request
+ rule 10 deny icmpv6 source any icmp6-type neighbor-solicitation
+#
+acl ipv6 name CAWK-V6NAME
+ description CAWK-V6RANGE-EXP-1-INCONSISTENT
+ rule 5 permit udp destination 2001:DB8:5:: 64 destination-port range 1000 2000
+ rule 10 deny udp destination 2001:DB8:5:: 64 destination-port eq 1500
+#
+acl number 3100
+ description CAWK-V4SAME-EXP-PASS
+ rule 5 permit tcp destination 10.0.0.1 0 destination-port eq 22
+#
+return

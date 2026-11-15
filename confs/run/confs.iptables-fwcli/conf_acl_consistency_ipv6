@@ -1,0 +1,37 @@
+cawk_host6="2001:db8:7::7"
+
+ip6tables -A INPUT -i em1 -p tcp -d 2001:db8::1 --dport 22 -m comment --comment "v6s01-exp-1-inconsistent" -j ACCEPT
+ip6tables -A INPUT -i em1 -p tcp -d 2001:db8::1 --dport 22 -m comment --comment "v6s01-exp-1-inconsistent" -j DROP
+
+ip6tables -A INPUT -i em2 -p tcp -d 2001:db8::1 --dport 22 -m comment --comment "v6s02-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em2 -p tcp -d 2001:db8::1 --dport 80 -m comment --comment "v6s02-exp-pass" -j DROP
+
+ip6tables -A INPUT -i em3 -p tcp -s 2001:db8:1::/48 --dport 22 -m comment --comment "v6s03-exp-1-redundant" -j ACCEPT
+ip6tables -A INPUT -i em3 -p tcp -s 2001:db8:1:2::5 --dport 22 -m comment --comment "v6s03-exp-1-redundant" -j ACCEPT
+
+ip6tables -A INPUT -i em4 -p tcp -s 2001:db8:1::/48 --dport 22 -m comment --comment "v6s04-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em4 -p tcp -s 2001:db8:2::/48 --dport 22 -m comment --comment "v6s04-exp-pass" -j DROP
+
+ip6tables -A INPUT -i em5 -p tcp -s 2001:db8:5::1,2001:db8:5::2 --dport 22 -m comment --comment "v6s05-exp-1-inconsistent" -j ACCEPT
+ip6tables -A INPUT -i em5 -p tcp -s 2001:db8:5::2 --dport 22 -m comment --comment "v6s05-exp-1-inconsistent" -j DROP
+
+ip6tables -A INPUT -i em6 -p tcp -s $cawk_host6 --dport 443 -m comment --comment "v6s06-exception-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em6 -p tcp -s 2001:db8:7::/64 --dport 443 -m comment --comment "v6s06-exception-exp-pass" -j DROP
+
+ip6tables -A INPUT -i em7 -p ipv6-icmp --icmpv6-type echo-request -m comment --comment "v6s07-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em7 -p ipv6-icmp --icmpv6-type neighbour-solicitation -m comment --comment "v6s07-exp-pass" -j DROP
+
+ip6tables -A INPUT -i em8 -p icmpv6 --icmpv6-type echo-request -m comment --comment "v6s08-exp-1-inconsistent" -j ACCEPT
+ip6tables -A INPUT -i em8 -p icmpv6 --icmpv6-type 128 -m comment --comment "v6s08-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em9 -p tcp -s 10.9.0.0/16 --dport 22 -m comment --comment "v6s09-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em9 -p tcp -s 2001:db8:9::/48 --dport 22 -m comment --comment "v6s09-exp-pass" -j DROP
+
+iptables -A INPUT -i em10 -p tcp --dport 22 -m comment --comment "v6s10-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em10 -p tcp --dport 22 -m comment --comment "v6s10-exp-pass" -j DROP
+
+ip6tables -A INPUT -i em11 -p tcp -s ::/0 --dport 22 -m comment --comment "v6s11-exp-1-inconsistent" -j ACCEPT
+ip6tables -A INPUT -i em11 -p tcp --dport 22 -m comment --comment "v6s11-exp-1-inconsistent" -j DROP
+
+ip6tables -A INPUT -i em12 -p tcp -s 2001:db8:12::1 --dport 22 -m comment --comment "v6s12-exp-pass" -j ACCEPT
+ip6tables -A INPUT -i em12 -p tcp -s 2001:db8:12::2 --dport 22 -m comment --comment "v6s12-exp-pass" -j DROP

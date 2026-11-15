@@ -8,9 +8,6 @@
 .PHONY: \
   archive_repo archive_run archive_run_audit
 
-# TIMELINE=yes: the archive holds the timeline csv only, TIMELINE=no: the plain csv (same rule as email_send)
-ARCHIVE_CSV_NAME = $(if $(filter yes,$(strip $(TIMELINE))),'*.timeline$(CSV_EXT)','*.csv')
-
 # -------------------------------------------------------------------------------------------
 # MACRO: cawk_archive — tar.gz the csv reports and the summary of a report dir
 # -------------------------------------------------------------------------------------------
@@ -25,7 +22,7 @@ define cawk_archive
 	files="$$(find $(1) -type f \( -name $(ARCHIVE_CSV_NAME) -o -name "$$sum" \))"; \
 	if [ -n "$$files" ]; then \
 		if tar -czf $(2) $$files 2>$(3); then \
-			$(ECHO) "cawk build archive in $(2)"; \
+			$(ECHO_INFO) "cawk build archive in $(2)"; \
 		else \
 			$(ECHO) "cawk error: $(4) failed (see $(3)) ----"; exit 1; \
 		fi; \
@@ -36,11 +33,11 @@ endef
 
 archive_repo:
 	$(call cawk_archive,reports/repo,reports/repo/archives/repo_$(TODAY).tar.gz,$(LOGS_PATH)/repo/archive.repo.err,archive_repo)
-	$(ECHO) "cawk archive_repo done ----"
+	$(ECHO_INFO) "cawk archive_repo done ----"
 
 archive_run:
 	$(call cawk_archive,reports/run$(if $(audit),_$(audit)),reports/run$(if $(audit),_$(audit))/archives/run$(if $(audit),_$(audit))_$(TODAY).tar.gz,$(LOGS_PATH)/run$(if $(audit),_$(audit))/archive.$(if $(audit),$(audit),run).err,archive_run$(if $(audit), for $(audit)))
-	$(ECHO) "cawk archive_run done ----"
+	$(ECHO_INFO) "cawk archive_run done ----"
 
 archive_run_audit:
 	@count=$$($(RUN_DIRS_FIND) | wc -l); \

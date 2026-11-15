@@ -19,6 +19,9 @@
 #  - CAWK_RELEASE  : cawk release shown in the report
 #  - LOGO_HTML     : path of the logo file (sets the data uri mime type)
 #  - LOGO_B64      : path of its base64 text file, both optional: no logo when missing
+#  - DATA_SET_FILES : space separated database/data_set/run_<audit>/data_set_<audit>_YYYY-MM-DD.txt files (sorted) of a named audit, optional: the evolution
+#                    section (counters per date) is embedded when it holds at least one date
+#  - DATA_SET_KEEP : number of dates allowed in the data_set (shown in the evolution section), optional
 #
 # only counters are embedded: the error lines, the line numbers and the
 # configuration names of the assessment never reach the report.
@@ -129,6 +132,8 @@ ARGIND == 2 && NF >= 6 {
 	test = $2;
 	status = $NF;
 	risk = $(NF - 1);
+	# same rule as report.gawk (number_of_psirt_clear): only psirt at high risk is vulnerable, the others are "not affected"
+	if ( status == "psirt" && risk != "high" ) status = "clear";
 
 	t = rh_test(test);
 
@@ -200,7 +205,59 @@ END {
 		split(key, k, SUBSEP);
 		data = data (i ? ",\n" : "\n") "[" k[1] ",\"" rh_json(k[2]) "\",\"" rh_json(k[3]) "\"," exc_lines[key] "]";
 	}
-	data = data "]}";
+	data = data "]";
+	# counters of assessment.all.summary.txt (the reference of every total), embedded as is for the cross-check of validate/summary-html
+	summary_path = scan_dir "/assessment.all.summary.txt";
+	stats_json = "";
+	while ( (getline sm_line < summary_path) > 0 ) {
+		if ( sm_line ~ /^[ \t]*number_of_[a-z_]+[ \t]*=[ \t]*[0-9]+/ ) {
+			sm_key = sm_line; sub(/^[ \t]*number_of_/, "", sm_key); sub(/[ \t]*=.*/, "", sm_key);
+			sm_val = sm_line; sub(/^[^=]*=[ \t]*/, "", sm_val); sub(/[^0-9].*/, "", sm_val);
+			if ( !(sm_key in sm_seen) ) { sm_seen[sm_key] = 1; stats_json = stats_json (stats_json == "" ? "" : ",") "\"" sm_key "\":" (sm_val + 0); }
+		}
+	}
+	close(summary_path);
+	if ( stats_json != "" ) data = data ",\n\"stats\":{" stats_json "}";
+	if ( DATA_SET_FILES != "" ) {
+		# one file per date (header, then its line), names sorted by the caller
+		ds_nb = 0;
+		ds_json = "";
+		nf_files = split(DATA_SET_FILES, ds_files, " ");
+		for ( fi = 1; fi <= nf_files; fi++ ) {
+		ds_file = ds_files[fi];
+		if ( (getline ds_line < ds_file) <= 0 ) {
+			print "cawk error: " ds_file ": cannot read the data_set file ----" > "/dev/stderr";
+			failed = 1;
+			continue;
+		}
+		while ( (getline ds_line < ds_file) > 0 ) {
+			if ( ds_line ~ /^#/ || ds_line == "" ) continue;
+			n_f = split(ds_line, ds_f, ";");
+			if ( n_f < 2 || ds_f[1] !~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ ) {
+				print "cawk error: " ds_file ": bad data_set line <" ds_line "> ----" > "/dev/stderr";
+				failed = 1;
+				continue;
+			}
+			ds_obj = "\"date\":\"" ds_f[1] "\"";
+			for ( i = 2; i <= n_f; i++ ) {
+				if ( ds_f[i] !~ /^[a-z][a-z0-9_]*=([0-9]+|[0-9]+\/[0-9]+)$/ ) {
+					print "cawk error: " ds_file ": bad field <" ds_f[i] "> ----" > "/dev/stderr";
+					failed = 1;
+					continue;
+				}
+				ds_key = ds_f[i]; sub(/=.*/, "", ds_key);
+				ds_val = ds_f[i]; sub(/^[^=]*=/, "", ds_val);
+				if ( split(ds_val, ds_cov, "/") == 2 ) ds_obj = ds_obj ",\"" ds_key "_covered\":" (ds_cov[1] + 0) ",\"" ds_key "_total\":" (ds_cov[2] + 0);
+				else ds_obj = ds_obj ",\"" ds_key "\":" (ds_val + 0);
+			}
+			ds_json = ds_json (ds_nb++ ? ",\n" : "\n") "{" ds_obj "}";
+		}
+		close(ds_file);
+		}
+		if ( ds_nb > 0 ) data = data ",\n\"dataset_keep\":" ((DATA_SET_KEEP ~ /^[0-9]+$/) ? DATA_SET_KEEP + 0 : 0) ",\n\"dataset\":[" ds_json "]";
+	}
+	data = data "}";
+	if ( failed ) exit 1;
 
 	# the logo is embedded as a data uri to keep the report standalone (no logo when the base64 file is missing)
 	logo_b64 = "";

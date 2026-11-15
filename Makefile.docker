@@ -9,6 +9,7 @@
 
 SHELL := /bin/bash
 
+include support/Makefile.support.vars.mk
 include support/Makefile.support.mk
 
 # ===============================================================================

@@ -1,0 +1,19 @@
+set v6s05_src="2001:db8:5::1"
+
+add access-rule name "v6s01-exp-1-inconsistent" layer "Network" position 1 source 2001:db8:1::/64 destination 2001:db8:1:1::1 service "ssh" action "Accept" track "Log"
+add access-rule name "v6s01-exp-1-inconsistent" layer "Network" position 2 source 2001:db8:1::/64 destination 2001:db8:1:1::1 service "ssh" action "Drop" track "Log"
+
+add access-rule name "v6s02-exp-pass" layer "Network" position 3 source 2001:db8:2::/64 destination 2001:db8:2:1::1 service "ssh" action "Accept" track "Log"
+add access-rule name "v6s02-exp-pass" layer "Network" position 4 source 2001:db8:2::/64 destination 2001:db8:2:1::1 service "http" action "Drop" track "Log"
+
+add access-rule name "v6s03-exp-1-redundant" layer "Network" position 5 source 2001:db8:3::/48 destination 2001:db8:3:1::/64 service "ssh" action "Accept" track "Log"
+add access-rule name "v6s03-exp-1-redundant" layer "Network" position 6 source 2001:db8:3:2::9 destination 2001:db8:3:1::5 service "ssh" action "Accept" track "Log"
+
+add access-rule name "v6s04-exp-pass" layer "Network" position 7 source 2001:db8:4::/48 destination 2001:db8:4:1::/64 service "ssh" action "Accept" track "Log"
+add access-rule name "v6s04-exp-pass" layer "Network" position 8 source 2001:db8:5::/48 destination 2001:db8:4:1::/64 service "ssh" action "Drop" track "Log"
+
+add access-rule name "v6s05-exception-exp-pass" layer "Network" position 9 source $v6s05_src destination 2001:db8:6::/64 service "https" action "Accept" track "Log"
+add access-rule name "v6s05-exception-exp-pass" layer "Network" position 10 source 2001:db8:5::/64 destination 2001:db8:6::/64 service "https" action "Drop" track "Log"
+
+add access-rule name "v6s06-exp-pass" layer "Network" position 11 source 2001:db8:7::1,2001:db8:7::2 destination 2001:db8:8::/64 service "ssh" action "Accept" track "Log"
+add access-rule name "v6s06-exp-pass" layer "Network" position 12 source 2001:db8:7::3 destination 2001:db8:8::/64 service "ssh" action "Drop" track "Log"

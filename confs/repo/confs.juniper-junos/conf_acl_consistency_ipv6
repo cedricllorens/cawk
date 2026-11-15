@@ -1,0 +1,153 @@
+system {
+    host-name cawk-acl-consistency-ipv6;
+}
+firewall {
+    family inet6 {
+        filter CAWK-V6ADDR-EXCEPTION-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        2001:db8:1:1::/64;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        2001:db8:1::/48;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-V6ADDR-EXP-1-REDUNDANT {
+            term t1 {
+                from {
+                    source-address {
+                        2001:db8:2::/48;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        2001:db8:2::2/128;
+                    }
+                }
+                then accept;
+            }
+        }
+        filter CAWK-V6ADDR-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        2001:db8:3::1/128;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    source-address {
+                        2001:db8:3::2/128;
+                    }
+                }
+                then discard;
+            }
+        }
+        filter CAWK-V6PORT-EXCEPTION-EXP-PASS {
+            term t1 {
+                from {
+                    destination-address {
+                        2001:db8:4::1/128;
+                    }
+                    next-header tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    next-header tcp;
+                    destination-port 22;
+                }
+                then reject;
+            }
+        }
+        filter CAWK-V6PORT-EXP-PASS {
+            term t1 {
+                from {
+                    next-header tcp;
+                    destination-port ssh;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    next-header udp;
+                    destination-port 22;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-V6ICMP-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    next-header icmp6;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    next-header icmp6;
+                    icmp-type 128;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-V6ICMP-EXP-PASS {
+            term t1 {
+                from {
+                    next-header icmp6;
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term t2 {
+                from {
+                    next-header icmp6;
+                    icmp-type neighbor-solicit;
+                }
+                then discard;
+            }
+        }
+        filter CAWK-V6ANY-EXP-1-INCONSISTENT {
+            term t1 {
+                from {
+                    source-address {
+                        ::/0;
+                    }
+                }
+                then accept;
+            }
+            term t2 {
+                then discard;
+            }
+        }
+    }
+    family inet {
+        filter CAWK-V4INET-EXP-PASS {
+            term t1 {
+                from {
+                    source-address {
+                        10.9.0.0/16;
+                    }
+                }
+                then accept;
+            }
+        }
+    }
+}

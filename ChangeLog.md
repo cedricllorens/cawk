@@ -6,6 +6,183 @@
 > Please refer to the LICENSE file for further information
 > **cawk is Copyright (C) 2024-2026 by Cedric Llorens**
 
+## [v5.1.0] - November 2026
+
+> **v5.1.0 adds IPv6 to the ACL consistency assessment (rules cube and the ten suppliers), rule order and shadowing analysis with report reduction in the hypercube engine, a Makefile overhaul (central `Makefile.support.vars.mk`, `gmake help` sections, `help vars`, `topic=`, typo suggestions, `status` target, bash completion, `check_validate`/`check_database` phases, final recap), per-date data_set files driving the new "Evolution of the audit" HTML section with `check_database` format validation, and mandatory metadata tags on the tests.**
+
+### Tests
+
+- Add `validate/generated-db` (`db_info.txt` and `db_exception.txt` rebuilt when missing by every target reading them, also with `CATALOG_BUILD=no`)
+- Add `validate/nist-reference` (copy rule of `db_nist800-53.txt` as prerequisite of every target reading it, missing, modified and older copy replaced)
+- Add `validate/summary-html` (counters of `summary.txt` against the html `stats`, recs and exceptions)
+- Add `validate/update_custom` (FORCE=yes, no `audit=`, missing script, script OK, script failing, help)
+- Add `validate/archive-guard` (age rule, `ALL_ARCHIVE`, `check_archive_guard`)
+- Add the `HYPERCUBE_INCONSISTENCY` and `HYPERCUBE_REDUNDANCY` filters (read through `ENVIRON`, defaults `yes` and `yes`, also when run without gmake) to `common/common_hypercube-lib.gawk.template`
+- Add `source_rule` and `rule_order` to the rules of `cawk_add_hypercube_rules()` in `common/common_hypercube-lib.gawk`
+- Add rule containment test and order based classification (shadowed rule, partial overlap, exception not reported) to `cawk_hypercube_rules_assessment()` in `common/common_hypercube-lib.gawk`
+- Add `cawk_order` and `cawk_show_generalization` variables to the rules cube
+- Add the algorithm description to the header of `cawk_hypercube_rules_assessment()` and to the README
+- Add `source_rule` and `rule_order` (Checkpoint `position`) arguments to the `acl_configconsistency_set` tests of the ten suppliers, `cawk_order = "none"` for `packetfilter-fwcli`
+- Add 8 order cases (21 to 28) to `validate/hypercube-ipv6`
+- Add report reduction (one line per dead rule with `(+K other rules)`, one line per pair of rules with `(xN cubes)`) to `cawk_hypercube_rules_assessment()` in `common/common_hypercube-lib.gawk`
+- Add 2 report reduction cases (29, 30) to `validate/hypercube-ipv6`
+- Add English comments on the cube functions in `common/common_hypercube-lib.gawk`
+- Rename the `-EXP-N-INCONSISTENT` scenarios turned into exceptions to `-EXCEPTION-EXP-PASS` in the `conf_acl_consistency`, `conf_acl_consistency_ipv6` and juniper `conf_acl_consistency_big` demo configurations of the ten suppliers
+- Add one `-SHADOWED-EXP-1-INCONSISTENT` scenario (general rule above a specific one) to the `conf_acl_consistency` demo configuration of the ten suppliers
+- Add ipv6 support (`inet6` rules, icmpv6 keywords, `addr/len` prefixes) to `acl_configconsistency_set` of `packetfilter-fwcli`, `iptables-fwcli` (`ip6tables`), `juniper-junos` (`family inet6`), `cisco-ios`, `cisco-xe`, `cisco-cedge`, `cisco-xr` (`ipv6 access-list`), `huawei-vrp` (`acl ipv6`), `checkpoint-fwcli` and `ekinops-oneos`
+- Fix iptables rules family (`inet` instead of `all`) and `::/0` as any address in `acl_configconsistency_set.iptables-fwcli`
+- Add `conf_acl_consistency_ipv6` demo configurations (`-exp-` scenarios) for the ten `acl_configconsistency_set` suppliers in `confs/repo`
+- Rename `CAWK-INET6-NOT-ASSESSED` filter to `CAWK-INET6-EXP-1-INCONSISTENT` in `confs/repo/confs.juniper-junos/conf_acl_consistency` (inet6 filters are now assessed)
+- Add mandatory metadata tags (`@test_name`, `@supplier`, `@purpose`, `@description`, `@risk_level`, `@actions`, `@nist800-53_ref`, `@authors`) to the test compliance check of `common/check_test.gawk` (psirt tests excluded, compiled without their own tags)
+- Add `@risk_level` value validation (pipe-separated list of `high`, `medium`, `low`, `info`) to the test compliance check of `common/check_test.gawk`
+- Add ipv6 address support (128-bit binary bounds, exact comparison, `any` as the full address space, an unparsable address not assessed) to the rules cube of `common/common_hypercube-lib.gawk`
+- Add `validate/hypercube-ipv6/run.sh` and 14 non-regression cases of the rules cube (ipv4 verdicts unchanged, ipv6 pairs, `record` mode)
+- Fix ipv4 ranges overlapping ipv6 `::/96` in the rules cube (family bit before the 128 address bits) in `common/common_hypercube-lib.gawk`
+- Fix invalid addresses (non dotted-quad ipv4, prefix longer than the family, dotted netmask on ipv6) giving a verdict instead of not being assessed in `common/common_hypercube-lib.gawk`
+- Fix prefix ranges built bit by bit (substr of 128-bit constants) and helper variables leaking as globals in `common/common_hypercube-lib.gawk`
+- Add 6 non-regression cases (ipv4 vs `::/96`, ipv6 dotted netmask, invalid ipv4, prefix too long, ipv4 netmask, `any` across families) to `validate/hypercube-ipv6`
+- Fix the trailing comma of `{ a, b }` set elements kept in the addresses of `acl_configconsistency_set.packetfilter-fwcli`
+- Fix `ntp_ip_set` of the 9 suppliers (`cisco-ios`, `cisco-xe`, `cisco-cedge`, `cisco-xr`, `cisco-viptela`, `ekinops-oneos`, `huawei-vrp`, `juniper-junos`, `nokia-sros`): the ntp server must hold a complete ipv4 or ipv6 address instead of any digits
+
+### Makefile
+
+- Add `$(DATABASE_CIS_INFO)` rule (runs `catalog_build` when `database/db_info.txt` is missing) as prerequisite of `check_repo` and `check_run` when `CATALOG_BUILD=no` in `support/Makefile.support.catalog.mk` and `support/Makefile.support.check.scope.mk`
+- Add `$(DATABASE_CIS_INFO)` as prerequisite of `catalog_nist_mappings`, `catalog_repo`, `catalog_run` and `nist_coverage_official` in `support/Makefile.support.catalog.mk`
+- Add `$(DATABASE_EXCEPTION)` rule (runs `exceptions_build` when `database/db_exception.txt` is missing) in `support/Makefile.support.exceptions.mk` and as prerequisite of `catalog_exceptions_repo` and `catalog_exceptions_run` in `support/Makefile.support.catalog.mk`
+- Add `DATABASE_EXCEPTION` to `support/Makefile.support.vars.mk` and `support/Makefile.support.help.mk`
+- Fix `catalog_build_repo` and `catalog_build_run` appending duplicate lines to `database/db_info.txt` when run alone (now purge their own context first) in `support/Makefile.support.catalog.mk`
+- Add `$(NIST_REFERENCE)` prerequisite to `catalog_build`, `catalog_build_repo`, `catalog_build_run` and `catalog_build_audit` in `support/Makefile.support.catalog.mk`
+- Add `$(NIST_REFERENCE)` prerequisite to `check_database` in `support/Makefile.support.check.mk`
+- Fix `check_archive_guard` to follow the `reports` symlink (`find -H`) in `support/Makefile.support.check.mk`
+- Add `update_custom_run` (FORCE=yes, no `audit=`, runs `database/scripts/update_custom.script.sh`) in `support/Makefile.support.custom.mk`, `UPDATE_CUSTOM_SCRIPT` in `support/Makefile.support.vars.mk` and its help in the `backup` section of `support/Makefile.support.help.mk`
+- Add the `gmake status` dashboard of every audit when `audit=` is not set (`status` in `support/Makefile.support.audit.mk`, help lines in `support/Makefile.support.help.mk`)
+- Add the yes/no options read from `vars.mk`, `CENSOR_LEVEL=`, `collector=`, `topic=` and the option names to `support/cawk-completion.bash`
+- Add `support/Makefile.support.cmdline.mk` (unknown `NAME=value` on the command line: `cawk error: unknown option <X>, did you mean: ...`, stop before any target) and `CMDLINE_PARAMS` in `support/Makefile.support.vars.mk`
+- Remove the `PSIRT` rename guard of `check_supplier` (covered by the unknown option error) in `support/Makefile.support.supplier.mk`
+- Add `CMDLINE_PARAMS` and the unknown option note to `help_vars` in `support/Makefile.support.help.mk`
+- Add the "validates the package, not for production" notice to the `check_archive_guard` error message `support/Makefile.support.check.mk`
+- Add the "validates the package, not for production" notice to the `check` lines of `README.md` and `help_checks` `support/Makefile.support.help.mk`
+- Add `cawk_archive_purge` macro to `support/Makefile.support.clean.mk`: `clean_archive_*`, `clean_archive_older` and `clean_force` remove only the archives older than `ARCHIVE_OLDER_DAYS` (>= 30, else `FORCE=yes`, non numeric refused)
+- Add `ALL_ARCHIVE=yes` (with `FORCE=yes`) to remove every archive and `check_archive_guard` prerequisite of `check` refusing to run, without bypass, when `reports/*/archives` hold archives
+- Add `PHASE_ERR_DIR`, `cawk_phase_err` and `cawk_phase_log`: the errors of the integrity, compile, catalog_dir, exceptions_dir, tests_copy and deprecated phases are also written to `logs/<context>/<phase>.<name>.err` by `check_repo` and `check_run`
+- Add integrity log cases to `validate/integrity`
+- Add `ALL_ARCHIVE=yes` to the `clean_force` calls of `check` in `support/Makefile.support.check.mk`
+- Rename `database/scripts/data_set.script.sh` and `database/scripts/check_database.script.sh` to `common/` (not saved nor restored by `backup_run*`/`restore_run*`) in `support/Makefile.support.vars.mk` and `support/Makefile.support.check.mk`
+- Add `common/censor/censor_regex_core.m4` (censor rules shipped by cawk, never saved nor restored) included by `database/censor/censor_regex.m4`, now reserved to the rules of the installation, with `-I common/censor` in the `%: %.m4` rule
+- Add the statement database/ is the user side and common/ the cawk system side in `README.md`, `CLAUDE.md`, `docs/CAWK_DATABASE_FORMAT.md` and `docs/CAWK_CODE_RULES.md`
+- Add `check_censor_core` as first control of the `censor_*` targets in `support/Makefile.support.censor.mk`
+- Add `common/censor/censor_regex.m4` (template of the installation file) and `check_censor_core` in `support/Makefile.support.deprecated.mk` (save as `.orig`, replace a file without the core include by the template, exit 1 while a `.orig` without include exists), with its cases in `validate/integrity/run.sh`
+- Rename `database/db_nist800-53.txt` to `common/database/db_nist800-53.txt` (shipped), copied to `database/` when missing or older by `NIST_REFERENCE` in `support/Makefile.support.catalog.mk`, prerequisite of `check_integrity`
+- Add `NIST_REFERENCE_SRC` and `NIST_REFERENCE` in `support/Makefile.support.vars.mk`
+- Fix `clean` touching the shipped NIST reference in `support/Makefile.support.clean.mk`
+- Add the NIST copy cases to `validate/integrity/run.sh`
+- Add the rule shipped reference copied into `database/` in `docs/CAWK_CODE_RULES.md`
+- Fix `check_integrity` and the `censor_*` targets showing `cawk error:` without exit 1 (`INTEGRITY_FATAL`) in `support/Makefile.support.deprecated.mk`, `support/Makefile.support.vars.mk`, `validate/integrity/run.sh`
+- Add `check_integrity` (obsolete files, exit 1) as first prerequisite of `check_repo` and `check_run` in `support/Makefile.support.deprecated.mk` and `support/Makefile.support.check.scope.mk`
+- Add `validate/integrity/run.sh` (non-regression of `check_integrity`)
+- Add `DEPRECATED_FILES` (old:new pairs) and `check_deprecated_files` reporting the obsolete files and the action (remove the pointed element) in `support/Makefile.support.deprecated.mk`, `check_deprecated_repo` and `check_deprecated_run` depend on it
+- Add the rule `Deprecated` (update `DEPRECATED_FILES` / `DEPRECATED_FUNCTIONS` at every move) in `docs/CAWK_CODE_RULES.md`
+- Add the rule user data versus cawk system code in `docs/CAWK_CODE_RULES.md`
+- Rename the step traces of `check_repo` and `check_run` to `cawk <step> <done|skipped> (OPTION=value): <what it does> ----` in `support/Makefile.support.mk` and `support/Makefile.support.check.scope.mk`
+- Add the number of configurations per supplier to the `cawk compute` trace and the html report path and the data_set dates to the final recap of `check_repo` and `check_run`
+- Add the deletion of the `run_*` files (not directories) of `database/data_set/` in `database/scripts/data_set.script.sh` (`init`, `append`)
+- Add the `cawk data_set skipped (<reason>) ----` and `cawk data_set enabled (...) ----` traces of `check_run` showing `DATA_SET` and `DATA_SET_KEEP` in `support/Makefile.support.mk`
+- Fix `DATA_SET_KEEP` default (180) in `support/Makefile.support.vars.mk`
+- Fix the html report of `check_run audit=` ignoring the data_set file of the day (files listed by the shell in `cawk_html_gen`, not by `$(wildcard)`)
+- Rename `database/data_set/data_set_<audit>.txt` to one file per date `database/data_set/run_<audit>/data_set_<audit>_YYYY-MM-DD.txt` in `create_audit`, `delete_audit`, `backup_run audit=`, `check_run audit=`, `status` and the html report (`DATA_SET_FILES`)
+- Add `HYPERCUBE_INCONSISTENCY` (default `yes`) and `HYPERCUBE_REDUNDANCY` (default `yes`) options to `support/Makefile.support.vars.mk`, `check_supplier`, `help_vars` and `docs/CAWK_OPTIONS.md`
+- Add `support/Makefile.support.vars.mk` grouping every variable of `support/Makefile.support.mk` and of the other support files (`ARCHIVE_CSV_NAME`, `CHECK_SCOPE`, `TRACK_PATH`, `TRACK_SCRIPTS`, `DEPRECATED_FUNCTIONS`, `EMAIL_CSV_TIMELINE`, `EMAIL_ZIP_LARGE_NAMES`, `VIEW_FILTER`, `HELP_SECTIONS`, `HELP_POS`, `CAWK_SECRETSCAN_GLOB`, `cawk_comma`), included first by `Makefile` and `Makefile.docker`
+- Add `help_vars` section (`gmake help vars`) explaining every variable to `support/Makefile.support.help.mk`
+- Add `validate/vars` non-regression suite (variables only in `Makefile.support.vars.mk`, explained by `gmake help vars`, options described in `docs/CAWK_OPTIONS.md`)
+- Fix `Makefile.support.mk` references to `Makefile.support.vars.mk` in `support/Makefile.support.git.mk`, `system/cawk_check_system`, `validate/messages/run.sh` and `.claude/commands/check-docker.md`
+- Add `DATA_SET` (default `yes`, skipped with `supplier=`) and `DATA_SET_KEEP` options to `support/Makefile.support.mk`, validated by `check_supplier`, `check_run audit=` adds the line of the day in `cawk_report_scope_all`
+- Add `FORCE=yes` requirement to `delete_audit` in `support/Makefile.support.audit.mk`, `FORCE=yes` added to its calls in `check` and `validate/collect/run.sh`
+- Add the bash completion usage (`source support/cawk-completion.bash`) to `help_list` in `support/Makefile.support.help.mk`
+- Add the `~/.bashrc` install lines (`CAWK_HOME`) of the bash completion to `support/cawk-completion.bash`, `help_list` in `support/Makefile.support.help.mk`, the README, `QUICK.md` and `CLAUDE.md`
+- Add `VERBOSE` option (default `yes`) and `ECHO_INFO` to `support/Makefile.support.mk`, informative phase lines of `check_repo` and `check_run` hidden by `VERBOSE=no`
+- Add `cawk_check_recap` final recap (duration, suppliers, tests x confs, results by status and risk, execution errors, report path) to `check_repo` and `check_run`
+- Add `validate/recap` non-regression suite
+- Rename the `system` help line to the toolchain check wording in the help Makefile
+- Add `check_validate` target running every `validate/*/run.sh` to the check Makefiles
+- Add `check_validate` (validate suites, one checkdiff counter) to the `check` phases and the help line
+- Add `EMAIL_ZIPFILE_LARGE` option (default `no`: export zip without the audit, psirt and exception csv) to the email and support Makefiles, validated as yes/no by the supplier Makefile
+- Add `check_audit` target (audit=NAME must have a `reports/run_NAME` dir) as first prerequisite of `check_run`, `tests_run`, `view_run`, `view_run_error`, `censor_run`, `censor_logs_run` and `censor_report_run` in `support/Makefile.support.audit.mk`, an unknown audit fails before any clean, build or scan
+- Fix late audit existence test of `check_run` in `support/Makefile.support.check.scope.mk` (replaced by `check_audit`)
+- Rename `cawk error <message>` to `cawk error: <message>` in every `support/Makefile.support.*.mk` message
+- Rename `audit=AUDIT_NAME must be set` to `audit= must be set (usage: gmake <target> audit=<name>, list the audits with: gmake list_audit)` and `audit=X do not exist` to `audit X does not exist (create it with: gmake create_audit audit=X, ...)` in every `support/Makefile.support.*.mk`
+- Add `.DEFAULT` rule (explicit `cawk error: unknown target` message with the similar targets) to `support/Makefile.support.help.mk`
+- Add help sections to `support/Makefile.support.help.mk`: `gmake help` lists the sections (`info main assessment sync collect tests exceptions checks view email postaudit backup database catalog roles git censor`), `gmake help <section>` prints one, `gmake help all` prints every section, `topic=` alternative
+- Add the logo to every help page (`help_logo` target, printed once by `gmake help all`) in `support/Makefile.support.help.mk`
+- Add `validate/messages` non-regression suite (error format, early audit validation, help sections, unknown target)
+- Add typo suggestions (Levenshtein distance <= 2, 5 targets at most) to the `.DEFAULT` unknown target message through `support/similar_target.awk`
+- Add `gmake help topic=WORD` (every help line holding WORD, explicit error when none) to `support/Makefile.support.help.mk`, a bare `gmake help <target>` never builds the target
+- Add the quick start (create_audit, sync_run, check_run, censor_report_run, status) to `gmake help` in `support/Makefile.support.help.mk`
+- Add `status` target and `support/audit_status.sh` (confs by supplier, collect, tests, last assessment, exceptions, censored files, next command) to `support/Makefile.support.audit.mk`
+- Add `support/cawk-completion.bash` (bash completion of the targets, `audit=`, `supplier=` and the common options) and `validate/completion` non-regression suite
+- Add usage hints to the `censor_file`, `censor_stdout`, `censor_check`, `restore_run`, `restore_run_audit`, `migrate` and missing directory messages in `support/Makefile.support.censor.mk`, `support/Makefile.support.backup.mk`
+- Add `validate/messages` cases for the typo suggestion, `help topic=`, `status` and the usage hints
+- Fix `database_view` and `database_view_*` failing on a line with missing fields: default values shown with `(default)` / `(missing, required)`, extra fields a warning, `- - - -` separator before each entry and a summary line in `support/Makefile.support.database.mk`
+- Add the `database_view_*` incomplete line case to `validate/messages/run.sh` and the default values rule to `docs/CAWK_DATABASE_FORMAT.md`
+- Fix the English and uniformize every help section (`NOTE :` lines, `field N :` lists, "every named audit", no double echo on the `LOGO_HTML` line of `help_vars`) in `support/Makefile.support.help.mk`
+- Fix the English of messages in `support/Makefile.support.audit.mk`, `support/Makefile.support.backup.mk`, `support/Makefile.support.database.mk`, `support/Makefile.support.email.mk`, `support/Makefile.support.exceptions.mk`, `support/Makefile.support.postaudit.mk`, `support/Makefile.support.sync.mk`
+- Rename the `database_collect_*`, `database_view_collect` and `database_target_sh` help lines to the `help_database` section of `support/Makefile.support.help.mk` (collect and tests sections point to it)
+- Fix `validate/messages/run.sh` to enforce the whole `cawk error: <message> ----` rule (colon, ` ----` suffix, no placeholder) on every source file, ANSI codes stripped before the check
+
+### Database
+
+- Rename the data_set of an audit to `database/data_set/run_<audit>/data_set_<audit>_YYYY-MM-DD.txt` (one file per date, rotation by files) in `database/scripts/data_set.script.sh` and `database/scripts/check_database.script.sh` (directory, file name and date checks)
+- Add `database/scripts/data_set.script.sh` (init, append with same-date replacement and DATA_SET_KEEP rotation)
+- Add `database/data_set/data_set_<audit>.txt` created by `create_audit`, removed by `delete_audit`, saved by `backup_run audit=` and shown by `status`
+- Add the data_set format check to `database/scripts/check_database.script.sh`
+- Add `validate/data_set` non-regression suite
+- Add default sync scope `database/sync_scopes/<audit>_inventory_sync_scope.txt` created empty by `create_audit` (removed by `delete_audit`, created empty by `database_sync_add`/`update` for a new scope path) in `support/Makefile.support.audit.mk` and `support/Makefile.support.database.mk`
+- Add empty scope file = no scope and explicit `scope file not found` error to `common/sync_cawk_conf.gawk`
+- Add `validate/sync-scope` non-regression suite
+- Fix `check_database` rejecting the audit name context (`<audit>`) of `db_info.txt` and `db_exception.txt` as soon as a named audit exists in `database/scripts/check_database.script.sh`
+- Add block display (one value per line for `sync_paths` and `args`) to `database_view_sync`, `database_view_collect`, `database_view_postaudit` in the database Makefile
+- Fix `database_view` assertions for the block display in `validate/collect/run.sh`
+- Add block display (one address per line, aligned fields) to `database_view_email` and `database_view` in the database Makefile
+- Add `check_database` format check of every flat-file database (one explicit error per bad line) to `database/scripts/`
+- Add `check_database` target and `check` phase (one checkdiff counter) to the check Makefiles
+
+### Build
+
+- Add the "Evolution of the audit" section (compliance score, Pass / Errors, High/Medium/Low/Info errors, Errors/Devices per date, not affected by the filters) to `common/report_html.skeleton.html`, fed by `DATA_SET_FILE` in `common/report_html.gawk.template` and `cawk_html_gen`
+- Add `database/data_set/` to `.gitignore`
+- Fix "Evolution of the audit" charts in `common/report_html.skeleton.html` (stacked-area High/Medium/Low/Info errors replace Verdicts per date, Pass / Errors stacked areas replace High errors, Errors/Devices (high, medium and low) replaces Devices, wider left margin and smaller font for the scales and values)
+- Fix thousands separator of the numbers (no comma, `1234` instead of `1,234`) in `num()` of `common/report_html.skeleton.html`
+- Fix default filters of the html report: info risk and PSIRT not affected unchecked at opening and after Reset in `freshState()` of `common/report_html.skeleton.html`
+- Fix the "Evolution of the audit" stacked chart (info removed, high/medium/low colors `--critical`, `--average`, `--good` like the compliance bands) in `common/report_html.skeleton.html`
+- Fix the html report totals to follow `assessment.all.summary.txt` (status `clear` set by `report_html.gawk`, `stats` of `number_of_*` embedded, "Checks" = results + exceptions) in `common/report_html.gawk.template` and `common/report_html.skeleton.html`
+- Rename `data_set_<audit>.txt` format to `date;key=value;...` holding every counter of the summary (pass/error/warning/psirt per risk, nist coverages), the html evolution (Compliance first block and curve = `security_compliance`, Errors/Devices) computing the indicators from them, in `database/scripts/data_set.script.sh`, `database/scripts/check_database.script.sh`, `common/report_html.gawk.template`, `common/report_html.skeleton.html` and `docs/CAWK_DATABASE_FORMAT.md`
+- Fix "Evolution of the audit" labels in `common/report_html.skeleton.html` (PSIRT block "PSIRT vulnerable" with the small font of the report, Errors/Devices renamed Errors/device)
+- Add the number of dates stored and allowed (`DATA_SET_KEEP`) to the "Evolution of the audit" note in `common/report_html.skeleton.html`, `common/report_html.gawk.template` and `support/Makefile.support.mk`
+- Add tool versions, GNU check, OK/NOK verdict and system/cawk information to `system/cawk_check_system` (informational only)
+- Rename the shebang of the 7 bash scripts to `#!/bin/sh` and make them POSIX (`BASH_SOURCE[0]` → `$0`, `local` removed, `exec > >(tee …)` replaced by `main | tee -a …`) in `checkdiff/scripts/*.sh`, `docker/dockerfile_cawk_run.sh` and `zzz.gitcommit.sh`
+- Add a `#!/bin/sh` shebang check on every `.sh` to `validate/messages/run.sh`
+
+### Docs
+
+- Add the `$(NIST_REFERENCE)` prerequisite rule for every target reading the copy to `docs/CAWK_CODE_RULES.md` and `validate/nist-reference` to `CLAUDE.md`
+- Add the per-audit data rule (`run_<audit>/` directory, one dated file per date) to `docs/CAWK_CODE_RULES.md` and update `CLAUDE.md`, `README.md`, `docs/CAWK_DATABASE_FORMAT.md`, `docs/CAWK_OPTIONS.md`
+- Add the variables rule to `docs/CAWK_CODE_RULES.md`, `vars` section and `Makefile.support.vars.mk` to `CLAUDE.md`, `README.md` and `docs/CAWK_OPTIONS.md`
+- Fix `DATA_SET_KEEP` default (180) in `docs/CAWK_OPTIONS.md`
+- Add the data_set to `CLAUDE.md`, `docs/CAWK_OPTIONS.md` and `docs/CAWK_DATABASE_FORMAT.md`
+- Fix scope examples (relative path) in `docs/CAWK_DATABASE_FORMAT.md` and the README
+- Add `QUICK.md` (compact audit workflow: create, collector, sync, run, read, share) and its reference in the README
+- Add `VERBOSE` to `docs/CAWK_OPTIONS.md` and the README
+- Add `check_database` to the cawk reference, README and database format documentation
+- Add the validation suite rule (a new `validate/<name>/run.sh` is run by `gmake check`) to the coding rules
+- Add `EMAIL_ZIPFILE_LARGE` to the global options documentation, the help and the README
+- Add the quick start, `help topic=WORD`, `status` and the bash completion to the README and `QUICK.md`
+- Fix the `cawk error: <message> ----` format (missing ` ----` suffix, missing colon, internal `AUDIT_NAME` placeholder) in `support/Makefile.support.mk`, `support/Makefile.support.clean.mk`, `support/Makefile.support.git.mk`, `support/Makefile.support.check.scope.mk`, `database/scripts/database_sync.script.sh`, `database/scripts/database_postaudit.script.sh`, `database/scripts/database_sync_psirt.script.sh`, `common/censor.gawk.template`, `common/sync_cawk_conf.gawk.template`, `common/gen_cawk_makefile.gawk.template`, `m4/cawk_psirt.m4`, `m4/cawk_censor.m4`, `Makefile.cawk.version` and `roles/cawk_perm`
+- Add the `badformat/` and `crlf/` fixtures and the `collect`/`psirt` suites to the `validate/` layout and the `Makefile.support.supplier.mk`/`Makefile.support.role.mk` rows to the architecture table of `CLAUDE.md`, and `%SED_CENSOR_REGEX_PATH%` to `docs/CAWK_SED_PLACEHOLDERS.md`
+- Group the v5.1.0 section by `###` area and replace the forbidden `### Added`/`### Changed` headers of v3.9.0 in `ChangeLog.md`
+- Spell out the POSIX shell rule (no `BASH_SOURCE`/`local`/process substitution/`[[ ]]`/arrays, `#!/bin/sh` enforced by `validate/messages/run.sh`, recipes included) in `docs/CAWK_CODE_RULES.md`
+- Add that only the html report provides the evolution of the audit (not `assessment.all.summary.txt` nor `.json`) to `CLAUDE.md`, `README.md`, `docs/CAWK_OPTIONS.md` and `docs/CAWK_DATABASE_FORMAT.md`
+
+---
+
 ## [v5.0.1] - october 2026 
 
 - Fix `.gitattributes` to keep the CRLF line endings of `validate/crlf/conf_crlf` (`-text`)
@@ -63,6 +240,16 @@
 
 ### Makefile
 
+- Fix deadbeef/badformat/crlf filter messages (scan always performed, option only excludes the detected configs from the audit) in `cawk_filter_idx` of `support/Makefile.support.mk`
+- Remove the redundant `no execution errors found` message from `cawk_check_errors_scan` in `support/Makefile.support.mk`
+- Add `check_track`, `check_track_explain`, `check_track_update` and `clean_track` in `support/Makefile.support.check.track.mk`
+- Fix `clean_tmp`: delete the `*.b64` files of `tmp/` (the `logo_html.b64` of the HTML report survived `gmake clean`)
+- Add the `check_track` / `check_track_explain` commands to call in the `check` NOK message
+- Add `clean_track FORCE=yes` at the start of `check`, skipped by `check_track` (`CHECK_TRACK=yes`, declared in `support/Makefile.support.mk`)
+- Add `checkdiff/track/scripts` (`trace_shell.sh`, `env_snapshot.sh`, `explain_diff.sh`) and the `checkdiff/track/ref` reference
+- Add the exit status of each phase and the last recipe line run (`last.txt`) to the trace of `trace_shell.sh`, and the snapshot of every counted phase (`cat`, `find`, `grep`, `wc -c <`), not only the `reports/*/*.csv` phases
+- Add the changed phases with their command and exit status, the stopped-run diagnosis, the stale and outdated reference warnings and the `cawk-crypto-image` check to `explain_diff.sh`
+- Add a `check_track` self-test: fail when the trace does not hold one line per counter of `checkdiff.new`
 - Fix `email_send` zip failure branch (`exit 1` outside the `||` group, `mutt` never invoked)
 - Fix `%.gawk.m4` and `%.gawk.include.m4` compilation rules: a failing `m4` removes the target (no more `|| true`)
 - Fix `tests_check_nok` exit code: fails when a `cawk test error` is found
@@ -205,6 +392,8 @@
 
 ### Docs
 
+- Add a `Code Quality` section (robust code, performant code, tests following the format and the logic of the existing tests) to `docs/CAWK_CODE_RULES.md`
+- Add `Package Safety` (destructive targets gated on `FORCE=yes`, no network in the self-tests, secrets, PSIRT fixtures), the determinism and `check` counter invariants, the generated-file, message and shell-script conventions to `docs/CAWK_CODE_RULES.md`
 - Rename `memory/CAWK_CODE_RULES.md` to `docs/CAWK_CODE_RULES.md`, references updated in `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `docs/CAWK_OPTIONS.md`, `support/Makefile.support.mk`
 - Rename `logo/` to `docs/logo/`, references updated in the `LICENSE`, `README.md`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `AUTHORS.md`, `ChangeLog.md` headers, `docs/CAWK_OPTIONS.md`, `support/Makefile.support.mk` (`LOGO_HTML`)
 - Add `COPY docs` to `docker/Dockerfile` (the logo of the html report and the docs imported by `CLAUDE.md` were missing from the image)
@@ -386,6 +575,11 @@
 - Move `Dockerfile` and `dockerfile_cawk_run.sh` into a new `docker/` directory; update `Makefile.docker` to build with `-f docker/Dockerfile` (build context unchanged at repo root)
 - Fix CI workflows: bump `actions/upload-artifact` v4→v5 (test.yml) and `actions/checkout` v4→v5 (release.yml) to run on Node.js 24 and clear the Node.js 20 deprecation warnings
 
+### Tests
+
+- Add `m4_cawk_exception_prefixsuffix` macro to generate exceptions with configurable field prefixes and suffixes
+- Update all `repo` exception contexts to use the new macro in inactive `dnl` examples
+
 ### Docs
 
 - Reorder Makefile.support.help.mk sections to follow the real audit workflow: SYNC → TESTS → EXCEPTIONS → CHECK → VIEW → EMAIL → POST AUDIT → BACKUP AND RESTORE → DATABASE → CATALOG; add the missing `CAWK POST AUDIT` section documenting `postaudit_run` and `postaudit_run_audit`
@@ -394,14 +588,6 @@
 - Document previously undocumented assessment report fields (number_of_confs, number_of_checks, exceptions and NIST-scoped counters) in README
 - Document the `error stats` report section and the literal section headers of the assessment summary report in README
 - Fix README and report.gawk.template: recalibrate error_avg_perdevice thresholds from [0,0.1)/[0.1,0.6)/[0.6,1]/>1 to [0,1)/[1,5)/[5,15]/>15 for realistic reporting
-
-### Added
-
-- Add `m4_cawk_exception_prefixsuffix` macro to generate exceptions with configurable field prefixes and suffixes
-
-### Changed
-
-- Update all `repo` exception contexts to use the new macro in inactive `dnl` examples
 - Rename the NIST coverage indicator to `nist_ref_coverage` and use lowercase family names
 - Move `security_info_compliance` into a dedicated information key indicators section before NIST indicators
 - Rename NIST report variables from `official` to `reference` without changing coverage results

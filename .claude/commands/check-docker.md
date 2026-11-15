@@ -2,7 +2,7 @@
 
 Test the cawk docker image `cawk-image:v5.0.0` (container `cawk-container-v5.0.0`, volume `cawk-persistent-volume-v5.0.0`, see `Makefile.docker`). Run step by step, stop at the first failure and report where the issue is:
 
-- Version: `gmake version` must print `v5.0.0` (`CAWK_RELEASE` in `support/Makefile.support.mk`).
+- Version: `gmake version` must print `v5.0.0` (`CAWK_RELEASE` in `support/Makefile.support.vars.mk`).
 - Requirements: `gmake -f Makefile.docker check-system` must end with `System: OK` (docker, buildx, `HTTP_PROXY`, `HTTPS_PROXY`).
 - Start from a clean state: `gmake -f Makefile.docker clean-all` (container and volume removed, nothing else).
 - Build: `gmake -f Makefile.docker build`, then `sudo docker images cawk-image:v5.0.0` must list the image.

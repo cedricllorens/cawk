@@ -25,22 +25,22 @@ check_collect:
 database_collect_add:
 	touch $(DATABASE_PATH)/db_collect.txt; \
 	if [ -z "$(audit)" ]; then \
-		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	elif [ ! -d "$(REPORT_PATH)/run_$(audit)" ]; then \
-		$(ECHO) "cawk error audit=$(audit) do not exist ----"; \
+		$(ECHO) "cawk error: audit $(audit) does not exist (create it with: $(GMAKE) create_audit audit=$(audit), list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	elif [ -z "$(collector)" ]; then \
-		$(ECHO) "cawk error collector=COLLECTOR_NAME must be set ----"; \
+		$(ECHO) "cawk error: collector=COLLECTOR_NAME must be set ----"; \
 		exit 1; \
 	elif [ "$(collector)" != "none" ] && [ ! -f "$(COLLECTORS_PATH)/$(collector).collector.sh" ]; then \
-		$(ECHO) "cawk error collector=$(collector) is unknown ($(COLLECTORS_PATH)/$(collector).collector.sh does not exist) ----"; \
+		$(ECHO) "cawk error: collector=$(collector) is unknown ($(COLLECTORS_PATH)/$(collector).collector.sh does not exist) ----"; \
 		exit 1; \
 	elif printf '%s' "$(args)" | grep -q '[[:space:]]'; then \
-		$(ECHO) "cawk error args must not contain a space ----"; \
+		$(ECHO) "cawk error: args must not contain a space ----"; \
 		exit 1; \
 	elif $(EGREP) "^$(audit) " $(DATABASE_PATH)/db_collect.txt | grep -qv "^$(audit) none "; then \
-		$(ECHO) "cawk error audit=$(audit) already has a collector, use database_collect_update ----"; \
+		$(ECHO) "cawk error: audit=$(audit) already has a collector, use database_collect_update ----"; \
 		exit 1; \
 	else \
 		sed -i "/^$(audit) none /d" $(DATABASE_PATH)/db_collect.txt; \
@@ -53,19 +53,19 @@ database_collect_add:
 database_collect_update:
 	touch $(DATABASE_PATH)/db_collect.txt; \
 	if [ -z "$(audit)" ]; then \
-		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	elif [ ! -d "$(REPORT_PATH)/run_$(audit)" ]; then \
-		$(ECHO) "cawk error audit=$(audit) do not exist ----"; \
+		$(ECHO) "cawk error: audit $(audit) does not exist (create it with: $(GMAKE) create_audit audit=$(audit), list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	elif [ -z "$(collector)" ]; then \
-		$(ECHO) "cawk error collector=COLLECTOR_NAME must be set ----"; \
+		$(ECHO) "cawk error: collector=COLLECTOR_NAME must be set ----"; \
 		exit 1; \
 	elif [ "$(collector)" != "none" ] && [ ! -f "$(COLLECTORS_PATH)/$(collector).collector.sh" ]; then \
-		$(ECHO) "cawk error collector=$(collector) is unknown ($(COLLECTORS_PATH)/$(collector).collector.sh does not exist) ----"; \
+		$(ECHO) "cawk error: collector=$(collector) is unknown ($(COLLECTORS_PATH)/$(collector).collector.sh does not exist) ----"; \
 		exit 1; \
 	elif printf '%s' "$(args)" | grep -q '[[:space:]]'; then \
-		$(ECHO) "cawk error args must not contain a space ----"; \
+		$(ECHO) "cawk error: args must not contain a space ----"; \
 		exit 1; \
 	else \
 		$(ECHO) "cawk update $(DATABASE_PATH)/db_collect.txt"; \
@@ -79,7 +79,7 @@ database_collect_update:
 database_collect_del:
 	touch $(DATABASE_PATH)/db_collect.txt; \
 	if [ -z "$(audit)" ]; then \
-		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	else \
 		$(ECHO) "cawk update $(DATABASE_PATH)/db_collect.txt"; \
@@ -91,7 +91,7 @@ database_collect_del:
 # Adds ../collect_<audit>/ to the sync_paths (field 2) of the audit in db_sync.txt, once.
 database_collect_sync:
 	@if [ -z "$(audit)" ]; then \
-		$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; \
+		$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"; \
 		exit 1; \
 	elif ! $(EGREP) -q "^$(audit) " $(DATABASE_PATH)/db_sync.txt 2>/dev/null; then \
 		$(ECHO) "cawk error: no $(DATABASE_PATH)/db_sync.txt entry for audit=$(audit) (create_audit adds it) ----"; \
@@ -106,7 +106,7 @@ database_collect_sync:
 
 collect_run:
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)

@@ -11,7 +11,7 @@
 
 sync_run: clean_tmp tests_target_common database_target_sh
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
@@ -23,10 +23,10 @@ else
 		$(ECHO) "cawk $(DATABASE_SH_PATH)/database_sync.script execution ----"; \
 		$(DATABASE_SH_PATH)/database_sync.script $(audit) 2>$(LOGS_PATH)/run_$(audit)/sync.$(audit).err || { $(ECHO) "cawk error: database_sync.script failed for $(audit) (see $(LOGS_PATH)/run_$(audit)/sync.$(audit).err) ----"; exit 1; }; \
 	fi
-	$(ECHO) "cawk cleaning local configurations before sync : $(CONFS_PATH)/run_$(audit) "
+	$(ECHO) "cawk cleaning the local configurations before the sync: $(CONFS_PATH)/run_$(audit)"
 	$(RM) -f -r $(CONFS_PATH)/run_$(audit) || true
 	mkdir -p $(CONFS_PATH)/run_$(audit) || true
-	$(ECHO) "cawk sync files from $(DATABASE_PATH)/db_sync.txt"
+	$(ECHO) "cawk syncing the files from$(DATABASE_PATH)/db_sync.txt"
 	: > $(LOGS_PATH)/run_$(audit)/sync_cawk_conf.$(audit).err
 	$(EGREP) "^$(audit) " $(DATABASE_PATH)/db_sync.txt | while read line; do \
 		paths=$$($(ECHO) "$$line" | gawk '{print $$2}'); \
@@ -54,12 +54,12 @@ sync_run_audit:
 		$(GMAKE) sync_run audit=$$audit || exit 1; \
 	done < $(DATABASE_PATH)/db_sync.txt
 	$(GMAKE) list_audit
-	$(ECHO) "cawk you may launch <$(GMAKE) sync_teststoconfs_run_audit> to sync tests supplier scope to tests supplier scope ----"
-	$(ECHO) "cawk sync_run_audit all audit done ----"
+	$(ECHO) "cawk you may launch <$(GMAKE) sync_teststoconfs_run_audit> to reduce the supplier scope of the tests to the supplier scope of the confs ----"
+	$(ECHO) "cawk sync_run_audit all audits done ----"
 
 sync_psirt:
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
@@ -74,7 +74,7 @@ endif
 
 sync_teststoconfs_run:
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	$(ECHO) ""
@@ -123,7 +123,7 @@ sync_teststoconfs_run_audit:
 
 sync_exceptionstoconfs_run:
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	$(ECHO) ""

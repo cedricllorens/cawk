@@ -9,7 +9,7 @@
 #
 # @test_name : acl_configconsistency_set.checkpoint-fwcli.gawk
 # @supplier : checkpoint-fwcli
-# @purpose : check if <access rules> are consistent
+# @purpose : check if <access rules> are consistent (ipv4 and ipv6 addresses)
 # @description : inconsistent or redundant access rules reduce security effectiveness and complicate policy management
 # @actions : remove inconsistent or redundant rules (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
@@ -146,6 +146,17 @@ function build_dst_addr_net(dst_addr,    k, addr_list, number_of_addr, parts_net
 			dst_ip = addr_list[k];
 			dst_net = "host";
 
+		# ipv6 network case ----
+		} else if ( addr_list[k] ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*\/[0-9]+$/ ) {
+			split(addr_list[k], parts_net, "/");
+			dst_ip = parts_net[1];
+			dst_net = parts_net[2];
+
+		# ipv6 host case ----
+		} else if ( addr_list[k] ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*$/ ) {
+			dst_ip = addr_list[k];
+			dst_net = "host";
+
 		# an object with no resolvable address cannot be placed in the cube ----
 		} else {
 			continue;
@@ -177,6 +188,17 @@ function build_src_addr_net(src_addr,    k, addr_list, number_of_addr, parts_net
 
 		# host case ----
 		} else if ( addr_list[k] ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ ) {
+			src_ip = addr_list[k];
+			src_net = "host";
+
+		# ipv6 network case ----
+		} else if ( addr_list[k] ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*\/[0-9]+$/ ) {
+			split(addr_list[k], parts_net, "/");
+			src_ip = parts_net[1];
+			src_net = parts_net[2];
+
+		# ipv6 host case ----
+		} else if ( addr_list[k] ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*$/ ) {
 			src_ip = addr_list[k];
 			src_net = "host";
 
@@ -263,6 +285,9 @@ function build_service(value,    k, svc_list, number_of_svc) {
 	found_dst = 0
 	found_port_dst = 0
 
+	# the explicit position of the rule in its layer gives the evaluation order, the file order otherwise ----
+	cp_position = "";
+
 	negated = 0;
 	state_rule = 0;
 
@@ -280,6 +305,8 @@ function build_service(value,    k, svc_list, number_of_svc) {
 		# ----------------------
 
 		if ($i == "!") negated = 1;
+
+		if ($i == "position" && $(i+1) ~ /^[0-9]+$/) cp_position = $(i+1);
 
 		# ----------------------
 		# SOURCE ----
@@ -380,7 +407,7 @@ function build_service(value,    k, svc_list, number_of_svc) {
 					dst_port_range = dst_table_port_range[id1];
 				}
 
-				cawk_add_hypercube_rules("acl_configconsistency_set.checkpoint-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+				cawk_add_hypercube_rules("acl_configconsistency_set.checkpoint-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol,"",FNR,cp_position);
 			}
 
 		}

@@ -6,7 +6,7 @@
 #
 # @test_name : acl_configconsistency_set.packetfilter-fwcli.gawk
 # @supplier : packetfilter-fwcli
-# @purpose : check that PacketFilter rules have inconsistent/redundant rules
+# @purpose : check that PacketFilter rules (inet and inet6) have inconsistent/redundant rules
 # @description : inconsistent or redundant packetfilter rules reduce security effectiveness and complicate policy management
 # @actions : review and clean up packetfilter rules to remove redundancies and resolve inconsistencies (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
@@ -40,21 +40,30 @@
 # ---------------------------------------------------------
 
 BEGIN {
+	# the last matching rule wins (except with quick): the order of the rules cannot tell a shadowed rule
+	# from an exception, every intersection stays reported
+	cawk_order = "none";
+
 	# pf.conf icmp-type and code keywords
 	split("echorep 0 unreach 3 squench 4 redir 5 althost 6 echoreq 8 routeradv 9 routersol 10 timex 11 paramprob 12 timereq 13 timerep 14 inforeq 15 inforep 16 maskreq 17 maskrep 18 trace 30 dataconv 31 mobredir 32 ipv6-where 33 ipv6-here 34 mobregreq 35 mobregrep 36 skip 39 photuris 40", pf_kw, " ");
 	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp_types[pf_kw[kw_i]] = pf_kw[kw_i+1];
 	split("net-unr 0 host-unr 1 proto-unr 2 port-unr 3 needfrag 4 srcfail 5 net-unk 6 host-unk 7 isolate 8 net-prohib 9 host-prohib 10 net-tos 11 host-tos 12 filter-prohib 13 host-preced 14 cutoff-preced 15 redir-net 0 redir-host 1 redir-tos-net 2 redir-tos-host 3 transit 0 reassemb 1", pf_kw, " ");
 	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp_codes[pf_kw[kw_i]] = pf_kw[kw_i+1];
+	# pf.conf icmp6-type and code keywords (icmpv6 numbers differ from the icmp ones)
+	split("unreach 1 toobig 2 timex 3 paramprob 4 echoreq 128 echorep 129 groupqry 130 listqry 130 grouprep 131 listenrep 131 groupterm 132 listendone 132 routersol 133 routeradv 134 neighbrsol 135 neighbradv 136 redir 137 routrrenum 138 wrureq 139 fqdnreq 139 niqry 139 wrurep 140 fqdnrep 140 nirep 140 mtraceresp 200 mtrace 201", pf_kw, " ");
+	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp6_types[pf_kw[kw_i]] = pf_kw[kw_i+1];
+	split("noroute-unr 0 admin-unr 1 beyond-unr 2 addr-unr 3 port-unr 4 transit 0 reassemb 1 badhead 0 nxthdr 1 redironlink 0 redirrouter 1", pf_kw, " ");
+	for ( kw_i = 1; kw_i in pf_kw; kw_i += 2 ) pf_icmp6_codes[pf_kw[kw_i]] = pf_kw[kw_i+1];
 }
 
-# record one icmp-type value into table_icmp as "type" or "type/code"; an unknown message matches any icmp
-function pf_icmp_add(name, code,    icmp_t, icmp_c) {
-	icmp_t = ( name ~ /^[0-9]+$/ ) ? name : ( name in pf_icmp_types ) ? pf_icmp_types[name] : "";
+# record one icmp-type (or icmp6-type) value into table_icmp as "type" or "type/code"; an unknown message matches any icmp
+function pf_icmp_add(name, code, types, codes,    icmp_t, icmp_c) {
+	icmp_t = ( name ~ /^[0-9]+$/ ) ? name : ( name in types ) ? types[name] : "";
 	if ( icmp_t == "" ) {
 		table_icmp[""] = 1;
 		return;
 	}
-	icmp_c = ( code ~ /^[0-9]+$/ ) ? code : ( code in pf_icmp_codes ) ? pf_icmp_codes[code] : "";
+	icmp_c = ( code ~ /^[0-9]+$/ ) ? code : ( code in codes ) ? codes[code] : "";
 	table_icmp[icmp_t ( icmp_c == "" ? "" : "/" icmp_c )] = 1;
 }
 
@@ -125,6 +134,8 @@ pf_continued != "" {
 
 # specific function
 function resolve_address(addr) {
+	# the elements of a { a, b } set keep their separator
+	sub(/,$/, "", addr)
 	if (addr ~ /^\$/) {
 		var_name = substr(addr, 2);
 		if (var_name in pf_variables) {
@@ -1075,9 +1086,10 @@ function build_src_addr_net(src_addr,state) {
 		# ICMP-TYPE ----
 		# ----------------------
 
-		if ($i == "icmp-type") {
+		if ($i == "icmp-type" || $i == "icmp6-type") {
 
 			delete table_icmp;
+			icmp_v6 = ( $i == "icmp6-type" );
 
 			# set of icmp types (a code inside a set is ignored: the type alone is broader) ----
 			if ( $(i+1) ~ /^\{/ ) {
@@ -1087,14 +1099,16 @@ function build_src_addr_net(src_addr,state) {
 					if ( icmp_name == "code" ) {
 						icmp_j++;
 					} else if ( icmp_name != "" ) {
-						pf_icmp_add(icmp_name, "");
+						if ( icmp_v6 ) pf_icmp_add(icmp_name, "", pf_icmp6_types, pf_icmp6_codes);
+						else pf_icmp_add(icmp_name, "", pf_icmp_types, pf_icmp_codes);
 					}
 					if ( $icmp_j ~ /\}/ ) break;
 				}
 
 			# single icmp type ----
 			} else {
-				pf_icmp_add($(i+1), ( $(i+2) == "code" ) ? $(i+3) : "");
+				if ( icmp_v6 ) pf_icmp_add($(i+1), ( $(i+2) == "code" ) ? $(i+3) : "", pf_icmp6_types, pf_icmp6_codes);
+				else pf_icmp_add($(i+1), ( $(i+2) == "code" ) ? $(i+3) : "", pf_icmp_types, pf_icmp_codes);
 			}
 		}
 	}
@@ -1163,12 +1177,12 @@ function build_src_addr_net(src_addr,state) {
 						protocol = table_protocol[id2];
 
 						# an icmp rule restricted to some icmp messages yields one rule per message ----
-						if ( protocol == "icmp" && length(table_icmp) > 0 ) {
+						if ( protocol ~ /^(icmp|icmp6|ipv6-icmp)$/ && length(table_icmp) > 0 ) {
 							for (id3 in table_icmp) {
-								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol, id3);
+								cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol, id3,FNR);
 							}
 						} else {
-							cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol);
+							cawk_add_hypercube_rules("acl_configconsistency_set.packetfilter-fwcli.gawk", rule_desc, action, inoutgress, interface, family, src_ip, src_net, src_port, src_port_range, dst_ip, dst_net, dst_port, dst_port_range, protocol,"",FNR);
 						}
 					}
 				}

@@ -9,11 +9,6 @@
   check_supplier common supplier system
 
 check_supplier:
-# PSIRT was renamed PSIRT_ONLY: an old PSIRT=yes would otherwise be silently ignored and run all tests
-ifneq ($(origin PSIRT),undefined)
-	$(ECHO) "cawk error: PSIRT has been renamed PSIRT_ONLY (use PSIRT_ONLY=$(strip $(PSIRT))) ----"
-	exit 1
-endif
 ifeq ($(filter $(strip $(PSIRT_ONLY)),yes no),)
 	$(ECHO) "cawk error: PSIRT_ONLY=$(PSIRT_ONLY) is not yes or no ----"
 	exit 1
@@ -35,11 +30,11 @@ ifeq ($(filter $(strip $(SECRETSCAN)),yes no),)
 	exit 1
 endif
 # the value is never echoed: it would be expanded into the shell command line
-	@bad=0; $(foreach v,MAKE_PARALLEL JSON HTML TIMELINE CATALOG_BUILD DEADBEEF BADFORMAT CRLF TMP_ASSESSMENT_FILES,$(if $(filter $(strip $($(v))),yes no),,echo "cawk error: $(v) is not yes or no ----"; bad=1;)) [ $$bad -eq 0 ] || exit 1
-	@bad=0; $(foreach v,MAKE_J MAKE_LOAD_AVG DEADBEEF_THRESHOLD_DAYS,printf '%s' '$(strip $($(v)))' | grep -Eq '^[1-9][0-9]*$$' || { echo "cawk error: $(v) is not a number >= 1 ----"; bad=1; }; ) [ $$bad -eq 0 ] || exit 1
+	@bad=0; $(foreach v,MAKE_PARALLEL JSON HTML HYPERCUBE_INCONSISTENCY HYPERCUBE_REDUNDANCY DATA_SET TIMELINE EMAIL_ZIPFILE_LARGE CATALOG_BUILD DEADBEEF BADFORMAT CRLF TMP_ASSESSMENT_FILES,$(if $(filter $(strip $($(v))),yes no),,echo "cawk error: $(v) is not yes or no ----"; bad=1;)) [ $$bad -eq 0 ] || exit 1
+	@bad=0; $(foreach v,MAKE_J MAKE_LOAD_AVG DEADBEEF_THRESHOLD_DAYS DATA_SET_KEEP,printf '%s' '$(strip $($(v)))' | grep -Eq '^[1-9][0-9]*$$' || { echo "cawk error: $(v) is not a number >= 1 ----"; bad=1; }; ) [ $$bad -eq 0 ] || exit 1
 ifneq ($(strip $(supplier)),)
 ifeq ($(filter $(supplier),$(SUPPLIER_SCOPE)),)
-	$(ECHO) "cawk error ($(supplier)) is not in the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)) ----"
+	$(ECHO) "cawk error: ($(supplier)) is not in the list of suppliers covered by cawk ($(SUPPLIER_SCOPE)) ----"
 	exit 1
 endif
 endif

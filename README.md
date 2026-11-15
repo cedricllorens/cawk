@@ -32,7 +32,20 @@ your own different networks or customers.
 
 In summary, in gawk && gmake && m4 we trust :-)
 
+Quick start: [QUICK.md](QUICK.md) creates an audit with its collector and sync in a few commands.
+
+```sh
+gmake create_audit audit=client1                 # once
+gmake sync_run audit=client1                     # bring the configurations
+gmake clean check_run view_run audit=client1     # assess and read
+gmake status audit=client1                       # where it stands, and the next command (gmake status alone: every audit)
+```
+
+Lost? `gmake help` lists the sections, `gmake help topic=WORD` searches a word, `source support/cawk-completion.bash` completes in bash.
+
 # cawk workflow
+
+in a hurry? [QUICK.md](QUICK.md) is the compact version: create an audit, collect, sync, run and read it in 6 steps.
 
 this chapter explains, step by step and with no prior knowledge, how cawk goes from "my network
 configurations sit on a central server" to "I have an audit report". read it once from top to
@@ -260,16 +273,19 @@ type, WHERE the result lands and how to CHECK it worked.
 	COMMAND: gmake check_run audit=client1
 	         gmake check_run audit=client1 supplier=cisco-ios   (one supplier only)
 	         useful options added to the command line:
+	           VERBOSE=no          print the final recap only (default VERBOSE=yes: the line of every phase, then the recap)
 	           PSIRT_ONLY=yes      run only the vulnerability tests (STANDARD_ONLY=yes: only the standard ones)
 	           DEADBEEF=yes        flag confs not updated for DEADBEEF_THRESHOLD_DAYS days (default 30)
 	           JSON=yes            also write the reports in json
 	           TIMELINE=no         skip the timeline reports (default yes: timeline reports written, the csv they are built from kept)
 	           HTML=yes            also write assessment.all.summary.html: one standalone high-level page (counters only, no config line) for the customer, with the cawk logo (LOGO_HTML, default docs/logo/logo-cawk.svg) in its header
 	           MAKE_PARALLEL=yes   spread the tests on several jobs for big audits
-	         other options (defaults in support/Makefile.support.mk): HTML defaults to yes, CATALOG_BUILD=yes
-	         rebuilds the test catalog (db_info.txt) before the assessment (default no), TMP_ASSESSMENT_FILES=no
-	         keeps the intermediate assessment files (default yes: removed after reporting), ARCHIVE_OLDER_DAYS=N
-	         archives the reports older than N days during the cleanup (default 120)
+	         other options (defaults in support/Makefile.support.vars.mk, explained by gmake help vars): 
+	           HTML=yes|no (default yes)
+	           CATALOG_BUILD=yes   rebuilds the test catalog (db_info.txt) before the assessment (default no)
+	           TMP_ASSESSMENT_FILES=no   keeps the intermediate assessment files (default yes: removed after reporting)
+	           ARCHIVE_OLDER_DAYS=N   clean_archive_* removes the archives older than N days (default 120, N >= 30 else FORCE=yes); ALL_ARCHIVE=yes FORCE=yes removes them all
+	           gmake check is refused, without bypass, when reports/*/archives hold archives (check removes every archive: save them, then clean_archive_* ALL_ARCHIVE=yes FORCE=yes; check only validates the cawk package and must not be used in production)
 	WHERE  : reports/run_client1/ (previous reports are archived in reports/run_client1/archives/)
 	CHECK  : the command ends without "cawk error"; the reports files exist.
 
@@ -306,7 +322,7 @@ type, WHERE the result lands and how to CHECK it worked.
 	WHAT   : emails the reports as a zip file to the people registered for the audit, then runs your own
 	         post-audit script (i.e. to open helpdesk tickets).
 	COMMANDS: gmake database_email_add audit=client1 dst=john@example.com,jane@example.com cc=none
-	          gmake email_send audit=client1
+	          gmake email_send audit=client1   (EMAIL_ZIPFILE_LARGE=yes: zip also holds the audit, psirt and exception csv, default no)
 	          gmake database_postaudit_add audit=client1
 	          gmake postaudit_run audit=client1   (runs database/scripts/database_postaudit.script if it exists)
 	NEEDS  : the mutt and zip commands installed on the cawk machine (the only prerequisite besides gawk, gmake, m4).
@@ -326,7 +342,7 @@ type, WHERE the result lands and how to CHECK it worked.
 	- backup  : gmake backup_run audit=client1   -> backup/run_audit_client1_<date>.tar.gz (tests, exceptions, confs,
 	            reports of the audit). restore with gmake restore_run audit=client1 file=<the backup>.
 	- clean   : gmake clean_report_run audit=client1 removes the reports, gmake clean_archive_run audit=client1
-	            the archives, gmake delete_audit audit=client1 removes the whole audit.
+	            the archives, gmake delete_audit audit=client1 FORCE=yes removes the whole audit.
 
 ## step 8 : final HTML report for the customer (optional)
 
@@ -375,7 +391,28 @@ altered
 ## manually
 
 jump to a specific directory and extract cawk, cd to cawk root directory and execute the <gmake> 
-command in order to have help on the cawk gmake targets. 
+command in order to have help on the cawk gmake targets: it lists the help sections
+(info, main, assessment, sync, collect, tests, exceptions, checks, view, email, postaudit, backup, database,
+catalog, roles, git, censor, vars), <gmake help SECTION> prints the targets of one section (e.g. <gmake help sync>,
+the section of the check targets is <checks>), <gmake help all> prints every section.
+An unknown audit (audit=NAME not created by create_audit) fails at once with an explicit error and the command to run.
+An unknown target gives an explicit error with the similar targets (substring or a typo away, e.g. <check_rn> suggests <check_run>).
+<gmake help topic=WORD> prints every help line holding WORD (e.g. <gmake help topic=censor_file>, <gmake help topic=HTML>); a bare
+<gmake help WORD> only accepts a section name, so that it never builds a target by mistake.
+<gmake> prints a quick start (create_audit, sync_run, check_run, censor_report_run, status) under the list of the sections.
+
+### tab completion (bash)
+
+`source support/cawk-completion.bash` from the cawk root directory completes the targets, `audit=` (the existing audits),
+`supplier=` (the suppliers) and the common options (`FORCE=`, `HTML=`, `JSON=`, `PSIRT_ONLY=`, `MAKE_PARALLEL=`).
+The targets are cached in `tmp/cawk_targets.cache` and rebuilt when a Makefile changes. Outside a cawk root directory the
+default `gmake` completion is used. Add these lines to `~/.bashrc` (adapt `CAWK_HOME` to the cawk root directory) to load it everywhere:
+
+```bash
+# ~/.bashrc
+export CAWK_HOME=/home/cedric/Documents/cawk
+source "$CAWK_HOME/support/cawk-completion.bash"
+```
 
 ## Makefile.cawk.version
 
@@ -388,7 +425,7 @@ The Makefile.cawk.version file provides installation and version management targ
 	- update - Install new cawk version with automatic backup and restore from previous version
 		- required: `CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y`
 
-	note: This Makefile must be located in the parent directory of cawk installations.
+	note: this file ships in the cawk root directory; copy it to the parent directory of the cawk installations (where the cawk-X.Y.Z.tar.gz archives are), the targets run from there.
 
 important note : you may have to change the file support/tests.sed for finding the gawk path at your
 system level required for building tests:
@@ -402,7 +439,7 @@ just execute <gmake> in the cawk root directory and all the cawk targets are det
 # cawk gmake parallel
 
 in standard mode, cawk performs assessment not in parallel mode. to use parallel mode,
-you have to modify the Makefile.support.mk file thanks to these gmake VARS:
+you have to modify the support/Makefile.support.vars.mk file thanks to these gmake VARS:
 
 	# --------------- cawk parallel options
 	# enable parallel yes/no
@@ -465,11 +502,11 @@ after install, cd to the cawk root directory, execute:
 
 ## audit delete (delete_audit)
 
-	- gmake delete_audit audit=client1
+	- gmake delete_audit audit=client1 FORCE=yes
 	  Delete full audit: removes all tests, exceptions, confs, reports, logs,
 	  and audit entries from databases.
 
-	- gmake delete_audit audit=client1 supplier=cisco-ios
+	- gmake delete_audit audit=client1 supplier=cisco-ios FORCE=yes
 	  Remove supplier from audit: removes only the specified supplier's tests,
 	  exceptions, and confs from an existing audit. Does not modify databases.
 	  Useful for removing specific suppliers from an audit.
@@ -477,6 +514,8 @@ after install, cd to the cawk root directory, execute:
 ## audit listing
 
 	- gmake list_audit : list all AUDIT_NAMEs (audit=AUDIT_NAME)
+	- gmake status [audit=AUDIT_NAME] : (without audit=, every audit) where the audit stands (confs by supplier, collect, tests, last assessment and its results, exceptions, censored files) and the next command to run
+	- gmake check_run audit=AUDIT_NAME : also writes the file of the day database/data_set/run_AUDIT_NAME/data_set_AUDIT_NAME_YYYY-MM-DD.txt (`DATA_SET=no` to skip, `DATA_SET_KEEP=N` dates kept, default 180) and only the html report tracks the evolution of the audit over time, `assessment.all.summary.txt` and `.json` do not (section "Evolution of the audit": compliance score, Pass / Errors, High/Medium/Low errors, Errors/Devices per date; not affected by the filters)
 	- gmake check_run_audit : run assessments for all AUDIT_NAMEs
 
 # cawk directories
@@ -486,13 +525,18 @@ cawk has the following core directories:
 - checkdiff : contains a cawk compliance print to compare when running <gmake check>, 
 to be launched only after the first installation
 
-- common : contains a <kind of library> (set of functions) included in the tests and 
+- RULE database/ versus common/ : database/ is for the USER (his data and the scripts or rules he edits: saved by backup_run*,
+restored by restore_run*, never rewritten by a new cawk version) ; common/ is for the cawk SYSTEM (code and reference files shipped
+with each version: never saved nor restored, replaced by an update, do not edit them). The few files that go from common/ to database/
+(db_nist800-53.txt copied when missing or older, censor_regex.m4 template) are handled by check_integrity.
+
+- common : cawk SYSTEM, contains a <kind of library> (set of functions) included in the tests and 
 others common useful scripts
 
 - m4 : contains a <kind of m4 libraries> (set of m4 functions) that may be used at 
 exceptions or tests level
 
-- database : contains all the flat files databases used to manage various cawk options like sync
+- database : USER side, contains all the flat files databases used to manage various cawk options like sync
 confs, sending emails, etc.
 
 - database/scripts : contains scripts used for various usages as described : generally it requires the
@@ -500,7 +544,7 @@ use of the internal inventory
 
 	- each time sync_run audit=AUDIT_NAME target is called, database_sync.script is launched
 	allowing to update device scope files. these file scopes are/must be stored in database/sync_scopes with
-	the name audit(=AUDIT_NAME)_inventory_sync_scope.txt
+	the name <audit>_inventory_sync_scope.txt (e.g. client1_inventory_sync_scope.txt)
 	
 - database/sync_scopes : sync scopes files generated by the scripts described above. It could be useful
 	to define various sub-assessments for a as same audit=AUDIT_NAME like
@@ -521,7 +565,7 @@ use of the internal inventory
 		-- audit=AUDIT_NAME assessment --
 		- tests/run_{audit_name} : contains a full copy of repo tests when created (you can 
 		remove or add other tests or add your own tests)
-		- tests/run_{audit_name}.psirt : contains a full copy of repo psirt tests when created 
+		- tests/run_{audit_name}/tests.<supplier>.psirt : the psirt tests, a full copy of repo psirt tests when created 
 		(you can remove or add other tests or add your own tests)
 		-- audit=AUDIT_NAME assessment --
 
@@ -531,8 +575,8 @@ use of the internal inventory
 	converted to <.gawk> with the 	support of support/tests.sed and the cawk root Makefile. 
 	this <step> allows to write tests more 	easily and to enforce env system portability, so 
 	each test may to %SED_VAR% aka:
-		- %SED_BLOCK_JUNIPER% : space identation used for block hierarchy
-		- %SED_COMMON_PATH% = to point out the common <kind of library>
+		- %SED_BK_JUNI% : space indentation used for the Juniper block hierarchy
+		- %SED_INCLUDE_PATH% = to point out the common library (common/common.gawk)
 		- %SED_GAWK_PATH% = to point out the right path for gawk 
 		etc.
 		these values can be changed thanks to the file support/tests.sed
@@ -585,10 +629,10 @@ Each supplier is organized in per-directory format:
 - reports : contains assessment reports (and summary), each report has the same format
 
 	- there are 3 types of core report directories:
-		- report/repo : empty by default, contains the repo assessment results
-		- report/run : empty by default, contains the run assessment results
+		- reports/repo : empty by default, contains the repo assessment results
+		- reports/run : empty by default, contains the run assessment results
 		-- audit=AUDIT_NAME assessment --
-		- report/run_{audit_name} : empty by default, contains the run_{audit_name} assessment results
+		- reports/run_{audit_name} : empty by default, contains the run_{audit_name} assessment results
 		-- audit=AUDIT_NAME assessment --
 
 	- each of these directories has a sub-directory <archives>. each time an asessment is performed
@@ -603,7 +647,7 @@ Each supplier is organized in per-directory format:
 	  timestamp for each error modifying the line format (day, month, year, week, number of devices assessed)
 	  (please refer to cawk assessment format for further information)
 
-	- for the final reports, the concept of deadbeef that can be also activated in Makefile.support.mk or by 
+	- for the final reports, the concept of deadbeef that can be also activated in Makefile.support.vars.mk or by 
 	  calling gmake with DEADBEEF like (gmake check_run audit=cawk DEADBEEF=yes):
 		- if DEADBEEF is set to "yes", then the deadbeef final report is generated and the deadbeef devices 
 		  are removed from the others final reports (.all.security.,.all.audit.,.all.psirt.,all.exception.)
@@ -616,7 +660,7 @@ Each supplier is organized in per-directory format:
 
 cawk uses two synchronized configuration sources for directory paths:
 
-1. **`support/Makefile.support.mk`** — Make/gmake configuration for build system and assessment targets
+1. **`support/Makefile.support.vars.mk`** — every variable (paths, options, lists) of the Make/gmake build system, the only place where a variable is defined (`gmake help vars` explains each one); `support/Makefile.support.mk` holds the compilation rules and macros
 2. **`database/include/scripts_config.sh`** — POSIX shell configuration for database and post-audit scripts
 
 Both files define identical path variables to ensure consistency across Make targets and shell scripts. When modifying any path, **both files must be updated together** to prevent silent failures or operations on wrong directories.
@@ -778,6 +822,43 @@ cawk follows an assessment report format consisting of these fields:
 	risk_level: high, medium, low, info
 	status_code: pass, error, warning, psirt
 	---- generic header ---------
+
+# cawk acl_configconsistency_set : the rules cube
+
+The ten `acl_configconsistency_set` tests (ipv4 and ipv6) share one engine, `common/common_hypercube-lib.gawk`.
+
+## the model
+
+Every rule of an acl becomes one or more boxes (cube rules) with these dimensions: source address range, destination address range, source port range, destination port range, protocol, icmp message, direction, interface, ip family. Each cube rule keeps:
+
+	source_rule : the configuration rule (line, term, rule) it comes from; the cube rules expanded from one
+	              configuration rule (port list, address list...) share it and are never compared together
+	rule_order  : the evaluation rank of the source rule in its acl (file order, `sequence`, Checkpoint `position`);
+	              the lowest rank is the upper rule, the one a packet meets first
+
+Addresses are 129-bit binary strings (one family bit, then 128 address bits), compared exactly as strings: ipv4 and ipv6 never intersect, and hosts of a same ipv6 /64 never collide.
+
+## the algorithm
+
+For every pair of cube rules (upper, lower) of an acl:
+
+1. the pair is skipped when both rules share the same `source_rule`;
+2. the pair is skipped when the boxes do not intersect on every dimension (address bounds first, the cheapest test);
+3. the pair is classified with the rule order (first match wins):
+
+	| lower box / upper box | same action | other action |
+	|---|---|---|
+	| lower inside upper | `redundant rules`: the lower rule is useless | `inconsistent rules`: the lower rule is shadowed, never reached |
+	| upper inside lower | `redundant rules`: the upper rule adds nothing | not reported: a specific rule above a general one (the final `deny any any`) is the normal way to write an acl |
+	| partial overlap | `redundant rules` | `inconsistent rules`: the outcome depends on the rule order |
+
+`cawk_order = "last"` (last matching rule wins) reverses the order, `cawk_order = "none"` disables the classification and reports every intersection (PacketFilter, where `quick` rules mix both semantics). `cawk_show_generalization = 1` reports the exceptions of the third row too (`gawk -v cawk_show_generalization=1`).
+
+Example, the acl `1 permit tcp 10.0.0.0/8 any eq 22`, `2 deny ip any any` reports nothing; the acl `1 deny ip any any`, `2 permit tcp 10.0.0.0/8 any eq 22` reports the rule 2 as shadowed.
+
+The report is reduced to one line per rule: a dead rule (`redundant rules`, or `inconsistent rules` for a shadowed rule) is reported once with the nearest rule in the rule order and `(+K other rules)`, and the cube rules of two configuration rules give one line with `(xN cubes)`.
+
+The detail of the algorithm is in the header of `cawk_hypercube_rules_assessment()`, and `validate/hypercube-ipv6` holds one non-regression case per situation (`gmake check`).
 
 # cawk security key indicators
 
@@ -949,10 +1030,10 @@ sending emails, etc. this is only available for audit=AUDIT_NAME assessment
 	
 	- gmake database_view : view all the databases (collect, sync, email, postaudit), each one preceded
 	  by its succinct field format (format : audit ...), like the database_view_* targets
-	- gmake database_view_collect : view only the collect database
-	- gmake database_view_sync : view only the sync database
-	- gmake database_view_email : view only the email database
-	- gmake database_view_postaudit : view only the postaudit database
+	- gmake database_view_collect : view only the collect database, one block per audit
+	- gmake database_view_sync : view only the sync database, one block per audit
+	- gmake database_view_email : view only the email database, one block per audit (one address per line)
+	- gmake database_view_postaudit : view only the postaudit database, one block per audit
 
 ## sync database
 
@@ -961,7 +1042,9 @@ cawk sync database format is the following where fields are separated by spaces 
 	each time sync_run audit=AUDIT_NAME target is called, database/scripts/database_sync.script
 	is launched allowing to update device scope files that can be used as the field number 4 described 
 	hereafter. these file inventory scopes are/must be stored in database/sync_scopes with the name :
-	audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
+	<audit>_inventory_sync_scope.txt (e.g. client1_inventory_sync_scope.txt)
+	create_audit sets this file as the default scope (field 4) and creates it empty : an empty scope file
+	is no scope, every device is synced ; a missing scope file makes sync_run fail.
 
 		- 1 field is the audit name (i.e. audit=AUDIT_NAME)
 		- 2 field is the various sync paths separated by comma (no space) 
@@ -972,7 +1055,7 @@ cawk sync database format is the following where fields are separated by spaces 
 		    every file found under the sync paths (field 2) is synced
 		- 4 field is a file containing a list of devices matching a device scope based on internal inventory
 		    the file is located in database/sync_scopes directory and generated by database/scripts/database_sync.script
-			audit(=AUDIT_NAME assessment)_inventory_sync_scope.txt
+			<audit>_inventory_sync_scope.txt (e.g. client1_inventory_sync_scope.txt)
 		- 5 field is an extended regex to select os pattern matching
 		    like (cisco-ios|cisco-xr) or .* (i.e. regexos=REGEX)
 		- 6 field is an extended regex to exclude some specific paths or device names if required 
@@ -1054,7 +1137,7 @@ cawk postaudit database format follows the same structure where fields are separ
 
 ## NIST 800-53 compliance database
 
-cawk NIST 800-53 compliance database (database/db_nist800-53.txt) contains official
+cawk NIST 800-53 compliance database (shipped in common/database/db_nist800-53.txt, working copy database/db_nist800-53.txt replaced when older) contains official
 NIST 800-53 controls reference data with the following format (semicolon-separated fields):
 
 		- 1 field is the NIST control ID (e.g., cm-7, cm-7(1), etc.)
@@ -1129,6 +1212,18 @@ from all test source files. Format: semicolon-separated fields (9 fields)
 		- triggered automatically by create_audit and delete_audit workflows
 		- ensures database stays synchronized with test and audit lifecycle
 		- used for generating catalog displays and NIST coverage reports
+
+## database format check ----
+
+	gmake check_database : format check of every cawk flat-file database (.txt), one by one
+	(database/db_sync.txt, db_collect.txt, db_email.txt, db_postaudit.txt, db_exception.txt,
+	db_info.txt, db_nist800-53.txt and, when present, psirt_scopes/psirt_os_inventory_scope.txt),
+	one explicit error per bad line (field count, header, unknown supplier, duplicate entry,
+	invalid extended regex, invalid rfc 5322 address, unknown audit, LF-only violation)
+
+	the check is implemented in common/check_database.script.sh, it is also run by
+	gmake check (after catalog_build and exceptions_build) and it exits 1 when a database
+	holds at least one bad line
 
 # cawk sync audit=AUDIT_NAME assessment
 
@@ -1300,6 +1395,9 @@ cawk allows to email audit=AUDIT_NAME assessments in zip file format. the way of
 
 	- gmake email_send audit=AUDIT_NAME : send email by refering to cawk email database 	
 
+	  the export zip holds summary.txt, all.idx and the security, deadbeef, crlf and badformat csv;
+	  EMAIL_ZIPFILE_LARGE=yes (default no) adds the audit, psirt and exception csv
+
 	- gmake email_send_audit (email all the audit=AUDIT_NAMEs)
 
 # cawk postaudit audit=AUDIT_NAME assessment
@@ -1402,8 +1500,9 @@ cawk provides catalog targets to build and display comprehensive test metadata c
 	  gmake clean_censor_report_run audit=AUDIT_NAME : same for reports/run_AUDIT_NAME
 	  gmake clean_censor_report_run_audit : same for every named audit
 
-	database/censor/censor_regex.m4 is the only file to edit to control the censor module : the regexes
-	are written in it with the macros of m4/cawk_censor.m4 (one per line, not nested, the argument is a
+	database/censor/censor_regex.m4 is the only file to edit to control the censor module : it includes
+	the core rules shipped by cawk (common/censor/censor_regex_core.m4, do not edit, replaced by each version)
+	and holds the rules of the installation, written in it with the macros of m4/cawk_censor.m4 (one per line, not nested, the argument is a
 	quoted extended regex) and built by gmake into database/censor/censor_regex (generated file, never
 	edit it : it is overwritten at the next censor_*), applied in order on every line of the configurations :
 	  - censor_after(`regex') : censors the text following the regex, up to the end of line
@@ -1442,13 +1541,20 @@ Each file is self-contained with its own `.PHONY` declarations and targets:
 | File | Purpose |
 |------|---------|
 | Makefile | Main entry point, includes all support files |
-| support/Makefile.support.mk | Core variables, paths, options, compilation rules |
-| support/Makefile.support.help.mk | Help and information targets |
-| support/Makefile.support.audit.mk | Audit creation/deletion/management |
+| support/Makefile.support.vars.mk | Every variable: paths, options, lists (the only file defining variables, `gmake help vars`) |
+| support/Makefile.support.cmdline.mk | Unknown command line option: cawk error with the closest option, before any target |
+| support/Makefile.support.cmdline.mk | Unknown command line option: cawk error with the closest option, before any target |
+| support/Makefile.support.mk | Compilation rules and assessment macros |
+| support/Makefile.support.help.mk | Help sections (gmake help, gmake help SECTION, gmake help all, gmake help topic=WORD) and unknown target message |
+| support/similar_target.awk | Similar targets suggested by the unknown target message |
+| support/cawk-completion.bash | Optional bash completion of the targets, audit= and supplier= |
+| support/audit_status.sh | Report of `gmake status audit=AUDIT_NAME` |
+| support/Makefile.support.audit.mk | Audit creation/deletion/management and status |
 | support/Makefile.support.database.mk | Database entry management |
 | support/Makefile.support.postaudit.mk | Post-audit execution |
 | support/Makefile.support.email.mk | Email notification |
 | support/Makefile.support.backup.mk | Backup, restore, migrate |
+| support/Makefile.support.custom.mk | update_custom_run: your own script after a cawk update |
 | support/Makefile.support.sync.mk | Config synchronization |
 | support/Makefile.support.tests.mk | Test compilation and validation |
 | support/Makefile.support.view.mk | Report viewing (view_repo, view_run) |
@@ -1458,12 +1564,13 @@ Each file is self-contained with its own `.PHONY` declarations and targets:
 | support/Makefile.support.censor.mk | Configuration censoring (censor_repo, censor_run, censor_run_audit ; the clean_censor_* targets are in the clean file) |
 | support/Makefile.support.exceptions.mk | Exception rule management |
 | support/Makefile.support.check.mk | Assessment and validation (check, check_parallel, check_update) |
+| support/Makefile.support.check.track.mk | check_track, check_track_explain, check_track_update, clean_track (phase tracking of gmake check) |
 | support/Makefile.support.check.scope.mk | check_repo and check_run (one recipe for repo, run and audit, sequential and parallel) |
 | support/Makefile.support.git.mk | Git and CI/CD integration |
 
-# cawk support/Makefile.support.mk
+# cawk support/Makefile.support.vars.mk
 
-You may thanks to the file support/Makefile.support.mk control all the cawk options like PSIRT_ONLY,
+You may thanks to the file support/Makefile.support.vars.mk (gmake help vars explains every variable) control all the cawk options like PSIRT_ONLY,
 DEADBEEF, etc. Please note that all these options can be called with gmake like:
 gmake check_repo DEADBEEF=yes PSIRT_ONLY=yes ....
 
@@ -1502,6 +1609,10 @@ the migrate target allows to reach this goal in such a way:
 	- gmake backup_run_audit
 2) install a new version of cawk
 3) gmake migrate file=backup_filename_path and all the next steps above are done automatically
+4) optional, your own changes after the update: gmake update_custom_run FORCE=yes
+	- runs database/scripts/update_custom.script.sh, a script you edit (empty by default, it is saved by backup_run and never overwritten by an update)
+	- global (no audit=), #!/bin/sh (POSIX), run from the cawk root directory with no argument, fails with cawk error: <message> ---- and exit 1
+	- errors of the script in logs/update_custom.err, a missing script is a cawk error, never run by check, check_repo or check_run
 
 ## Makefile.cawk.version
 The Makefile.cawk.version file provides installation and version management targets:
@@ -1512,7 +1623,7 @@ The Makefile.cawk.version file provides installation and version management targ
 	- update - Install new cawk version with automatic backup and restore from previous version
 		- required: `CAWK_VERSION=x.y.y CAWK_NEXT_VERSION=x.y.y`
 
-	note: This Makefile must be located in the parent directory of cawk installations.
+	note: this file ships in the cawk root directory; copy it to the parent directory of the cawk installations (where the cawk-X.Y.Z.tar.gz archives are), the targets run from there.
 
 # cawk docker
 
@@ -1589,7 +1700,7 @@ All tests must include these tags as comments (format: `# @tag_name : value`):
 - **Pipe separator (`|`)** — Use for multi-value fields (multiple NIST refs, multiple risk levels)
 - **No commas in multi-value fields** — Use pipes, not commas, for field separation
 - **Match test filename exactly** — The `@test_name` must match the compiled `.gawk` filename
-- **NIST reference format** — Use lowercase control IDs (e.g., `IA-2(1)`, not `ia-2(1)`); separate ID, category, and description with pipes
+- **NIST reference format** — Use uppercase control IDs (e.g., `IA-2(1)`, not `ia-2(1)`; `db_info.txt` is generated in lowercase); separate ID, category, and description with pipes
 
 ## Example Test Header
 

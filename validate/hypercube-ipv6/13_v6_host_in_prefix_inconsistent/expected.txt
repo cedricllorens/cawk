@@ -1,0 +1,2 @@
+t; == r1 == action(pass) inoutgress(in) int(em0) family(inet6) src(2001:db8:1::/64) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == r2 == action(block) inoutgress(in) int(em0) family(inet6) src(2001:db8:1::42/host) src_port(0/0) dst(any/any) dst_port(0/0) protocol(tcp) == inconsistent rules;0;info;warning
+cube verdict : found

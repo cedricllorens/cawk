@@ -1,0 +1,46 @@
+hostname cawk-acl-consistency-ipv6
+!
+ipv6 access-list CAWK-V6PORT-EXP-1-INCONSISTENT
+ 10 permit tcp any host 2001:db8::1 eq ssh
+ 20 deny tcp any host 2001:db8::1 eq 22
+!
+ipv6 access-list CAWK-V6PORT-EXP-PASS
+ 10 permit tcp any host 2001:db8::1 eq ssh
+ 20 deny tcp any host 2001:db8::1 eq www
+!
+ipv6 access-list CAWK-V6ADDR-EXP-1-REDUNDANT
+ 10 permit ipv6 2001:db8:1::/48 any
+ 20 permit tcp host 2001:db8:1:2::5 any eq 22
+!
+ipv6 access-list CAWK-V6ADDR-EXCEPTION-EXP-PASS
+ 10 permit tcp 2001:db8:2:1::/64 any eq 443
+ 20 deny ipv6 2001:db8:2::/48 any
+!
+ipv6 access-list CAWK-V6ADDR-EXP-PASS
+ 10 permit ipv6 2001:db8:3::/48 any
+ 20 deny ipv6 2001:db8:4::/48 any
+!
+ipv6 access-list CAWK-V6HOST-EXP-PASS
+ 10 permit tcp host 2001:db8:12::1 any eq 22
+ 20 deny tcp host 2001:db8:12::2 any eq 22
+!
+ipv6 access-list CAWK-V6ICMP-EXP-1-INCONSISTENT
+ 10 permit icmp any any echo-request
+ 20 deny icmp any any 128
+!
+ipv6 access-list CAWK-V6ICMP-EXP-PASS
+ 10 permit icmp any any echo-request
+ 20 deny icmp any any nd-ns
+!
+ipv6 access-list CAWK-V6RANGE-EXP-1-INCONSISTENT
+ 10 permit udp any 2001:db8:5::/64 range 1000 2000
+ 20 deny udp any 2001:db8:5::/64 eq 1500
+!
+ipv6 access-list CAWK-V6ANY-EXP-1-INCONSISTENT
+ 10 permit ipv6 any any
+ 20 deny ipv6 any any log
+!
+ipv4 access-list CAWK-V4SAME-EXP-PASS
+ 10 permit tcp any host 10.0.0.1 eq ssh
+!
+end

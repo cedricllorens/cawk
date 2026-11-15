@@ -27,7 +27,7 @@ BEGINFILE {
 	pass = 1;
 }
 
-/^(s)?ntp server (vrf [^ ]+ )?((ip|ipv6) )?[0-9\.]+/ {
+/^(s)?ntp server (vrf [^ ]+ )?((ip|ipv6) )?([0-9]{1,3}(\.[0-9]{1,3}){3}|[0-9A-Fa-f:]*:[0-9A-Fa-f:.]+)/ {
 	print_err("ntp_ip_set.cisco-xe.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;

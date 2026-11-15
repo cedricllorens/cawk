@@ -29,7 +29,7 @@ for db in db_sync.txt db_collect.txt; do
 done
 
 cleanup() {
-	gmake delete_audit audit=$AUDIT > /dev/null 2>&1
+	gmake delete_audit audit=$AUDIT FORCE=yes > /dev/null 2>&1
 	rm -f "$SCOPE"
 	for db in db_sync.txt db_collect.txt; do
 		if [ -f "$W/$db.before" ]; then cp -p "$W/$db.before" "database/$db"; else rm -f "database/$db"; fi
@@ -207,8 +207,8 @@ tn "collect_run: the default entry creates no confs/collect_$AUDIT" test -e "con
 gmake database_collect_add audit=$AUDIT collector=rsync "args=$ARGS" sync=yes > "$W/add.log" 2>&1
 t "database_collect_add: db_collect.txt entry" grep -qx "$AUDIT rsync $ARGS" database/db_collect.txt
 t "database_collect_add sync=yes: db_sync.txt references the collect directory" sh -c "grep '^$AUDIT ' database/db_sync.txt | awk '{print \$2}' | grep -qx '../collect_$AUDIT/'"
-t "database_view shows db_collect.txt" sh -c "gmake database_view | grep -q '^$AUDIT rsync'"
-t "database_view_collect shows db_collect.txt" sh -c "gmake database_view_collect | grep -q '^$AUDIT rsync'"
+t "database_view shows db_collect.txt" sh -c "gmake database_view | grep -A1 '^audit *: $AUDIT\$' | grep -q '^collector : rsync'"
+t "database_view_collect shows db_collect.txt" sh -c "gmake database_view_collect | grep -A1 '^audit *: $AUDIT\$' | grep -q '^collector : rsync'"
 t "database_view_collect shows the field format and an example before the closing separator" sh -c "gmake database_view_collect | sed -n '/^format  *: audit collector args/,/^-----/p' | grep -q '^example'"
 t "database_view shows the field format of every database" sh -c "[ \$(gmake database_view | grep -c '^format  *: audit') -eq 4 ]"
 t "database_view_sync shows the field format" sh -c "gmake database_view_sync | grep -q '^format  *: audit sync_paths'"
@@ -245,7 +245,7 @@ gmake database_collect_add audit=$AUDIT collector=rsync "args=$ARGS" > /dev/null
 gmake create_audit audit=$AUDIT supplier=cisco-ios > "$W/create2.log" 2>&1
 t "create_audit supplier=: succeeds when a collector is configured" test $? -eq 0
 t "create_audit supplier=: keeps the configured collector" grep -qx "$AUDIT rsync $ARGS" database/db_collect.txt
-gmake delete_audit audit=$AUDIT > /dev/null 2>&1
+gmake delete_audit audit=$AUDIT FORCE=yes > /dev/null 2>&1
 tn "delete_audit: collect directory removed" test -e "confs/collect_$AUDIT"
 tn "delete_audit: db_collect.txt entry removed" grep -q "^$AUDIT " database/db_collect.txt
 tn "delete_audit: scope file removed" test -e "$SCOPE"

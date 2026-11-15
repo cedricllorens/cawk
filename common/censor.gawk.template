@@ -34,7 +34,7 @@
 @include %SED_CENSOR_REGEX_PATH%
 
 function die(msg) {
-	print "cawk error: censor: " msg > "/dev/stderr"
+	print "cawk error: censor: " msg " ----" > "/dev/stderr"
 	exit 1
 }
 

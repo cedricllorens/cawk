@@ -1,0 +1,50 @@
+1	22520	0f3e4cd3c3352bb1d1e22f7f06c65bbac7db985735a123a58cb9b3f689c17f27	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+2	2572	536ee8ebf8732ea957eb5f9efeeedbd0ef525e589732f4a1f6ff035cfcecce21	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+3	22520	0f3e4cd3c3352bb1d1e22f7f06c65bbac7db985735a123a58cb9b3f689c17f27	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+4	22520	c7a12c56e4fbda1c909725f52ea8d502a2ed7244eed4ff470de29038ae7e5c44	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+5	22520	0f3e4cd3c3352bb1d1e22f7f06c65bbac7db985735a123a58cb9b3f689c17f27	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+6	22520	0f3e4cd3c3352bb1d1e22f7f06c65bbac7db985735a123a58cb9b3f689c17f27	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+7	22520	0f3e4cd3c3352bb1d1e22f7f06c65bbac7db985735a123a58cb9b3f689c17f27	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+8	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+9	25092	8a9182785611248b1c2207a3250408e0bce742d7659eae21acb8bd670de9e2be	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+10	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+11	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+12	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+13	25092	8a9182785611248b1c2207a3250408e0bce742d7659eae21acb8bd670de9e2be	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+14	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+15	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+16	3	e2b85bcd2390293dd51115632c7534e9528b368abcab29a94ac91c5523978531	find confs/run_client1_skffqsfqhsf10948494/confs.* -type l 2>/dev/null | sort | wc -l >> checkdiff/checkdiff.new	0
+17	3	056ccf6533a57f850b35048418351e8592c574ca7f093678de0864e0c1823837	find confs/run_client1_skffqsfqhsf10948494 -maxdepth 1 -type d -name 'confs.*' | sort | wc -l >> checkdiff/checkdiff.new	0
+18	25	29a7649d337e97c07bb91bd4ca9db67688811677998df4a6d71f94aa904c0a93	find tests/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'zz.sync.save.*' | sort | wc -l >> checkdiff/checkdiff.new	0
+19	6	00ad016912ae7abe4a42bf9a976bac4595c32c975a906109165c12e8325bc36c	find tests/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'tests.*' | sort | wc -l >> checkdiff/checkdiff.new	0
+20	26	7c140b636b1bf7585101d23d2cf4c0e6d83dc4e6e3303b04df0a22c4c984791c	find exceptions/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'zz.sync.save.*' | sort | wc -l >> checkdiff/checkdiff.new	0
+21	6	ed4d0828d3b9f8bebabf8758968c7fbbb5cb684790a45784fd1ed7fffc4671d8	find exceptions/run_client1_skffqsfqhsf10948494 -maxdepth 1 -name 'exceptions.*' | sort | wc -l >> checkdiff/checkdiff.new	0
+22	113	58e43845050b23cf10c383da06ddca5f8a62e801b009b8458a46e9ff06c16fc7	wc -c < database/psirt_scopes/psirt_os_inventory_scope.txt >> checkdiff/checkdiff.new	0
+23	45402	4dfe550323630b551e60ff2ec9d8ef910d160c0ec340d39f6f6426bbecae044a	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+24	45194	2488c2dc2891d8e7a67b8d33260bb67fc6133d86200dea41cbc42d7f60975e79	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+25	45064	0add44bc13cafece88932c43303a5897f139d806cfb212be096047166d96125f	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+26	45048	874c72f92b0360eeb309ce6eba9a9c41456fdf759283f33015fa668f49691536	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+27	0	59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2	wc -c < database/db_sync.txt >> checkdiff/checkdiff.new	0
+28	1	37ce6fb70464d4b47e59fea41f57bbef01a128607abc7320873b73b8bd12a4d1	grep -E "^client1_skffqsfqhsf10948494 " database/db_email.txt | wc -l >> checkdiff/checkdiff.new	0
+29	0	59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2	wc -c < database/db_email.txt >> checkdiff/checkdiff.new	0
+30	1	a99ba669b38aedd89ef705d817df0b6e2cfe410cfe2fecfe197c7c58fcabb920	grep -E "^client1_skffqsfqhsf10948494$" database/db_postaudit.txt | wc -l >> checkdiff/checkdiff.new	0
+31	0	59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2	wc -c < database/db_postaudit.txt >> checkdiff/checkdiff.new	0
+32	67568	fe0c357608ca4c3bd1c4c80117c58dcd715f78e7d01466381c5424edaa7a9428	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+33	47620	030be8b882e1956e9fb35d694c887c3f8d3b3a06cd9cf35140b8e1e823921f68	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+34	3	-	gmake list_audit | wc -l >> checkdiff/checkdiff.new	0
+35	47620	030be8b882e1956e9fb35d694c887c3f8d3b3a06cd9cf35140b8e1e823921f68	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+36	47620	030be8b882e1956e9fb35d694c887c3f8d3b3a06cd9cf35140b8e1e823921f68	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+37	47620	030be8b882e1956e9fb35d694c887c3f8d3b3a06cd9cf35140b8e1e823921f68	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+38	47974	b2fc129e6d57b7c7e768ac36b2b7fdf68f26e7a386c7aa9097544a7f530e336e	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+39	11833	-	gmake view_repo | wc -l >> checkdiff/checkdiff.new	0
+40	1839	-	gmake view_repo_error | wc -l >> checkdiff/checkdiff.new	0
+41	5236	-	gmake view_repo supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new	0
+42	11802	-	gmake view_run | wc -l >> checkdiff/checkdiff.new	0
+43	5205	-	gmake view_run supplier=cisco-ios | wc -l >> checkdiff/checkdiff.new	0
+44	1316	-	gmake view_run supplier=cisco-ios audit=client1_skffqsfqhsf10948494 | wc -l >> checkdiff/checkdiff.new	0
+45	84	-	gmake view_run supplier=cisco-ios audit=client2_mqsdhqndqqos198440 | wc -l >> checkdiff/checkdiff.new	0
+46	3	4628eb394de841b2d70f4f1d2720bd401aae97218cf0f99fa1a498dcd7c8cdff	find backup/ -name '*.tar.gz' | wc -l >> checkdiff/checkdiff.new	0
+47	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+48	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+49	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0
+50	45040	82eda84ca9913273d58d3f57646b50152309e37b67b66a30c83787acd29fa3ee	cat reports/*/*.csv | wc -l >> checkdiff/checkdiff.new	0

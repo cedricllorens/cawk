@@ -21,5 +21,11 @@ roles/
 # Ignore local scripts
 zzz.*
 
+# Evolution of the audits (key values per date, client data)
+database/data_set/
+
 # Raw configurations fetched by the optional collectors (secrets)
 confs/collect_*/
+
+# Last gmake check_track run (the reference checkdiff/track/ref is versioned)
+checkdiff/track/trace/

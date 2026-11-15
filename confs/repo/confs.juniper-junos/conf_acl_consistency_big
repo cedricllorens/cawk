@@ -3,7 +3,7 @@ system {
 }
 firewall {
     family inet {
-        filter CAWK-B1-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-B1-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -247,7 +247,7 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-B1-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-B1-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;
@@ -320,7 +320,7 @@ firewall {
                 then discard;
             }
         }
-        filter CAWK-B2-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-B2-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -564,7 +564,7 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-B2-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-B2-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;
@@ -637,7 +637,7 @@ firewall {
                 then discard;
             }
         }
-        filter CAWK-B3-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-B3-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -881,7 +881,7 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-B3-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-B3-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;
@@ -954,7 +954,7 @@ firewall {
                 then discard;
             }
         }
-        filter CAWK-B4-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-B4-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -1198,7 +1198,7 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-B4-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-B4-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;
@@ -1271,7 +1271,7 @@ firewall {
                 then discard;
             }
         }
-        filter CAWK-B5-ADDR-EXP-1-INCONSISTENT {
+        filter CAWK-B5-ADDR-EXCEPTION-EXP-PASS {
             term t1 {
                 from {
                     source-address {
@@ -1515,7 +1515,7 @@ firewall {
                 then accept;
             }
         }
-        filter CAWK-B5-ANYTERM-EXP-1-INCONSISTENT {
+        filter CAWK-B5-ANYTERM-EXCEPTION-EXP-PASS {
             term allow-web {
                 from {
                     protocol tcp;

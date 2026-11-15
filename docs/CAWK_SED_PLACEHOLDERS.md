@@ -8,6 +8,7 @@ Key `%SED_*` placeholders (defined in `support/tests.sed`):
 - `%SED_GAWK_PATH%` — shebang path for gawk
 - `%SED_INCLUDE_PATH%` — path to `common/common.gawk`
 - `%SED_INCLUDE_PATH_FWLIB%` — path to `common/common_hypercube-lib.gawk`
+- `%SED_CENSOR_REGEX_PATH%` — path to the generated `database/censor/censor_regex` (built from `common/censor/censor_regex_core.m4` and `database/censor/censor_regex.m4`, never edited), `@include`d by `common/censor.gawk.template`
 
 **Block indentation (vendor-specific):**
 - `%SED_BK_JUNI%` — block indentation for Juniper Junos

@@ -100,13 +100,13 @@ define(`_censor_word_plain', `ifelse(`$1', `', `CENSORED',
 
 dnl _censor_level($1) : the level $1, internal when empty
 define(`_censor_level', `ifelse($1, `', `internal', $1, `internal', `internal', $1, `external', `external',
-`errprint(`cawk error: censor: unknown level <$1> (expected internal or external)
+`errprint(`cawk error: censor: unknown level <$1> (expected internal or external) ----
 ')m4exit(1)')')
 
 dnl _censor_case($1,$2) : the regex $1 with the option $2 applied
 define(`_censor_case', `ifelse($2, `', `$1',
 $2, `lowercaseuppercase', `_censor_ignore_walk(`$1', `o')',
-`errprint(`cawk error: censor: unknown option <$2> (expected lowercaseuppercase)
+`errprint(`cawk error: censor: unknown option <$2> (expected lowercaseuppercase) ----
 ')m4exit(1)')')
 
 define(`_censor_lower', `abcdefghijklmnopqrstuvwxyz')

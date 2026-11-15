@@ -176,7 +176,7 @@ function matches_os_regex(config_type, regex_os) {
 BEGIN {
 
     if (ARGC < 3) {
-        print "cawk error gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_inventory\" \"file_list\" \"regex_os\" \"regex_path_exclude\" \"regex_inventory_exclude\"";
+        print "cawk error: usage: gawk -f sync_cawk_conf.gawk \"/dir1/,/dir2/\" \"regex_inventory\" \"file_list\" \"regex_os\" \"regex_path_exclude\" \"regex_inventory_exclude\" ----";
         exit 1;
     }
 
@@ -231,9 +231,20 @@ BEGIN {
         file_list = ARGV[3]
         if (file_list !~ /\/none$/) {
             print "cawk os list of inventory devices detected : " file_list
+            # a scope file that does not exist is an error, never an empty scope ----
+            if ((getline probe < file_list) < 0) {
+                print "cawk error: scope file " file_list " not found (db_sync.txt field 4, path relative to the cawk root, none = no scope) ----" > "/dev/stderr"
+                exit 1
+            }
+            close(file_list)
             allow_all = 0
+            scope_lines = 0
             cmd = "cat " shell_quote(file_list)
             while ((cmd | getline line) > 0) {
+
+                # blank lines and comments are not devices ----
+                if (line ~ /^[ \t]*(#|$)/) continue
+                scope_lines++
 
     		# apply regex_inventory on the line
 		if (line !~ regex_inventory || regex_inventory_exclude != "" && line ~ regex_inventory_exclude) {
@@ -253,6 +264,11 @@ BEGIN {
                 allowed_files[filename] = 1
             }
             close(cmd)
+            # a scope file holding no device (the default file created with the audit) is no scope: every device is synced ----
+            if (scope_lines == 0) {
+                allow_all = 1
+                print "cawk scope file " file_list " holds no device: no scope filter"
+            }
         } else {
             file_list = "none"
             print "cawk os list of devices not detected : " file_list
@@ -285,7 +301,7 @@ BEGIN {
 
         # check if devices exist under the directory
         if (src_prefix[i] == "") {
-            print "cawk error empty directory"
+            print "cawk error: empty directory ----"
             continue
         }
         cmd = "find " shell_quote(src_prefix[i]) " -type f"

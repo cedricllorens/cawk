@@ -9,7 +9,7 @@
 #
 # @test_name : acl_configconsistency_set.huawei-vrp.gawk
 # @supplier : huawei-vrp
-# @purpose : check that <ip acl number standard ...> have inconsistent/redundant rules
+# @purpose : check that <acl number ...> and <acl ipv6 ...> have inconsistent/redundant rules
 # @description : inconsistent or redundant acl rules reduce security effectiveness and complicate policy management
 # @actions : review and clean up acl rules to remove redundancies and resolve inconsistencies (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
@@ -42,11 +42,16 @@ BEGIN {
 	# icmp-type keywords as "type/code"
 	split("echo 8 echo-reply 0 fragmentneed-DFset 3/4 host-redirect 5/1 host-tos-redirect 5/3 host-unreachable 3/1 information-reply 16/0 information-request 15/0 net-redirect 5/0 net-tos-redirect 5/2 net-unreachable 3/0 parameter-problem 12/0 port-unreachable 3/3 protocol-unreachable 3/2 reassembly-timeout 11/1 source-quench 4/0 source-route-failed 3/5 timestamp-reply 14/0 timestamp-request 13/0 ttl-exceeded 11/0", hw_kw, " ");
 	for ( kw_i = 1; kw_i in hw_kw; kw_i += 2 ) hw_icmp_names[hw_kw[kw_i]] = hw_kw[kw_i+1];
+
+	# acl ipv6 icmpv6-type keywords (icmpv6 numbers differ from the icmp ones)
+	split("destination-unreachable 1 packet-too-big 2 time-exceeded 3 parameter-problem 4 echo-request 128 echo-reply 129 router-solicitation 133 router-advertisement 134 neighbor-solicitation 135 neighbor-advertisement 136 redirect 137", hw_kw, " ");
+	for ( kw_i = 1; kw_i in hw_kw; kw_i += 2 ) hw_icmp6_names[hw_kw[kw_i]] = hw_kw[kw_i+1];
 }
 
-# icmp message after "icmp-type" at field pos (keyword or "type [code]"), empty for any message
+# icmp message after "icmp-type" (or icmpv6 message after "icmp6-type") at field pos (keyword or "type [code]"), empty for any message
 function huawei_icmp_type(pos) {
-	if ( $pos in hw_icmp_names ) return hw_icmp_names[$pos];
+	if ( acl_v6 && $pos in hw_icmp6_names ) return hw_icmp6_names[$pos];
+	if ( !acl_v6 && $pos in hw_icmp_names ) return hw_icmp_names[$pos];
 	if ( $pos ~ /^[0-9]+$/ ) return ( $(pos+1) ~ /^[0-9]+$/ ) ? $pos"/"$(pos+1) : $pos;
 	return "";
 }
@@ -56,18 +61,22 @@ BEGINFILE {
 	block_acl = 0;
 	valid_acl = 0;
 	acl = "";
+	acl_desc = "acl number";
+	acl_v6 = 0;
 	check = 0;
 }
 
-/^acl number [^ ]+$/ {
+/^acl (number|ipv6 number|ipv6 name) [^ ]+$/ {
 	check = 1;
-	if ( acl != $3 && acl != "" ) {
+	if ( acl != $NF && acl != "" ) {
 		if ( cawk_hypercube_rules_assessment() ) {
-			print_err("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+			print_err("acl_configconsistency_set.huawei-vrp.gawk",acl_desc" "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 		}
 		cawk_init_hypercube_rules();
 	}
-	acl = $3;
+	acl = $NF;
+	acl_v6 = ( $2 == "ipv6" );
+	acl_desc = ( acl_v6 ) ? "acl ipv6 "$3 : "acl number";
 	block_acl = 1;
 	valid_acl = 0;
 }
@@ -106,8 +115,10 @@ function huawei_port(pos) {
 	# protocol ---- (optional: a basic acl rule goes straight to "source")
 	if ( $(local_current) != "" && $(local_current) !~ /^(source|destination|source-port|destination-port)$/ ) {
 		
-		if (  $(local_current) == "ip" ) {
+		if (  $(local_current) == "ip" || $(local_current) == "ipv6" ) {
 			local_protocol = "none";
+		} else if ( $(local_current) == "icmpv6" ) {
+			local_protocol = "icmp";
 		} else {
 			local_protocol = $(local_current);
 		}
@@ -131,6 +142,19 @@ function huawei_port(pos) {
 		if ( $(local_current+1) == "any") {
 			local_src_net = "any";
 			local_current = local_current + 2;
+		} else if ( acl_v6 ) {
+			# ipv6 "addr/len", "addr len" or "addr" (host) ----
+			if ( split($(local_current+1), hw_prefix, "/") == 2 ) {
+				local_src = hw_prefix[1];
+				local_src_net = ( hw_prefix[2] == 128 ) ? "host" : hw_prefix[2];
+				local_current = local_current + 2;
+			} else if ( $(local_current+2) ~ /^[0-9]+$/ ) {
+				local_src_net = ( $(local_current+2) == 128 ) ? "host" : $(local_current+2);
+				local_current = local_current + 3;
+			} else {
+				local_src_net = "host";
+				local_current = local_current + 2;
+			}
 		} else if ( $(local_current+2) !~ /^[0-9\.]+$/ ) {
 			local_src_net = "host";
 			local_current = local_current + 2;
@@ -170,6 +194,19 @@ function huawei_port(pos) {
 		if ( $(local_current+1) == "any") {
 			local_dst_net = "any";
 			local_current = local_current + 2;
+		} else if ( acl_v6 ) {
+			# ipv6 "addr/len", "addr len" or "addr" (host) ----
+			if ( split($(local_current+1), hw_prefix, "/") == 2 ) {
+				local_dst = hw_prefix[1];
+				local_dst_net = ( hw_prefix[2] == 128 ) ? "host" : hw_prefix[2];
+				local_current = local_current + 2;
+			} else if ( $(local_current+2) ~ /^[0-9]+$/ ) {
+				local_dst_net = ( $(local_current+2) == 128 ) ? "host" : $(local_current+2);
+				local_current = local_current + 3;
+			} else {
+				local_dst_net = "host";
+				local_current = local_current + 2;
+			}
 		} else if ( $(local_current+2) !~ /^[0-9\.]+$/ ) {
 			local_dst_net = "host";
 			local_current = local_current + 2;
@@ -200,32 +237,33 @@ function huawei_port(pos) {
 	# icmp message ----
 	local_icmp = "";
 	for ( icmp_f = local_current; icmp_f <= NF; icmp_f++ ) {
-		if ( $icmp_f == "icmp-type" ) {
+		if ( $icmp_f == "icmp-type" || $icmp_f == "icmp6-type" || $icmp_f == "icmpv6-type" ) {
 			local_icmp = huawei_icmp_type(icmp_f + 1);
 			break;
 		}
 	}
 
-	if ( valid_acl ) cawk_add_hypercube_rules("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" "rule_desc,local_action,"none","none","all",local_src,local_src_net,local_src_port,local_src_port_range,local_dst,local_dst_net,local_dst_port,local_dst_port_range,local_protocol,local_icmp)
+	if ( valid_acl ) cawk_add_hypercube_rules("acl_configconsistency_set.huawei-vrp.gawk",acl_desc" "acl" "rule_desc,local_action,"none","none",( acl_v6 ) ? "inet6" : "all",local_src,local_src_net,local_src_port,local_src_port_range,local_dst,local_dst_net,local_dst_port,local_dst_port_range,local_protocol,local_icmp,FNR)
 	next;
 }
 
 /^#$/ && block_acl == 1 {
 
 	if ( cawk_hypercube_rules_assessment() ) {
-		print_err("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+		print_err("acl_configconsistency_set.huawei-vrp.gawk",acl_desc" "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 	}
 
 	cawk_init_hypercube_rules();
 	block_acl = 0;
 	acl = "";
+	acl_v6 = 0;
 	valid_acl = 0;
 }
 
 ENDFILE { 
 	# the last acl is not assessed when the file ends without its terminator line
 	if ( acl != "" && cawk_hypercube_rules_assessment() ) {
-		print_err("acl_configconsistency_set.huawei-vrp.gawk","acl number "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+		print_err("acl_configconsistency_set.huawei-vrp.gawk",acl_desc" "acl" has no redundant/inconsistent rules",FNR,"info","pass");
 	}
 	if ( check == 0 ) print_err("acl_configconsistency_set.huawei-vrp.gawk","no <acl number [0-9]*> found",FNR,"info","pass");
 }

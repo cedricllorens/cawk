@@ -9,9 +9,6 @@
   view_repo view_repo_error view_run view_run_error
 
 
-# supplier= keeps only the lines of the tests of this supplier (same filter as view_*_error)
-VIEW_FILTER = $(if $(strip $(supplier)),| { $(EGREP) "\.$(supplier)\.gawk" || true; },)
-
 view_repo: check_supplier
 	$(ECHO) "------------------------------------"
 	$(ECHO) "---- Assessment all devices" ;\
@@ -31,7 +28,7 @@ view_repo: check_supplier
 	fi
 	$(ECHO) "cawk view_repo done ----"
 
-view_run: check_supplier
+view_run: check_audit check_supplier
 ifeq ($(strip $(audit)),)
 	$(ECHO) "------------------------------------"
 	$(ECHO) "---- Assessment all devices"
@@ -47,7 +44,7 @@ ifeq ($(strip $(audit)),)
 	fi
 else
 ifeq ($(wildcard $(REPORT_PATH)/run_$(audit)/.),)
-	$(ECHO) "cawk error audit=$(audit) do not exist ----"
+	$(ECHO) "cawk error: audit $(audit) does not exist (create it with: $(GMAKE) create_audit audit=$(audit), list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 endif
 	$(ECHO) "------------------------------------"
@@ -80,7 +77,7 @@ else
 endif
 	$(ECHO) "cawk view_repo_error done ----"
 
-view_run_error: check_supplier
+view_run_error: check_audit check_supplier
 	$(ECHO) "------------------------------------"
 	$(ECHO) "---- Assessment errors"
 	$(ECHO) "------------------------------------"

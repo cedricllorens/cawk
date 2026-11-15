@@ -18,7 +18,7 @@ BEGIN {
 
     if (ARGC != 4) {
 	help();
-	print "cawk error gen_cawk_makefile: 3 arguments expected";
+	print "cawk error: gen_cawk_makefile: 3 arguments expected ----";
         exit 1;
     }
 
@@ -30,19 +30,19 @@ BEGIN {
 
     if (system("test -f " file_list) != 0) {
 	help();
-        print "cawk error gen_cawk_makefile: " file_list " is not a file";
+        print "cawk error: gen_cawk_makefile: " file_list " is not a file ----";
 	exit 1;
     }
 
     if (system("test -f " file_pgm) != 0) {
 	help();
-        print "cawk error gen_cawk_makefile: " file_pgm " is not a file";
+        print "cawk error: gen_cawk_makefile: " file_pgm " is not a file ----";
 	exit 1;
     }
 
     if ( files_per_target == 0 ) {
 	help();
-	print "cawk error gen_cawk_makefile: files_per_target must not be 0";
+	print "cawk error: gen_cawk_makefile: files_per_target must not be 0 ----";
 	exit 1;
     }
 

@@ -1,1 +1,1 @@
-c_a;t.gawk;not vulnerable to this psirt (line and block not matched);3;info;psirt
+c_a;t.gawk;OS pattern matched but not exposed (line and block not matched) {OS_PATTERN=^15\..* .* .*};3;low;psirt

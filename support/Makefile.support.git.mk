@@ -29,7 +29,7 @@
 git_branch_master_check:
 	@current=$$(git rev-parse --abbrev-ref HEAD); \
 	if [ "$$current" != "master" ]; then \
-		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must be 'master'.\033[0m"; \
+		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must be 'master' ----\033[0m"; \
 		exit 1; \
 	fi
 	@$(ECHO) "cawk git_branch_master_check done ----"
@@ -37,7 +37,7 @@ git_branch_master_check:
 git_branch_not_master_check:
 	@current=$$(git rev-parse --abbrev-ref HEAD); \
 	if [ "$$current" = "master" ]; then \
-		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must NOT be 'master'.\033[0m"; \
+		$(ECHO) "\033[31mcawk error: Git branch is '$$current'; must NOT be 'master' ----\033[0m"; \
 		exit 1; \
 	fi
 	@$(ECHO) "cawk git_branch_not_master_check done ----"
@@ -59,7 +59,7 @@ gitcheck_orthogonality:
 	@rc=0; \
 	report() { \
 		if [ -n "$$2" ]; then \
-			$(ECHO) "\033[31mcawk error: $$1\033[0m"; \
+			$(ECHO) "\033[31mcawk error: $$1 ----\033[0m"; \
 			$(ECHO) "$$2" | awk '{print "\033[37m  " $$0 "\033[0m"}'; \
 			rc=1; \
 		fi; \
@@ -74,11 +74,11 @@ gitcheck_orthogonality:
 		while read -r p; do grep -qF "$$p" support/tests.sed || $(ECHO) "$$p"; done)"; \
 	pathdiff=""; \
 	for v in CONFS_PATH COMMON_PATH BACKUP_PATH DATABASE_PATH LOGS_PATH REPORT_PATH EXCEPTION_PATH TESTS_PATH TESTS_COMMON_PATH TESTS_SYSTEM TESTS_TMP; do \
-		m=$$(sed -n "s/^$$v *= *//p" support/Makefile.support.mk | head -n 1 | sed 's/ *$$//'); \
+		m=$$(sed -n "s/^$$v *= *//p" support/Makefile.support.vars.mk | head -n 1 | sed 's/ *$$//'); \
 		s=$$(sed -n "s/^$$v=\"\(.*\)\"/\1/p" database/include/scripts_config.sh | head -n 1); \
-		[ "$$m" = "$$s" ] || pathdiff="$$pathdiff$$v: Makefile.support.mk='$$m' scripts_config.sh='$$s'\n"; \
+		[ "$$m" = "$$s" ] || pathdiff="$$pathdiff$$v: Makefile.support.vars.mk='$$m' scripts_config.sh='$$s'\n"; \
 	done; \
-	report "path variables differ between Makefile.support.mk and scripts_config.sh" "$$(printf '%b' "$$pathdiff")"; \
+	report "path variables differ between Makefile.support.vars.mk and scripts_config.sh" "$$(printf '%b' "$$pathdiff")"; \
 	missing=""; \
 	for s in $(SUPPLIER_SCOPE); do \
 		[ -d "$(TESTS_PATH)/repo/tests.$$s" ] || missing="$${missing}$(TESTS_PATH)/repo/tests.$$s\n"; \
@@ -157,7 +157,7 @@ gitcheck: tests_target_common
 	done); \
 	if [ -n "$$orphans" ]; then \
 		$(ECHO) "$$orphans" | awk '{print "\033[37m" $$0 "\033[0m"}'; \
-		$(ECHO) "\033[31mcawk error: run_ directories above do not belong to any audit of list_audit\033[0m"; \
+		$(ECHO) "\033[31mcawk error: run_ directories above do not belong to any audit of list_audit ----\033[0m"; \
 		exit 1; \
 	fi
 	@$(ECHO) "\033[31m================================================== : end run_ directories not in audit list\033[0m"
@@ -269,8 +269,8 @@ gitcheck: tests_target_common
 	@$(ECHO) "\033[31m================================================== : end check backup files\033[0m"
 
 	$(ECHO) ""
-	@$(ECHO) "\033[31m================================================== : start update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
-	@$(ECHO) "\033[31m================================================== : end update Makefile.support.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
+	@$(ECHO) "\033[31m================================================== : start update Makefile.support.vars.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
+	@$(ECHO) "\033[31m================================================== : end update Makefile.support.vars.mk with CAWK_RELEASE = $(CAWK_RELEASE)\033[0m"
 	@$(ECHO) "cawk gitcheck done ----"
 
 

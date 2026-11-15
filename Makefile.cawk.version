@@ -5,7 +5,8 @@
 # Author: Cedric Llorens
 # License: MIT (see LICENSE file)
 #
-# NOTE: This Makefile must be located in the parent directory of cawk installations
+# NOTE: This Makefile ships in the cawk root directory; copy it to the parent directory
+#       of cawk installations and run it from there.
 #       Each cawk-X.Y.Z installation is managed independently with symlink fallback
 # ===============================================================================
 
@@ -37,7 +38,7 @@ help all:
 	@echo "    Action:  Backup from old version, install new, restore audits"
 	@echo ""
 	@echo "================================================================================"
-	@echo "NOTE: This Makefile must be located in the PARENT directory of cawk"
+	@echo "NOTE: copy this Makefile (shipped in the cawk root) to the PARENT directory of cawk"
 	@echo "      installations (where cawk-X.Y.Z directories are extracted)"
 	@echo "================================================================================"
 
@@ -48,11 +49,11 @@ help all:
 install:
 ifeq ($(CAWK_VERSION),)
 	@echo "Usage: gmake install CAWK_VERSION=3.6.0"
-	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified ----"
 	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory ----"
 	@exit 1
 else
 	@echo "Installing cawk-$(CAWK_VERSION)..."
@@ -70,11 +71,11 @@ endif
 reinstall:
 ifeq ($(CAWK_VERSION),)
 	@echo "Usage: gmake reinstall CAWK_VERSION=3.6.0"
-	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified ----"
 	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found in current directory ----"
 	@exit 1
 else
 	@echo "Reinstalling cawk-$(CAWK_VERSION) (backing up audits)..."
@@ -96,20 +97,20 @@ endif
 update:
 ifeq ($(CAWK_VERSION),)
 	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
-	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified"
+	@echo "cawk error: CAWK_VERSION=$(CAWK_VERSION) must be specified ----"
 	@exit 1
 else
 ifeq ($(CAWK_NEXT_VERSION),)
 	@echo "Usage: gmake update CAWK_VERSION=3.5.0 CAWK_NEXT_VERSION=3.6.0"
-	@echo "cawk error: CAWK_NEXT_VERSION=$(CAWK_NEXT_VERSION) must be specified"
+	@echo "cawk error: CAWK_NEXT_VERSION=$(CAWK_NEXT_VERSION) must be specified ----"
 	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_VERSION).tar.gz),)
-	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found"
+	@echo "cawk error: cawk-$(CAWK_VERSION).tar.gz not found ----"
 	@exit 1
 else
 ifeq ($(wildcard cawk-$(CAWK_NEXT_VERSION).tar.gz),)
-	@echo "cawk error: cawk-$(CAWK_NEXT_VERSION).tar.gz not found"
+	@echo "cawk error: cawk-$(CAWK_NEXT_VERSION).tar.gz not found ----"
 	@exit 1
 else
 	@echo "Upgrading from cawk-$(CAWK_VERSION) to cawk-$(CAWK_NEXT_VERSION)..."

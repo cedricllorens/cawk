@@ -15,7 +15,7 @@
 # check section
 # ---------------------------------------------------------------------
 if [ -z "$1" ]; then
-	echo "cawk error: audit=AUDIT_NAME is missing ----"
+	echo "cawk error: audit= must be set (usage: gmake postaudit_run audit=<name>) ----"
 	exit 1
 fi
 
@@ -23,7 +23,7 @@ CONFIG_FILE="database/include/scripts_config.sh"
 if [ -f "$CONFIG_FILE" ]; then
     . "$CONFIG_FILE"
 else
-    echo "cawk error: configuration file not found: $CONFIG_FILE"
+    echo "cawk error: configuration file not found: $CONFIG_FILE ----"
     exit 1
 fi
 

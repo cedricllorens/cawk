@@ -59,7 +59,7 @@ define(`psirt_block', `define(`_PSIRT_BLKN', incr(_PSIRT_BLKN))define(`_PSIRT_BL
 dnl')
 
 dnl psirt_block_line(block, name, regex) : a line inside a declared block, name -> BLOCK_LINE[n][m]
-define(`_psirt_blk_chk', `ifelse(defn(`_PSIRT_BLKIDX_$1'), `', `errprint(`cawk error: psirt_block_line: undeclared block <$1>
+define(`_psirt_blk_chk', `ifelse(defn(`_PSIRT_BLKIDX_$1'), `', `errprint(`cawk error: psirt_block_line: undeclared block <$1> ----
 ')m4exit(1)')')
 define(`psirt_block_line', `_psirt_blk_chk(`$1')define(`_PSIRT_BLKLN_$1', incr(indir(`_PSIRT_BLKLN_$1')))define(`$2', `BLOCK_LINE['indir(`_PSIRT_BLKIDX_$1')`]['indir(`_PSIRT_BLKLN_$1')`]')    BLOCK[indir(`_PSIRT_BLKIDX_$1')]["match"][indir(`_PSIRT_BLKLN_$1')] = "$3"
 dnl')

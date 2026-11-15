@@ -10,32 +10,38 @@
   catalog_exceptions_run catalog_nist_mappings catalog_repo catalog_run  \
   nist_coverage_official nist_coverage_repo nist_coverage_run
 
-catalog_build_repo: tests_target_common
+catalog_build_repo: tests_target_common $(NIST_REFERENCE)
+	touch $(DATABASE_PATH)/db_info.txt
+	awk -F';' -v a="repo" '$$1 != a' $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_info.txt.swap && mv $(DATABASE_PATH)/db_info.txt.swap $(DATABASE_PATH)/db_info.txt
 	if [ -d tests/repo ]; then \
 		find tests/repo -type f \( -name "*.m4" -o -name "*.template" -o -name "*.include" \) | sort | while read file; do common/catalog_build_db.gawk repo "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: tests/repo directory does not exist ----" ;\
+		m="tests/repo directory does not exist"; $(call cawk_phase_err,catalog_dir) ;\
 	fi
 	$(ECHO) "cawk catalog_build_repo done ----"
 
-catalog_build_run: tests_target_common
+catalog_build_run: tests_target_common $(NIST_REFERENCE)
 ifeq ($(strip $(audit)),)
+	touch $(DATABASE_PATH)/db_info.txt
+	awk -F';' -v a="run" '$$1 != a' $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_info.txt.swap && mv $(DATABASE_PATH)/db_info.txt.swap $(DATABASE_PATH)/db_info.txt
 	if [ -d tests/run ]; then \
 		find tests/run -type f \( -name "*.m4" -o -name "*.template" -o -name "*.include" \) | sort | while read file; do common/catalog_build_db.gawk run "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: tests/run directory does not exist ----" ;\
+		m="tests/run directory does not exist"; $(call cawk_phase_err,catalog_dir) ;\
 	fi
 	$(ECHO) "cawk catalog_build_run done ----"
 else
+	touch $(DATABASE_PATH)/db_info.txt
+	awk -F';' -v a="$(audit)" '$$1 != a' $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_info.txt.swap && mv $(DATABASE_PATH)/db_info.txt.swap $(DATABASE_PATH)/db_info.txt
 	if [ -d tests/run_$(audit) ]; then \
 		find tests/run_$(audit) -type f \( -name "*.m4" -o -name "*.template" -o -name "*.include" \) | sort | while read file; do common/catalog_build_db.gawk $(audit) "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: tests/run_$(audit) directory does not exist ----" ;\
+		m="tests/run_$(audit) directory does not exist"; $(call cawk_phase_err,catalog_dir) ;\
 	fi
 	$(ECHO) "cawk catalog_build_run $(audit) done ----"
 endif
 
-catalog_build: tests_target_common
+catalog_build: tests_target_common $(NIST_REFERENCE)
 	$(RM) -f $(DATABASE_PATH)/db_info.txt
 	touch $(DATABASE_PATH)/db_info.txt
 	$(GMAKE) catalog_build_repo
@@ -51,27 +57,31 @@ catalog_build: tests_target_common
 	$(GMAKE) catalog_nist_mappings
 	$(ECHO) "cawk catalog_build done ----"
 
+# db_info.txt is read by every report: built by catalog_build when missing (check_repo/check_run with CATALOG_BUILD=no)
+$(DATABASE_CIS_INFO):
+	$(GMAKE) catalog_build
+
 # Refresh only the lines of audit=AUDIT_NAME in db_info.txt (create_audit/delete_audit), the other contexts are untouched
-catalog_build_audit: tests_target_common
-	if [ -z "$(audit)" ]; then $(ECHO) "cawk error audit=AUDIT_NAME must be set ----"; exit 1; fi
+catalog_build_audit: tests_target_common $(NIST_REFERENCE)
+	if [ -z "$(audit)" ]; then $(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"; exit 1; fi
 	touch $(DATABASE_PATH)/db_info.txt
 	awk -F';' -v a="$(audit)" '$$1 != a' $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_info.txt.swap && mv $(DATABASE_PATH)/db_info.txt.swap $(DATABASE_PATH)/db_info.txt
 	if [ -d tests/run_$(audit) ]; then $(GMAKE) catalog_build_run audit=$(audit); fi
 	$(GMAKE) catalog_nist_mappings
 	$(ECHO) "cawk catalog_build_audit $(audit) done ----"
 
-catalog_nist_mappings:
+catalog_nist_mappings: $(DATABASE_CIS_INFO)
 	$(TESTS_COMMON_PATH)/catalog_nist_mappings.gawk $(DATABASE_PATH)/db_info.txt > $(DATABASE_PATH)/db_nist_mappings.json
 	$(ECHO) "cawk catalog_nist_mappings done - generated $(DATABASE_PATH)/db_nist_mappings.json"
 
-catalog_repo: tests_target_common
+catalog_repo: tests_target_common $(DATABASE_CIS_INFO)
 	@for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		$(ECHO) ""; \
 		common/catalog_info.gawk repo $$supplier; \
 	done
 	$(ECHO) "cawk catalog_repo done ----"
 
-catalog_run: tests_target_common
+catalog_run: tests_target_common $(DATABASE_CIS_INFO)
 ifeq ($(strip $(audit)),)
 	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_info.gawk run $$supplier; \
@@ -84,7 +94,13 @@ else
 	$(ECHO) "cawk catalog_run $(audit) done ----"
 endif
 
-nist_coverage_official:
+# working copy of the shipped NIST reference: created when missing, replaced when older than common/database (an old backup restore, a new release), .orig kept once
+$(NIST_REFERENCE): $(NIST_REFERENCE_SRC)
+	@if [ -f "$@" ] && [ ! -f "$@.orig" ]; then cp -p "$@" "$@.orig" || { $(ECHO) "cawk error: cannot save $@.orig ----"; exit 1; }; fi
+	@cp -p "$<" "$@" || { $(ECHO) "cawk error: cannot copy $< to $@ ----"; exit 1; }
+	@$(ECHO) "cawk $@ updated from $< (missing or older) ----"
+
+nist_coverage_official: $(NIST_REFERENCE) $(DATABASE_CIS_INFO)
 	@$(ECHO) "NIST 800-53 Coverage Analysis (Official)"
 	@$(ECHO) "=========================================="
 	@total=$$(wc -l < $(DATABASE_PATH)/db_nist800-53.txt); total=$$(($$total - 1)); \
@@ -130,7 +146,7 @@ else
 	done
 endif
 
-catalog_exceptions_repo: tests_target_common
+catalog_exceptions_repo: tests_target_common $(DATABASE_EXCEPTION)
 	@first=1; for supplier in $(shell find confs/repo -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		if [ $$first -eq 0 ]; then $(ECHO) ""; fi; \
 		common/catalog_exceptions_info.gawk repo $$supplier; \
@@ -138,7 +154,7 @@ catalog_exceptions_repo: tests_target_common
 	done
 	$(ECHO) "cawk catalog_exceptions_repo done ----"
 
-catalog_exceptions_run: tests_target_common
+catalog_exceptions_run: tests_target_common $(DATABASE_EXCEPTION)
 ifeq ($(strip $(audit)),)
 	@for supplier in $(shell find confs/run -maxdepth 1 -type d -name "confs.*" ! -name "*.censored" | sed 's|.*/confs\.||' | sort | xargs); do \
 		common/catalog_exceptions_info.gawk run $$supplier; \

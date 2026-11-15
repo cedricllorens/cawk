@@ -6,6 +6,8 @@
 # ------------------------------------------------------------
 
 
+include support/Makefile.support.vars.mk
+include support/Makefile.support.cmdline.mk
 include support/Makefile.support.mk
 
 
@@ -120,6 +122,18 @@ include support/Makefile.support.email.mk
 
 
 include support/Makefile.support.backup.mk
+
+
+# -------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------
+# CUSTOM (USER SCRIPT AFTER A CAWK UPDATE) TARGETS
+# -------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------
+
+
+include support/Makefile.support.custom.mk
 
 
 # -------------------------------------------------------------------------------------------
@@ -271,3 +285,4 @@ include support/Makefile.support.git.mk
 
 
 include support/Makefile.support.check.mk
+include support/Makefile.support.check.track.mk

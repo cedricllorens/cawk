@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # -----------------------------------------------------------------------
 # cawk is subject to a MIT open-source licence
@@ -10,7 +10,7 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOG_FILE="$SCRIPT_DIR/check_parallel_debug.log"
 PHASES_FILE="$SCRIPT_DIR/phases_parallel.txt"
 

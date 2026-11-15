@@ -65,6 +65,17 @@ input[type=search], select { font: inherit; color: inherit; background: var(--su
 .kpi.good .v { color: var(--pass); }
 .kpi.grad .v { color: var(--comp, inherit); }
 
+.evo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; margin-top: 12px; }
+.evo figure { margin: 0; min-width: 0; }
+.evo figcaption { font-size: .85rem; color: var(--warning); margin-bottom: 4px; }
+.evo svg { display: block; width: 100%; height: auto; }
+.evo text { fill: var(--muted); font: 11px system-ui, sans-serif; }
+.evo text.ax { font-size: 9px; }
+.evo text.axm { font-size: 7px; }
+.evo .gl { stroke: var(--border); stroke-width: 1; }
+.evo text.big { fill: var(--text); font-weight: 600; font-size: 9px; }
+.evo-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+
 .grid2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
 
@@ -146,6 +157,13 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: .76rem; }
 
   <section class="kpis" id="kpis" aria-label="Key indicators"></section>
 
+  <section class="card" id="evo-card" aria-labelledby="h-evo" hidden>
+    <h2 id="h-evo">Evolution of the audit</h2>
+    <div class="evo-kpis" id="evo-kpis"></div>
+    <div class="evo" id="evo-charts"></div>
+    <p class="notes" id="evo-note"></p>
+  </section>
+
   <section class="card" aria-labelledby="h-risk">
     <h2 id="h-risk">Summary by risk</h2>
     <div class="grid2">
@@ -201,7 +219,7 @@ const DATA = /*CAWK_DATA*/null;
 
   function small(s) { return esc(s).replace(/ (vulnerable|not affected)$/, ' <span class="sub">$1</span>'); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function num(n) { return Number(n).toLocaleString('en-US'); }
+  function num(n) { return String(Math.round(Number(n))); }
 
   var tests = DATA.tests.map(function (a) {
     return { name: a[0], supplier: a[1], purpose: a[2], nist: a[3], control: a[4], family: a[5], devs: a[6],
@@ -210,10 +228,8 @@ const DATA = /*CAWK_DATA*/null;
   var supplierDevs = {};
   DATA.suppliers.forEach(function (a) { supplierDevs[a[0]] = a[1]; });
   var recs = DATA.recs.map(function (a) {
-    var t = tests[a[0]], status = a[2];
-    // only psirt at high risk is a finding: info, low and medium are "not vulnerable", "not exposed" or "skipped"
-    if (status === 'psirt' && a[1] !== 'high') status = 'clear';
-    return { t: a[0], test: t, risk: a[1], status: status, lines: a[3] };
+    // status clear (PSIRT not affected) is set by report_html.gawk, like number_of_psirt_clear of summary.txt
+    return { t: a[0], test: tests[a[0]], risk: a[1], status: a[2], lines: a[3] };
   });
 
   // exceptions: [test, risk, status, lines], filtered like the results
@@ -238,9 +254,9 @@ const DATA = /*CAWK_DATA*/null;
   };
 
   var S = null;
-  // every risk and status is checked by default, info and PSIRT not affected included: the report opens on the same totals as the text summary
+  // every risk and status is checked by default except info and PSIRT not affected: the report opens on the actionable results
   function freshState() {
-    return { preset: 'all', risk: new Set(RISKS), status: new Set(statuses), supplier: new Set(), nist: '', q: '', testLimit: TEST_PAGE };
+    return { preset: 'all', risk: new Set(RISKS.filter(function (k) { return k !== 'info'; })), status: new Set(statuses.filter(function (k) { return k !== 'clear'; })), supplier: new Set(), nist: '', q: '', testLimit: TEST_PAGE };
   }
   S = freshState();
   var SORT = { sup: { k: 'errors', dir: -1 }, nist: { k: 'errors', dir: -1 }, test: { k: 'errors', dir: -1 } };
@@ -353,7 +369,8 @@ const DATA = /*CAWK_DATA*/null;
       ['CRLF config', num(DATA.meta.crlf || 0), 'windows line endings', DATA.meta.crlf ? 'bad' : 'good'],
       ['Badformat config', num(DATA.meta.badformat || 0), 'first-level indentation violations', DATA.meta.badformat ? 'bad' : 'good'],
       ['Devices', num(devs), 'in scope', 'good'],
-      ['Checks', num(t.lines), 'result lines' + (ALL.lines - t.lines ? ' · ' + excludedNote(ALL.lines - t.lines) : ''), 'good'],
+      // same total as number_of_checks of summary.txt: result lines plus the exceptions
+      ['Checks', num(t.lines + exc.n), 'results ' + num(t.lines) + ' + exceptions ' + num(exc.n) + (ALL.lines - t.lines ? ' · ' + excludedNote(ALL.lines - t.lines) : ''), 'good'],
       ['Compliance', s === null ? 'n/a' : s.toFixed(1) + '%', b.label + ' (weighted pass / error)', 'grad', complianceColor(s)],
       ['Pass', num(t.pass), excludedNote(ALL.pass - t.pass), 'good'],
       ['Errors', num(t.error), riskDetail(t.e, ALL.e), 'bad'],
@@ -533,6 +550,89 @@ const DATA = /*CAWK_DATA*/null;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
+
+  // ---- evolution of the audit (data_set: one row per date, not filtered) -------------------
+  function renderEvolution() {
+    var ds = DATA.dataset;
+    if (!ds || !ds.length) return;
+    // every indicator of the summary is computed from the stored counters, with the formulas of report.gawk
+    var rows = ds.map(function (a) {
+      var bad = WEIGHT.high * a.error_high + WEIGHT.medium * a.error_medium + WEIGHT.low * a.error_low;
+      var all = WEIGHT.high * (a.pass_high + a.error_high) + WEIGHT.medium * (a.pass_medium + a.error_medium) + WEIGHT.low * (a.pass_low + a.error_low);
+      return { date: a.date, confs: a.confs, checks: a.checks, pass: a.pass, error: a.error, warning: a.warning, psirt: a.psirt, high: a.error_high, med: a.error_medium, low: a.error_low, info: a.error_info,
+        epd: a.confs ? (a.error_high + a.error_medium + a.error_low) / a.confs : 0, score: all ? 100 - 100 * bad / all : 100 };
+    });
+    var last = rows[rows.length - 1], prev = rows.length > 1 ? rows[rows.length - 2] : null;
+    function kpi(label, v, d, lowerIsBetter, dp, suf, sub) {
+      var cls = (!prev || d === 0) ? '' : ((d < 0) === lowerIsBetter ? 'good' : 'bad');
+      var note = (sub ? sub + ' · ' : '') + (prev ? (d > 0 ? '▲ +' : d < 0 ? '▼ −' : '→ ±') + Math.abs(d).toFixed(dp) + suf + ' vs ' + prev.date : 'first date');
+      return '<div class="kpi ' + cls + '"><div class="l">' + small(label) + '</div><div class="v">' + v.toFixed(dp) + suf + '</div><div class="n">' + esc(note) + '</div></div>';
+    }
+    $('evo-kpis').innerHTML =
+      kpi('Compliance', last.score, prev ? last.score - prev.score : 0, false, 1, '%', band(last.score).label + ' (weighted pass / error)') +
+      kpi('Pass', last.pass, prev ? last.pass - prev.pass : 0, false, 0, '') +
+      kpi('Errors', last.error, prev ? last.error - prev.error : 0, true, 0, '') +
+      kpi('PSIRT vulnerable', last.psirt, prev ? last.psirt - prev.psirt : 0, true, 0, '') +
+      kpi('Errors/device', last.epd, prev ? last.epd - prev.epd : 0, true, 1, '');
+    var W = 520, H = 200, L = 62, R = 30, T = 14, B = 26;
+    function xs(i) { return L + (W - L - R) * (rows.length === 1 ? 0.5 : i / (rows.length - 1)); }
+    function ax(lo, hi, f) {
+      var s = '', i, v, y;
+      for (i = 0; i <= 4; i++) {
+        v = lo + (hi - lo) * i / 4; y = T + (H - T - B) * (1 - i / 4);
+        s += '<line class="gl" x1="' + L + '" x2="' + (W - R) + '" y1="' + y + '" y2="' + y + '"/><text class="ax" x="' + (L - 6) + '" y="' + (y + 3) + '" text-anchor="end">' + f(v) + '</text>';
+      }
+      rows.forEach(function (r, k) { if (k > 0 && r.date.slice(0, 7) === rows[k - 1].date.slice(0, 7)) return; s += '<text class="ax axm" x="' + xs(k) + '" y="' + (H - 8) + '" text-anchor="middle">' + esc(r.date.slice(0, 7)) + '</text>'; });
+      return s;
+    }
+    function line(key, color, f, zero, label) {
+      var v = rows.map(function (r) { return r[key]; }), lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), pad = (hi - lo) * 0.15 || 1;
+      lo = zero ? 0 : Math.floor(lo - pad); hi = Math.ceil(hi + pad);
+      var y = function (n) { return T + (H - T - B) * (1 - (n - lo) / (hi - lo || 1)); };
+      var pts = v.map(function (n, i) { return xs(i) + ',' + y(n); }).join(' '), e = v.length - 1;
+      return '<figure><figcaption>' + esc(label) + '</figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '">' + ax(lo, hi, f) +
+        '<polygon points="' + xs(0) + ',' + y(lo) + ' ' + pts + ' ' + xs(e) + ',' + y(lo) + '" fill="' + color + '" opacity=".12"/>' +
+        '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.2" stroke-linejoin="round"/>' +
+        v.map(function (n, i) { return '<circle cx="' + xs(i) + '" cy="' + y(n) + '" r="' + (i === e ? 5 : 2.6) + '" fill="' + (i === e ? color : 'var(--surface)') + '" stroke="' + color + '" stroke-width="1.6"/>'; }).join('') +
+        '<text class="big" x="' + xs(e) + '" y="' + (y(v[e]) - 10) + '" text-anchor="end">' + f(v[e], 1) + '</text></svg></figure>';
+    }
+    function passerr() {
+      var hi = Math.ceil(Math.max.apply(null, rows.map(function (r) { return r.pass + r.error; })) / 500) * 500 || 500;
+      var y = function (n) { return T + (H - T - B) * (1 - n / hi); }, s = ax(0, hi, plain), e = rows.length - 1, base = rows.map(function () { return 0; });
+      [['pass', 'var(--pass)'], ['error', 'var(--error)']].forEach(function (p) {
+        var top = rows.map(function (r, i) { return base[i] + r[p[0]]; });
+        var up = top.map(function (n, i) { return xs(i) + ',' + y(n); }), dn = base.map(function (n, i) { return xs(i) + ',' + y(n); }).reverse();
+        s += '<polygon points="' + up.concat(dn).join(' ') + '" fill="' + p[1] + '" opacity=".45"/><polyline points="' + up.join(' ') + '" fill="none" stroke="' + p[1] + '" stroke-width="2" stroke-linejoin="round"/>';
+        rows.forEach(function (r, i) { s += '<circle cx="' + xs(i) + '" cy="' + y(top[i]) + '" r="3" fill="' + p[1] + '"><title>' + esc(r.date + ' ' + p[0] + ' ' + r[p[0]]) + '</title></circle>'; });
+        s += '<text class="big" x="' + xs(e) + '" y="' + (y(top[e]) - 8) + '" text-anchor="end">' + plain(rows[e][p[0]]) + '</text>';
+        base = top;
+      });
+      return '<figure><figcaption>Pass / Errors</figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Pass and error counts per date">' + s + '</svg>' +
+        '<div class="legend"><span><i style="background:var(--pass)"></i>pass</span><span><i style="background:var(--error)"></i>errors</span></div></figure>';
+    }
+    function stack() {
+      var hi = Math.ceil(Math.max.apply(null, rows.map(function (r) { return r.high + r.med + r.low; })) / 200) * 200 || 200;
+      var y = function (n) { return T + (H - T - B) * (1 - n / hi); };
+      var s = ax(0, hi, function (n) { return num(Math.round(n)); }), base = rows.map(function () { return 0; });
+      [['low', 'var(--good)'], ['med', 'var(--average)'], ['high', 'var(--critical)']].forEach(function (p) {
+        var lo = base.slice(), top = rows.map(function (r, i) { return base[i] + r[p[0]]; });
+        var up = top.map(function (n, i) { return xs(i) + ',' + y(n); }), dn = lo.map(function (n, i) { return xs(i) + ',' + y(n); }).reverse();
+        s += '<polygon points="' + up.concat(dn).join(' ') + '" fill="' + p[1] + '" opacity=".45"/><polyline points="' + up.join(' ') + '" fill="none" stroke="' + p[1] + '" stroke-width="2" stroke-linejoin="round"/>';
+        rows.forEach(function (r, i) { s += '<circle cx="' + xs(i) + '" cy="' + y(top[i]) + '" r="3" fill="' + p[1] + '"><title>' + esc(r.date + ' ' + p[0] + ' ' + r[p[0]]) + '</title></circle>'; });
+        base = top;
+      });
+      return '<figure><figcaption>High/Medium/Low errors</figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="High, medium and low error counts per date">' + s + '</svg>' +
+        '<div class="legend"><span><i style="background:var(--good)"></i>low</span><span><i style="background:var(--average)"></i>medium</span><span><i style="background:var(--critical)"></i>high</span></div></figure>';
+    }
+    var pct = function (n, d) { return n.toFixed(d || 0) + '%'; }, plain = function (n) { return num(Math.round(n)); };
+    $('evo-charts').innerHTML = rows.length < 2 ? '' :
+      line('score', 'var(--accent)', pct, false, 'Compliance (weighted pass / error)') + passerr() + stack() + line('epd', 'var(--muted)', function (n) { return n.toFixed(1); }, true, 'Errors/device');
+    var keep = DATA.dataset_keep ? ' Dates stored: ' + rows.length + ' of ' + DATA.dataset_keep + ' allowed (DATA_SET_KEEP).' : '';
+    $('evo-note').textContent = rows.length < 2 ? 'One date so far (' + last.date + '): the curves appear from the second date. Source: database/data_set, DATA_SET=yes adds one line per day.' + keep :
+      rows.length + ' dates, ' + rows[0].date + ' to ' + last.date + '. A jump of the total checks or devices is a scope change, not a trend.' + keep;
+    $('evo-card').hidden = false;
+  }
+  renderEvolution();
 
   document.title = 'Compliance report - ' + DATA.meta.context;
   $('title').textContent = 'Network configuration compliance report';

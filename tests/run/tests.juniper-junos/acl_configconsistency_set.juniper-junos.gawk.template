@@ -9,7 +9,7 @@
 #
 # @test_name : acl_configconsistency_set.juniper-junos.gawk
 # @supplier : juniper-junos
-# @purpose : check that <firewall family inet filter> terms have inconsistent/redundant rules
+# @purpose : check that <firewall family inet|inet6 filter> terms have inconsistent/redundant rules
 # @description : inconsistent or redundant filter terms reduce security effectiveness and complicate policy management ; a term using a match condition that is not modelled (except, prefix-list, tcp flags, ...) or without a final accept/discard/reject action is not assessed
 # @actions : review and clean up filter terms to remove redundancies and resolve inconsistencies (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
@@ -57,6 +57,14 @@ BEGIN {
 	# icmp-code keywords as icmp code numbers
 	split("network-unreachable 0 host-unreachable 1 protocol-unreachable 2 port-unreachable 3 fragmentation-needed 4 source-route-failed 5 network-unknown 6 host-unknown 7 network-prohibited 9 host-prohibited 10 communication-prohibited-by-filtering 13 ttl-eq-zero-during-transit 0 ttl-eq-zero-during-reassembly 1 redirect-for-network 0 redirect-for-host 1 redirect-for-tos-and-net 2 redirect-for-tos-and-host 3", junos_kw, " ");
 	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_icmp_codes[junos_kw[kw_i]] = junos_kw[kw_i+1];
+	delete junos_kw;
+
+	# family inet6 icmp-type and icmp-code keywords (icmpv6 numbers differ from the icmp ones)
+	split("destination-unreachable 1 packet-too-big 2 time-exceeded 3 parameter-problem 4 echo-request 128 echo-reply 129 membership-query 130 membership-report 131 membership-termination 132 router-solicit 133 router-advertisement 134 neighbor-solicit 135 neighbor-advertisement 136 redirect 137 router-renumbering 138 node-information-request 139 node-information-reply 140", junos_kw, " ");
+	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_icmp6_types[junos_kw[kw_i]] = junos_kw[kw_i+1];
+	delete junos_kw;
+	split("no-route-to-destination 0 administratively-prohibited 1 beyond-scope 2 address-unreachable 3 port-unreachable 4 ttl-eq-zero-during-transit 0 ttl-eq-zero-during-reassembly 1 ip6-header-bad 0 unrecognized-next-header 1 unrecognized-option 2", junos_kw, " ");
+	for ( kw_i = 1; kw_i in junos_kw; kw_i += 2 ) junos_icmp6_codes[junos_kw[kw_i]] = junos_kw[kw_i+1];
 }
 
 # values of a junos statement from field first, "[ a b ];" and "a;" alike
@@ -86,17 +94,19 @@ function junos_port(val) {
 	return 1;
 }
 
-# "a.b.c.d[/len]" into junos_ip/junos_net, 0 if not an ipv4 prefix
-function junos_addr(val,    part, len) {
-	if ( val !~ /^[0-9]+(\.[0-9]+){3}(\/[0-9]+)?$/ ) return 0;
+# "a.b.c.d[/len]" or "ipv6[/len]" into junos_ip/junos_net, 0 if not an ipv4 or ipv6 prefix
+function junos_addr(val,    part, len, full) {
+	if ( val ~ /^[0-9]+(\.[0-9]+){3}(\/[0-9]+)?$/ ) full = 32;
+	else if ( val ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*(\/[0-9]+)?$/ ) full = 128;
+	else return 0;
 	split(val, part, "/");
-	len = ( part[2] == "" ) ? 32 : part[2] + 0;
+	len = ( part[2] == "" ) ? full : part[2] + 0;
 	if ( len == 0 ) {
 		junos_ip = "any";
 		junos_net = "any";
 	} else {
 		junos_ip = part[1];
-		junos_net = ( len == 32 ) ? "host" : len;
+		junos_net = ( len == full ) ? "host" : len;
 	}
 	return 1;
 }
@@ -125,7 +135,7 @@ BEGINFILE {
 }
 
 # -----------------------------------------------------------
-# FIREWALL FAMILY INET FILTER
+# FIREWALL FAMILY INET AND INET6 FILTER
 # -----------------------------------------------------------
 
 {
@@ -161,8 +171,10 @@ BEGINFILE {
 		} else if ( ind == 4 && $0 ~ /^[ ]+}$/ ) {
 			fam = "";
 		} else if ( $0 ~ /^[ ]+filter [^ ]+ \{$/ ) {
-			if ( ind == 8 && fam == "inet" ) {
+			if ( ind == 8 && ( fam == "inet" || fam == "inet6" ) ) {
 				in_filter = 1;
+				# one cube per filter: the family only labels the inet6 rules
+				f_fam = ( fam == "inet6" ) ? "inet6" : "all";
 				check = 1;
 				filter = $2;
 				f_ind = ind;
@@ -232,10 +244,10 @@ BEGINFILE {
 							# an icmp term restricted to some icmp messages yields one rule per message ----
 							if ( t_proto[p_i] == "icmp" && n_icmp > 0 ) {
 								for ( ic_i = 1; ic_i <= n_icmp; ic_i++ ) {
-									cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none","all",t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],t_icmp[ic_i])
+									cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none",f_fam,t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],t_icmp[ic_i],term_line)
 								}
 							} else {
-								cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none","all",t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],"")
+								cawk_add_hypercube_rules("acl_configconsistency_set.juniper-junos.gawk",rule_desc,t_action,"none","none",f_fam,t_sip[s_i],t_snet[s_i],t_sp[sp_i],t_spr[sp_i],t_dip[d_i],t_dnet[d_i],t_dp[dp_i],t_dpr[dp_i],t_proto[p_i],"",term_line)
 							}
 
 						}
@@ -289,10 +301,10 @@ BEGINFILE {
 	if ( $NF == "{" ) {
 		list_key = $1;
 		if ( $1 !~ /^(source|destination)-address$/ ) t_unsupported = 1;
-	} else if ( $1 == "protocol" ) {
+	} else if ( $1 ~ /^(protocol|next-header|payload-protocol)$/ ) {
 		n_proto = junos_list(2, t_proto);
 		for ( p_i = 1; p_i <= n_proto; p_i++ ) {
-			if ( t_proto[p_i] == 1 ) t_proto[p_i] = "icmp";
+			if ( t_proto[p_i] ~ /^(1|58|icmp6|icmpv6)$/ ) t_proto[p_i] = "icmp";
 			else if ( t_proto[p_i] == 6 ) t_proto[p_i] = "tcp";
 			else if ( t_proto[p_i] == 17 ) t_proto[p_i] = "udp";
 		}
@@ -312,14 +324,16 @@ BEGINFILE {
 	} else if ( $1 == "icmp-type" ) {
 		n_val = junos_list(2, vals);
 		for ( v_i = 1; v_i <= n_val; v_i++ ) {
-			if ( vals[v_i] in junos_icmp_types ) t_ictype[++n_ictype] = junos_icmp_types[vals[v_i]];
+			if ( fam == "inet6" && vals[v_i] in junos_icmp6_types ) t_ictype[++n_ictype] = junos_icmp6_types[vals[v_i]];
+			else if ( fam != "inet6" && vals[v_i] in junos_icmp_types ) t_ictype[++n_ictype] = junos_icmp_types[vals[v_i]];
 			else if ( vals[v_i] ~ /^[0-9]+$/ ) t_ictype[++n_ictype] = vals[v_i];
 			else t_unsupported = 1;
 		}
 	} else if ( $1 == "icmp-code" ) {
 		n_val = junos_list(2, vals);
 		for ( v_i = 1; v_i <= n_val; v_i++ ) {
-			if ( vals[v_i] in junos_icmp_codes ) t_iccode[++n_iccode] = junos_icmp_codes[vals[v_i]];
+			if ( fam == "inet6" && vals[v_i] in junos_icmp6_codes ) t_iccode[++n_iccode] = junos_icmp6_codes[vals[v_i]];
+			else if ( fam != "inet6" && vals[v_i] in junos_icmp_codes ) t_iccode[++n_iccode] = junos_icmp_codes[vals[v_i]];
 			else if ( vals[v_i] ~ /^[0-9]+$/ ) t_iccode[++n_iccode] = vals[v_i];
 			else t_unsupported = 1;
 		}
@@ -337,5 +351,5 @@ ENDFILE {
 	if ( in_filter && cawk_hypercube_rules_assessment() ) {
 		print_err("acl_configconsistency_set.juniper-junos.gawk","filter "filter" has no redundant/inconsistent rules",FNR,"info","pass");
 	}
-	if ( check == 0 ) print_err("acl_configconsistency_set.juniper-junos.gawk","no <firewall family inet filter> found",FNR,"info","pass");
+	if ( check == 0 ) print_err("acl_configconsistency_set.juniper-junos.gawk","no <firewall family inet|inet6 filter> found",FNR,"info","pass");
 }

@@ -9,7 +9,7 @@
 #
 # @test_name : acl_configconsistency_set.cisco-xr.gawk
 # @supplier : cisco-xr
-# @purpose : check if <acl rules> are consistent
+# @purpose : check if <ipv4 and ipv6 acl rules> are consistent
 # @description : inconsistent or redundant ACL rules can lead to security vulnerabilities
 # @actions : remove inconsistent or redundant rules (please refer to engineering/operations guidelines for further information)
 # @nist800-53_ref : SI-2 | System and Information Integrity | Ensure flaw remediation and patching is configured
@@ -50,11 +50,22 @@ BEGIN {
 	# icmp message keywords as "type" or "type/code"
 	split("administratively-prohibited 3/13 alternate-address 6 conversion-error 31 dod-host-prohibited 3/10 dod-net-prohibited 3/9 echo 8 echo-reply 0 general-parameter-problem 12/0 host-isolated 3/8 host-precedence-unreachable 3/14 host-redirect 5/1 host-tos-redirect 5/3 host-tos-unreachable 3/12 host-unknown 3/7 host-unreachable 3/1 information-reply 16 information-request 15 mask-reply 18 mask-request 17 mobile-redirect 32 net-redirect 5/0 net-tos-redirect 5/2 net-tos-unreachable 3/11 net-unreachable 3/0 network-unknown 3/6 no-room-for-option 12/2 option-missing 12/1 packet-too-big 3/4 parameter-problem 12 port-unreachable 3/3 precedence-unreachable 3/15 protocol-unreachable 3/2 reassembly-timeout 11/1 redirect 5 router-advertisement 9 router-solicitation 10 source-quench 4 source-route-failed 3/5 time-exceeded 11 timestamp-reply 14 timestamp-request 13 traceroute 30 ttl-exceeded 11/0 unreachable 3", cisco_kw, " ");
 	for ( kw_i = 1; kw_i in cisco_kw; kw_i += 2 ) cisco_icmp_names[cisco_kw[kw_i]] = cisco_kw[kw_i+1];
+
+	# ipv6 access-list icmp message keywords (icmpv6 numbers differ from the icmp ones)
+	split("beyond-scope 1/2 destination-unreachable 1 echo-reply 129 echo-request 128 header 4/0 hop-limit 3/0 mld-query 130 mld-reduction 132 mld-report 131 nd-na 136 nd-ns 135 next-header 4/1 no-admin 1/1 no-route 1/0 packet-too-big 2 parameter-option 4/2 parameter-problem 4 port-unreachable 1/4 reassembly-timeout 3/1 redirect 137 renum-command 138/0 renum-result 138/1 renum-seq-number 138/255 router-advertisement 134 router-renumbering 138 router-solicitation 133 time-exceeded 3 unreachable 1", cisco_kw, " ");
+	for ( kw_i = 1; kw_i in cisco_kw; kw_i += 2 ) cisco_icmp6_names[cisco_kw[kw_i]] = cisco_kw[kw_i+1];
 }
 
 # icmp message at field pos (keyword or "type [code]"), empty for any message
 function cisco_icmp_type(pos) {
 	if ( $pos in cisco_icmp_names ) return cisco_icmp_names[$pos];
+	if ( $pos ~ /^[0-9]+$/ ) return ( $(pos+1) ~ /^[0-9]+$/ ) ? $pos"/"$(pos+1) : $pos;
+	return "";
+}
+
+# icmpv6 message at field pos (keyword or "type [code]"), empty for any message
+function cisco_icmp6_type(pos) {
+	if ( $pos in cisco_icmp6_names ) return cisco_icmp6_names[$pos];
 	if ( $pos ~ /^[0-9]+$/ ) return ( $(pos+1) ~ /^[0-9]+$/ ) ? $pos"/"$(pos+1) : $pos;
 	return "";
 }
@@ -95,6 +106,7 @@ BEGINFILE {
 	check = 0;
 
 	block_acl_ext = 0;
+	block_acl_v6 = 0;
 
 }
 
@@ -206,7 +218,7 @@ BEGINFILE {
 		local_port_dst = cisco_lo[port_i];
 		local_port_dst_range = ( cisco_hi[port_i] == cisco_lo[port_i] ) ? 0 : cisco_hi[port_i];
 		local_rule_desc = ( intervals > 1 ) ? rule_desc" (port interval "port_i"/"intervals")" : rule_desc;
-		cawk_add_hypercube_rules("acl_configconsistency_set.cisco-xr.gawk","access-list "acl" "local_rule_desc,local_action,"none","none","all",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol,local_icmp)
+		cawk_add_hypercube_rules("acl_configconsistency_set.cisco-xr.gawk","access-list "acl" "local_rule_desc,local_action,"none","none","all",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol,local_icmp,FNR)
 	}
 	next;
 }
@@ -219,6 +231,117 @@ BEGINFILE {
 	cawk_init_hypercube_rules();
 	acl = "";
 	block_acl_ext = 0;
+	next;
+}
+
+# -----------------------------------------------------------
+# IPV6 BLOCK ACL
+# -----------------------------------------------------------
+
+/^ipv6 access-list [^ ]+$/ {
+	if ( cawk_hypercube_rules_assessment() && acl != "" ) {
+		print_err("acl_configconsistency_set.cisco-xr.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+
+	cawk_init_hypercube_rules();
+	acl = $3;
+	block_acl_v6 = 1;
+	check = 1;
+	next;
+}
+
+# an ipv6 entry starts with its sequence number
+/^[ ]([0-9]+[ ])?(permit|deny)[ ]+[a-z0-9-]+[ ]+(any|host [0-9A-Fa-f:.]+|[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*\/[0-9]+)[ ]/ && block_acl_v6 == 1 {
+
+	# ruledesc ----
+	rule_desc = "rule_line_"FNR" <"$0">";
+
+	# rule numbering ---
+	local_current = ( $1 ~ /^[0-9]+$/ ) ? 2 : 1;
+
+	# action ----
+	local_action = $local_current;
+	local_current = local_current + 1;
+
+	# protocol ----
+	if ( $local_current == "ipv6" ) {
+		local_protocol = "none";
+	} else {
+		local_protocol = $local_current;
+	}
+	local_current = local_current + 1;
+
+	# src address ----
+	if ( $local_current == "host" ) {
+		local_src = $(local_current+1);
+		local_src_net = "host";
+		local_current = local_current + 2;
+	} else if ( $local_current == "any" ) {
+		local_src = "any";
+		local_src_net = "any";
+		local_current = local_current + 1;
+	} else {
+		split($local_current, local_prefix, "/");
+		local_src = local_prefix[1];
+		local_src_net = ( local_prefix[2] == 128 ) ? "host" : local_prefix[2];
+		local_current = local_current + 1;
+	}
+
+	# port src ----
+	if ( $local_current == "eq" ) {
+		if ( table_port[$(local_current+1)] == "" ) {
+			local_port_src = $(local_current+1);
+		} else {
+			local_port_src = table_port[$(local_current+1)];
+		}
+		local_port_src_range = 0;
+		local_current = local_current + 2;
+	} else {
+		local_port_src = 0;
+		local_port_src_range = 0;
+	}
+
+	# dst address ----
+	if ( $local_current == "host" ) {
+		local_dst = $(local_current+1);
+		local_dst_net = "host";
+		local_current = local_current + 2;
+	} else if ( $local_current == "any" ) {
+		local_dst = "any";
+		local_dst_net = "any";
+		local_current = local_current + 1;
+	} else if ( $local_current ~ /^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*\/[0-9]+$/ ) {
+		split($local_current, local_prefix, "/");
+		local_dst = local_prefix[1];
+		local_dst_net = ( local_prefix[2] == 128 ) ? "host" : local_prefix[2];
+		local_current = local_current + 1;
+	} else {
+		# an unmodelled destination (object-group, ...) is not assessed ----
+		next;
+	}
+
+	# icmp message ----
+	local_icmp = ( local_protocol == "icmp" ) ? cisco_icmp6_type(local_current) : "";
+
+	# port dst ----
+	intervals = cisco_port_intervals(local_current);
+	for ( port_i = 1; port_i <= intervals; port_i++ ) {
+		local_port_dst = cisco_lo[port_i];
+		local_port_dst_range = ( cisco_hi[port_i] == cisco_lo[port_i] ) ? 0 : cisco_hi[port_i];
+		local_rule_desc = ( intervals > 1 ) ? rule_desc" (port interval "port_i"/"intervals")" : rule_desc;
+		cawk_add_hypercube_rules("acl_configconsistency_set.cisco-xr.gawk","access-list "acl" "local_rule_desc,local_action,"none","none","inet6",local_src,local_src_net,local_port_src,local_port_src_range,local_dst,local_dst_net,local_port_dst,local_port_dst_range,local_protocol,local_icmp,FNR)
+	}
+	next;
+}
+
+/^(!|end)$/ && block_acl_v6 == 1 {
+	if ( cawk_hypercube_rules_assessment() && acl != "" ) {
+		print_err("acl_configconsistency_set.cisco-xr.gawk","access-list "acl" has no redundant/inconsistent rules",FNR,"info","pass");
+	}
+
+	cawk_init_hypercube_rules();
+	acl = "";
+	block_acl_v6 = 0;
 	next;
 }
 

@@ -27,8 +27,8 @@ iptables -A INPUT -i em9 -p tcp --dport 22 -m comment --comment "s08-exp-1-incon
 iptables -A INPUT -i em10 -p tcp -s 198.51.100.1,198.51.100.2 --dport 22 -m comment --comment "s09-exp-1-inconsistent" -j ACCEPT
 iptables -A INPUT -i em10 -p tcp -s 198.51.100.2 --dport 22 -m comment --comment "s09-exp-1-inconsistent" -j DROP
 
-iptables -A INPUT -i em11 -p tcp -s $cawk_host --dport 443 -m comment --comment "s10-exp-1-inconsistent" -j ACCEPT
-iptables -A INPUT -i em11 -p tcp -s 203.0.113.0/24 --dport 443 -m comment --comment "s10-exp-1-inconsistent" -j DROP
+iptables -A INPUT -i em11 -p tcp -s $cawk_host --dport 443 -m comment --comment "s10-exception-exp-pass" -j ACCEPT
+iptables -A INPUT -i em11 -p tcp -s 203.0.113.0/24 --dport 443 -m comment --comment "s10-exception-exp-pass" -j DROP
 
 iptables -A INPUT -i em12 -p icmp --icmp-type echo-request -m comment --comment "s11-exp-pass" -j ACCEPT
 iptables -A INPUT -i em12 -p icmp --icmp-type echo-reply -m comment --comment "s11-exp-pass" -j DROP
@@ -66,3 +66,6 @@ iptables -A INPUT -i em22 -p tcp --sport 80 --dport 22 -m comment --comment "s21
 
 iptables -A INPUT -i em23 -p tcp --dport ssh -m comment --comment "s22-exp-1-inconsistent" -j ACCEPT
 iptables -A INPUT -i em23 -p tcp --dport 22 -m comment --comment "s22-exp-1-inconsistent" -j DROP
+
+iptables -A INPUT -i em90 -m comment --comment "s90-exp-1-inconsistent" -j DROP
+iptables -A INPUT -i em90 -p tcp -s 10.90.0.0/16 --dport 22 -m comment --comment "s90-exp-1-inconsistent" -j ACCEPT

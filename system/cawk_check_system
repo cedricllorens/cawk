@@ -1,56 +1,141 @@
 #!/bin/sh
 
+# ---------------------------------------------------------------------
 # cawk is subject to a MIT open-source licence
 # please refer to the MIT licence file for further information
 #
-# this program checks if the main tools are available
-# and if the system is ready to run cawk
+# this program checks the cawk toolchain (required, support and optional
+# tools, GNU versions of the required ones) and prints system and cawk
+# information with a final OK/NOK verdict; it is informational only, it
+# always exits 0 so that gmake system and gmake gitcheck never break on it
+#
+# usage: gmake system (or: sh system/cawk_check_system, from the cawk root)
+# ---------------------------------------------------------------------
+
+LC_ALL=C
+export LC_ALL
+
+CHECKED=0
+FOUND=0
+MISSING_REQUIRED=0
+MISSING_SUPPORT=0
+MISSING_OPTIONAL=0
+
+# ---------------------------------------------------------------------
+# information section (shell builtins only: the release must be readable
+# even when the support tools are broken, they are checked right below)
+# ---------------------------------------------------------------------
+
+echo "cawk system check ----"
+
+os=$(uname -srm 2>/dev/null)
+[ -n "$os" ] || os="unknown"
+echo "cawk system : $os ----"
+
+release=""
+if [ -f support/Makefile.support.vars.mk ]; then
+	while IFS= read -r line; do
+		case "$line" in
+		"CAWK_RELEASE = "*) release=${line#CAWK_RELEASE = }; break ;;
+		esac
+	done < support/Makefile.support.vars.mk
+fi
+[ -n "$release" ] || release="unknown"
+echo "cawk system : cawk release $release ----"
+
+if [ ! -f Makefile ]; then
+	echo "cawk warning: not run from the cawk root, the release is unknown ----"
+fi
 
 echo ""
-echo "cawk system check"
-echo "=================================="
-echo ""
 
-total=0
-available=0
+# ---------------------------------------------------------------------
+# tool check
+# ---------------------------------------------------------------------
 
+# check_tool <tool> <class> <purpose>
+# class: required (exit 1 when missing or not GNU), support, optional
 check_tool() {
-    tool=$1
-    if command -v "$tool" >/dev/null 2>&1; then
-        echo "  ✅ $tool"
-        available=$((available + 1))
-    else
-        echo "  ❌ $tool"
-    fi
-    total=$((total + 1))
+	tool=$1
+	class=$2
+	purpose=$3
+	CHECKED=$((CHECKED + 1))
+	if command -v "$tool" >/dev/null 2>&1; then
+		# first line of the --version output, read is a shell builtin: no
+		# sed/head dependency, the version is captured even without them
+		version=$("$tool" --version 2>/dev/null | { IFS= read -r l; printf '%s' "$l"; })
+		if [ "$class" = "required" ]; then
+			case "$version" in
+			*GNU*) ;;
+			"")
+				echo "cawk error: $tool is present but did not report a version, cawk is tested with the GNU tools only ($purpose) ----"
+				MISSING_REQUIRED=$((MISSING_REQUIRED + 1))
+				return
+				;;
+			*)
+				echo "cawk error: $tool is not the GNU version ($version), cawk is tested with the GNU tools only ($purpose) ----"
+				MISSING_REQUIRED=$((MISSING_REQUIRED + 1))
+				return
+				;;
+			esac
+		fi
+		[ -n "$version" ] || version="present"
+		echo "cawk system $tool : $version ----"
+		FOUND=$((FOUND + 1))
+	else
+		case "$class" in
+		required)
+			echo "cawk error: $tool is missing, cawk cannot run without it ($purpose) ----"
+			MISSING_REQUIRED=$((MISSING_REQUIRED + 1))
+			;;
+		support)
+			echo "cawk warning: $tool is missing, the cawk recipes that use it will fail ($purpose) ----"
+			MISSING_SUPPORT=$((MISSING_SUPPORT + 1))
+			;;
+		optional)
+			echo "cawk warning: $tool is missing, the cawk features that need it are skipped ($purpose) ----"
+			MISSING_OPTIONAL=$((MISSING_OPTIONAL + 1))
+			;;
+		esac
+	fi
 }
 
-echo "ESSENTIALS (required for cawk):"
-check_tool "gawk"
-check_tool "gmake"
-check_tool "m4"
+echo "cawk system essentials (required to run cawk) ----"
+check_tool "gawk" "required" "test execution engine"
+check_tool "gmake" "required" "build system and task runner"
+check_tool "m4" "required" "macro expansion of the test templates"
 echo ""
 
-echo "SUPPORT (recommended):"
-check_tool "sed"
-check_tool "find"
-check_tool "grep"
-check_tool "diff"
-check_tool "mktemp"
-check_tool "sha512sum"
+echo "cawk system support (used by the check, backup and archive recipes) ----"
+check_tool "sed" "support" "template compilation"
+check_tool "find" "support" "file discovery"
+check_tool "grep" "support" "database and report filtering"
+check_tool "diff" "support" "checkdiff comparison"
+check_tool "cat" "support" "checkdiff counters"
+check_tool "wc" "support" "checkdiff counters"
+check_tool "sort" "support" "database and report sorting"
+check_tool "mktemp" "support" "temporary directories"
+check_tool "sha512sum" "support" "checkdiff crypto image"
 echo ""
 
-echo "OPTIONAL (advanced features):"
-check_tool "tar"
-check_tool "gzip"
-check_tool "mutt"
+echo "cawk system optional (backup, archive and email features) ----"
+check_tool "tar" "optional" "backup and archive targets"
+check_tool "gzip" "optional" "backup and archive targets"
+check_tool "mutt" "optional" "email_send targets"
 echo ""
 
-echo "=================================="
-echo "Summary: $available/$total tools available"
-if [ "$available" = "$total" ]; then
-    echo "✅ cawk is ready to use"
-else
-    echo "⚠️  Some tools are missing"
+# ---------------------------------------------------------------------
+# summary
+# ---------------------------------------------------------------------
+
+echo "cawk system summary : $FOUND/$CHECKED tools found ----"
+missing=$((MISSING_SUPPORT + MISSING_OPTIONAL))
+if [ "$missing" -ne 0 ]; then
+	echo "cawk warning: system check found $missing missing support or optional tool(s), see the warnings above ----"
 fi
-echo ""
+if [ "$MISSING_REQUIRED" -ne 0 ]; then
+	echo "cawk system result : NOK, $MISSING_REQUIRED missing, unreadable or non GNU required tool(s), cawk cannot run ----"
+else
+	echo "cawk system result : OK, cawk is ready to use ----"
+fi
+echo "cawk system done ----"

@@ -33,13 +33,13 @@ clean: clean_tmp
 	$(RM) -f checkdiff/scripts/analyze_diff checkdiff/scripts/check_debug checkdiff/scripts/check_parallel_debug checkdiff/scripts/diff_reports checkdiff/scripts/run_check 2>/dev/null || true
 	$(RM) -f checkdiff/scripts/*.log checkdiff/scripts/*.txt 2>/dev/null || true
 	$(RM) -f checkdiff/checkdiff.baseline checkdiff/checkdiff.check.result 2>/dev/null || true
-	find $(TESTS_COMMON_PATH) $(DATABASE_SH_PATH) $(EXCEPTION_PATH) $(TESTS_PATH)/repo $(TESTS_PATH)/run -type f -exec touch {} + || true
+	find $(TESTS_COMMON_PATH) $(DATABASE_SH_PATH) $(EXCEPTION_PATH) $(TESTS_PATH)/repo $(TESTS_PATH)/run -type f ! -path "$(NIST_REFERENCE_SRC)" -exec touch {} + || true
 	find $(TESTS_PATH)/run_* -type f -exec touch {} + 2>/dev/null || true
 	@if find $(TESTS_PATH) -type f -name "*.gawk" -print -quit 2>/dev/null | grep -q .; then \
-		$(ECHO) "cawk error: obsolete test has been detected and must be removed"; \
+		$(ECHO) "cawk error: obsolete test has been detected and must be removed ----"; \
 		exit 1; \
 	fi
-	$(ECHO) "cawk clean done ----"
+	$(ECHO_INFO) "cawk clean done ----"
 
 clean_backup:
 	$(RM) -f $(BACKUP_PATH)/*.tar $(BACKUP_PATH)/*.tar.gz 2>/dev/null || true
@@ -59,30 +59,42 @@ clean_orig_info:
 	find . -type f -name "*.orig" || true
 	$(ECHO) "cawk clean info .orig backup files done ----"
 
+# $(1) = directories of the archives (shell glob list), $(2) = label for the messages
+# default: removes the archives older than ARCHIVE_OLDER_DAYS (>= 30, else FORCE=yes required); ALL_ARCHIVE=yes FORCE=yes removes every archive
+define cawk_archive_purge
+@days="$(strip $(ARCHIVE_OLDER_DAYS))"; n=0; \
+	case "$$days" in ''|*[!0-9]*) $(ECHO) "cawk error: ARCHIVE_OLDER_DAYS=$$days is not a number ----"; exit 1;; esac; \
+	if [ "$(strip $(ALL_ARCHIVE))" = "yes" ]; then \
+		[ "$(FORCE)" = "yes" ] || { $(ECHO) "cawk error: ALL_ARCHIVE=yes needs FORCE=yes to remove every archive of $(2) ----"; exit 1; }; \
+		for d in $(1); do [ -d "$$d" ] || continue; c=$$(find "$$d" -maxdepth 1 -type f ! -name '.*' -exec $(RM) -f {} \; -print | wc -l); n=$$((n+c)); done; \
+	else \
+		if [ "$$days" -lt 30 ] && [ "$(FORCE)" != "yes" ]; then $(ECHO) "cawk error: ARCHIVE_OLDER_DAYS=$$days is below 30 days, set FORCE=yes (or ALL_ARCHIVE=yes FORCE=yes to remove every archive of $(2)) ----"; exit 1; fi; \
+		for d in $(1); do [ -d "$$d" ] || continue; c=$$(find "$$d" -maxdepth 1 -type f -name '*.tar.gz' -mtime +$$days -exec $(RM) -f {} \; -print | wc -l); n=$$((n+c)); done; \
+	fi; \
+	$(ECHO) "cawk clean archives of $(2) done, $$n file(s) removed ----"
+endef
+
 clean_report_repo:
 	$(RM) -f $(REPORT_PATH)/repo/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/repo done ----"
+	$(ECHO_INFO) "cawk clean $(REPORT_PATH)/repo done ----"
 
 clean_archive_repo:
-	$(RM) -f $(REPORT_PATH)/repo/archives/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/repo/archives done ----"
+	$(call cawk_archive_purge,$(REPORT_PATH)/repo/archives,$(REPORT_PATH)/repo/archives)
 
 clean_report_run:
 ifeq ($(strip $(audit)),)
 	$(RM) -f $(REPORT_PATH)/run/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/run done ----"
+	$(ECHO_INFO) "cawk clean $(REPORT_PATH)/run done ----"
 else
 	$(RM) -f $(REPORT_PATH)/run_$(audit)/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/run_$(audit) done ----"
+	$(ECHO_INFO) "cawk clean $(REPORT_PATH)/run_$(audit) done ----"
 endif
 
 clean_archive_run:
 ifeq ($(strip $(audit)),)
-	$(RM) -f $(REPORT_PATH)/run/archives/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/run/archives done ----"
+	$(call cawk_archive_purge,$(REPORT_PATH)/run/archives,$(REPORT_PATH)/run/archives)
 else
-	$(RM) -f $(REPORT_PATH)/run_$(audit)/archives/* 2>/dev/null || true
-	$(ECHO) "cawk clean $(REPORT_PATH)/run_$(audit)/archives done ----"
+	$(call cawk_archive_purge,$(REPORT_PATH)/run_$(audit)/archives,$(REPORT_PATH)/run_$(audit)/archives)
 endif
 
 clean_report_run_audit:
@@ -171,7 +183,8 @@ clean_tmp:
 	find $(TESTS_TMP) -type f -name "Makefile*" -delete 2>/dev/null || true
 	find $(TESTS_TMP) -type f -name "*.swap" -delete 2>/dev/null || true
 	find $(TESTS_TMP) -type f -name "*.txt" -delete 2>/dev/null || true
-	$(ECHO) "cawk clean tmp done ----"
+	find $(TESTS_TMP) -type f -name "*.b64" -delete 2>/dev/null || true
+	$(ECHO_INFO) "cawk clean tmp done ----"
 
 # clean_logs_repo/clean_logs_run are called by check_repo/check_run at the start of each
 # assessment, so a run's logs only ever reflect that run. clean_logs itself (the cross-scope
@@ -194,7 +207,7 @@ clean_logs_repo:
 		exit 1; \
 	fi
 	$(RM) -f $(LOGS_PATH)/repo/*.err 2>/dev/null || true
-	$(ECHO) "cawk clean $(LOGS_PATH)/repo done ----"
+	$(ECHO_INFO) "cawk clean $(LOGS_PATH)/repo done ----"
 
 clean_logs_run:
 	@if [ "$(FORCE)" != "yes" ]; then \
@@ -203,10 +216,10 @@ clean_logs_run:
 	fi
 ifeq ($(strip $(audit)),)
 	$(RM) -f $(LOGS_PATH)/run/*.err 2>/dev/null || true
-	$(ECHO) "cawk clean $(LOGS_PATH)/run done ----"
+	$(ECHO_INFO) "cawk clean $(LOGS_PATH)/run done ----"
 else
 	$(RM) -f $(LOGS_PATH)/run_$(audit)/*.err 2>/dev/null || true
-	$(ECHO) "cawk clean $(LOGS_PATH)/run_$(audit) done ----"
+	$(ECHO_INFO) "cawk clean $(LOGS_PATH)/run_$(audit) done ----"
 endif
 
 clean_logs_run_audit:
@@ -228,6 +241,6 @@ clean_force:
 	@$(ECHO) "cawk clean_force done ----"
 
 clean_archive_older:
-	find -H reports -type f -name '*.tar.gz' -mtime +$(ARCHIVE_OLDER_DAYS) -exec $(RM) -f {} \; 2>/dev/null || true
+	$(call cawk_archive_purge,$(REPORT_PATH)/*/archives,$(REPORT_PATH)/*/archives)
 
 

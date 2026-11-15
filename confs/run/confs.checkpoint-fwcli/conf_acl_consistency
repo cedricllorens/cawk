@@ -10,8 +10,8 @@ add access-rule name "s02-exp-pass" layer "Network" position 4 source 10.2.1.0/2
 add access-rule name "s03-exp-1-inconsistent" layer "Network" position 5 source 10.3.1.0/24 destination "S03_Dst" service "ssh" action "Accept" track "Log"
 add access-rule name "s03-exp-1-inconsistent" layer "Network" position 6 source 10.3.1.0/24 destination 10.3.2.1 service "ssh" action "Drop" track "Log"
 
-add access-rule name "s04-exp-1-inconsistent" layer "Network" position 7 source $s04_src destination 10.4.2.0/24 service "https" action "Accept" track "Log"
-add access-rule name "s04-exp-1-inconsistent" layer "Network" position 8 source 10.4.1.0/24 destination 10.4.2.0/24 service "https" action "Drop" track "Log"
+add access-rule name "s04-exception-exp-pass" layer "Network" position 7 source $s04_src destination 10.4.2.0/24 service "https" action "Accept" track "Log"
+add access-rule name "s04-exception-exp-pass" layer "Network" position 8 source 10.4.1.0/24 destination 10.4.2.0/24 service "https" action "Drop" track "Log"
 
 add access-rule name "s05-exp-pass" layer "Network" position 9 source 10.5.1.0/24 destination 10.5.2.0/24 service "ssh" action "Accept" track "Log"
 add access-rule name "s05-exp-pass" layer "Network" position 10 source 10.5.3.0/24 destination 10.5.2.0/24 service "ssh" action "Drop" track "Log"
@@ -44,3 +44,6 @@ add access-rule name "s13-exp-pass" layer "Network" position 25 source 10.13.1.0
 
 add access-rule name "s14-exp-pass" layer "Network" position 26 source "S14_Unknown_Object" destination 10.14.2.0/24 service "ssh" action "Accept" track "Log"
 add access-rule name "s14-exp-pass" layer "Network" position 27 source 10.14.1.0/24 destination 10.14.2.0/24 service "ssh" action "Drop" track "Log"
+
+add access-rule name "s90-exp-1-inconsistent" layer "Network" position 28 source 10.90.0.0/16 destination 10.90.0.0/16 action "Drop" track "Log"
+add access-rule name "s90-exp-1-inconsistent" layer "Network" position 29 source 10.90.1.0/24 destination 10.90.2.0/24 service "ssh" action "Accept" track "Log"

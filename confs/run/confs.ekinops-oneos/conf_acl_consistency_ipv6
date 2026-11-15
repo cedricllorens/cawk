@@ -1,0 +1,27 @@
+ipv6 access-list CAWK-V6PORT-EXP-1-INCONSISTENT
+ permit tcp any 2001:db8::1/128 22
+ deny tcp any 2001:db8::1/128 22
+exit
+ipv6 access-list CAWK-V6PORT-EXP-PASS
+ permit tcp any 2001:db8::1/128 22
+ deny tcp any 2001:db8::1/128 80
+exit
+ipv6 access-list CAWK-V6ADDR-EXP-1-REDUNDANT
+ permit ipv6 2001:db8:1::/48 any
+ permit tcp 2001:db8:1:2::5/128 any 22
+exit
+ipv6 access-list CAWK-V6ADDR-EXCEPTION-EXP-PASS
+ permit tcp 2001:db8:2:1::/64 any 443
+ deny ipv6 2001:db8:2::/48 any
+exit
+ipv6 access-list CAWK-V6ADDR-EXP-PASS
+ permit ipv6 2001:db8:3::/48 any
+ deny ipv6 2001:db8:4::/48 any
+exit
+ipv6 access-list CAWK-V6ANY-EXP-1-INCONSISTENT
+ permit ipv6 any any
+ deny ipv6 any any log
+exit
+ip access-list extended CAWK-V4SAME-EXP-PASS
+ permit tcp 10.0.0.1 0.0.0.0 any 22
+exit

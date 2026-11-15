@@ -15,9 +15,6 @@
 
 .PHONY: check_repo check_run
 
-# suppliers processed by one check : supplier= restricts to one, the whole scope otherwise
-CHECK_SCOPE = $(if $(strip $(supplier)),$(strip $(supplier)),$(SUPPLIER_SCOPE))
-
 # -------------------------------------------------------------------------------------------
 # MACROS: guard of a supplier of a named audit, same condition as cawk_deadbeef_scan_guarded
 # -------------------------------------------------------------------------------------------
@@ -61,7 +58,7 @@ endef
 # $(1) = scope/supplier, $(2) = path infix (REPO|RUN), $(3) = report dir, $(4) = tmp suffix (repo|run|<audit>)
 # -------------------------------------------------------------------------------------------
 define cawk_chk_exec_run
-$(ECHO) "cawk compute $(3) $(1) devices (MAKE_PARALLEL=$(strip $(MAKE_PARALLEL)) PSIRT_ONLY=$(strip $(PSIRT_ONLY)) STANDARD_ONLY=$(strip $(STANDARD_ONLY))) ----" ;\
+$(ECHO_INFO) "cawk compute $(3) $(1): $$(find $(CONFIGURATION_$(1)_$(2)_PATH) -maxdepth 1 -type f 2>/dev/null | wc -l) conf(s) tested (MAKE_PARALLEL=$(strip $(MAKE_PARALLEL)) PSIRT_ONLY=$(strip $(PSIRT_ONLY)) STANDARD_ONLY=$(strip $(STANDARD_ONLY))) ----" ;\
 	$(if $(filter no,$(strip $(MAKE_PARALLEL))),( $(call cawk_test_execution,$(TESTS_$(1)_$(2)_PATH),$(CONFIGURATION_$(1)_$(2)_PATH),$(REPORT_PATH)/$(3)/assessment.$(1).csv.swap,$(TESTS_$(1)_$(2)_PSIRT_PATH),$(1),$(3)) ) &,( $(call cawk_test_gen_parallel,$(1),$(2),$(3),$(4)) $(call cawk_chk_psirt_parallel,$(1),$(2),$(3),$(4)) ) &)
 endef
 
@@ -120,37 +117,41 @@ define cawk_check_body
 	$(call cawk_report_scope_all,$(REPORT_PATH)/$(2),$(4),$(LOGS_PATH)/$(2))
 endef
 
-check_repo: check_supplier clean_report_repo $(if $(filter yes,$(SECRETSCAN)),$(DATABASE_PATH)/censor/censor_regex) clean_tmp $(if $(filter yes,$(CATALOG_BUILD)),catalog_build) exceptions_repo check_deprecated_repo tests_repo
+check_repo: check_integrity check_supplier clean_report_repo $(if $(filter yes,$(SECRETSCAN)),$(DATABASE_PATH)/censor/censor_regex) clean_tmp $(if $(filter yes,$(CATALOG_BUILD)),catalog_build,$(DATABASE_CIS_INFO)) exceptions_repo check_deprecated_repo tests_repo
+	$(call cawk_check_start,repo)
 	$(GMAKE) clean_logs_repo FORCE=yes
 	mkdir -p $(LOGS_PATH)/repo
+	$(call cawk_phase_log,$(LOGS_PATH)/repo,repo)
 ifneq ($(strip $(audit)),)
-	$(ECHO) "cawk error the use of <audit=AUDIT_NAME> can only be used with check_run target ----"
+	$(ECHO) "cawk error: the use of <audit=<name>> is only allowed with the check_run target ----"
 	exit 1
 else
 	$(call cawk_check_body,REPO,repo,,repo,catalog_repo,catalog_exceptions_repo)
 endif
 	$(GMAKE) archive_repo
 	$(call cawk_check_errors_scan,$(LOGS_PATH)/repo)
+	$(call cawk_check_recap,REPO,repo,,check_repo)
 	$(ECHO) "cawk check_repo done ----"
 
-check_run: check_supplier clean_tmp $(if $(filter yes,$(SECRETSCAN)),$(DATABASE_PATH)/censor/censor_regex) $(if $(filter yes,$(CATALOG_BUILD)),catalog_build) exceptions_run check_deprecated_run tests_run
+check_run: check_audit check_integrity check_supplier clean_tmp $(if $(filter yes,$(SECRETSCAN)),$(DATABASE_PATH)/censor/censor_regex) $(if $(filter yes,$(CATALOG_BUILD)),catalog_build,$(DATABASE_CIS_INFO)) exceptions_run check_deprecated_run tests_run
+	$(call cawk_check_start,run$(if $(strip $(audit)),_$(audit)))
 ifeq ($(strip $(audit)),)
 	$(GMAKE) clean_report_run
 	$(GMAKE) clean_logs_run FORCE=yes
 	mkdir -p $(LOGS_PATH)/run
+	$(call cawk_phase_log,$(LOGS_PATH)/run,run)
 	$(call cawk_check_body,RUN,run,,run,catalog_run,catalog_exceptions_run)
 	$(GMAKE) archive_run
 	$(call cawk_check_errors_scan,$(LOGS_PATH)/run)
+	$(call cawk_check_recap,RUN,run,,check_run)
 else
-	@if [ ! -d "$(REPORT_PATH)/run_$(audit)" ]; then \
-		$(ECHO) "cawk error audit=$(audit) do not exist ----"; \
-		exit 1; \
-	fi
 	$(GMAKE) clean_report_run audit=$(audit)
 	$(GMAKE) clean_logs_run FORCE=yes audit=$(audit)
 	mkdir -p $(LOGS_PATH)/run_$(audit)
+	$(call cawk_phase_log,$(LOGS_PATH)/run_$(audit),$(audit))
 	$(call cawk_check_body,RUN,run_$(audit),$(audit),$(audit),catalog_run audit=$(audit),catalog_exceptions_run audit=$(audit))
 	$(GMAKE) archive_run audit=$(audit)
 	$(call cawk_check_errors_scan,$(LOGS_PATH)/run_$(audit))
+	$(call cawk_check_recap,RUN,run_$(audit),$(audit),check_run)
 endif
 	$(ECHO) "cawk check_run done ----"

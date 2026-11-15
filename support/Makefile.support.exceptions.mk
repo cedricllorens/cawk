@@ -17,7 +17,7 @@ exceptions_repo:
 		$(ECHO) "cawk error: exceptions_repo failed (see $(LOGS_PATH)/repo/exceptions.repo.err) ----"; \
 		exit 1; \
 	fi
-	$(ECHO) "cawk exceptions_repo done ----"
+	$(ECHO_INFO) "cawk exceptions_repo done ----"
 
 exceptions_run:
 ifeq ($(strip $(audit)),)
@@ -37,7 +37,7 @@ else
 		exit 1; \
 	fi
 endif
-	$(ECHO) "cawk exceptions_run done ----"
+	$(ECHO_INFO) "cawk exceptions_run done ----"
 
 exceptions_run_audit:
 	$(EXC_DIRS_FIND) | while read -r audit; do \
@@ -49,7 +49,7 @@ exceptions_build_repo: tests_target_common
 	if [ -d exceptions/repo ]; then \
 		find exceptions/repo -type f -name "*.m4" | sort | while read file; do common/catalog_build_exceptions_db.gawk repo "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: exceptions/repo directory does not exist ----" ;\
+		m="exceptions/repo directory does not exist"; $(call cawk_phase_err,exceptions_dir) ;\
 	fi
 	$(ECHO) "cawk exceptions_build_repo done ----"
 
@@ -58,17 +58,21 @@ ifeq ($(strip $(audit)),)
 	if [ -d exceptions/run ]; then \
 		find exceptions/run -type f -name "*.m4" | sort | while read file; do common/catalog_build_exceptions_db.gawk run "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: exceptions/run directory does not exist ----" ;\
+		m="exceptions/run directory does not exist"; $(call cawk_phase_err,exceptions_dir) ;\
 	fi
 	$(ECHO) "cawk exceptions_build_run done ----"
 else
 	if [ -d exceptions/run_$(audit) ]; then \
 		find exceptions/run_$(audit) -type f -name "*.m4" | sort | while read file; do common/catalog_build_exceptions_db.gawk $(audit) "$$file"; done ;\
 	else \
-		$(ECHO) "cawk error: exceptions/run_$(audit) directory does not exist ----" ;\
+		m="exceptions/run_$(audit) directory does not exist"; $(call cawk_phase_err,exceptions_dir) ;\
 	fi
 	$(ECHO) "cawk exceptions_build_run $(audit) done ----"
 endif
+
+# db_exception.txt is read by the exceptions catalog: built by exceptions_build when missing
+$(DATABASE_EXCEPTION):
+	$(GMAKE) exceptions_build
 
 exceptions_build: tests_target_common
 	$(RM) -f $(DATABASE_PATH)/db_exception.txt
@@ -98,7 +102,7 @@ exceptions_run_copy:
 		if [ ! -f "$$RUN_TARGET/$$(basename $$file)" ]; then \
 			cp -v $$file $$RUN_TARGET/ 2>/dev/null || true; \
 		else \
-			$(ECHO) "cawk skip $$(basename $$file) already exist in $$RUN_TARGET ----"; \
+			$(ECHO) "cawk skip $$(basename $$file) already exists in $$RUN_TARGET ----"; \
 		fi; \
 	done; \
 	$(ECHO) "cawk exceptions_run_copy to $$RUN_TARGET done ----"

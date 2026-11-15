@@ -23,7 +23,7 @@ CONFIG_FILE="database/include/scripts_config.sh"
 if [ -f "$CONFIG_FILE" ]; then
     . "$CONFIG_FILE"
 else
-    echo "cawk error: configuration file not found: $CONFIG_FILE"
+    echo "cawk error: configuration file not found: $CONFIG_FILE ----"
     exit 1
 fi
 

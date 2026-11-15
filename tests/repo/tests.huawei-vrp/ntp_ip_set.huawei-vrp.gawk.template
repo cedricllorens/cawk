@@ -27,7 +27,7 @@ BEGINFILE {
 	pass = 0 ;
 }
 
-/^(s)?ntp-service [^ ]+ [0-9\.]+/ {
+/^(s)?ntp-service [^ ]+ ([0-9]{1,3}(\.[0-9]{1,3}){3}|[0-9A-Fa-f:]*:[0-9A-Fa-f:.]+)/ {
 	print_err("ntp_ip_set.huawei-vrp.gawk",$0,FNR,"high","pass");
 	pass = 1;
 	nextfile;

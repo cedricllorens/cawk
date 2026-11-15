@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # ---------------------------------------------------------------------
 # cawk is subject to a MIT open-source licence
@@ -22,19 +22,19 @@
 # function used to copy cawk directories from tmp to cawk <persistent> volume
 # ------------------
 copy_with_log() {
-    local source="$1"
-    local destination="$2"
-    local description="$3"
-    local softlink="$4"
+    src_dir="$1"
+    dst_dir="$2"
+    desc="$3"
+    link="$4"
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $description"
-    if [ -d "$source" ] && [ "$(ls -A "$source" 2>/dev/null)" ]; then
-        mkdir -p "$destination"
-        cp -r "$source"/* "$destination"
-        [ -L "$softlink" ] || ln -s "$destination" "$softlink"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $desc"
+    if [ -d "$src_dir" ] && [ "$(ls -A "$src_dir" 2>/dev/null)" ]; then
+        mkdir -p "$dst_dir"
+        cp -r "$src_dir"/* "$dst_dir"
+        [ -L "$link" ] || ln -s "$dst_dir" "$link"
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Copy completed with exit code: $?"
     else
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Source directory empty or doesn't exist: $source"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Source directory empty or doesn't exist: $src_dir"
     fi
 }
 
@@ -42,15 +42,15 @@ copy_with_log() {
 # function used to clean tmp 
 # ----------------
 cleanup_tmp() {
-    local tmp_dir="$1"
-    local description="$2"
-    
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $description"
-    if [ -d "$tmp_dir" ]; then
-        rm -rf "$tmp_dir"
+    dir="$1"
+    desc="$2"
+
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $desc"
+    if [ -d "$dir" ]; then
+        rm -rf "$dir"
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Cleanup completed with exit code: $?"
     else
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Directory doesn't exist: $tmp_dir"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Directory doesn't exist: $dir"
     fi
 }
 
@@ -60,8 +60,8 @@ cleanup_tmp() {
 
 # log
 LOG_FILE="/app/cawk/dockerfile_cawk_run.log"
-exec > >(tee -a "$LOG_FILE") 2>&1
 
+main() {
 # copy
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting copy cawk directories from tmp to persistent directory"
 copy_with_log "/app/cawk/tmp/backup" "/app/cawk/cawk-persistent-volume/backup" "Copying backup files from /app/cawk/tmp/backup/* to /app/cawk/backup" "/app/cawk/backup"
@@ -91,3 +91,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Keeping container alive..."
 while true; do
     sleep 3600
 done
+}
+
+# POSIX sh has no process substitution: tee the whole main output to the log file and the console
+main | tee -a "$LOG_FILE"

@@ -33,7 +33,7 @@ BEGINFILE {
 	next;
 }
 
-/^ntp server( vrf [^ ]+)? [0-9\.]+/ || ( block_ntp == 1 && /^ server( vrf [^ ]+)? [0-9\.]+/ ) {
+/^ntp server( vrf [^ ]+)? ([0-9]{1,3}(\.[0-9]{1,3}){3}|[0-9A-Fa-f:]*:[0-9A-Fa-f:.]+)/ || ( block_ntp == 1 && /^ server( vrf [^ ]+)? ([0-9]{1,3}(\.[0-9]{1,3}){3}|[0-9A-Fa-f:]*:[0-9A-Fa-f:.]+)/ ) {
 	print_err("ntp_ip_set.cisco-xr.gawk",$0,FNR,"high","pass");
 	pass = 0;
 	nextfile;

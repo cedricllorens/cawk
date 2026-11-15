@@ -10,7 +10,7 @@
 
 postaudit_run: clean tests_target_common database_target_sh
 ifeq ($(strip $(audit)),)
-	$(ECHO) "cawk error audit=AUDIT_NAME must be set ----"
+	$(ECHO) "cawk error: audit= must be set (usage: $(GMAKE) <target> audit=<name>, list the audits with: $(GMAKE) list_audit) ----"
 	exit 1
 else
 	mkdir -p $(LOGS_PATH)/run_$(audit)
@@ -30,4 +30,4 @@ postaudit_run_audit:
 		$(GMAKE) postaudit_run audit=$$audit || exit 1; \
 	done < $(DATABASE_PATH)/db_postaudit.txt
 	$(GMAKE) list_audit
-	$(ECHO) "cawk postaudit_run_audit all audit done ----"
+	$(ECHO) "cawk postaudit_run_audit all audits done ----"

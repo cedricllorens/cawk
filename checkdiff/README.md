@@ -50,3 +50,18 @@ Displays the full debug log from the last check.
 👉 **Reference all tools?** Check: [`doc/TOOLS.md`](doc/TOOLS.md)
 
 👉 **Full technical details?** Read: [`doc/README.debug`](doc/README.debug)
+
+## check_track (phase tracking)
+
+```bash
+gmake check_track          # gmake check, each phase recorded in checkdiff/track/trace, NOK explained
+gmake check_track_explain  # explain again the last run without running it
+gmake check_track_update   # (CAUTION) check_update + keep the trace as the reference checkdiff/track/ref
+gmake clean_track FORCE=yes
+```
+
+- `checkdiff/track/trace/` : last run only (not versioned): `trace.tsv` (phase, counter, snapshot sha256, command, exit status), `last.txt` (last recipe line run), `env.txt`, `snap/` (sorted content of every counted phase), `report.txt`
+- `check_track` fails when the trace does not hold one line per counter of `checkdiff.new` (self-test of the tracking itself)
+- `check_track_explain` warns when the reference is stale (a phase command changed since `check_track_update`) or outdated (old `trace.tsv` format), and diagnoses a run stopped midway
+- `checkdiff/track/ref/` : reference of the last `check_track_update` (versioned), compared line by line on a NOK; the last one only
+- Sequential `check` only: with `MAKE_PARALLEL=yes` the phase order is not guaranteed

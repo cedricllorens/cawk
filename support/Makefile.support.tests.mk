@@ -41,7 +41,7 @@ tests_common: tests_target_common
 	$(ECHO) "cawk tests_common done ----"
 
 tests_repo: tests_target_repo
-	$(ECHO) "cawk tests_repo done ----"
+	$(ECHO_INFO) "cawk tests_repo done ----"
 
 # -----
 # OVERWRITE : if tests exist at target, tests are copied
@@ -51,7 +51,7 @@ tests_run_copy:
 	if [ -n "$(audit)" ]; then RUN_TARGET="$(TESTS_PATH)/run_$(audit)"; fi; \
 	for supplier in $(SUPPLIER_SCOPE); do \
 		if [ ! -d "$(TESTS_PATH)/repo/tests.$$supplier" ]; then \
-			$(ECHO) "cawk error: $(TESTS_PATH)/repo/tests.$$supplier does not exist ----"; \
+			m="$(TESTS_PATH)/repo/tests.$$supplier does not exist"; $(call cawk_phase_err,tests_copy); \
 		elif [ -d "$(TESTS_PATH)/repo/tests.$$supplier" ]; then \
 			$(ECHO) "cawk tests_run_copy $$supplier to $$RUN_TARGET start ----"; \
 			mkdir -p $$RUN_TARGET/tests.$$supplier || true; \
@@ -60,7 +60,7 @@ tests_run_copy:
 			$(ECHO) "cawk tests_run_copy $$supplier to $$RUN_TARGET done ----"; \
 		fi; \
 		if [ ! -d "$(TESTS_PATH)/repo/tests.$$supplier.psirt" ]; then \
-			$(ECHO) "cawk error: $(TESTS_PATH)/repo/tests.$$supplier.psirt does not exist ----"; \
+			m="$(TESTS_PATH)/repo/tests.$$supplier.psirt does not exist"; $(call cawk_phase_err,tests_copy); \
 		elif [ -d "$(TESTS_PATH)/repo/tests.$$supplier.psirt" ]; then \
 			$(ECHO) "cawk tests_run_copy $$supplier.psirt to $$RUN_TARGET start ----"; \
 			mkdir -p $$RUN_TARGET/tests.$$supplier.psirt || true; \
@@ -78,8 +78,8 @@ tests_run_audit_copy:
 	done
 	$(ECHO) "cawk tests_run_audit_copy done ----"
 
-tests_run: tests_target_run
-	$(ECHO) "cawk tests_run audit=${audit} done ----"
+tests_run: check_audit tests_target_run
+	$(ECHO_INFO) "cawk tests_run audit=${audit} done ----"
 
 tests_run_audit:
 	@$(RUN_DIRS_FIND) | while read -r dir; do \
